@@ -42,7 +42,8 @@ abstract class BaseActivity : AppCompatActivity()  {
         view1: View,
         navigationBarColor: Int = R.color.white,
         statusBarColor: Int = R.color.white,
-        initialization: OnInitialization?=null) {
+        initialization: OnInitialization?=null,
+        setHeadAndFoot: Boolean = true) {
         immersionBar {
             statusBarColor(statusBarColor)
             navigationBarColor(navigationBarColor)
@@ -59,10 +60,15 @@ abstract class BaseActivity : AppCompatActivity()  {
                 val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
                 val navigationBarHeight =
                     insets.getInsets(WindowInsets.Type.navigationBars()).bottom
-                binding.headView.setBackgroundColor(getColor(statusBarColor))
 
-                var params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,statusBarHeight)
-                binding.headView?.layoutParams = params
+                if (setHeadAndFoot){
+                    binding.headView.setBackgroundColor(getColor(statusBarColor))
+                    var params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,statusBarHeight)
+                    binding.headView?.layoutParams = params
+                }else{
+                    binding.headView.visibility = View.GONE
+                }
+
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     getWindow().setDecorFitsSystemWindows(false); // 启用无边框模式‌:ml-citation{ref="4" data="citationList"}
@@ -106,6 +112,17 @@ abstract class BaseActivity : AppCompatActivity()  {
         params?.width = width
         params?.height = height
         view.layoutParams = params
+    }
+
+
+
+
+
+    fun  setStatusBarColor(){
+        ImmersionBar.with(this)
+            .navigationBarColor(R.color.white)
+            .statusBarDarkFont(true)
+            .init()
     }
 
 

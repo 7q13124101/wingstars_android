@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginBottom="@dimen/dp_24"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_45">
+    <TextView
+        android:id="@+id/nums"
+        android:textStyle="bold"
+        android:layout_centerVertical="true"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="wrap_content"
+        android:text="4"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/color_101828"/>
+    <LinearLayout
+        android:layout_marginRight="@dimen/dp_20"
+        android:layout_toLeftOf="@id/votes"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_toRightOf="@id/nums"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="@dimen/dp_45"
+            android:layout_height="@dimen/dp_45"
+            />
+        <TextView
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/color_4A5565"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="wrap_content"
+            android:text="8"
+            android:textSize="@dimen/sp_16"/>
+
+
+        <TextView
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/color_4A5565"
+            android:layout_width="@dimen/dp_84"
+            android:layout_height="wrap_content"
+            android:text="米亞"
+            android:textSize="@dimen/sp_16"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/votes"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_big_award"/>
+        <TextView
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/color_4A5565"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="6.5K"/>
+    </LinearLayout>
+
+</RelativeLayout>

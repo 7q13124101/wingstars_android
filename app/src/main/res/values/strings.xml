@@ -3,5 +3,5 @@
     <string name="main_home">首頁</string>
     <string name="count">點數</string>
     <string name="calendar">日曆</string>
-    <string name="member">會員</string>
+    <string name="user">會員</string>
 </resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="member">成員</string>
+    <string name="popularity_ranking">人氣排行</string>
+    <string name="photo_frame">拍照圖框</string>
+    <string name="high_lights">應援花絮</string>
+    <string name="exclusive_support">專屬應援</string>
+    <string name="support_fashion">應援時尚</string>
+    <string name="girl_introduction">女孩介紹</string>
+    <string name="support_popularity_list">應援人氣榜</string>
+</resources>

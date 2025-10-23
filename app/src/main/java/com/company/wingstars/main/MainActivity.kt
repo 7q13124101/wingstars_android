@@ -1,5 +1,6 @@
 package com.company.wingstars.main
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,7 +11,7 @@ import com.wingstars.base.base.BaseActivity
 import com.wingstars.calendar.CalendarFragment
 import com.wingstars.count.CountFragment
 import com.wingstars.home.HomeFragment
-import com.wingstars.member.MemberFragment
+import com.wingstars.member.fragment.MemberFragment
 import com.wingstars.user.UserFragment
 
 class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClickListener {
@@ -21,7 +22,15 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setTitleFoot(view1=binding.root,initialization=this)
+
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM){
+            setContentView(binding.root)
+            setStatusBarColor()
+            initView()
+        }else{
+            setTitleFoot(view1=binding.root,initialization=this,setHeadAndFoot=false)
+        }
     }
 
     override fun initView() {
@@ -77,11 +86,11 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
     }
 
     override fun onClick(v: View?) {
-         when(v?.id){
-             binding.member.id->{
-                 selectMember()
-             }
-         }
+        when(v?.id){
+            binding.member.id->{
+                selectMember()
+            }
+        }
     }
 
     private fun selectMember() {

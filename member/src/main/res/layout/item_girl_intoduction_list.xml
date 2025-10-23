@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <com.lihang.ShadowLayout
+        app:hl_strokeWith="@dimen/dp_1"
+        app:hl_strokeColor="@color/color_DE9DBA"
+        app:hl_cornerRadius="@dimen/dp_20"
+        app:hl_shadowHidden="false"
+        android:id="@+id/item"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_width="@dimen/dp_176"
+        android:layout_height="@dimen/dp_279">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/image"
+                android:layout_marginLeft="@dimen/dp_1"
+                android:layout_marginRight="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_1"
+                android:src="@mipmap/ic_member_page_background"
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_236"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/color_DE9DBA"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_toLeftOf="@id/nums"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_101828"
+                    android:textSize="@dimen/sp_16"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_centerVertical="true"
+                    android:text="安芝儇"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_marginRight="@dimen/dp_15"
+                    android:id="@+id/nums"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/color_4A5565"
+                    android:textSize="@dimen/sp_16"
+                    android:layout_centerVertical="true"
+                    android:text="2"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+         
+    </com.lihang.ShadowLayout>
+</LinearLayout>
