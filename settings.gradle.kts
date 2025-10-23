@@ -25,7 +25,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Wing stars"
+rootProject.name = "WingStars"
 include(":app")
 include(":home")
 include(":own")
