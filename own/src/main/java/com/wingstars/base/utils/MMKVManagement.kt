@@ -5,6 +5,7 @@ import com.tencent.mmkv.MMKV
 
 class MMKVManagement {
     companion object{
+        //定义存储的字段名
         private var FONT_SCALE="font_scale" //字体大小倍数的字段名
         private val SAVE_LANGUAGE = "save_language"   //系统语言信息
         private val IS_LOGIN ="isLogin"       //是否登录的字段名
@@ -180,8 +181,20 @@ class MMKVManagement {
         public fun setMemberPassword(member_psd: String){
             MMKV.defaultMMKV().encode(MEMBER_PSD,member_psd)
         }
+
+        //---------------------------请台湾同事在下面新增MMKV相关set/get方法---------------------
+        //举例set(存储)方法格式
+         fun setTest(test: String){
+            MMKV.defaultMMKV().encode("test",test)
+        }
+        //举例get(获取)方法格式
+         fun getTest(): String{
+            return MMKV.defaultMMKV().decodeString("test","")!!
+        }
+
+
     }
-    //---------------------------请台湾同事在下面新增MMKV相关set/get方法---------------------
+
 
 
 }
