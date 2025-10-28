@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.base.base.BaseFragment
+import com.wingstars.member.activity.PopularityRankingActivity
 import com.wingstars.member.viewmodel.MemberViewModel
 import com.wingstars.member.adapter.PopularityAdapter
 import com.wingstars.member.adapter.GirlIntroductionAdapter
@@ -89,9 +90,9 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
     override fun onClick(v: View?) {
         val id = v?.id
         when(id){
-//            binding.popularityRanking.id-> startActivity(Intent(requireActivity(),
-//                PopularityRankingActivity::class.java
-//            ))
+            binding.popularityRanking.id-> startActivity(Intent(requireActivity(),
+                PopularityRankingActivity::class.java
+            ))
         }
     }
 

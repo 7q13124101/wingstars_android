@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DoraTitleBar">
+        <attr name="title" format="string"/>
+        <attr name="show_back"  format="boolean"/>
+        <attr name="icon_right"  format="reference"/>
+        <attr name="text_right" format="string"/>
+    </declare-styleable>
+</resources>
