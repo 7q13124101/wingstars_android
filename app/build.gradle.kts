@@ -1,3 +1,5 @@
+import org.gradle.internal.extensions.core.extra
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.company.wingstars"
-    compileSdk = 36
+    compileSdk = rootProject.extra["compileSdkVersion"] as Int
 
     defaultConfig {
         applicationId = "com.company.wingstars"
-        minSdk = 28
-        targetSdk = 36
+        minSdk = rootProject.extra["minSdkVersion"] as Int
+        targetSdk = rootProject.extra["compileSdkVersion"] as Int
         versionCode = 1
         versionName = "1.0"
 

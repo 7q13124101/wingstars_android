@@ -1,3 +1,5 @@
+import org.gradle.internal.extensions.core.extra
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -5,10 +7,10 @@ plugins {
 
 android {
     namespace = "com.wingstars.base"
-    compileSdk = 36
+    compileSdk = rootProject.extra["compileSdkVersion"] as Int
 
     defaultConfig {
-        minSdk = 28
+        minSdk = rootProject.extra["minSdkVersion"] as Int
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

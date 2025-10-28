@@ -38,7 +38,7 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
 
     private fun initView() {
         viewModel = ViewModelProvider(this)[MemberViewModel::class.java]
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.VANILLA_ICE_CREAM){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM){
             binding.root.setOnApplyWindowInsetsListener{ v, insets ->
                 val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
                 Log.e("statusBarHeight","statusBarHeight=$statusBarHeight")
