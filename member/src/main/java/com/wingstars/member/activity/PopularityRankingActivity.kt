@@ -2,6 +2,7 @@ package com.wingstars.member.activity
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -11,9 +12,11 @@ import com.wingstars.member.R
 import com.wingstars.member.adapter.RankingAdapter
 import com.wingstars.member.databinding.ActivityPopularityRankingBinding
 import com.wingstars.member.view.CircleWithBorderTransformation
+import com.wingstars.member.view.PopularityPopupView
 import com.wingstars.member.viewmodel.PopularityRankingViewModel
 
-class PopularityRankingActivity : BaseActivity() {
+class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
+    PopularityPopupView.OnPopupConfirm {
     private lateinit var binding: ActivityPopularityRankingBinding
     private lateinit var viewModel : PopularityRankingViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,5 +55,24 @@ class PopularityRankingActivity : BaseActivity() {
             .transform(CircleWithBorderTransformation(toInt1, borderColor2))
             .into(binding.three)
         binding.title.setBackClickListener { finish() }
+        binding.sort.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View?) {
+          var id = v?.id
+          when(id){
+              binding.sort.id->{
+                  showPopWindow()
+              }
+          }
+    }
+
+    private fun showPopWindow() {
+           var popupWindow = PopularityPopupView(this,this,getNavigationBarHeight())
+           popupWindow.show(binding.ranking)
+    }
+
+    override fun onPopupConfirm() {
+
     }
 }

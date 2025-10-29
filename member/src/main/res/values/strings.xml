@@ -22,4 +22,10 @@
     <string name="flash_short_film">快閃短片</string>
     <string name="daily_vlog">日常Vlog</string>
     <string name="none_highlights">您尚未有花絮</string>
+    <string-array name="rank_list">
+        <item>應援人氣榜</item>
+        <item>潛力新星榜</item>
+        <item>星迷心動榜</item>
+        <item>人氣銷售榜</item>
+    </string-array>
 </resources>

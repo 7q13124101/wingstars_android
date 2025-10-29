@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:id="@+id/ranking"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_F3F4F6"
@@ -24,6 +25,7 @@
 
 
             <com.lihang.ShadowLayout
+                android:id="@+id/sort"
                 app:hl_strokeWith="@dimen/dp_1"
                 app:hl_strokeColor="@color/color_E5E7EB"
                 android:layout_marginLeft="@dimen/dp_20"

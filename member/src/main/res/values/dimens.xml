@@ -39,4 +39,6 @@
     <dimen name="dp_279">279dp</dimen>
     <dimen name="dp_318">318dp</dimen>
     <dimen name="dp_365">365dp</dimen>
+    <dimen name="dp_421">421dp</dimen>
+    <dimen name="dp_56">56dp</dimen>
 </resources>
