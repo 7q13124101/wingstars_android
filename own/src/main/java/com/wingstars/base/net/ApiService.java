@@ -1,7 +1,7 @@
 package com.wingstars.base.net;
 
 
-import com.wingstars.base.net.beans.NSPlayerBean;
+//import com.wingstars.base.net.beans.NSPlayerBean;
 
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
