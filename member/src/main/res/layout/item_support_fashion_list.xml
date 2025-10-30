@@ -28,18 +28,25 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <ImageView
-                    android:id="@+id/jersey"
-                    android:layout_marginLeft="@dimen/dp_14"
+                <FrameLayout
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/ic_member_jersey"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:id="@+id/jersey"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:background="@drawable/ic_pink_circle">
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:src="@mipmap/ic_member_jersey"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </FrameLayout>
+
                 <TextView
                     android:layout_marginRight="@dimen/dp_10"
                     android:textColor="@color/color_4A5565"
                     android:textSize="@dimen/sp_12"
-                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginLeft="@dimen/dp_8"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/jersey"
                     android:text="台鋼雄鷹主場球衣"
