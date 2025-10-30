@@ -69,7 +69,7 @@ class EventHighlightsActivity : BaseActivity() {
         indicatorDrawable = DynamicWidthIndicatorDrawable(
             context = this,
             tabLayout = tabLayout,
-            widthRatio = 0.8f,  // 内容宽度的80%
+            widthRatio = 1f,  // 内容宽度的100%
             heightDp = 4f,
             color = getColor(R.color.color_E2518D)
         )

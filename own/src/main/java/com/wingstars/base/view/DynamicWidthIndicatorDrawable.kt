@@ -18,7 +18,7 @@ import android.graphics.*
 class DynamicWidthIndicatorDrawable(
     private val context: Context,
     private val tabLayout: TabLayout,      // 关联的TabLayout
-    private val widthRatio: Float = 0.9f,  // 指示器宽度占内容宽度的比例 (0.8=80%)
+    private val widthRatio: Float = 0.8f,  // 指示器宽度占内容宽度的比例 (0.8=80%)
     private val heightDp: Float = 4f,      // 指示器高度
     private val color: Int = Color.RED     // 指示器颜色
 ) : Drawable() {

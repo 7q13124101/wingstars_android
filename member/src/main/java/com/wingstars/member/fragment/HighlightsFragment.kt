@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.wingstars.member.adapter.HighlightsAdapter
+import com.wingstars.member.adapter.HighlightsData
 import com.wingstars.member.databinding.FragmentHighlightsBinding
 import com.wingstars.member.viewmodel.HighlightsType
 import com.wingstars.member.viewmodel.HighlightsViewModel
@@ -57,7 +58,10 @@ class HighlightsFragment(var highlightsType: HighlightsType) : Fragment() {
     }
 
     private fun initView() {
-        highlightsAdapter = HighlightsAdapter(requireActivity(), mutableListOf())
+        highlightsAdapter = HighlightsAdapter(requireActivity(), mutableListOf(), object : HighlightsAdapter.OnItemListener {
+            override fun onItemClick(data: HighlightsData,position: Int) {
+            }
+        })
         binding.rvHighlights.adapter = highlightsAdapter
         viewModel.highlightsList.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {

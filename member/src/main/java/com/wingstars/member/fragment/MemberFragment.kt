@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.member.activity.EventHighlightsActivity
+import com.wingstars.member.activity.ExclusiveSongsListActivity
 import com.wingstars.member.activity.PopularityRankingActivity
 import com.wingstars.member.viewmodel.MemberViewModel
 import com.wingstars.member.adapter.PopularityAdapter
@@ -75,6 +76,7 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
         viewModel.getPopularitylist()
         binding.popularityRanking.setOnClickListener(this)
         binding.llEventHighlights.setOnClickListener(this)
+        binding.llExclusiveSongs.setOnClickListener(this)
 
     }
 
@@ -98,8 +100,10 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
             binding.llEventHighlights.id-> startActivity(Intent(requireActivity(),
                 EventHighlightsActivity::class.java
             ))
+            binding.llExclusiveSongs.id-> startActivity(Intent(requireActivity(),
+                ExclusiveSongsListActivity::class.java
+            ))
         }
     }
-
 
 }

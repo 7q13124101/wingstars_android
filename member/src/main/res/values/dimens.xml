@@ -13,6 +13,7 @@
     <!-- 尽量把控件的宽高尺寸写在这里 -->
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="dp_1">1dp</dimen>
+    <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_3">3dp</dimen>
     <dimen name="dp_6">6dp</dimen>
     <dimen name="dp_8">8dp</dimen>
@@ -28,6 +29,7 @@
     <dimen name="dp_35">35dp</dimen>
     <dimen name="dp_45">45dp</dimen>
     <dimen name="dp_50">50dp</dimen>
+    <dimen name="dp_56">56dp</dimen>
     <dimen name="dp_48">48dp</dimen>
     <dimen name="dp_84">84dp</dimen>
     <dimen name="dp_85">85dp</dimen>
@@ -40,5 +42,5 @@
     <dimen name="dp_318">318dp</dimen>
     <dimen name="dp_365">365dp</dimen>
     <dimen name="dp_421">421dp</dimen>
-    <dimen name="dp_56">56dp</dimen>
+
 </resources>
