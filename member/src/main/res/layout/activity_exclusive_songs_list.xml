@@ -14,7 +14,10 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20">
 
         <com.scwang.smart.refresh.layout.SmartRefreshLayout
             android:id="@+id/srl_exclusive_songs"
@@ -40,8 +43,6 @@
                     android:id="@+id/rv_exclusive_songs"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_16"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
             </LinearLayout>
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>
