@@ -1,134 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <androidx.core.widget.NestedScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        tools:context=".activity.FanInteractionActivity"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".activity.FanInteractionActivity">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
-        <LinearLayout
+        android:orientation="vertical">
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-            <RelativeLayout
+            android:background="@color/white">
+
+            <com.wingstars.base.view.TitleView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:text_right="@string/album"
+                app:title="@string/photo_frame" />
+
+            <FrameLayout
+                android:id="@+id/frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_30">
+
+                <ImageView
+                    android:id="@+id/select_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone" />
+
+                <TextureView
+                    android:id="@+id/surface_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/fans1" />
+
+            </FrameLayout>
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white">
+                android:layout_below="@id/frame_layout"
+                android:layout_alignParentBottom="true"
+                android:background="@color/color_F8EBF1"
+                android:orientation="vertical">
 
-                 <com.wingstars.base.view.TitleView
-                     android:id="@+id/title"
-                     app:title="@string/photo_frame"
-                     app:text_right="@string/album"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"/>
-
-                <FrameLayout
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/dp_30"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/title"
-                    android:id="@+id/frame_layout"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="＃2 安芝儇"
+                        android:textColor="@color/color_E2518D"
+                        android:textSize="@dimen/sp_16"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:src="@mipmap/ic_pink_down" />
+                </LinearLayout>
+
+                <RelativeLayout
+
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginRight="@dimen/dp_40">
 
-                    <ImageView
-                        android:visibility="gone"
-                        android:id="@+id/select_image"
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="fitXY"/>
-                    <TextureView
-                        android:id="@+id/surface_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                    <ImageView
-                        android:id="@+id/image"
-                        android:scaleType="fitXY"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@mipmap/fans1"/>
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true">
 
-                </FrameLayout>
+                        <ImageView
+                            android:id="@+id/flash"
+                            android:layout_width="@dimen/dp_50"
+                            android:layout_height="@dimen/dp_50"
+                            android:layout_gravity="center_vertical"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/fans_bottom4" />
 
-
-
-
-                 <LinearLayout
-                     android:background="@color/color_F8EBF1"
-                     android:layout_below="@id/frame_layout"
-                     android:layout_alignParentBottom="true"
-                     android:layout_width="match_parent"
-                     android:layout_height="match_parent"
-                     android:orientation="vertical">
-                     <LinearLayout
-                         android:layout_gravity="center_horizontal"
-                         android:layout_marginTop="@dimen/dp_30"
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:orientation="horizontal">
-                         <TextView
-                             android:id="@+id/name"
-                             android:textSize="@dimen/sp_16"
-                             android:textStyle="bold"
-                             android:layout_gravity="center_horizontal"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:textColor="@color/color_E2518D"
-                             android:text="＃2 安芝儇"/>
-                           <ImageView
-                               android:layout_marginLeft="@dimen/dp_8"
-                               android:layout_gravity="center_vertical"
-                               android:layout_width="wrap_content"
-                               android:layout_height="wrap_content"
-                               android:src="@mipmap/ic_pink_down"/>
-                     </LinearLayout>
-
-                     <RelativeLayout
-
-                         android:layout_marginTop="@dimen/dp_24"
-                         android:layout_marginLeft="@dimen/dp_40"
-                         android:layout_marginRight="@dimen/dp_40"
-                         android:layout_width="match_parent"
-                         android:layout_height="match_parent">
-                         <FrameLayout
-                             android:layout_centerVertical="true"
-                             android:layout_width="match_parent"
-                             android:layout_height="wrap_content">
-                             <ImageView
-                                 android:id="@+id/flash"
-                                 android:layout_gravity="center_vertical"
-                                 android:scaleType="fitXY"
-                                 android:layout_width="@dimen/dp_50"
-                                 android:layout_height="@dimen/dp_50"
-                                 android:src="@mipmap/fans_bottom4"/>
-
-                             <ImageView
-                                 android:id="@+id/take_picture"
-                                 android:scaleType="fitXY"
-                                 android:layout_gravity="center_horizontal"
-                                 android:layout_width="@dimen/dp_75"
-                                 android:layout_height="@dimen/dp_75"
-                                 android:src="@mipmap/fans_bottom2"/>
+                        <ImageView
+                            android:id="@+id/take_picture"
+                            android:layout_width="@dimen/dp_75"
+                            android:layout_height="@dimen/dp_75"
+                            android:layout_gravity="center_horizontal"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/fans_bottom2" />
 
 
-                             <ImageView
-                                 android:id="@+id/switch_camera"
-                                 android:scaleType="fitXY"
-                                 android:layout_gravity="right|center_vertical"
-                                 android:layout_width="@dimen/dp_50"
-                                 android:layout_height="@dimen/dp_50"
-                                 android:src="@mipmap/fans_bottom3"/>
-                         </FrameLayout>
+                        <ImageView
+                            android:id="@+id/switch_camera"
+                            android:layout_width="@dimen/dp_50"
+                            android:layout_height="@dimen/dp_50"
+                            android:layout_gravity="right|center_vertical"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/fans_bottom3" />
+                    </FrameLayout>
 
-                     </RelativeLayout>
+                </RelativeLayout>
 
-                 </LinearLayout>
-
-
+            </LinearLayout>
 
 
-            </RelativeLayout>
+        </RelativeLayout>
 
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
 

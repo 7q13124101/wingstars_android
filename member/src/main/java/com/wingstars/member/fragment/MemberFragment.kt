@@ -23,7 +23,7 @@ import com.wingstars.member.adapter.SupportFashionAdapter
 import com.wingstars.member.databinding.FragmentMemberBinding
 
 class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.OnClickListener {
-    private lateinit var viewModel : MemberViewModel
+    private lateinit var viewModel: MemberViewModel
     private lateinit var binding: FragmentMemberBinding
     private var statusBarHeight = 0
 
@@ -40,19 +40,19 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
 
     private fun initView() {
         viewModel = ViewModelProvider(this)[MemberViewModel::class.java]
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM){
-            binding.root.setOnApplyWindowInsetsListener{ v, insets ->
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            binding.root.setOnApplyWindowInsetsListener { v, insets ->
                 val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
-                Log.e("statusBarHeight","statusBarHeight=$statusBarHeight")
-                setViewTop(binding.title,statusBarHeight)
+                Log.e("statusBarHeight", "statusBarHeight=$statusBarHeight")
+                setViewTop(binding.title, statusBarHeight)
                 binding.root.setOnApplyWindowInsetsListener(null)
                 insets
             }
-        }else{
-            setViewTop(binding.title,getStatusBarHeight())
+        } else {
+            setViewTop(binding.title, getStatusBarHeight())
         }
 
-        viewModel.popularitylist.observe(viewLifecycleOwner){
+        viewModel.popularitylist.observe(viewLifecycleOwner) {
             var adapter = PopularityAdapter(requireActivity(), it, this)
             binding.chartList.layoutManager = LinearLayoutManager(
                 requireActivity(),
@@ -83,7 +83,7 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
     }
 
 
-    public fun setViewTop(view: View, top: Int){
+    public fun setViewTop(view: View, top: Int) {
         val layoutParams = view.layoutParams as LinearLayout.LayoutParams
         layoutParams.topMargin = top
         view.setLayoutParams(layoutParams);
@@ -95,19 +95,34 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
 
     override fun onClick(v: View?) {
         val id = v?.id
-        when(id){
-            binding.popularityRanking.id-> startActivity(Intent(requireActivity(),
-                PopularityRankingActivity::class.java
-            ))
-            binding.llEventHighlights.id-> startActivity(Intent(requireActivity(),
-                EventHighlightsActivity::class.java
-            ))
-            binding.llExclusiveSongs.id-> startActivity(Intent(requireActivity(),
-                ExclusiveSongsListActivity::class.java
-            ))
-            binding.take.id-> startActivity(Intent(requireActivity(),
-                FanInteractionActivity::class.java
-            ))
+        when (id) {
+            binding.popularityRanking.id -> startActivity(
+                Intent(
+                    requireActivity(),
+                    PopularityRankingActivity::class.java
+                )
+            )
+
+            binding.llEventHighlights.id -> startActivity(
+                Intent(
+                    requireActivity(),
+                    EventHighlightsActivity::class.java
+                )
+            )
+
+            binding.llExclusiveSongs.id -> startActivity(
+                Intent(
+                    requireActivity(),
+                    ExclusiveSongsListActivity::class.java
+                )
+            )
+
+            binding.take.id -> startActivity(
+                Intent(
+                    requireActivity(),
+                    FanInteractionActivity::class.java
+                )
+            )
         }
     }
 

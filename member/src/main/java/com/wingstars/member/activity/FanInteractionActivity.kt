@@ -16,7 +16,6 @@ class FanInteractionActivity : BaseActivity() {
     private lateinit var binding: ActivityFanInteractionBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityFanInteractionBinding.inflate(layoutInflater)
 
         setTitleFoot(binding.root,navigationBarColor=R.color.color_F8EBF1)
@@ -25,7 +24,7 @@ class FanInteractionActivity : BaseActivity() {
 
     override fun initView() {
         binding.title.setBackClickListener { finish() }
-       var width = ScreenUtils.getWidth(this@FanInteractionActivity)
+        var width = ScreenUtils.getWidth(this@FanInteractionActivity)
         setImage(width, width)
     }
 

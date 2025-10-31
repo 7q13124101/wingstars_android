@@ -15,26 +15,30 @@ import com.wingstars.member.viewmodel.PopularityRankingViewModel
 import com.wingstars.member.viewmodel.RankExplanationViewModel
 
 class RankExplanationActivity : BaseActivity() {
-    private lateinit var binding:ActivityRankExplanationBinding
-    private lateinit var viewModel : RankExplanationViewModel
+    private lateinit var binding: ActivityRankExplanationBinding
+    private lateinit var viewModel: RankExplanationViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding  = ActivityRankExplanationBinding.inflate(layoutInflater)
-        setTitleFoot(view1=binding.root,statusBarColor=R.color.color_F3F4F6, navigationBarColor = R.color.color_F3F4F6)
+        binding = ActivityRankExplanationBinding.inflate(layoutInflater)
+        setTitleFoot(
+            view1 = binding.root,
+            statusBarColor = R.color.color_F3F4F6,
+            navigationBarColor = R.color.color_F3F4F6
+        )
         initView()
         initData()
     }
 
     private fun initData() {
         viewModel = ViewModelProvider(this)[RankExplanationViewModel::class.java]
-        viewModel.explanationlist.observe(this){
-            var adapter = RankExplanationListAdapter(this,it)
+        viewModel.explanationlist.observe(this) {
+            var adapter = RankExplanationListAdapter(this, it)
             binding.explanationList.adapter = adapter
         }
         viewModel.getExplanationlist()
     }
 
     override fun initView() {
-      binding.title.setRightIconClickListener { finish() }
+        binding.title.setRightIconClickListener { finish() }
     }
 }
