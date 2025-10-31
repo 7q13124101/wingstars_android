@@ -24,7 +24,7 @@ class FanInteractionActivity : BaseActivity() {
     }
 
     override fun initView() {
-        binding.title.setOnClickListener { finish() }
+        binding.title.setBackClickListener { finish() }
        var width = ScreenUtils.getWidth(this@FanInteractionActivity)
         setImage(width, width)
     }
