@@ -42,5 +42,7 @@
     <dimen name="dp_318">318dp</dimen>
     <dimen name="dp_365">365dp</dimen>
     <dimen name="dp_421">421dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+    <dimen name="dp_75">75dp</dimen>
 
 </resources>

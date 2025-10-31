@@ -3,6 +3,9 @@
 
     <application>
         <activity
+            android:name=".activity.FanInteractionActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.RankExplanationActivity"
             android:exported="false" />
         <activity
@@ -15,5 +18,5 @@
             android:name=".activity.ExclusiveSongsListActivity"
             android:exported="false" />
     </application>
-    
+
 </manifest>
