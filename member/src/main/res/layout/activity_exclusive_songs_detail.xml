@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".activity.ExclusiveSongsDetailActivity">
+
+    <com.wingstars.base.view.TitleView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/exclusive_songs" />
+
+    <com.lihang.ShadowLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_202"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_20"
+        app:clickable="false"
+        app:hl_cornerRadius="@dimen/dp_12"
+        app:hl_strokeColor="@color/white"
+        app:hl_strokeWith="@dimen/dp_1">
+
+        <ImageView
+            android:id="@+id/iv_dialog_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/dp_1"
+            android:scaleType="fitXY"
+            android:src="@mipmap/ic_member_page_background" />
+
+        <LinearLayout
+            android:id="@+id/ll_play_now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5">
+
+            <TextView
+                android:id="@+id/tv_limited_user"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/black"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dp_5"
+                android:paddingTop="@dimen/dp_2"
+                android:paddingRight="@dimen/dp_5"
+                android:paddingBottom="@dimen/dp_2"
+                android:text="@string/play_now"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </com.lihang.ShadowLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nsv_top"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20">
+
+            <TextView
+                android:id="@+id/tv_song_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="《𝘾𝙝𝙚𝙚𝙧 𝙞𝙩 𝙪𝙥 加大》"
+                android:textColor="@color/color_101828"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="2025.03.20"
+                android:textColor="@color/color_101828"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/tv_Lyrics"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_weight="1"
+                android:lineSpacingMultiplier="1.4"
+                android:text="✦ 歌詞 |\n\nI don’t mind 按下靜音 right now\nI do right 在路上全 bring it up\n模仿的成功不如原創的失敗\nJust in the middle of the game\n\n那些雞湯和勵志金句\n氾濫的 真的讓我 快要窒息 out of breath\n努力若沒有破表 就不會成為主角\n可見 成果沒多少 終究無聲無息了\n\nEveryone tells me I’m impossible\n但我仍相信 I’m in possible\nEveryone is going so unchangeable\nWe gonna fighting we gonna show\nCheer it up\nDa di li la 把音量再加大\nDa di li la 勇氣套餐加大\nDa di li la 把光圈再加大\nDa di li la 猶豫不用加大\n\nDadadadadadadadadadadada\n我就是我 難以定義的\nDadadadadadadadadadadada\n我就是我 滿場一票難求\n\n我就是沒在怕 like 西南岸的 type\n一心二用兩好三壞也從來沒被淘汰\n心情七上八下九穩十拿\nWanna try try try try try\nMake you look me twice 熱身準備 shine\n奮不顧身我的 vibe\nI raise my heart when the sun goes down\n面對陽光陰影就看不到\n我想我可以飛過換日線\nWe gonna fighting we gonna show\nCheer it up\n\nDa di li la 把音量再加大\nDa di li la 勇氣套餐加大\nDa di li la 把光圈再加大\nDa di li la 猶豫不用加大\n\nDadadadadadadadadadadada\n我就是我 難以定義的\nDadadadadadadadadadadada\n我就是我 滿場一票難求\nIt doesn’t matter if you’re late\n趕上最後的起跑線\n衝破天際不再嫌累\nI’m jumping to new phase\n\nDa di li la 把音量再加大\nDa di li la 勇氣套餐加大\nDa di li la 把光圈再加大\nDa di li la 猶豫不用加大\n\nI will break down 加大聲響\nYou should watch out\nWing Stars always \nWing Stars always win"
+                android:textColor="@color/color_4A5565"
+                android:textSize="@dimen/sp_16" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

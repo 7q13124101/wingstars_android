@@ -1,5 +1,6 @@
 package com.wingstars.member.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isGone
@@ -44,6 +45,8 @@ class ExclusiveSongsListActivity : BaseActivity(), RecyclerViewScrollHelper.onSc
             this,
             mutableListOf(), object : HighlightsAdapter.OnItemListener {
                 override fun onItemClick(data: HighlightsData, position: Int) {
+                    val intent = Intent(this@ExclusiveSongsListActivity, ExclusiveSongsDetailActivity::class.java)
+                    startActivity(intent)
                 }
             }
         )
