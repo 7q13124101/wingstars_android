@@ -15,6 +15,7 @@ import com.wingstars.base.base.BaseFragment
 import com.wingstars.member.activity.EventHighlightsActivity
 import com.wingstars.member.activity.ExclusiveSongsListActivity
 import com.wingstars.member.activity.FanInteractionActivity
+import com.wingstars.member.activity.MemberIntroductionActivity
 import com.wingstars.member.activity.PopularityRankingActivity
 import com.wingstars.member.viewmodel.MemberViewModel
 import com.wingstars.member.adapter.PopularityAdapter
@@ -76,10 +77,11 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
         }
         viewModel.getPopularitylist()
         binding.popularityRanking.setOnClickListener(this)
+        binding.take.setOnClickListener(this)
         binding.llEventHighlights.setOnClickListener(this)
         binding.llExclusiveSongs.setOnClickListener(this)
-        binding.take.setOnClickListener(this)
 
+        binding.rlMemberIntroduction.setOnClickListener(this)
     }
 
 
@@ -103,6 +105,13 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
                 )
             )
 
+            binding.take.id -> startActivity(
+                Intent(
+                    requireActivity(),
+                    FanInteractionActivity::class.java
+                )
+            )
+
             binding.llEventHighlights.id -> startActivity(
                 Intent(
                     requireActivity(),
@@ -117,13 +126,12 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
                 )
             )
 
-            binding.take.id -> startActivity(
+            binding.rlMemberIntroduction.id->startActivity(
                 Intent(
                     requireActivity(),
-                    FanInteractionActivity::class.java
+                    MemberIntroductionActivity::class.java
                 )
             )
         }
     }
-
 }

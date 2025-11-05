@@ -6,7 +6,6 @@
     <string name="high_lights">應援花絮</string>
     <string name="exclusive_support">專屬應援</string>
     <string name="support_fashion">氛圍時尚</string>
-    <string name="girl_introduction">女孩介紹</string>
     <string name="support_popularity_list">應援人氣榜</string>
 
     <string name="pull_down_to_refresh">下拉重整</string>
@@ -29,6 +28,10 @@
     <string name="play_now">…現在播放</string>
     <string name="album">相簿</string>
     <string name="members_wing_stars">Wing Stars 成員</string>
+
+    //成員介紹
+    <string name="member_introduction">成員介紹</string>
+    <string name="none_member">您尚未有成員</string>
 
     <string-array name="rank_list">
         <item>應援人氣榜</item>

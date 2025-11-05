@@ -207,6 +207,7 @@
 
 
             <RelativeLayout
+                android:id="@+id/rl_member_introduction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_20"
@@ -216,7 +217,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/girl_introduction"
+                    android:text="@string/member_introduction"
                     android:textColor="@color/color_101828"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold" />
