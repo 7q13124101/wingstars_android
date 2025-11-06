@@ -190,13 +190,25 @@
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold" />
 
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <RelativeLayout
+                    android:id="@+id/atmosphere"
+                    android:layout_width="@dimen/dp_50"
+                    android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/ic_member_back" />
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/ic_member_back" />
+                </RelativeLayout>
+
             </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView

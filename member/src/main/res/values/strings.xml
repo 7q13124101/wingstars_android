@@ -32,6 +32,8 @@
     //成員介紹
     <string name="member_introduction">成員介紹</string>
     <string name="none_member">您尚未有成員</string>
+    <string name="support_suit">應援服</string>
+    <string name="event_uniform">活動服</string>
 
     <string-array name="rank_list">
         <item>應援人氣榜</item>

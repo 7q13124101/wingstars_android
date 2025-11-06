@@ -15,6 +15,7 @@ import com.wingstars.base.base.BaseFragment
 import com.wingstars.member.activity.EventHighlightsActivity
 import com.wingstars.member.activity.ExclusiveSongsListActivity
 import com.wingstars.member.activity.FanInteractionActivity
+import com.wingstars.member.activity.FashionableAtmosphereActivity
 import com.wingstars.member.activity.MemberIntroductionActivity
 import com.wingstars.member.activity.PopularityRankingActivity
 import com.wingstars.member.viewmodel.MemberViewModel
@@ -82,6 +83,7 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
         binding.llExclusiveSongs.setOnClickListener(this)
 
         binding.rlMemberIntroduction.setOnClickListener(this)
+        binding.atmosphere.setOnClickListener(this)
     }
 
 
@@ -126,10 +128,17 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
                 )
             )
 
-            binding.rlMemberIntroduction.id->startActivity(
+            binding.rlMemberIntroduction.id -> startActivity(
                 Intent(
                     requireActivity(),
                     MemberIntroductionActivity::class.java
+                )
+            )
+
+            binding.atmosphere.id -> startActivity(
+                Intent(
+                    requireActivity(),
+                    FashionableAtmosphereActivity::class.java
                 )
             )
         }
