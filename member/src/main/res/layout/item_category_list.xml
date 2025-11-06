@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
    <com.lihang.ShadowLayout
+       android:layout_centerVertical="true"
        android:id="@+id/item"
        android:layout_marginRight="@dimen/dp_14"
        app:hl_strokeWith="@dimen/dp_1"
@@ -40,4 +41,4 @@
                android:textSize="@dimen/sp_14"/>
        </RelativeLayout>
    </com.lihang.ShadowLayout>
-</LinearLayout>
+</RelativeLayout>

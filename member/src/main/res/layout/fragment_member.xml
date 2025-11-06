@@ -177,12 +177,12 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_74"
                 android:layout_marginLeft="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_30"
                 android:layout_marginRight="@dimen/dp_20">
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/support_fashion"
@@ -214,8 +214,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/support_fashion_list"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_279"
-                android:layout_marginTop="@dimen/dp_25" />
+                android:layout_height="@dimen/dp_279" />
 
 
             <RelativeLayout
