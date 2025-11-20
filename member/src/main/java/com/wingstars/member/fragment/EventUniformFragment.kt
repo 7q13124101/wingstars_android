@@ -35,7 +35,7 @@ class EventUniformFragment : BaseFragment() {
         binding.list.layoutManager = GridLayoutManager(requireActivity(),2)
         val list = mutableListOf("1","2","3","4","5","6")
         var width = ScreenUtils.getWidth(requireActivity())
-        var smallwidth  = width - DPUtils.dpToPx(60f,requireActivity()).toInt()
+        var smallwidth  = width - DPUtils.dpToPx(50f,requireActivity()).toInt()
         var smallwidths = smallwidth/2
         var smallhight = smallwidths.toInt()*1.585
         binding.list.adapter = SupportSuitAdapter(requireActivity(), list,smallwidths.toInt()

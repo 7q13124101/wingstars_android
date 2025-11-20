@@ -1,6 +1,7 @@
 package com.wingstars.member.adapter
 
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,9 +72,9 @@ class SupportSuitAdapter     // -------------------------------------------
         fun binding(position: Int) {
             binding.item.setStrokeWidth(DPUtils.dpToPx(1f,context))
             binding.item.setStrokeColor(context.resources.getColor(R.color.color_F3F4F6))
-            setImage(binding.item,smallwidth,smallhight)
-            var smallhights = smallhight - DPUtils.dpToPx(44f,context).toInt()
-            setImage(binding.image,smallwidth,smallhights)
+            setImage(binding.item,smallwidth,smallhight,if (position>0&&position%2==1) true else false)
+           // var smallhights = smallhight - DPUtils.dpToPx(44f,context).toInt()
+           // setImage(binding.image,smallwidth,smallhights)
             binding.image.setPadding(DPUtils.dpToPx(1f,context).toInt())
 /*
             if (position==0){
@@ -95,10 +96,15 @@ class SupportSuitAdapter     // -------------------------------------------
 
         }
 
-        fun setImage(view: View,width: Int,hight:Int,margin:Int=0){
+        fun setImage(view: View,width: Int,hight:Int,gravity: Boolean=false){
            var params = view.layoutParams as LinearLayout.LayoutParams
             params.width = width
             params.height = hight
+            if (gravity){
+                params.gravity = Gravity.RIGHT
+            }else{
+                params.gravity = Gravity.LEFT
+            }
             view.layoutParams = params
         }
     }

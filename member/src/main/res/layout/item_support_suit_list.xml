@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <com.lihang.ShadowLayout
-        android:layout_gravity="left"
         android:layout_marginTop="@dimen/dp_10"
         app:hl_strokeWith="@dimen/dp_10"
         app:hl_cornerRadius="@dimen/dp_20"
@@ -14,20 +13,22 @@
         android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="279dp">
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/image"
+                android:layout_above="@id/bottom"
                 android:src="@mipmap/ic_demo1"
                 android:scaleType="fitXY"
                 android:layout_width="match_parent"
-                android:layout_height="236dp"/>
+                android:layout_height="match_parent"/>
             <RelativeLayout
+                android:id="@+id/bottom"
+                android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="@dimen/dp_44">
                 <FrameLayout
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dp_10"
@@ -55,7 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </RelativeLayout>
-        </LinearLayout>
+        </RelativeLayout>
 
          
     </com.lihang.ShadowLayout>
