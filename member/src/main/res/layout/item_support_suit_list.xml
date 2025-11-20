@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <com.lihang.ShadowLayout
+        android:layout_gravity="left"
         android:layout_marginTop="@dimen/dp_10"
         app:hl_strokeWith="@dimen/dp_10"
         app:hl_cornerRadius="@dimen/dp_20"
