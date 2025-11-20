@@ -1,5 +1,6 @@
 package com.wingstars.member.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.base.utils.ScreenUtils
+import com.wingstars.member.activity.AtmosphereFashionDetailsActivity
 import com.wingstars.member.adapter.CategoryAdapter
 import com.wingstars.member.adapter.SupportSuitAdapter
 import com.wingstars.member.databinding.FragmentEventUniformBinding
 import com.wingstars.member.viewmodel.EventUniformViewModel
 import com.wingstars.member.viewmodel.SupportSuitViewModel
 
-class EventUniformFragment : BaseFragment() {
+class EventUniformFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
     private lateinit var binding: FragmentEventUniformBinding
     private lateinit var viewModel: EventUniformViewModel
 
@@ -39,7 +41,7 @@ class EventUniformFragment : BaseFragment() {
         var smallwidths = smallwidth/2
         var smallhight = smallwidths.toInt()*1.585
         binding.list.adapter = SupportSuitAdapter(requireActivity(), list,smallwidths.toInt()
-            ,smallhight.toInt())
+            ,smallhight.toInt(),this)
         viewModel = ViewModelProvider(this)[EventUniformViewModel::class.java]
         viewModel.categorylist.observe(viewLifecycleOwner){ list->
             binding.categoryList.layoutManager = LinearLayoutManager(requireActivity(),
@@ -47,5 +49,9 @@ class EventUniformFragment : BaseFragment() {
             binding.categoryList.adapter = CategoryAdapter(requireActivity(),list)
         }
         viewModel.getCategoryList()
+    }
+
+    override fun onItemClick(position: Int) {
+        startActivity(Intent(requireActivity(), AtmosphereFashionDetailsActivity::class.java))
     }
 }

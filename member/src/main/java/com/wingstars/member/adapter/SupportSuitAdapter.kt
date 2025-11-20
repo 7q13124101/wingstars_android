@@ -21,7 +21,8 @@ class SupportSuitAdapter     // -------------------------------------------
     private val context: Context,
     private var dataList: MutableList<String>?,
     private var smallwidth:Int,
-    private var smallhight:Int
+    private var smallhight:Int,
+    private val listener: OnItemListener,
 ) : RecyclerView.Adapter<SupportSuitAdapter.NormalItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
@@ -70,6 +71,7 @@ class SupportSuitAdapter     // -------------------------------------------
         RecyclerView.ViewHolder(binding.root) {
 
         fun binding(position: Int) {
+            binding.item.setOnClickListener { listener.onItemClick(position) }
             binding.item.setStrokeWidth(DPUtils.dpToPx(1f,context))
             binding.item.setStrokeColor(context.resources.getColor(R.color.color_F3F4F6))
             setImage(binding.item,smallwidth,smallhight,if (position>0&&position%2==1) true else false)
@@ -112,7 +114,9 @@ class SupportSuitAdapter     // -------------------------------------------
 
 
 
-
+    interface OnItemListener {
+        fun onItemClick(position: Int)
+    }
 
 
 

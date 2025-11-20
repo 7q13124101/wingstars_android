@@ -3,6 +3,9 @@
 
     <application>
         <activity
+            android:name=".activity.AtmosphereFashionDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.FashionableAtmosphereActivity"
             android:exported="false" />
         <activity
