@@ -1,6 +1,7 @@
 package com.wingstars.member.activity
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 
@@ -48,6 +49,8 @@ class MemberIntroductionActivity : BaseActivity(), RecyclerViewScrollHelper.onSc
             this,
             mutableListOf(), object : MemberIntroductionAdapter.OnItemListener {
                 override fun onItemClick(position: Int) {
+                    val intent = Intent(this@MemberIntroductionActivity, MemberDetailsActivity::class.java)
+                    startActivity(intent)
                 }
             }
         )

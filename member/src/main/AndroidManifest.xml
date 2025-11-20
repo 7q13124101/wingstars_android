@@ -9,6 +9,9 @@
             android:name=".activity.FashionableAtmosphereActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.MemberDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.MemberIntroductionActivity"
             android:exported="false" />
         <activity
