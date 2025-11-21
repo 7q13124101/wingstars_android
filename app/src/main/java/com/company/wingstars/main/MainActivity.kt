@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.company.wingstars.R
 import com.company.wingstars.databinding.ActivityMainBinding
 import com.wingstars.base.base.BaseActivity
-import com.wingstars.calendar.CalendarFragment
+import com.wingstars.calendar.fragment.CalendarFragment
 import com.wingstars.count.CountFragment
 import com.wingstars.home.HomeFragment
 import com.wingstars.member.fragment.MemberFragment

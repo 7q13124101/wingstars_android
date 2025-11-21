@@ -1,18 +1,871 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CalendarFragment"
-    android:orientation="vertical">
-   <TextView
-       android:textStyle="bold"
-       android:textSize="@dimen/sp_18"
-       android:textColor="@color/black"
-       android:layout_centerInParent="true"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:text="日历"/>
-</RelativeLayout>
+    android:orientation="vertical"
+    tools:context=".fragment.CalendarFragment">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_F3F4F6"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:background="@color/white" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@color/white"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iv_prev"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_arrow_left" />
+
+                <TextView
+                    android:id="@+id/tv_title_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2025年10月"
+                    android:textColor="#1E2939"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/iv_next"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="8dp"
+                    android:src="@drawable/ic_arrow_right" />
+            </LinearLayout>
+
+            <com.haibin.calendarview.CalendarLayout
+                android:id="@+id/calendarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:calendar_content_view_id="@+id/nestedScrollView"
+                app:calendar_show_mode="both_month_week_view"
+                app:default_status="expand">
+
+                <!-- 日历视图（通过app:month_view和app:week_view指定自定义视图） -->
+                <com.haibin.calendarview.CalendarView
+                    android:id="@+id/calendarView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:calendar_height="53dp"
+                    app:calendar_show_mode="both_month_week_view"
+                    app:month_view="com.wingstars.calendar.view.SimpleMonthView"
+                    app:month_view_show_mode="mode_only_current"
+                    app:selected_theme_color="#E2518D"
+                    app:week_line_background="@android:color/transparent"
+                    app:week_view="com.wingstars.calendar.view.SimpleWeekView" />
+
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/nestedScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_F3F4F6">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <!--                                                <LinearLayout-->
+                        <!--                                                    android:id="@+id/ll_folder"-->
+                        <!--                                                    android:layout_width="match_parent"-->
+                        <!--                                                    android:layout_height="30dp"-->
+                        <!--                                                    android:background="@drawable/bg_radius_white"-->
+                        <!--                                                    android:gravity="center">-->
+
+                        <!--                                                    <ImageView-->
+                        <!--                                                        android:id="@+id/iv_folder"-->
+                        <!--                                                        android:layout_width="47dp"-->
+                        <!--                                                        android:layout_height="8dp"-->
+                        <!--                                                        android:src="@drawable/ic_bottom_handle" />-->
+                        <!--                                                </LinearLayout>-->
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="30dp"
+                            android:layout_marginRight="20dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_date_itinerary"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="9/26 行程"
+                                android:textColor="@color/color_000000"
+                                android:textSize="@dimen/sp_16"
+                                android:textStyle="bold" />
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/cl_event_details"
+                                android:layout_width="match_parent"
+                                android:layout_height="211dp"
+                                android:layout_marginTop="20dp"
+                                android:background="@drawable/bg_radius_white"
+                                android:orientation="horizontal">
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/img_card"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:elevation="0dp"
+                                    android:shadowRadius="0"
+                                    app:cardCornerRadius="8dp"
+                                    app:cardElevation="0dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <ImageView
+                                        android:id="@+id/iv_photo"
+                                        android:layout_width="137dp"
+                                        android:layout_height="171dp"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/ic_photo" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_marginRight="8dp"
+                                    android:orientation="vertical"
+                                    app:layout_constraintBottom_toBottomOf="@id/img_card"
+                                    app:layout_constraintLeft_toRightOf="@id/img_card"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="@id/img_card">
+
+                                    <TextView
+                                        android:id="@+id/tv_title_name"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="1"
+                                        android:text="心動時刻\n✨Stars House 快閃預告✨"
+                                        android:textColor="@color/color_000000"
+                                        android:textSize="@dimen/sp_16"
+                                        android:textStyle="bold" />
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_marginTop="14dp"
+                                        android:layout_weight="1">
+
+                                        <ImageView
+                                            android:id="@+id/iv_star"
+                                            android:layout_width="63dp"
+                                            android:layout_height="72dp"
+                                            android:layout_alignParentRight="true"
+                                            android:layout_alignParentBottom="true"
+                                            android:src="@drawable/ic_star" />
+
+                                        <LinearLayout
+                                            android:id="@+id/text_container"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_alignParentLeft="true"
+                                            android:layout_alignParentBottom="true"
+                                            android:orientation="vertical">
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="2025/9/25 (四) – 9/28 (日) 18:35"
+                                                android:textColor="@color/color_4A5565"
+                                                android:textSize="@dimen/sp_14" />
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="臺北大巨蛋"
+                                                android:textColor="@color/color_DE9DBA"
+                                                android:textSize="@dimen/sp_14"
+                                                android:textStyle="bold" />
+                                        </LinearLayout>
+
+                                    </RelativeLayout>
+                                </LinearLayout>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/cl_event_details_02"
+                                android:layout_width="match_parent"
+                                android:layout_height="211dp"
+                                android:layout_marginTop="20dp"
+                                android:background="@drawable/bg_radius_white"
+                                android:orientation="horizontal">
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/img_card_02"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:elevation="0dp"
+                                    android:shadowRadius="0"
+                                    app:cardCornerRadius="8dp"
+                                    app:cardElevation="0dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <ImageView
+                                        android:id="@+id/iv_photo_02"
+                                        android:layout_width="137dp"
+                                        android:layout_height="171dp"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/ic_jc_birthday_01" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_marginRight="8dp"
+                                    android:orientation="vertical"
+                                    app:layout_constraintBottom_toBottomOf="@id/img_card_02"
+                                    app:layout_constraintLeft_toRightOf="@id/img_card_02"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="@id/img_card_02">
+
+                                    <TextView
+                                        android:id="@+id/tv_title_name_02"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="1"
+                                        android:text="JC生日會「Just Connect」維C能量補給站"
+                                        android:textColor="@color/color_000000"
+                                        android:textSize="@dimen/sp_16"
+                                        android:textStyle="bold" />
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_marginTop="14dp"
+                                        android:layout_weight="1">
+
+                                        <ImageView
+                                            android:id="@+id/iv_birthday"
+                                            android:layout_width="63dp"
+                                            android:layout_height="72dp"
+                                            android:layout_alignParentRight="true"
+                                            android:layout_alignParentBottom="true"
+                                            android:src="@drawable/ic_birthday" />
+
+                                        <LinearLayout
+                                            android:id="@+id/text_container_02"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_alignParentLeft="true"
+                                            android:layout_alignParentBottom="true"
+                                            android:orientation="vertical">
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="2025/09/20 (六)"
+                                                android:textColor="@color/color_4A5565"
+                                                android:textSize="@dimen/sp_14" />
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="Stars House門市"
+                                                android:textColor="@color/color_DE9DBA"
+                                                android:textSize="@dimen/sp_14"
+                                                android:textStyle="bold" />
+                                        </LinearLayout>
+
+                                    </RelativeLayout>
+                                </LinearLayout>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="170dp"
+                                android:layout_marginTop="20dp"
+                                android:background="@drawable/bg_radius_pink"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <androidx.constraintlayout.widget.ConstraintLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            android:id="@+id/iv_baseball"
+                                            android:layout_width="24dp"
+                                            android:layout_height="24dp"
+                                            android:src="@drawable/ic_baseball"
+                                            app:layout_constraintStart_toStartOf="parent"
+                                            app:layout_constraintTop_toTopOf="parent"
+                                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="8dp"
+                                            android:text="vs 樂天桃猿"
+                                            android:textColor="@color/color_101828"
+                                            android:textSize="@dimen/sp_16"
+                                            android:textStyle="bold"
+                                            app:layout_constraintStart_toEndOf="@id/iv_baseball"
+                                            app:layout_constraintBaseline_toBaselineOf="@id/iv_baseball"/> <!-- 关键：对齐基线 -->
+
+                                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                    <!--                                    <TextView-->
+                                    <!--                                        android:layout_width="match_parent"-->
+                                    <!--                                        android:layout_height="wrap_content"-->
+                                    <!--                                        android:layout_marginTop="16dp"-->
+                                    <!--                                        android:text="心動時刻"-->
+                                    <!--                                        android:textColor="@color/color_4A5565"-->
+                                    <!--                                        android:textSize="@dimen/sp_20"-->
+                                    <!--                                        android:textStyle="bold" />-->
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="1" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="18:35"
+                                        android:textColor="@color/color_4A5565"
+                                        android:textSize="@dimen/sp_20"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="臺北大巨蛋"
+                                        android:textColor="@color/color_4A5565"
+                                        android:textSize="@dimen/sp_16"
+                                        android:textStyle="bold" />
+
+                                    <!--                                    <LinearLayout-->
+                                    <!--                                        android:layout_width="match_parent"-->
+                                    <!--                                        android:layout_height="match_parent"-->
+                                    <!--                                        android:layout_marginTop="8dp"-->
+                                    <!--                                        android:orientation="horizontal">-->
+
+                                    <!--                                        <ImageView-->
+                                    <!--                                            android:id="@+id/iv_ws_girl"-->
+                                    <!--                                            android:layout_width="24dp"-->
+                                    <!--                                            android:layout_height="24dp"-->
+                                    <!--                                            android:src="@drawable/ic_ws_girl" />-->
+
+                                    <!--                                        <TextView-->
+                                    <!--                                            android:layout_width="match_parent"-->
+                                    <!--                                            android:layout_height="wrap_content"-->
+                                    <!--                                            android:layout_marginLeft="6dp"-->
+                                    <!--                                            android:text="26/26"-->
+                                    <!--                                            android:textColor="@color/color_6A7282"-->
+                                    <!--                                            android:textSize="@dimen/sp_14"-->
+                                    <!--                                            android:textStyle="bold" />-->
+                                    <!--                                    </LinearLayout>-->
+
+                                </LinearLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <FrameLayout
+                                        android:layout_width="80dp"
+                                        android:layout_height="27dp"
+                                        android:layout_alignParentRight="true">
+
+                                        <ImageView
+                                            android:id="@+id/iv_friend_type"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:src="@drawable/ic_tg_xy" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:text="台鋼雄鷹"
+                                            android:textColor="@color/white"
+                                            android:textSize="@dimen/sp_12"
+                                            android:textStyle="bold" />
+
+                                    </FrameLayout>
+
+                                    <ImageView
+                                        android:id="@+id/iv_takoo_type"
+                                        android:layout_width="138dp"
+                                        android:layout_height="127dp"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_marginRight="16dp"
+                                        android:layout_marginBottom="2dp"
+                                        android:src="@drawable/ic_takoo" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="170dp"
+                                android:layout_marginTop="20dp"
+                                android:background="@drawable/bg_radius_pink"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <androidx.constraintlayout.widget.ConstraintLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            android:id="@+id/iv_baseball_01"
+                                            android:layout_width="24dp"
+                                            android:layout_height="24dp"
+                                            android:src="@drawable/ic_baseball"
+                                            app:layout_constraintStart_toStartOf="parent"
+                                            app:layout_constraintTop_toTopOf="parent"
+                                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="8dp"
+                                            android:text="vs 臺北伊斯特"
+                                            android:textColor="@color/color_101828"
+                                            android:textSize="@dimen/sp_16"
+                                            android:textStyle="bold"
+                                            app:layout_constraintStart_toEndOf="@id/iv_baseball_01"
+                                            app:layout_constraintBaseline_toBaselineOf="@id/iv_baseball_01"/> <!-- 关键：对齐基线 -->
+
+                                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                    <!--                                    <TextView-->
+                                    <!--                                        android:layout_width="match_parent"-->
+                                    <!--                                        android:layout_height="wrap_content"-->
+                                    <!--                                        android:layout_marginTop="16dp"-->
+                                    <!--                                        android:text="心動時刻"-->
+                                    <!--                                        android:textColor="@color/color_4A5565"-->
+                                    <!--                                        android:textSize="@dimen/sp_20"-->
+                                    <!--                                        android:textStyle="bold" />-->
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="1" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="18:35"
+                                        android:textColor="@color/color_4A5565"
+                                        android:textSize="@dimen/sp_20"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="北市大天母校區"
+                                        android:textColor="@color/color_4A5565"
+                                        android:textSize="@dimen/sp_16"
+                                        android:textStyle="bold" />
+
+                                    <!--                                    <LinearLayout-->
+                                    <!--                                        android:layout_width="match_parent"-->
+                                    <!--                                        android:layout_height="match_parent"-->
+                                    <!--                                        android:layout_marginTop="8dp"-->
+                                    <!--                                        android:orientation="horizontal">-->
+
+                                    <!--                                        <ImageView-->
+                                    <!--                                            android:id="@+id/iv_ws_girl"-->
+                                    <!--                                            android:layout_width="24dp"-->
+                                    <!--                                            android:layout_height="24dp"-->
+                                    <!--                                            android:src="@drawable/ic_ws_girl" />-->
+
+                                    <!--                                        <TextView-->
+                                    <!--                                            android:layout_width="match_parent"-->
+                                    <!--                                            android:layout_height="wrap_content"-->
+                                    <!--                                            android:layout_marginLeft="6dp"-->
+                                    <!--                                            android:text="26/26"-->
+                                    <!--                                            android:textColor="@color/color_6A7282"-->
+                                    <!--                                            android:textSize="@dimen/sp_14"-->
+                                    <!--                                            android:textStyle="bold" />-->
+                                    <!--                                    </LinearLayout>-->
+
+                                </LinearLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <FrameLayout
+                                        android:layout_width="80dp"
+                                        android:layout_height="27dp"
+                                        android:layout_alignParentRight="true">
+
+                                        <ImageView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:src="@drawable/ic_tg_ty" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:text="台鋼天鷹"
+                                            android:textColor="@color/white"
+                                            android:textSize="@dimen/sp_12"
+                                            android:textStyle="bold" />
+
+                                    </FrameLayout>
+
+                                    <ImageView
+                                        android:layout_width="138dp"
+                                        android:layout_height="127dp"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_marginRight="16dp"
+                                        android:layout_marginBottom="2dp"
+                                        android:src="@drawable/ic_sky" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="170dp"
+                                android:layout_marginTop="20dp"
+                                android:background="@drawable/bg_radius_pink"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <androidx.constraintlayout.widget.ConstraintLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            android:id="@+id/iv_baseball_02"
+                                            android:layout_width="24dp"
+                                            android:layout_height="24dp"
+                                            android:src="@drawable/ic_baseball"
+                                            app:layout_constraintStart_toStartOf="parent"
+                                            app:layout_constraintTop_toTopOf="parent"
+                                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="8dp"
+                                            android:text="vs 勇士"
+                                            android:textColor="@color/color_101828"
+                                            android:textSize="@dimen/sp_16"
+                                            android:textStyle="bold"
+                                            app:layout_constraintStart_toEndOf="@id/iv_baseball_02"
+                                            app:layout_constraintBaseline_toBaselineOf="@id/iv_baseball_02"/> <!-- 关键：对齐基线 -->
+
+                                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                    <!--                                    <TextView-->
+                                    <!--                                        android:layout_width="match_parent"-->
+                                    <!--                                        android:layout_height="wrap_content"-->
+                                    <!--                                        android:layout_marginTop="16dp"-->
+                                    <!--                                        android:text="心動時刻"-->
+                                    <!--                                        android:textColor="@color/color_4A5565"-->
+                                    <!--                                        android:textSize="@dimen/sp_20"-->
+                                    <!--                                        android:textStyle="bold" />-->
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="1" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="18:35"
+                                        android:textColor="@color/color_4A5565"
+                                        android:textSize="@dimen/sp_20"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="高雄市立高雄高級中學"
+                                        android:textColor="@color/color_4A5565"
+                                        android:textSize="@dimen/sp_16"
+                                        android:textStyle="bold" />
+
+                                    <!--                                    <LinearLayout-->
+                                    <!--                                        android:layout_width="match_parent"-->
+                                    <!--                                        android:layout_height="match_parent"-->
+                                    <!--                                        android:layout_marginTop="8dp"-->
+                                    <!--                                        android:orientation="horizontal">-->
+
+                                    <!--                                        <ImageView-->
+                                    <!--                                            android:id="@+id/iv_ws_girl"-->
+                                    <!--                                            android:layout_width="24dp"-->
+                                    <!--                                            android:layout_height="24dp"-->
+                                    <!--                                            android:src="@drawable/ic_ws_girl" />-->
+
+                                    <!--                                        <TextView-->
+                                    <!--                                            android:layout_width="match_parent"-->
+                                    <!--                                            android:layout_height="wrap_content"-->
+                                    <!--                                            android:layout_marginLeft="6dp"-->
+                                    <!--                                            android:text="26/26"-->
+                                    <!--                                            android:textColor="@color/color_6A7282"-->
+                                    <!--                                            android:textSize="@dimen/sp_14"-->
+                                    <!--                                            android:textStyle="bold" />-->
+                                    <!--                                    </LinearLayout>-->
+
+                                </LinearLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <FrameLayout
+                                        android:layout_width="80dp"
+                                        android:layout_height="27dp"
+                                        android:layout_alignParentRight="true">
+
+                                        <ImageView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:src="@drawable/ic_tg_ly" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:text="台鋼獵鷹"
+                                            android:textColor="@color/white"
+                                            android:textSize="@dimen/sp_12"
+                                            android:textStyle="bold" />
+
+                                    </FrameLayout>
+
+                                    <ImageView
+                                        android:layout_width="138dp"
+                                        android:layout_height="127dp"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_marginRight="16dp"
+                                        android:layout_marginBottom="2dp"
+                                        android:src="@drawable/ic_da_yuan" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="170dp"
+                                android:layout_marginTop="20dp"
+                                android:background="@drawable/bg_radius_pink"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <androidx.constraintlayout.widget.ConstraintLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            android:id="@+id/iv_baseball_03"
+                                            android:layout_width="24dp"
+                                            android:layout_height="24dp"
+                                            android:src="@drawable/ic_baseball"
+                                            app:layout_constraintStart_toStartOf="parent"
+                                            app:layout_constraintTop_toTopOf="parent"
+                                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="8dp"
+                                            android:text="vs 中信兄弟"
+                                            android:textColor="@color/color_101828"
+                                            android:textSize="@dimen/sp_16"
+                                            android:textStyle="bold"
+                                            app:layout_constraintStart_toEndOf="@id/iv_baseball_03"
+                                            app:layout_constraintBaseline_toBaselineOf="@id/iv_baseball_03"/> <!-- 关键：对齐基线 -->
+
+                                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                    <!--                                    <TextView-->
+                                    <!--                                        android:layout_width="match_parent"-->
+                                    <!--                                        android:layout_height="wrap_content"-->
+                                    <!--                                        android:layout_marginTop="16dp"-->
+                                    <!--                                        android:text="心動時刻"-->
+                                    <!--                                        android:textColor="@color/color_4A5565"-->
+                                    <!--                                        android:textSize="@dimen/sp_20"-->
+                                    <!--                                        android:textStyle="bold" />-->
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="1" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="18:35"
+                                        android:textColor="@color/color_4A5565"
+                                        android:textSize="@dimen/sp_20"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="澄清湖棒球場"
+                                        android:textColor="@color/color_4A5565"
+                                        android:textSize="@dimen/sp_16"
+                                        android:textStyle="bold" />
+
+                                    <!--                                    <LinearLayout-->
+                                    <!--                                        android:layout_width="match_parent"-->
+                                    <!--                                        android:layout_height="match_parent"-->
+                                    <!--                                        android:layout_marginTop="8dp"-->
+                                    <!--                                        android:orientation="horizontal">-->
+
+                                    <!--                                        <ImageView-->
+                                    <!--                                            android:id="@+id/iv_ws_girl"-->
+                                    <!--                                            android:layout_width="24dp"-->
+                                    <!--                                            android:layout_height="24dp"-->
+                                    <!--                                            android:src="@drawable/ic_ws_girl" />-->
+
+                                    <!--                                        <TextView-->
+                                    <!--                                            android:layout_width="match_parent"-->
+                                    <!--                                            android:layout_height="wrap_content"-->
+                                    <!--                                            android:layout_marginLeft="6dp"-->
+                                    <!--                                            android:text="26/26"-->
+                                    <!--                                            android:textColor="@color/color_6A7282"-->
+                                    <!--                                            android:textSize="@dimen/sp_14"-->
+                                    <!--                                            android:textStyle="bold" />-->
+                                    <!--                                    </LinearLayout>-->
+
+                                </LinearLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <FrameLayout
+                                        android:layout_width="80dp"
+                                        android:layout_height="27dp"
+                                        android:layout_alignParentRight="true">
+
+                                        <ImageView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:src="@drawable/ic_tg_xy" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:text="台鋼雄鷹"
+                                            android:textColor="@color/white"
+                                            android:textSize="@dimen/sp_12"
+                                            android:textStyle="bold" />
+
+                                    </FrameLayout>
+
+                                    <ImageView
+                                        android:layout_width="138dp"
+                                        android:layout_height="127dp"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_marginRight="16dp"
+                                        android:layout_marginBottom="2dp"
+                                        android:src="@drawable/ic_takamel" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="95dp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.core.widget.NestedScrollView>
+            </com.haibin.calendarview.CalendarLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>
