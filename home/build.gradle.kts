@@ -46,4 +46,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(project(":own"))
+    implementation(project(":member"))
+    implementation("com.github.lihangleo2:ShadowLayout:3.4.1")
+    implementation("com.github.bumptech.glide:glide:4.15.0")
 }
