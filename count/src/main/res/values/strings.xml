@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="count">點數</string>
+    <string name="count_gift_redemption">贈品兌換</string>
+    <string name="count_event_redemption">活動兌換</string>
+    <string name="count_discount_coupon_redemption">折價券兌換</string>
+    <string name="count_points_task">點數任務</string>
+    <string name="count_newest_to_oldest_date">日期新到舊</string>
+    <string name="count_limited_time_task">限時挑戰</string>
+    <string name="count_birthday_celebration">日常挑戰</string>
+    <string name="count_star_fan_shopping">會員專屬</string>
+    <string name="count_qa">你問我答</string>
+    <string name="count_title_cal">每日簽到</string>
+    <string name="count_times">獲得5倍</string>
+    <string name="count_btn_Check_In">點擊簽到</string>
+    <string name="count_win_points">我的星幣</string>
+    <string name="count_obtained_records">獲得紀錄</string>
+    <string name="count_usage_records">使用紀錄</string>
+    <string name="user_coming_soon">恭喜</string>
+    <string name="count_none_records">目前沒有紀錄</string>
+    <string name="confirm">確定</string>
+    <string name="count_gift_exchange">贈品兌換</string>
+    <string name="my_count">我的點數</string>
+    <string name="enter_exchange_name">輸入兌換名稱</string>
+    <string name="count_none_gift">目前沒有紀錄</string>
+    <string name="dialog_sort_type">排序方式</string>
+    <string name="dialog_sort_date_new_to_old">日期新到舊</string>
+    <string name="dialog_sort_date_old_to_new">日期舊到新</string>
+    <string name="dialog_sort_points_high_to_low">點數高到低</string>
+    <string name="dialog_sort_points_low_to_high">點數低到高</string>
+    <string name="count_exchange_history">兌換歷程</string>
+    <string name="count_not_used">未使用</string>
+    <string name="count_have_used">已使用</string>
+    <string name="count_none_used_coupons">尚無已使用兌換券</string>
+    <string name="count_have_used_remind">僅顯示近 1 年紀錄</string>
+    <string name="count_none_unused_coupons">尚無未使用兌換券</string>
+    <string name="count_activate_barcode">開啟條碼</string>
+
+
+    <string name="pull_down_to_refresh">下拉重整</string>
+    <string name="release_to_refresh">釋放重整</string>
+    <string name="last_update">最後更新 M-d HH:mm</string>
+    <string name="refreshing">正在重整…</string>
+    <string name="refresh_success">重整成功</string>
+    <string name="refresh_failed" translatable="false">重整失敗</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

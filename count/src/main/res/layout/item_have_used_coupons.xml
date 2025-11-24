@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:id="@+id/fl_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pt_20">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_item_have_used"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/pt_20"
+            android:paddingTop="@dimen/pt_16"
+            android:paddingRight="@dimen/pt_20"
+            android:paddingBottom="@dimen/pt_16">
+
+            <RelativeLayout
+                android:id="@+id/rl_icon"
+                android:layout_width="@dimen/pt_96"
+                android:layout_height="@dimen/pt_96">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_goods_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/bg_round_image"
+                    app:shapeAppearanceOverlay="@style/CornersRounded" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@color/half_black"
+                    app:shapeAppearanceOverlay="@style/CornersRounded" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/count_have_used"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="@dimen/pt_16"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="@dimen/pt_96"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_exchange_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingTop="@dimen/pt_8"
+                    android:text="王柏融【2024鷹勇戰士主題實戰球衣】"
+                    android:textColor="@color/color_101828"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_exchange_period1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:text="兌換期間：2025/05/02 12：00 ～ 2025/05/04 18：00"
+                    android:textColor="@color/color_101828"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_exchange_period2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:text="兌換期間：2025/05/02 12：00 ～ 2025/05/04 18：00"
+                    android:textColor="@color/color_101828"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/ll_limited_user"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="top|end"
+            android:visibility="gone"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_corner_badge_yellow"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/tv_limited_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="限S級\n鷹雄"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:maxLines="2"
+                android:includeFontPadding="false"
+                android:lineSpacingExtra="0dp"
+                android:lineSpacingMultiplier="0.9"
+                android:rotation="45"
+                android:layout_gravity="end|top"
+                android:translationX="-10dp"
+                android:translationY="14dp" />
+        </FrameLayout>
+
+
+        <!--            <LinearLayout-->
+        <!--                android:id="@+id/ll_limited_user"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginTop="@dimen/pt_10"-->
+        <!--                android:layout_marginEnd="@dimen/pt_10"-->
+        <!--                android:layout_gravity="top|end"-->
+        <!--                android:visibility="gone">-->
+
+        <!--                <TextView-->
+        <!--                    android:paddingTop="@dimen/pt_2"-->
+        <!--                    android:paddingBottom="@dimen/pt_2"-->
+        <!--                    android:paddingLeft="@dimen/pt_5"-->
+        <!--                    android:paddingRight="@dimen/pt_5"-->
+        <!--                    android:id="@+id/tv_limited_user"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="match_parent"-->
+        <!--                    android:background="@drawable/bg_upper_right_corner"-->
+        <!--                    android:gravity="center"-->
+        <!--                    android:minWidth="@dimen/pt_58"-->
+        <!--                    android:text="鷹國皇家"-->
+        <!--                    android:textColor="@color/white"-->
+        <!--                    android:textSize="@dimen/sp_12" />-->
+        <!--            </LinearLayout>-->
+    </FrameLayout>
+</layout>
+

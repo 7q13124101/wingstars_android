@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/pt_5">
+
+        <LinearLayout
+            android:id="@+id/ll_goods_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pt_15"
+            android:background="@drawable/bg_item_hot_count"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/pt_10">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pt_68"
+                android:layout_gravity="start">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_goods_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_count_gift_1"
+                    app:shapeAppearanceOverlay="@style/TopCornersRounded" />
+
+                <LinearLayout
+                    android:id="@+id/ll_limited_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="@dimen/pt_10"
+                    android:layout_marginEnd="@dimen/pt_10"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_limited_user"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="@dimen/pt_58"
+                        android:background="@drawable/bg_upper_right_corner"
+                        android:gravity="center"
+                        android:paddingTop="@dimen/pt_2"
+                        android:paddingBottom="@dimen/pt_2"
+                        android:paddingStart="@dimen/pt_5"
+                        android:paddingEnd="@dimen/pt_5"
+                        android:text=""
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_12" />
+                </LinearLayout>
+            </FrameLayout>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pt_5"
+            android:layout_marginBottom="@dimen/pt_5"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_goods_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:paddingLeft="@dimen/pt_10"
+                android:textColor="@color/color_101828"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
+                tools:text="王柏融【2024鷹勇戰士主題實戰球衣】" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_count_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/pt_4"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/pt_10">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bg_count_deep" />
+
+            <View
+                android:layout_width="@dimen/pt_8"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_count_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_101828"
+                android:textSize="@dimen/sp_18"
+                tools:text="2,499" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/pt_5"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/pt_20"
+        android:paddingTop="@dimen/pt_9"
+        android:paddingRight="@dimen/pt_18"
+        android:paddingBottom="@dimen/pt_10">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxLines="2"
+                android:text="2025台鋼獵鷹XTAIWOLF球員版長袖帽兌換"
+                android:textColor="@color/color_101828"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/pt_8"
+                android:text="當日賽事台鋼獵鷹安打總數達 15 支以上"
+                android:textColor="@color/color_101828"
+                android:textSize="@dimen/sp_14"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pt_5"
+                android:text="2025/03/05"
+                android:textColor="@color/color_101828"
+                android:textSize="@dimen/sp_14" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/pt_20"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/tv_obtained"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="-2499"
+            android:textColor="@color/color_E2518D"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pt_1"
+        android:alpha="0.2"
+        android:background="@color/color_A3A3A3" />
+</LinearLayout>
+</layout>
