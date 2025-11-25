@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.count.R
-import com.wingstars.count.adapter.CouponAdapter
+import com.wingstars.count.adapter.UnusedCouponAdapter
 import com.wingstars.count.databinding.FragmentNotUsedBinding
 import com.wingstars.count.viewmodel.CouponViewModel
 
@@ -16,7 +16,7 @@ class NotUsedFragment : Fragment() {
     private val binding get() = _binding!!
 
     // Khởi tạo adapter
-    private val couponAdapter = CouponAdapter()
+    private val unusedCouponAdapter = UnusedCouponAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +37,7 @@ class NotUsedFragment : Fragment() {
     private fun setupRecyclerView() {
         binding.rvNotUsed.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = couponAdapter
+            adapter = unusedCouponAdapter
         }
     }
 
@@ -61,7 +61,7 @@ class NotUsedFragment : Fragment() {
 
     private fun updateUI(data: List<CouponViewModel>) {
         if (data.isNotEmpty()) {
-            couponAdapter.setData(data)
+            unusedCouponAdapter.setData(data)
             binding.rvNotUsed.visibility = View.VISIBLE
             binding.llEmpty.visibility = View.GONE
         } else {

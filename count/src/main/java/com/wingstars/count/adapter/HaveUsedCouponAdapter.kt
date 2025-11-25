@@ -4,20 +4,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.wingstars.count.databinding.ItemHaveUsedCouponsBinding
 import com.wingstars.count.databinding.ItemUnusedCouponsBinding
 import com.wingstars.count.viewmodel.CouponViewModel
 
-class CouponAdapter(private var list: List<CouponViewModel> = listOf()) :
-    RecyclerView.Adapter<CouponAdapter.CouponViewHolder>() {
+class HaveUsedCouponAdapter (private var list: List<CouponViewModel> = listOf()) :
+    RecyclerView.Adapter<HaveUsedCouponAdapter.CouponViewHolder>() {
 
-    // Hàm update data từ Fragment
     fun setData(newList: List<CouponViewModel>) {
         this.list = newList
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CouponViewHolder {
-        val binding = ItemUnusedCouponsBinding.inflate(
+        val binding = ItemHaveUsedCouponsBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
         return CouponViewHolder(binding)
@@ -29,7 +29,7 @@ class CouponAdapter(private var list: List<CouponViewModel> = listOf()) :
 
     override fun getItemCount() = list.size
 
-    inner class CouponViewHolder(private val binding: ItemUnusedCouponsBinding) :
+    inner class CouponViewHolder(private val binding: ItemHaveUsedCouponsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: CouponViewModel) {

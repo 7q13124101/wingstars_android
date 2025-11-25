@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.count.R
-import com.wingstars.count.adapter.CouponAdapter
+import com.wingstars.count.adapter.HaveUsedCouponAdapter
+import com.wingstars.count.adapter.UnusedCouponAdapter
 import com.wingstars.count.databinding.FragmentHaveUsedBinding
-import com.wingstars.count.databinding.FragmentNotUsedBinding
 import com.wingstars.count.viewmodel.CouponViewModel
 
 
@@ -18,7 +18,7 @@ class HaveUsedFragment : Fragment() {
     private val binding get() = _binding!!
 
     // Khởi tạo adapter
-    private val couponAdapter = CouponAdapter()
+    private val usedCouponAdapter = HaveUsedCouponAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +39,7 @@ class HaveUsedFragment : Fragment() {
     private fun setupRecyclerView() {
         binding.rvHaveUsed.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = couponAdapter
+            adapter = usedCouponAdapter
         }
     }
 
@@ -61,7 +61,7 @@ class HaveUsedFragment : Fragment() {
 
     private fun updateUI(data: List<CouponViewModel>) {
         if (data.isNotEmpty()) {
-            couponAdapter.setData(data)
+            usedCouponAdapter.setData(data)
             binding.rvHaveUsed.visibility = View.VISIBLE
             binding.llEmpty.visibility = View.GONE
         } else {

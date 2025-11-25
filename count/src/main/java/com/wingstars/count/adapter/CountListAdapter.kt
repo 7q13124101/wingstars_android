@@ -14,6 +14,13 @@ class CountListAdapter (
     private val context: Context,
     private var dataList: MutableList<CountListItemViewModel>?
 ) : RecyclerView.Adapter<CountListAdapter.CountListViewHolder>() {
+    private var originalList: ArrayList<CountListItemViewModel> = ArrayList()
+
+    init {
+        if (dataList != null) {
+            originalList.addAll(dataList!!)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountListViewHolder {
         val binding =
@@ -25,12 +32,10 @@ class CountListAdapter (
         return position.toLong()
     }
 
-    // -------------------------------------------
     override fun onBindViewHolder(holder: CountListViewHolder, position: Int) {
         holder.binding(position)
     }
 
-    // -------------------------------------------
     override fun getItemCount(): Int {
         return dataList?.size ?: 0
     }
@@ -42,25 +47,45 @@ class CountListAdapter (
         } else {
             dataList!!.clear()
         }
+        originalList.clear()
+
         if (list != null) {
             dataList!!.addAll(list)
+            originalList.addAll(list)
+        }
+        notifyDataSetChanged()
+    }
+
+    fun filter(query: String) {
+        val text = query.trim()
+
+        if (dataList == null) dataList = ArrayList()
+        dataList!!.clear()
+
+        if (text.isEmpty()) {
+            dataList!!.addAll(originalList)
+        } else {
+            for (item in originalList) {
+                if (item.title?.contains(text, ignoreCase = true) == true) {
+                    dataList!!.add(item)
+                }
+            }
         }
         notifyDataSetChanged()
     }
 
     fun getData(): MutableList<CountListItemViewModel>? {
-        if (dataList == null) {
-            return null
-        }
         return dataList
     }
 
 
     // -------------------------------------------
-    inner class CountListViewHolder(private val binding:ItemGoodsListBinding) :
+    inner class CountListViewHolder(private val binding: ItemGoodsListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun binding(position: Int) {
+            if (dataList == null || position >= dataList!!.size) return
+
             val item = dataList!![position]
 
             binding.couponName.text = item.title
@@ -70,19 +95,6 @@ class CountListAdapter (
             Glide.with(context)
                 .load(item.leftImageRes)
                 .into(binding.image)
-
-        }
-
-        fun setMarginLeft(view: View, left: Int) {
-            val params = view.layoutParams
-            if (params is RecyclerView.LayoutParams) {
-                params.leftMargin = left
-                view.layoutParams = params
-            } else if (params is ViewGroup.MarginLayoutParams) {
-                // Fallback
-                params.leftMargin = left
-                view.layoutParams = params
-            }
         }
     }
 }

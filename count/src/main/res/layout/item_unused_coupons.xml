@@ -6,26 +6,28 @@
         android:id="@+id/ll_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/pt_20"
+        android:layout_marginTop="@dimen/pt_5"
         android:background="@drawable/bg_item_unused"
         android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="70">
+            android:layout_weight="5"
+            android:layout_marginTop="@dimen/pt_5"
+            android:layout_marginRight="@dimen/pt_7">
             <LinearLayout
                 android:id="@+id/ll_exchange_detail"
                 android:layout_width="match_parent"
                 android:layout_height="124dp"
                 android:orientation="horizontal"
                 android:paddingStart="@dimen/pt_16"
-                android:paddingTop="@dimen/pt_24"
+                android:paddingTop="@dimen/pt_10"
                 android:paddingEnd="@dimen/pt_16">
 
                 <RelativeLayout
-                    android:layout_width="@dimen/pt_76"
-                    android:layout_height="@dimen/pt_76"
+                    android:layout_width="@dimen/pt_40"
+                    android:layout_height="@dimen/pt_50"
                     android:background="@drawable/bg_frame_gray">
 
                     <com.google.android.material.imageview.ShapeableImageView
@@ -44,7 +46,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/pt_5">
 
                     <TextView
                         android:id="@+id/tv_exchange_name"
@@ -66,15 +69,15 @@
                         android:textColor="@color/color_101828"
                         android:textSize="@dimen/sp_12"
                         android:textStyle="bold" />
-                    <TextView
-                        android:id="@+id/tv_exchange_period2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="bottom"
-                        android:text="期限：2025/05/02~2026/02/02"
-                        android:textColor="@color/color_101828"
-                        android:textSize="@dimen/sp_12"
-                        android:textStyle="bold" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_exchange_period2"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:gravity="bottom"-->
+<!--                        android:text="期限：2025/05/02~2026/02/02"-->
+<!--                        android:textColor="@color/color_101828"-->
+<!--                        android:textSize="@dimen/sp_12"-->
+<!--                        android:textStyle="bold" />-->
                 </LinearLayout>
             </LinearLayout>
             <FrameLayout
@@ -85,19 +88,17 @@
                 android:clipChildren="false"
                 android:clipToPadding="false">
 
-                <!-- Nền tam giác màu vàng ở góc -->
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:src="@drawable/ic_corner_badge_yellow"
-                    android:scaleType="fitXY" />
-
-                <!-- Chữ xoay theo dải chéo -->
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/BadgeTopRightCorner" />
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/dp_20"
-                    android:layout_marginRight="@dimen/pt_3">
+                    android:layout_marginRight="@dimen/pt_5">
 
                     <TextView
                         android:id="@+id/label_tv"
@@ -114,8 +115,6 @@
                         android:gravity="center"
                         android:paddingTop="4dp"/>
                 </FrameLayout>
-
-
             </FrameLayout>
 
 
@@ -148,11 +147,12 @@
         <LinearLayout
             android:id="@+id/ll_activity_barcode"
             android:layout_width="match_parent"
-            android:layout_height="54dp"
+            android:layout_height="wrap_content"
             android:layout_weight="30"
             android:gravity="center"
             android:visibility="visible"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="-20dp">
 
             <ImageView
                 android:layout_width="wrap_content"

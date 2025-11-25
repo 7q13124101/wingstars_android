@@ -35,9 +35,9 @@
                     android:id="@+id/scroll_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/pt_20"
-                    android:layout_marginEnd="@dimen/pt_20"
-                    android:layout_marginBottom="@dimen/pt_20"
+                    android:layout_marginStart="@dimen/pt_10"
+                    android:layout_marginEnd="@dimen/pt_10"
+                    android:layout_marginBottom="@dimen/pt_15"
                     android:fillViewport="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent">

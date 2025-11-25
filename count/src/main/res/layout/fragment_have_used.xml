@@ -37,8 +37,8 @@
                     android:id="@+id/scroll_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/pt_20"
-                    android:layout_marginEnd="@dimen/pt_20"
+                    android:layout_marginStart="@dimen/pt_10"
+                    android:layout_marginEnd="@dimen/pt_10"
                     android:fillViewport="true"
                     app:layout_constraintBottom_toTopOf="@+id/tv_have_used_remind"
                     app:layout_constraintTop_toTopOf="parent">
@@ -113,16 +113,16 @@
             </FrameLayout>
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
-        <TextView
-            android:id="@+id/tv_have_used_remind"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/count_have_used_remind"
-            android:textAlignment="center"
-            android:textColor="@color/color_101828"
-            android:textSize="@dimen/sp_12"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/srl_have_used" />
+<!--        <TextView-->
+<!--            android:id="@+id/tv_have_used_remind"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:padding="16dp"-->
+<!--            android:text="@string/count_have_used_remind"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textColor="@color/color_101828"-->
+<!--            android:textSize="@dimen/sp_12"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/srl_have_used" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -2,13 +2,14 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".count.exchange.ExchangeHistoryActivity">
+    tools:context=".activity.ExchangeHistoryActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_F5F5F5"
-        android:orientation="vertical">
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:fitsSystemWindows="true">
 
         <RelativeLayout
             android:id="@+id/rl_top"
@@ -42,15 +43,16 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pt_52"
+            android:layout_height="@dimen/pt_30"
             app:tabGravity="fill"
             app:tabMode="fixed"
             app:tabBackground="@android:color/transparent"
             app:tabRippleColor="@android:color/transparent"
             app:tabIndicatorColor="@color/color_E2518D"
             app:tabSelectedTextColor="@color/color_E2518D"
-            app:tabIndicatorHeight="4dp"
-            app:tabTextColor="@color/color_101828" />
+            app:tabIndicatorHeight="2dp"
+            app:tabTextColor="@color/color_101828"
+            app:tabIndicatorFullWidth="false"/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"

@@ -1,17 +1,22 @@
 package com.wingstars.count.activity
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.RadioButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -56,6 +61,7 @@ class ActivityExchangeActivity : AppCompatActivity() {
         adapter = CountListAdapter(this, null)
         binding.rvGoodsList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.rvGoodsList.adapter = adapter
+        setupSearchInput()
     }
 
     private fun loadData() {
@@ -124,7 +130,50 @@ class ActivityExchangeActivity : AppCompatActivity() {
             CountListItemViewModel("有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image),
             CountListItemViewModel("有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image),
             CountListItemViewModel("有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image),
-            CountListItemViewModel("有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image)
+            CountListItemViewModel("安芝儇 x Mingo 一日店長，專屬福利送不停", "2025/09/20 (六)", "150", R.drawable.bg_round_image)
         )
     }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupSearchInput() {
+        val etSearch = binding.etSearch
+        val clearDrawable = ContextCompat.getDrawable(this, R.drawable.ic_cancel_search)
+
+        fun updateClearButton(text: String) {
+            if (text.isNotEmpty()) {
+                etSearch.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, clearDrawable, null)
+            } else {
+                etSearch.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null)
+            }
+        }
+
+        etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString()
+
+                updateClearButton(query)
+
+                adapter.filter(query)
+
+                handleEmptyState(adapter.itemCount)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+        etSearch.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val drawableEnd = etSearch.compoundDrawablesRelative[2]
+                if (drawableEnd != null) {
+                    if (event.rawX >= (etSearch.right - drawableEnd.bounds.width() - etSearch.paddingEnd)) {
+                        etSearch.text.clear()
+                        return@setOnTouchListener true
+                    }
+                }
+            }
+            false
+        }
+    }
+
 }

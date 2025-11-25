@@ -10,10 +10,18 @@ import com.wingstars.count.databinding.ItemGoodsNewDetailBinding
 import com.wingstars.count.viewmodel.CountNewDetailViewModel
 import java.util.ArrayList
 
-class CountNewDetailAdapter (
+class CountNewDetailAdapter(
     private val context: Context,
     private var dataList: MutableList<CountNewDetailViewModel>?
 ) : RecyclerView.Adapter<CountNewDetailAdapter.CountNewDetailViewHolder>() {
+
+    private var originalList: ArrayList<CountNewDetailViewModel> = ArrayList()
+
+    init {
+        if (dataList != null) {
+            originalList.addAll(dataList!!)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountNewDetailViewHolder {
         val binding =
@@ -25,12 +33,10 @@ class CountNewDetailAdapter (
         return position.toLong()
     }
 
-    // -------------------------------------------
     override fun onBindViewHolder(holder: CountNewDetailViewHolder, position: Int) {
         holder.binding(position)
     }
 
-    // -------------------------------------------
     override fun getItemCount(): Int {
         return dataList?.size ?: 0
     }
@@ -42,26 +48,44 @@ class CountNewDetailAdapter (
         } else {
             dataList!!.clear()
         }
+
+        originalList.clear()
+
         if (list != null) {
             dataList!!.addAll(list)
+            originalList.addAll(list)
+        }
+        notifyDataSetChanged()
+    }
+
+    fun filter(query: String) {
+        val text = query.trim()
+
+        if (dataList == null) dataList = ArrayList()
+        dataList!!.clear()
+
+        if (text.isEmpty()) {
+            dataList!!.addAll(originalList)
+        } else {
+            for (item in originalList) {
+                if (item.title?.contains(text, ignoreCase = true) == true) {
+                    dataList!!.add(item)
+                }
+            }
         }
         notifyDataSetChanged()
     }
 
     fun getData(): MutableList<CountNewDetailViewModel>? {
-        if (dataList == null) {
-            return null
-        }
         return dataList
     }
-
 
     // -------------------------------------------
     inner class CountNewDetailViewHolder(private val binding: ItemGoodsNewDetailBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun binding(position: Int) {
-            val item = dataList!![position]
+            val item = dataList?.getOrNull(position) ?: return
 
             binding.tvGoodsName.text = item.title
             binding.tvCountPrice.text = item.count
@@ -69,9 +93,7 @@ class CountNewDetailAdapter (
             Glide.with(context)
                 .load(item.image)
                 .into(binding.ivGoodsImage)
-
         }
-
         fun setMarginLeft(view: View, left: Int) {
             val params = view.layoutParams
             if (params is RecyclerView.LayoutParams) {
