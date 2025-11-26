@@ -5,49 +5,81 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.wingstars.home.R
 
+// Bạn có thể tạo một data class riêng để chứa thông tin đầy đủ (Ảnh, Tên, Vote)
+// Tạm thời mình dùng List<Int> như cũ để demo logic
 class PopularityRankingAdapter(private val context: Context, private val dataList: List<Int>) :
     RecyclerView.Adapter<PopularityRankingAdapter.ViewHolder>() {
 
-    // 1. Tạo một danh sách chứa ID của 5 ảnh xếp hạng theo thứ tự
-    private val rankImages = listOf(
-        R.drawable.ranking_card_01, // Index 0 (Hạng 1)
-        R.drawable.ranking_card_02, // Index 1 (Hạng 2)
-        R.drawable.ranking_card_03, // Index 2 (Hạng 3)
-        R.drawable.ranking_card_04, // Index 3 (Hạng 4)
-        R.drawable.ranking_card_05  // Index 4 (Hạng 5)
+    // Danh sách tên giả định (để khớp với ảnh demo)
+    private val memberNames = listOf("安芝儇", "一粒", "朴旻曙", " 瑈0", "恬魚")
+
+    // Danh sách số vote giả định
+    private val voteCounts = listOf("1221", "1200", "1989", "1890", "1795")
+
+    // Danh sách ảnh thành viên (Placeholder)
+    // Bạn nên thay bằng ảnh thật của các thành viên đã tách nền
+    private val memberImages = listOf(
+        R.drawable.img_card_an_zhi_xuan,
+        R.drawable.img_card_yi_li,
+        R.drawable.img_card_pu_min_shu,
+        R.drawable.img_card_xin_0,
+        R.drawable.img_card_tian_yu
     )
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val memberImage: ImageView = view.findViewById(R.id.img_member)
-        // val memberName: TextView = view.findViewById(R.id.tv)
+        // Ánh xạ các view từ layout item_ranking_card.xml
+        val imgBackground: ImageView = view.findViewById(R.id.imgBackground)
+        val imgPerson: ImageView = view.findViewById(R.id.imgPerson)
+        val tvRankNumber: TextView = view.findViewById(R.id.tvRankNumber)
+        val tvName: TextView = view.findViewById(R.id.tvName)
+        val tvVoteCount: TextView = view.findViewById(R.id.tvVoteCount)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_popularity_ranking, parent, false)
+        // SỬA: Dùng layout mới item_ranking_card
+        val view = LayoutInflater.from(context).inflate(R.layout.item_ranking_card, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = dataList[position]
+        // 1. Set số thứ tự (Ranking)
+        // Position bắt đầu từ 0, nên rank = position + 1
+        holder.tvRankNumber.text = (position + 1).toString()
 
-        // --- Logic hiển thị ảnh ranking ---
-
-        // 2. Kiểm tra xem vị trí hiện tại có nằm trong danh sách ảnh ranking không
-        if (position < rankImages.size) {
-            // Nếu position là 0 -> lấy ảnh rankImages[0] (card_01)
-            // Nếu position là 1 -> lấy ảnh rankImages[1] (card_02), v.v.
-            holder.memberImage.setImageResource(rankImages[position])
+        // 2. Set Tên thành viên
+        if (position < memberNames.size) {
+            holder.tvName.text = memberNames[position]
         } else {
-            // (Tùy chọn) Xử lý cho người thứ 6 trở đi
-            // Ví dụ: Ẩn ảnh hoặc hiện ảnh mặc định
-            // holder.memberImage.setImageDrawable(null)
+            holder.tvName.text = "Member ${position + 1}"
         }
 
-        // --- Các logic khác (tên, avatar thành viên...) ---
-        // holder.memberName.text = "Thành viên $item"
+        // 3. Set Số lượt vote
+        if (position < voteCounts.size) {
+            holder.tvVoteCount.text = voteCounts[position]
+        } else {
+            holder.tvVoteCount.text = "0"
+        }
+
+        // 4. Set Ảnh thành viên
+        // Lưu ý: Ảnh này nên là ảnh PNG nền trong suốt để đè lên background đẹp nhất
+        if (position < memberImages.size) {
+            holder.imgPerson.setImageResource(memberImages[position])
+        }
+
+        // 5. Set Background (Nếu muốn đổi màu nền theo thứ hạng)
+        // Hiện tại XML đang set cứng 1 ảnh nền gradient.
+        // Nếu muốn hạng 1 màu vàng, hạng 2 màu bạc... bạn có thể xử lý ở đây:
+        /*
+        when (position) {
+            0 -> holder.imgBackground.setImageResource(R.drawable.bg_rank_gold)
+            1 -> holder.imgBackground.setImageResource(R.drawable.bg_rank_silver)
+            else -> holder.imgBackground.setImageResource(R.drawable.bg_rank_normal)
+        }
+        */
     }
 
     override fun getItemCount(): Int {

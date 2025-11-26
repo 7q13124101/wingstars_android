@@ -9,15 +9,16 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.company.wingstars.databinding.ActivityWelcomeBinding
 import com.gyf.immersionbar.ktx.immersionBar
+import com.wingstars.base.base.BaseActivity
 import com.wingstars.login.LoginActivity
 
-class WelcomeActivity : AppCompatActivity() {
+class WelcomeActivity : BaseActivity() {
     private lateinit var binding: ActivityWelcomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setTitleFoot(view1 = binding.root)
         window.statusBarColor = ContextCompat.getColor(this, com.wingstars.login.R.color.white)
         window.navigationBarColor = ContextCompat.getColor(this, com.wingstars.login.R.color.white)
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = true
@@ -27,5 +28,11 @@ class WelcomeActivity : AppCompatActivity() {
             // Nếu không muốn quay lại màn trước:
             // finish()
         }
+    }
+    fun onInitializationSuccessful() {
+        initView()
+    }
+    override fun initView() {
+        TODO("Not yet implemented")
     }
 }

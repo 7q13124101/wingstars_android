@@ -49,4 +49,11 @@ dependencies {
     implementation(project(":member"))
     implementation("com.github.lihangleo2:ShadowLayout:3.4.1")
     implementation("com.github.bumptech.glide:glide:4.15.0")
+
+    implementation("io.github.scwang90:refresh-layout-kernel:3.0.0-alpha")    //核心必须依赖
+    implementation("io.github.scwang90:refresh-header-classics:3.0.0-alpha")    //经典刷新头
+    implementation("io.github.scwang90:refresh-footer-classics:3.0.0-alpha")    //经典加载
+
+    implementation("io.github.youth5201314:banner:2.2.3")
+
 }

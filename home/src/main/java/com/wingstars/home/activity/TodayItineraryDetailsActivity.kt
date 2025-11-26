@@ -4,11 +4,10 @@ import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.home.databinding.ActivityTodayItineraryDetailsBinding // Đảm bảo ViewBinding được tạo
 
-class TodayItineraryActivity   : BaseActivity() {
+class TodayItineraryDetailsActivity   : BaseActivity() {
 
     private lateinit var binding: ActivityTodayItineraryDetailsBinding
 

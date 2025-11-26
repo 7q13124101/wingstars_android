@@ -16,6 +16,15 @@
     <string name="refresh_success">重整成功</string>
     <string name="refresh_failed">重整失敗</string>
 
+    //氛圍時尚
+    <string name="style_outfits"> 氛圍時尚 </string>
+    <string name="none_style_outfits">無數據</string>
+
+    //最新消息
+    <string name="latest_news">最新消息</string>
+
+
+
     //活動花絮
     <string name="event_highlights">活動花絮</string>
     <string name="wonderful_videos">精彩影片</string>

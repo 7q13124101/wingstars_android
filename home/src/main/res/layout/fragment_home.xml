@@ -23,6 +23,7 @@
         tools:ignore="ContentDescription" />
 
     <ImageView
+        android:id="@+id/ic_notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -41,7 +42,8 @@
         <ImageView
             android:id="@+id/img_banner"
             android:layout_width="match_parent"
-            android:layout_height="327dp" android:scaleType="centerCrop"
+            android:layout_height="327dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/placeholder_banner"
             tools:ignore="ContentDescription" />
 
@@ -70,126 +72,43 @@
                     <TextView
                     style="@style/SectionTitle"
                     android:text="今日行程" />
-                    <com.lihang.ShadowLayout
-                        android:id="@+id/todayItinerary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        app:hl_cornerRadius="20dp"
-                        app:hl_shadowColor="#2a000000"
-                        app:hl_shadowLimit="20dp"
-                        app:hl_shadowOffsetX="0dp"
-                        app:hl_shadowOffsetY="7dp">
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="211dp"
-                            android:orientation="horizontal"
-                            android:padding="20dp"
-                            android:background="@drawable/bg_card">
-                            <ImageView
-                                android:layout_width="137dp"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/placeholder_person"
-                                tools:ignore="ContentDescription" />
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:layout_marginStart="12dp">
+                        android:layout_height="wrap_content">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="JC生日會「Just Connect」維C能量補給站"
-                                    android:textStyle="bold"
-                                    android:textSize="16sp"
-                                    android:textColor="@color/text_tittle"/>
-                                <View
-                                    android:layout_width="match_parent"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1" />
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="2025/09/20 (六) 10:00"
-                                    android:layout_marginTop="4dp"
-                                    android:textColor="@color/text_subtitle"
-                                    android:textSize="14sp"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Stars House 門市"
-                                    android:layout_marginTop="4dp"
-                                    android:textColor="@color/text_pink"
-                                    android:textSize="14sp"/>
-                            </LinearLayout>
-                        </LinearLayout>
-                    </LinearLayout>
-                    </com.lihang.ShadowLayout>
+                        <com.youth.banner.Banner
+                            android:id="@+id/banner_itinerary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/todayItinerary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|center_horizontal"
+                            android:layout_marginBottom="4dp"
+                            android:orientation="horizontal" />
+                    </FrameLayout>
 
 
                     <TextView
                         style="@style/SectionTitle"
                         android:text="即將販售" />
-                    <com.lihang.ShadowLayout
-                        android:id="@+id/mShadowLayout2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        app:hl_cornerRadius="20dp"
-                        app:hl_shadowColor="#2a000000"
-                        app:hl_shadowLimit="20dp"
-                        app:hl_shadowOffsetX="0dp"
-                        app:hl_shadowOffsetY="7dp">
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="176dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
-                        <LinearLayout
+                        android:layout_height="wrap_content">
+
+                        <com.youth.banner.Banner
+                            android:id="@+id/banner_coming_soon"
                             android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/item_coming_soon"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="20dp"
-                            android:background="@drawable/bg_card_coming_soon">
-                            <ImageView
-                                android:layout_width="136dp"
-                                android:layout_height="136dp"
-                                android:src="@drawable/placeholder_calendar"
-                                android:scaleType="centerCrop"
-                                tools:ignore="ContentDescription" />
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:layout_marginStart="12dp">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="25-26 WS女孩應援毛巾｜天鷹款"
-                                    android:textStyle="bold"
-                                    android:textSize="16sp"
-                                    android:textColor="@color/text_tittle"/>
-                                <View
-                                    android:layout_width="match_parent"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1" />
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="預購時間：10/27 12:00 ~ 10/31 24:00"
-                                    android:layout_marginTop="4dp"
-                                    android:textColor="@color/text_subtitle"
-                                    android:textSize="14sp"/>
-                            </LinearLayout>
-                        </LinearLayout>
-                    </LinearLayout>
-                    </com.lihang.ShadowLayout>
+                            android:layout_gravity="bottom|center_horizontal"
+                            android:layout_marginBottom="4dp"
+                            android:orientation="horizontal" />
+                    </FrameLayout>
 
 
                     <include
@@ -232,7 +151,7 @@
                         android:nestedScrollingEnabled="false"
                         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                         app:spanCount="2"
-                        tools:listitem="@layout/item_stylist_vibe"
+                        tools:listitem="@layout/item_style"
                         tools:itemCount="2" />
 
                     <include

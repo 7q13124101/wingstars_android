@@ -11,18 +11,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.wingstars.base.base.BaseActivity
 import com.wingstars.login.databinding.ActivityLoginBinding
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
-
-
-
-
+    private fun initData() {
+    }
+    override fun initView() {
+        initData()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setTitleFoot(view1 = binding.root,
+            navigationBarColor = R.color.color_F9DCE8,
+            statusBarColor = R.color.color_F9DCE8)
 
         // Status/Navi bar
         window.statusBarColor = ContextCompat.getColor(this, R.color.color_F9DCE8)

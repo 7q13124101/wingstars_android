@@ -8,37 +8,42 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.wingstars.home.R // Đảm bảo import R của module :home
+import com.wingstars.home.adapter.ItineraryBannerAdapter.BannerViewHolder
+import com.youth.banner.adapter.BannerAdapter
 
-class ComingSoonAdapter(private val context: Context, private val dataList: List<Int>) :
-    RecyclerView.Adapter<ComingSoonAdapter.ViewHolder>() {
+data class ComingSoonData(
+    val imageRes: Int,
+    val title: String,
+    val date: String,
+)
+class ComingSoonAdapter(datas: List<ComingSoonData>) :
+    BannerAdapter<ComingSoonData, ComingSoonAdapter.BannerViewHolder>(datas) {
+    var onItemClickListener: ((ComingSoonData) -> Unit)? = null
 
+    override fun onCreateHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_coming_soon, parent, false)
+        return BannerViewHolder(view)
+    }
+
+    override fun onBindView(holder: BannerViewHolder, data: ComingSoonData, position: Int, size: Int) {
+        holder.bind(data)
+
+        // --- QUAN TRỌNG: Xử lý click ---
+        holder.itemView.setOnClickListener {
+            onItemClickListener?.invoke(data)
+        }
+    }
     // ViewHolder giữ các view từ item_classroom.xml
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        // Bạn hãy đảm bảo ID của các view này khớp với file item_classroom.xml
-        val classroomImage: ImageView = view.findViewById(R.id.imgClassroom)
-        val classroomTitle: TextView = view.findViewById(R.id.tvClassroomTitle)
-        val classroomTime: TextView = view.findViewById(R.id.tvClassroomTime)
-    }
+    class BannerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val comingSoonImage: ImageView = view.findViewById(R.id.imgComingSoon)
+        private val comingSoonTitle: TextView = view.findViewById(R.id.tvComingSoonTitle)
+        private val comingSoonTime: TextView = view.findViewById(R.id.tvComingSoonTime)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // Dùng layout item_classroom.xml
-        val view = LayoutInflater.from(context).inflate(R.layout.item_comingsoon, parent, false)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // Lấy dữ liệu
-        val item = dataList[position]
-
-        // --- Bind dữ liệu thật của bạn ở đây ---
-        holder.classroomTitle.text = "Tiêu đề lớp học $item"
-        holder.classroomTime.text = "Thời gian: 1$position:00 PM"
-
-        // Gán ảnh placeholder
-        holder.classroomImage.setImageResource(R.drawable.placeholder_calendar)
-    }
-
-    override fun getItemCount(): Int {
-        return dataList.size
+        fun bind(datas: ComingSoonData){
+            comingSoonImage.setImageResource(datas.imageRes)
+            comingSoonTitle.text = datas.title
+            comingSoonTime.text = datas.date
+        }
     }
 }
