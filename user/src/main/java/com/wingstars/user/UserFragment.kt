@@ -44,33 +44,13 @@ class UserFragment : BaseFragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        Log.d(TAG, "onCreateView: Bắt đầu tạo View và khởi tạo binding...")
         _binding = FragmentUserBinding.inflate(inflater, container, false)
-//        binding.lifecycleOwner = viewLifecycleOwner
-//        Log.d(TAG, "onCreateView: Khởi tạo binding và lifecycleOwner THÀNH CÔNG.")
-        binding.srlUserRecord.setEnableNestedScroll(true)
-
-        return binding.root
+        val root = binding.root
+        initView()
+        return root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        Log.d(TAG, "onViewCreated: View đã được tạo. Chuẩn bị gọi initView().")
-        requireActivity().window.statusBarColor = requireContext().getColor(R.color.color_DE9DBA)
 
-        // Nếu muốn icon đen hay trắng
-        val insetsController = WindowInsetsControllerCompat(requireActivity().window, view)
-        insetsController.isAppearanceLightStatusBars = true // true = icon đen, false = icon trắng
-
-        try {
-            initView()
-//            Log.d(TAG, "onViewCreated: Gọi initView() THÀNH CÔNG.")
-        } catch (e: Exception) {
-            // 3. BẮT LỖI NGOẠI LỆ (EXCEPTION)
-            // Nếu có bất kỳ lỗi nào xảy ra trong initView(), nó sẽ bị bắt ở đây
-            Log.e(TAG, "onViewCreated: !!! CÓ LỖI XẢY RA TRONG initView() !!!", e)
-        }
-    }
     private fun initView() {
         val packageManager: PackageManager =  requireActivity().packageManager
         val packageInfo: PackageInfo = packageManager.getPackageInfo(requireActivity().packageName, 0)
