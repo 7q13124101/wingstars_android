@@ -1,9 +1,11 @@
 package com.wingstars.member.activity
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
 
@@ -22,7 +24,7 @@ import com.wingstars.member.fragment.BasicInformationFragment
 import com.wingstars.member.fragment.PersonalScheduleFragment
 import com.wingstars.member.viewmodel.MemberDetailsViewModel
 
-class MemberDetailsActivity : BaseActivity() {
+class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
 
     private lateinit var binding: ActivityMemberDetailsBinding
     private lateinit var viewModel: MemberDetailsViewModel
@@ -38,10 +40,23 @@ class MemberDetailsActivity : BaseActivity() {
         binding = ActivityMemberDetailsBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this)[MemberDetailsViewModel::class.java]
 
-        setTitleFoot(binding.root, statusBarColor = R.color.color_DE9DBA)
-        initData()
-        initView()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            setContentView(binding.root)
+            setStatusBarColor()
+            setMarginTop(binding.rlTop, getStatusBarHeight())
+            initData()
+            initView()
+        } else {
+            setTitleFoot(view1 = binding.root, initialization = this, setHeadAndFoot = false)
+        }
 
+
+    }
+
+    fun setMarginTop(view: View, top: Int) {
+        var params = view.layoutParams as LinearLayout.LayoutParams
+        params.topMargin = top
+        view.layoutParams = params
     }
 
     private fun initData() {
@@ -167,5 +182,11 @@ class MemberDetailsActivity : BaseActivity() {
     // 延迟执行确保视图已布局
     private fun post(action: () -> Unit) {
         tabLayout.post(action)
+    }
+
+    override fun onInitializationSuccessful() {
+        initData()
+        initView()
+        setMarginTop(binding.rlTop, getStatusBarHeights())
     }
 }
