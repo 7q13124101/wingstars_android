@@ -1,14 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 把所有需要显示文字的textSize的尺寸写在这里 -->
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="sp_14">14sp</dimen>
+    <dimen name="sp_16">16sp</dimen>
+    <dimen name="sp_18">18sp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+    <dimen name="sp_30">30sp</dimen>
 
+
+    <!-- 尽量把控件的宽高尺寸写在这里 -->
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="dp_neg_24">-24dp</dimen>
+
+    <dimen name="dp_1">1dp</dimen>
+    <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_3">3dp</dimen>
+    <dimen name="dp_4">4dp</dimen>
     <dimen name="dp_6">6dp</dimen>
-    <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_8">8dp</dimen>
     <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
+    <dimen name="dp_14">14dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
+    <dimen name="dp_17">17dp</dimen>
+    <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_25">25dp</dimen>
     <dimen name="dp_30">30dp</dimen>
-    <dimen name="dp_20">20dp</dimen>
-    <dimen name="dp_84">84dp</dimen>
+    <dimen name="dp_32">32dp</dimen>
+    <dimen name="dp_35">35dp</dimen>
+    <dimen name="dp_38">38dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+    <dimen name="dp_45">45dp</dimen>
+    <dimen name="dp_48">48dp</dimen>
+    <dimen name="dp_50">50dp</dimen>
+    <dimen name="dp_55">55dp</dimen>
+    <dimen name="dp_56">56dp</dimen>
+    <dimen name="dp_74">74dp</dimen>
     <dimen name="dp_75">75dp</dimen>
     <dimen name="dp_65">65dp</dimen>
-    <dimen name="sp_18">18sp</dimen>
-    <dimen name="dp_74">74dp</dimen>
+    <dimen name="dp_84">84dp</dimen>
+    <dimen name="dp_85">85dp</dimen>
+    <dimen name="dp_87">87dp</dimen>
+    <dimen name="dp_120">120dp</dimen>
+    <dimen name="dp_124">124dp</dimen>
+    <dimen name="dp_176">176dp</dimen>
+    <dimen name="dp_202">202dp</dimen>
+    <dimen name="dp_236">236dp</dimen>
+    <dimen name="dp_279">279dp</dimen>
+    <dimen name="dp_318">318dp</dimen>
+    <dimen name="dp_365">365dp</dimen>
+    <dimen name="dp_421">421dp</dimen>
+
 </resources>

@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <application>
+        <activity
+            android:name=".activity.ExchangeHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ActivityExchangeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.GiftExchangeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WingStars" />
+        <activity
+            android:name=".activity.CountHistoryActivity"
+            android:exported="false" />
+    </application>
+
 </manifest>

@@ -76,7 +76,7 @@ class PopularityAdapter     // -------------------------------------------
                 .apply(
                     RequestOptions.bitmapTransform(
                         RoundedCorners(
-                            DPUtils.Companion.dpToPx(10f, context).toInt()
+                            DPUtils.Companion.dpToPx(20f, context).toInt()
                         )
                     ))
                 .into(binding.image)

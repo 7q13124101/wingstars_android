@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity
+            android:name="com.wingstars.home.activity.TodayItineraryDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.wingstars.member.activity.EventHighlightsActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.wingstars.member.activity.FashionableAtmosphereActivity"
+            android:exported="false" />
+        <activity android:name=".activity.LatestNewsActivity"
+            android:allowEmbedded="false"/>
+        <activity
+            android:name=".activity.LatestNewsDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.NotificationActivity"
+            android:exported="false"/>
+    </application>
 
 </manifest>

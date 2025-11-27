@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <com.lihang.ShadowLayout
+        android:layout_marginTop="@dimen/dp_10"
+        app:hl_strokeWith="@dimen/dp_10"
+        app:hl_cornerRadius="@dimen/dp_20"
+        app:hl_shadowHidden="false"
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="279dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_above="@id/bottom"
+                android:src="@mipmap/ic_demo1"
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <RelativeLayout
+                android:id="@+id/bottom"
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_44">
+                <FrameLayout
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:id="@+id/jersey"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:background="@drawable/ic_pink_circle">
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:src="@mipmap/ic_member_jersey"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </FrameLayout>
+
+                <TextView
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:textColor="@color/color_4A5565"
+                    android:textSize="@dimen/sp_12"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/jersey"
+                    android:text="台鋼雄鷹主場球衣"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
+        </RelativeLayout>
+
+         
+    </com.lihang.ShadowLayout>
+</LinearLayout>

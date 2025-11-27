@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:id="@+id/fl_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pt_10"
+        android:padding="4dp">
+
+        <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="15dp"
+        app:cardBackgroundColor="@color/white"
+        android:layout_margin="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/pt_10"
+            android:paddingTop="@dimen/pt_7"
+            android:paddingRight="@dimen/pt_10"
+            android:paddingBottom="@dimen/pt_7">
+
+            <RelativeLayout
+                android:id="@+id/rl_icon"
+                android:layout_width="@dimen/pt_50"
+                android:layout_height="@dimen/pt_60">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_goods_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/bg_round_image"
+                    app:shapeAppearanceOverlay="@style/CornersRounded" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@color/half_black"
+                    app:shapeAppearanceOverlay="@style/CornersRounded" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/count_have_used"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="@dimen/pt_10"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="@dimen/pt_56"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_exchange_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingTop="@dimen/pt_8"
+                    android:text="王柏融【2024鷹勇戰士主題實戰球衣】"
+                    android:textColor="@color/color_101828"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_exchange_period1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:text="兌換期間：2025/05/02 12：00 ～ 2025/05/04 18：00"
+                    android:textColor="@color/color_101828"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+            <FrameLayout
+                android:id="@+id/label"
+                android:layout_width="80dp"
+                android:layout_height="72dp"
+                android:layout_gravity="top|end"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_corner_badge_yellow"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/BadgeTopRightCorner" />
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/pt_5">
+
+                    <TextView
+                        android:id="@+id/label_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="星朋友"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp"
+                        android:includeFontPadding="false"
+                        android:lineSpacingExtra="0dp"
+                        android:lineSpacingMultiplier="0.9"
+                        android:layout_gravity="top|end"
+                        android:gravity="center"
+                        android:paddingTop="4dp"/>
+                </FrameLayout>
+            </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+
+
+    </FrameLayout>
+</layout>

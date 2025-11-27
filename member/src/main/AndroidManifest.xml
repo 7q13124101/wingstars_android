@@ -1,4 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <application>
+        <activity
+            android:name=".activity.AtmosphereFashionDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.FashionableAtmosphereActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MemberDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MemberIntroductionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.FanInteractionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.RankExplanationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PopularityRankingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.EventHighlightsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ExclusiveSongsDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ExclusiveSongsListActivity"
+            android:exported="false" />
+    </application>
+
 </manifest>

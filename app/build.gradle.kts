@@ -1,3 +1,5 @@
+import org.gradle.internal.extensions.core.extra
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.company.wingstars"
-    compileSdk = 36
+    compileSdk = rootProject.extra["compileSdkVersion"] as Int
 
     defaultConfig {
         applicationId = "com.company.wingstars"
-        minSdk = 28
-        targetSdk = 36
+        minSdk = rootProject.extra["minSdkVersion"] as Int
+        targetSdk = rootProject.extra["compileSdkVersion"] as Int
         versionCode = 1
         versionName = "1.0"
 
@@ -65,11 +67,14 @@ dependencies {
     implementation(project(":calendar"))
     implementation(project(":user"))
     implementation(project(":member"))
+    implementation(project(":login"))
     implementation ("com.github.lihangleo2:ShadowLayout:3.3.3")
     //沉浸式状态栏 基础依赖包，必须要依赖
     implementation("com.geyifeng.immersionbar:immersionbar:3.2.2")
     //kotlin扩展（可选）
     implementation("com.geyifeng.immersionbar:immersionbar-ktx:3.2.2")
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("io.github.scwang90:refresh-layout-kernel:3.0.0-alpha")
     implementation("io.github.scwang90:refresh-header-classics:3.0.0-alpha")
     implementation("io.github.scwang90:refresh-footer-classics:3.0.0-alpha")

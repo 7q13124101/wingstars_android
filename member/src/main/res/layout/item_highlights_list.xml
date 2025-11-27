@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_20"
+    android:orientation="vertical">
+
+    <com.lihang.ShadowLayout
+        app:clickable="false"
+        android:id="@+id/image"
+        android:layout_width="150dp"
+        android:layout_height="93dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/dp_20"
+        app:hl_cornerRadius="@dimen/dp_8"
+        app:hl_strokeColor="@color/white"
+        app:hl_strokeWith="@dimen/dp_1">
+
+        <ImageView
+            android:id="@+id/images"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:padding="@dimen/dp_1"
+            android:scaleType="fitXY"
+            android:src="@mipmap/ic_member_page_background" />
+
+        <LinearLayout
+            android:id="@+id/ll_play_now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_limited_user"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/black"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dp_5"
+                android:paddingTop="@dimen/dp_2"
+                android:paddingRight="@dimen/dp_5"
+                android:paddingBottom="@dimen/dp_2"
+                android:text="@string/play_now"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </com.lihang.ShadowLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="93dp"
+        android:layout_marginStart="@dimen/dp_14"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_toEndOf="@id/image"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_highlights_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:text="Wing Stars - 恬魚生日會 活動花絮"
+            android:textColor="@color/color_101828"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="2025.09.11"
+            android:textColor="@color/color_4A5565"
+            android:textSize="@dimen/sp_14" />
+    </LinearLayout>
+</RelativeLayout>

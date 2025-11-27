@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/color_pink_20" /> <!-- 背景色 -->
+    <item
+        android:width="90dp"
+        android:height="62dp"
+        android:gravity="center"
+        android:drawable="@drawable/ws_logo">
+    </item>
+</layer-list>

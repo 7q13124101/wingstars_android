@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".activity.EventDetailsActivity">
+
+    <com.wingstars.base.view.TitleView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="活動詳情" />
+
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nsv_top"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:orientation="vertical">
+
+            <com.lihang.ShadowLayout
+                android:layout_width="362dp"
+                android:layout_height="452dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_20"
+                app:clickable="false"
+                app:hl_cornerRadius="16dp"
+                app:hl_strokeColor="@color/white"
+                app:hl_strokeWith="1dp">
+
+                <ImageView
+                    android:id="@+id/iv_dialog_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="1dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_xin_dong_shi_ke" />
+
+                <!--                <LinearLayout-->
+                <!--                    android:id="@+id/ll_play_now"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_gravity="bottom|end"-->
+                <!--                    android:layout_marginEnd="@dimen/dp_5"-->
+                <!--                    android:layout_marginBottom="@dimen/dp_5">-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/tv_limited_user"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="match_parent"-->
+                <!--                        android:background="@color/black"-->
+                <!--                        android:gravity="center"-->
+                <!--                        android:paddingLeft="@dimen/dp_5"-->
+                <!--                        android:paddingTop="@dimen/dp_2"-->
+                <!--                        android:paddingRight="@dimen/dp_5"-->
+                <!--                        android:paddingBottom="@dimen/dp_2"-->
+                <!--                        android:text="llllllll"-->
+                <!--                        android:textColor="@color/white"-->
+                <!--                        android:textSize="@dimen/sp_16"-->
+                <!--                        android:textStyle="bold" />-->
+                <!--                </LinearLayout>-->
+            </com.lihang.ShadowLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_20"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/iv_image_type"
+                        android:layout_width="63dp"
+                        android:layout_height="72dp"
+                        android:src="@drawable/ic_star"
+                        android:translationY="@dimen/dp_neg_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/tv_title_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_30"
+                            android:text="WS 女孩《全員簽名會》WS 女孩《全員簽名會》"
+                            android:textColor="@color/color_000000"
+                            android:textSize="@dimen/sp_20"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_activity_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_8"
+                            android:text="活動日期"
+                            android:textColor="@color/color_DE9DBA"
+                            android:textSize="@dimen/sp_16"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="2025/9/26 (五) 15:15"
+                    android:textColor="@color/color_6A7282"
+                    android:textSize="@dimen/sp_14" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginBottom="@dimen/dp_30"
+                    android:background="@color/color_E5E7EB" />
+
+                <TextView
+                    android:id="@+id/tv_activity_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:text="活動地點"
+                    android:textColor="@color/color_DE9DBA"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="臺北大巨蛋 G5號門外集合 "
+                    android:textColor="@color/color_6A7282"
+                    android:textSize="@dimen/sp_14" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginBottom="@dimen/dp_30"
+                    android:background="@color/color_E5E7EB" />
+
+                <LinearLayout
+                    android:id="@+id/ll_event_information"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_event_information"
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="活動資訊"
+                        android:textColor="@color/color_DE9DBA"
+                        android:textSize="@dimen/sp_16"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/iv_event_information"
+                        android:layout_width="@dimen/dp_20"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:src="@drawable/arrow_up_01" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_event_information_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:text=" ＊簽名對象：WS 全員 26 位女孩\n
+＊簽名規範：僅限套組肖像球，需署名（限 5 字以內，也不可以表情符號呈現），不得攜帶其他物品要求簽名\n\n
+>> 報到與領取方式\n
+＊時間：2025/9/26（五）14:15–15:00\n（最終須於15:00 前完成領取並進入排隊隊伍，逾時不候，逾時視同放棄，恕不補簽）\n
+＊地點：臺北大巨蛋 G5號門外\n
+＊憑證：本人持「商城訂單畫面」（不得截圖），現場核對姓名＋身分證件後，領取商品＋簽名券\n
+＊提醒：逾時未領取簽名券者，視為放棄簽名資格，商品將於活動後寄送"
+                    android:textColor="@color/color_6A7282"
+                    android:textSize="@dimen/sp_14" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginBottom="@dimen/dp_30"
+                    android:background="@color/color_E5E7EB" />
+
+                <LinearLayout
+                    android:id="@+id/ll_precautions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_precautions"
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="注意事項"
+                        android:textColor="@color/color_DE9DBA"
+                        android:textSize="@dimen/sp_16"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/iv_precautions"
+                        android:layout_width="@dimen/dp_20"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:src="@drawable/arrow_up_01" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_precautions_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:text=" ＊活動資格僅限購買人本人使用，禁止轉讓或攜伴。\n
+＊簽名券不得轉讓、兌換現金，遺失恕不補發。\n
+＊請提前報到整隊，逾時或遲到導致活動結束，視同放棄，恕不補辦。\n
+＊簽名僅限本套組商品，不接受其他物品。\n
+＊主辦單位保有活動最終解釋、修改、異動與中止之權利。"
+                    android:textColor="@color/color_6A7282"
+                    android:textSize="@dimen/sp_14" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

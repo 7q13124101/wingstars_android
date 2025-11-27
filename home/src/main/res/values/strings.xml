@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="member">成員</string>
+    <string name="popularity_ranking">人氣排行</string>
+    <string name="photo_frame">拍照圖框</string>
+    <string name="high_lights">應援花絮</string>
+    <string name="exclusive_support">專屬應援</string>
+    <string name="support_fashion">氛圍時尚</string>
+    <string name="girl_introduction">女孩介紹</string>
+    <string name="support_popularity_list">應援人氣榜</string>
+
+    <string name="pull_down_to_refresh">下拉重整</string>
+    <string name="release_to_refresh">釋放重整</string>
+    <string name="last_update">最後更新 M-d HH:mm</string>
+    <string name="refreshing">正在重整…</string>
+    <string name="refresh_success">重整成功</string>
+    <string name="refresh_failed">重整失敗</string>
+
+    //氛圍時尚
+    <string name="style_outfits"> 氛圍時尚 </string>
+    <string name="none_style_outfits">無數據</string>
+
+    //最新消息
+    <string name="latest_news">最新消息</string>
+
+
+
+    //活動花絮
+    <string name="event_highlights">活動花絮</string>
+    <string name="wonderful_videos">精彩影片</string>
+    <string name="flash_short_film">快閃短片</string>
+    <string name="daily_vlog">日常Vlog</string>
+    <string name="none_highlights">您尚未有花絮</string>
+
+    //專屬歌曲
+    <string name="exclusive_songs">專屬歌曲</string>
+    <string name="none_songs">您尚未有專屬歌曲</string>
+    <string name="play_now">…現在播放</string>
+
+    <string-array name="rank_list">
+        <item>應援人氣榜</item>
+        <item>潛力新星榜</item>
+        <item>星迷心動榜</item>
+        <item>人氣銷售榜</item>
+    </string-array>
+</resources>
