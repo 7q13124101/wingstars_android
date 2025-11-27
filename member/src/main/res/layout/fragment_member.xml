@@ -44,7 +44,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/dp_20"
                             android:text="@string/member"
-                            android:textColor="@color/white"
+                            android:textColor="@color/color_101828"
                             android:textSize="@dimen/sp_16" />
                     </RelativeLayout>
 

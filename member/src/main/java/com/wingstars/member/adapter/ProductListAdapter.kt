@@ -14,7 +14,6 @@ import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
 import com.wingstars.member.databinding.ItemCategoryListBinding
 import com.wingstars.member.databinding.ItemGirlIntoductionListBinding
-import com.wingstars.member.databinding.ItemGuideListBinding
 import com.wingstars.member.databinding.ItemProductListBinding
 import com.wingstars.member.databinding.ItemSmallCommodityListBinding
 import com.wingstars.member.view.CircleWithBorderTransformation

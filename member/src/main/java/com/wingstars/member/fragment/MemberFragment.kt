@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.base.base.BaseFragment
+import com.wingstars.member.activity.AtmosphereFashionDetailsActivity
 import com.wingstars.member.activity.EventHighlightsActivity
 import com.wingstars.member.activity.ExclusiveSongsListActivity
 import com.wingstars.member.activity.FanInteractionActivity
@@ -24,7 +25,8 @@ import com.wingstars.member.adapter.GirlIntroductionAdapter
 import com.wingstars.member.adapter.SupportFashionAdapter
 import com.wingstars.member.databinding.FragmentMemberBinding
 
-class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.OnClickListener {
+class MemberFragment : BaseFragment(), View.OnClickListener,
+    PopularityAdapter.onPopularityRankingListener, SupportFashionAdapter.onSupportFashionListener {
     private lateinit var viewModel: MemberViewModel
     private lateinit var binding: FragmentMemberBinding
     private var statusBarHeight = 0
@@ -62,7 +64,7 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
             )
             binding.chartList.adapter = adapter
 
-            var adapter1 = SupportFashionAdapter(requireActivity(), it)
+            var adapter1 = SupportFashionAdapter(requireActivity(), it,this)
             binding.supportFashionList.layoutManager = LinearLayoutManager(
                 requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false
@@ -93,9 +95,6 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
         view.setLayoutParams(layoutParams);
     }
 
-    override fun ClickItem(position: Int) {
-
-    }
 
     override fun onClick(v: View?) {
         val id = v?.id
@@ -142,5 +141,23 @@ class MemberFragment : BaseFragment(), PopularityAdapter.onItemListener, View.On
                 )
             )
         }
+    }
+
+    override fun onPopularityRankingClickItem(position: Int) {
+        startActivity(
+            Intent(
+                requireActivity(),
+                PopularityRankingActivity::class.java
+            )
+        )
+    }
+
+    override fun onSupportFashionClickItem(position: Int) {
+        startActivity(
+            Intent(
+                requireActivity(),
+                AtmosphereFashionDetailsActivity::class.java
+            )
+        )
     }
 }

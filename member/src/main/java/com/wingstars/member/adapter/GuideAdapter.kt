@@ -12,7 +12,7 @@ import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
 import com.wingstars.member.databinding.ItemCategoryListBinding
 import com.wingstars.member.databinding.ItemGirlIntoductionListBinding
-import com.wingstars.member.databinding.ItemGuideListBinding
+import com.wingstars.member.databinding.ItemGuideListsBinding
 import com.wingstars.member.view.TopRoundedCornersTransformation
 
 
@@ -25,7 +25,7 @@ class GuideAdapter     // -------------------------------------------
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
         val binding =
-            ItemGuideListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemGuideListsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return NormalItemViewHolder(binding)
     }
 
@@ -70,7 +70,7 @@ class GuideAdapter     // -------------------------------------------
 
 
     // -------------------------------------------
-    inner class NormalItemViewHolder(private val binding: ItemGuideListBinding) :
+    inner class NormalItemViewHolder(private val binding: ItemGuideListsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun binding(position: Int) {

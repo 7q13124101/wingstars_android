@@ -14,7 +14,6 @@ import com.wingstars.member.R
 import com.wingstars.member.bean.TakePhotosMembersListBean
 import com.wingstars.member.databinding.ItemPoplarityListBinding
 import com.wingstars.member.databinding.ItemRankListBinding
-import com.wingstars.member.databinding.ItemRankingListBinding
 import com.wingstars.member.databinding.ItemTakePhotoMemberListBinding
 
 class TakePhotoMemberListAdapter     // -------------------------------------------

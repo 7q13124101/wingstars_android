@@ -13,7 +13,7 @@ import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
 import com.wingstars.member.databinding.ItemPoplarityListBinding
 import com.wingstars.member.databinding.ItemRankListBinding
-import com.wingstars.member.databinding.ItemRankingListBinding
+
 
 class RankListAdapter     // -------------------------------------------
     (

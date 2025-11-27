@@ -17,7 +17,7 @@ class PopularityAdapter     // -------------------------------------------
     (
     private val context: Context,
     private var dataList: MutableList<Int>?,
-    private val listener: onItemListener
+    private val listener: onPopularityRankingListener
 ) : RecyclerView.Adapter<PopularityAdapter.NormalItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
@@ -65,7 +65,7 @@ class PopularityAdapter     // -------------------------------------------
     inner class NormalItemViewHolder(private val binding: ItemPoplarityListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun binding(position: Int, listeners: onItemListener) {
+        fun binding(position: Int, listeners: onPopularityRankingListener) {
             if (position==0){
                 setMarginLeft(binding.item, DPUtils.Companion.dpToPx(20f,context).toInt())
             }else{
@@ -80,6 +80,7 @@ class PopularityAdapter     // -------------------------------------------
                         )
                     ))
                 .into(binding.image)
+            binding.item.setOnClickListener { listeners.onPopularityRankingClickItem(position) }
         }
 
 
@@ -100,7 +101,7 @@ class PopularityAdapter     // -------------------------------------------
 
 
 
-    interface onItemListener {
-        fun ClickItem(position: Int)
+    interface onPopularityRankingListener {
+        fun onPopularityRankingClickItem(position: Int)
     }
 }

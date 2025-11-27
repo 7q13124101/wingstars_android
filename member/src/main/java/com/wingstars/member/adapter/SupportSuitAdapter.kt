@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
-import com.wingstars.member.databinding.ItemSupportFashionListBinding
-import com.wingstars.member.databinding.ItemSupportSuitListBinding
+import com.wingstars.member.databinding.ItemSupportSuitListsBinding
 import com.wingstars.member.view.TopRoundedCornersTransformation
 
 
@@ -27,7 +26,7 @@ class SupportSuitAdapter     // -------------------------------------------
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
         val binding =
-            ItemSupportSuitListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemSupportSuitListsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return NormalItemViewHolder(binding)
     }
 
@@ -67,7 +66,7 @@ class SupportSuitAdapter     // -------------------------------------------
 
 
     // -------------------------------------------
-    inner class NormalItemViewHolder(private val binding: ItemSupportSuitListBinding) :
+    inner class NormalItemViewHolder(private val binding: ItemSupportSuitListsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun binding(position: Int) {

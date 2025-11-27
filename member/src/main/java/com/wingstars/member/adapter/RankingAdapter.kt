@@ -9,11 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
-import com.wingstars.member.databinding.ItemRankingListBinding
-import com.wingstars.member.databinding.ItemSupportFashionListBinding
+import com.wingstars.member.databinding.ItemRankingListsBinding
 import com.wingstars.member.view.CircleWithBorderTransformation
-import com.wingstars.member.view.TopRoundedCornersTransformation
-
 
 class RankingAdapter     // -------------------------------------------
     (
@@ -23,7 +20,7 @@ class RankingAdapter     // -------------------------------------------
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
         val binding =
-            ItemRankingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemRankingListsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return NormalItemViewHolder(binding)
     }
 
@@ -63,7 +60,7 @@ class RankingAdapter     // -------------------------------------------
 
 
     // -------------------------------------------
-    inner class NormalItemViewHolder(private val binding: ItemRankingListBinding) :
+    inner class NormalItemViewHolder(private val binding: ItemRankingListsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val borderColor =  context.getColor(R.color.color_DE9DBA)
         val toInt = DPUtils.dpToPx(1f, context)
