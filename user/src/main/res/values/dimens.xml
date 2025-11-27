@@ -3,6 +3,8 @@
 
     <dimen name="dp_6">6dp</dimen>
     <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_346">346dp</dimen>
+    <dimen name="dp_494">494dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_30">30dp</dimen>
     <dimen name="dp_20">20dp</dimen>
@@ -11,4 +13,57 @@
     <dimen name="dp_65">65dp</dimen>
     <dimen name="sp_18">18sp</dimen>
     <dimen name="dp_74">74dp</dimen>
+
+
+    <dimen name="dp_402">402dp</dimen>
+    <dimen name="dp_11">11dp</dimen>
+    <dimen name="dp_48">48dp</dimen>
+    <dimen name="dp_23">23dp</dimen>
+    <dimen name="dp_17">17dp</dimen>
+    <dimen name="dp_320">320dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
+    <dimen name="dp_0">0dp</dimen>
+    <dimen name="dp_267">267dp</dimen>
+    <dimen name="dp_362">362dp</dimen>
+    <dimen name="dp_241">241dp</dimen>
+    <dimen name="dp_123">123dp</dimen>
+    <dimen name="dp_144">144dp</dimen>
+    <dimen name="dp_15">15dp</dimen>
+    <dimen name="dp_210">210dp</dimen>
+
+    <dimen name="dp_42">42dp</dimen>
+    <dimen name="dp_70">70dp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="sp_13">13sp</dimen>
+    <dimen name="dp_160">160dp</dimen>
+
+    <dimen name="sp_14">14sp</dimen>
+    <dimen name="dp_513">513dp</dimen>
+    <dimen name="dp_489">489dp</dimen>
+    <dimen name="dp_163">163sp</dimen>
+    <dimen name="dp_28">28dp</dimen>
+    <dimen name="dp_319">319dp</dimen>
+    <dimen name="dp_9">9dp</dimen>
+    <dimen name="dp_35">35dp</dimen>
+    <dimen name="dp_1">1dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
+    <dimen name="dp_22">22dp</dimen>
+    <dimen name="pt_14">14dp</dimen>
+    <dimen name="dp_172">172dp</dimen>
+    <dimen name="dp_100">100dp</dimen>
+    <dimen name="dp_136">136dp</dimen>
+    <dimen name="dp_352">352dp</dimen>
+    <dimen name="dp_50">50dp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+    <dimen name="dp_87">87dp</dimen>
+    <dimen name="dp_393">393dp</dimen>
+    <dimen name="dp_481">481dp</dimen>
+    <dimen name="dp_127">127dp</dimen>
+    <dimen name="dp_4">4dp</dimen>
+    <dimen name="dp_56">56dp</dimen>
+    <dimen name="dp_140">140dp</dimen>
+    <dimen name="dp_54">54dp</dimen>
+    <dimen name="dp_169">169dp</dimen>
+    <dimen name="dp_47">47dp</dimen>
+    <dimen name="dp_370">370dp</dimen>
 </resources>

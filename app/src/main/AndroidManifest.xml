@@ -11,18 +11,55 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_wing_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.WingStars">
+        android:theme="@style/Theme.WingStars"
+        tools:replace="android:theme,android:label">
+
         <activity
-            android:name=".main.MainActivity"
+            android:name=".SplashActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.WingStars">
+            android:theme="@style/Theme.WingStars.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".main.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.WingStars">
+            <intent-filter>
+                <action android:name="com.company.wingstars.OPEN_MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Welcome -->
+        <activity
+            android:name=".main.WelcomeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WingStars.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.wingstars.login.LoginActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WingStars.NoActionBar" />
+
+        <activity
+            android:name="com.wingstars.register.RegisterActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WingStars.Register"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity
+            android:name="com.wingstars.resetpsd.ResetPsdActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WingStars.Register"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name="com.wingstars.register.registrationterms.RegistrationTermsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WingStars.Register"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
     </application>
 
 </manifest>

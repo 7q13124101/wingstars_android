@@ -1,0 +1,8 @@
+<!-- res/drawable/bg_login_layout.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+  <solid android:color="@color/white"/>
+  <!-- nếu cần bo góc -->
+  <corners
+      android:topLeftRadius="30dp"
+      android:topRightRadius="30dp"/>
+</shape>

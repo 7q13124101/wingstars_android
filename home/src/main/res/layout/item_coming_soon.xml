@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.lihang.ShadowLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_coming_soon"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    app:hl_cornerRadius="20dp"
+    app:hl_shadowColor="#2a000000"
+    app:hl_shadowLimit="20dp"
+    app:hl_shadowOffsetX="0dp"
+    app:hl_shadowOffsetY="7dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="176dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:background="@drawable/bg_card_coming_soon">
+            <ImageView
+                android:id="@+id/imgComingSoon"
+                android:layout_width="136dp"
+                android:layout_height="136dp"
+                android:src="@drawable/placeholder_calendar"
+                android:scaleType="centerCrop"
+                tools:ignore="ContentDescription" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+                <TextView
+                    android:id="@+id/tvComingSoonTitle"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="25-26 WS女孩應援毛巾｜天鷹款"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_tittle"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+                <TextView
+                    android:id="@+id/tvComingSoonTime"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="預購時間：10/27 12:00 ~ 10/31 24:00"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/text_subtitle"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</com.lihang.ShadowLayout>

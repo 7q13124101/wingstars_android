@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@drawable/bg_dialog_round"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_393">
+
+    <ImageView
+        android:id="@+id/btn_close"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_cancel_icon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user_notification_settings"
+        android:textColor="@color/color_101828"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="開啟通知，隨時掌握啦啦隊最新動態！"
+        android:textColor="@color/color_6A7282"
+        android:textSize="14sp"
+        android:layout_marginTop="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="24dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="APP 訊息通知"
+            android:textSize="16sp"
+            android:textColor="#4A5565" />
+
+        <ImageView
+            android:id="@+id/toggles_off"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_toggles_off"
+            android:layout_marginEnd="8dp"/>
+
+        <ImageView
+            android:id="@+id/toggles_on"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_toggles_on"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+    <View
+        android:layout_marginTop="@dimen/dp_17"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_D1D5DC" />
+</LinearLayout>

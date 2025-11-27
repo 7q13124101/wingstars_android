@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".register.registrationterms.RegistrationTermsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pt_42"
+            android:background="@color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/register_termss"
+                android:textColor="@color/text_tittle"
+                android:textStyle="normal"
+                android:textSize="@dimen/sp_16" />
+        <RelativeLayout
+            android:id="@+id/iv_close"
+            android:layout_width="@dimen/pt_70"
+            android:layout_height="match_parent">
+            <ImageView
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:src="@drawable/ic_arrow_left"
+                android:visibility="visible" />
+        </RelativeLayout>
+        </RelativeLayout>
+
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/ns_register"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingRight="@dimen/dp_20">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="註冊WingStars APP 需要提供哪些資訊？"
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_app_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_8"
+                        android:text="感謝您註冊WingStars APP！為了確保帳戶安全、提供完整的球迷服務，以及符合相關法規要求，我們需要您提供部分個人資訊。這些資訊將僅用於官方授權範圍內，並依照WingStars隱私權政策及服務條款進行保護與管理，不會用於未經授權的用途。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_16"
+                        android:text="我們蒐集的資訊與其用途如下："
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="確保您能順利使用 卡籍、票務、購物、會員點數等服務，並確保權益一致。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_F5F5F5"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingTop="@dimen/pt_10"
+                    android:paddingRight="@dimen/dp_20"
+                    android:paddingBottom="@dimen/pt_10">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="一、身分證字號、居留證編號"
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingRight="@dimen/dp_20">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="用途："
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="作為唯一識別資訊，確保每位會員的帳戶安全，防止重複註冊或冒用他人身份。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="遵循台灣購票實名制規範，確保票務安全與公平性。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:text="隱私保障："
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/txtcmd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="您的身分證字號、居留證編號不會公開顯示，亦不會提供給第三方，僅用於帳戶識別與官方用途。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/txtcmd2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="註冊後，該資訊無法修改，請確保輸入正確資訊。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_F5F5F5"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingTop="@dimen/pt_10"
+                    android:paddingRight="@dimen/dp_20"
+                    android:paddingBottom="@dimen/pt_10">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="二、密碼"
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingRight="@dimen/dp_20">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="用途："
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="確保帳戶安全，防止未經授權的存取。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="允許您安全登入 APP，使用購票、購物及其他會員專屬服務。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:text="設定要求："
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="至少8 個字元，建議包含英文字母、數字與符號的組合，以提升安全性。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/txtcmd3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="請勿與其他平台使用相同密碼，避免潛在的資安風險。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:text="隱私保障："
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="密碼以加密方式儲存，不會被任何人直接存取或查看。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/txtcmd4"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="忘記密碼時，可透過手機號碼進行重設。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+                </LinearLayout>
+
+                <!-- 三、手機號碼 -->
+                <LinearLayout
+                    android:id="@+id/llPhoneHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/color_F5F5F5"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingTop="@dimen/pt_10"
+                    android:paddingRight="@dimen/dp_20"
+                    android:paddingBottom="@dimen/pt_10">
+
+                    <TextView
+                        android:id="@+id/tvPhoneTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="三、手機號碼"
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llPhoneCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingRight="@dimen/dp_20">
+
+                    <!-- 用途： -->
+                    <TextView
+                        android:id="@+id/tvPhonePurposeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="用途："
+                        android:textColor="@color/text_tittle"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvPhonePurpose1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableStart="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="作為帳戶驗證機制，在註冊時發送驗證碼確保帳戶安全。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvPhonePurpose2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableStart="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="用於密碼找回，當您忘記密碼時，可透過手機號碼進行重設。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvPhonePurpose3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableStart="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="讓您即時收到 購票成功通知、交易提醒、會員權益資訊，不錯過重要消息。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <!-- 隱私保障： -->
+                    <TextView
+                        android:id="@+id/tvPhonePrivacyLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:text="隱私保障："
+                        android:textColor="@color/text_tittle"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvPhonePrivacy1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableStart="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="除非您自行提供，否則您的手機號碼不會對外公開或與其他會員共享。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvPhonePrivacy2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableStart="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="註冊後，手機號碼可變更，但須重新驗證。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+                </LinearLayout>
+
+                <!-- 四、電子信箱 -->
+                <LinearLayout
+                    android:id="@+id/llEmailHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/color_F5F5F5"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingTop="@dimen/pt_10"
+                    android:paddingRight="@dimen/dp_20"
+                    android:paddingBottom="@dimen/pt_10">
+
+                    <TextView
+                        android:id="@+id/tvEmailTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="四、電子信箱"
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llEmailCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingRight="@dimen/dp_20">
+
+                    <!-- 用途： -->
+                    <TextView
+                        android:id="@+id/tvEmailPurposeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="用途："
+                        android:textColor="@color/text_tittle"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvEmailPurpose1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableStart="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="作為帳戶驗證與重要通知管道，確保您的帳戶資訊安全。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvEmailPurpose2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableStart="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="用於 購票、購物、會員活動通知及官方優惠資訊的發送。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <!-- 隱私保障： -->
+                    <TextView
+                        android:id="@+id/tvEmailPrivacyLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:text="隱私保障："
+                        android:textColor="@color/text_tittle"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvEmailPrivacy1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableStart="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="您的電子信箱不會公開顯示，也不會提供給第三方使用。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvEmailPrivacy2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableStart="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="註冊後，信箱無法修改，請務必填寫常用的電子信箱。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+                </LinearLayout>
+
+
+                <!-- 五、出生日期 -->
+                <LinearLayout
+                    android:id="@+id/llBirthHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_F5F5F5"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingTop="@dimen/pt_10"
+                    android:paddingRight="@dimen/dp_20"
+                    android:paddingBottom="@dimen/pt_10">
+
+                    <TextView
+                        android:id="@+id/tvBirthTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="五、出生日期"
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llBirthCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingRight="@dimen/dp_20">
+
+                    <TextView
+                        android:id="@+id/tvBirthPurposeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="用途："
+                        android:textColor="@color/text_tittle"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvBirthPurpose1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="確保符合 APP 年齡限制規範，部分服務可能對特定年齡層開放。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvBirthPurpose2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="作為會員專屬生日禮或特別活動邀請的依據，提供更個性化的服務。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvBirthPrivacyLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:text="隱私保障："
+                        android:textColor="@color/text_tittle"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvBirthPrivacy1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="除非您自行提供，否則您的出生日期不會對外公開或與其他會員共享。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvBirthPrivacy2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="註冊後，該資訊無法修改，請確保填寫正確。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+                </LinearLayout>
+
+                <!-- 六、性別 -->
+                <LinearLayout
+                    android:id="@+id/llGenderHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_F5F5F5"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingTop="@dimen/pt_10"
+                    android:paddingRight="@dimen/dp_20"
+                    android:paddingBottom="@dimen/pt_10">
+
+                    <TextView
+                        android:id="@+id/tvGenderTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="六、性別"
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llGenderCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingRight="@dimen/dp_20">
+
+                    <TextView
+                        android:id="@+id/tvGenderPurposeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="用途："
+                        android:textColor="@color/text_tittle"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvGenderPurpose1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="讓我們提供更適合您的個人化內容與推薦。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvGenderPurpose2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="可能用於特定會員活動，讓您獲得更符合需求的專屬服務。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvGenderPrivacyLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:text="隱私保障："
+                        android:textColor="@color/text_tittle"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvGenderPrivacy1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="此資訊僅作為內部分析與服務優化，不會對外公開或與第三方共享。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+                </LinearLayout>
+
+                <!-- 隱私權保護承諾 -->
+                <LinearLayout
+                    android:id="@+id/llPrivacyCommitHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_F5F5F5"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingTop="@dimen/pt_10"
+                    android:paddingRight="@dimen/dp_20"
+                    android:paddingBottom="@dimen/pt_10">
+
+                    <TextView
+                        android:id="@+id/tvPrivacyCommitTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="隱私權保護承諾"
+                        android:textColor="@color/text_tittle"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llPrivacyCommitCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingRight="@dimen/dp_20">
+
+                    <TextView
+                        android:id="@+id/tvPrivacyCommit1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="我們不會將您的個人資訊提供給第三方，除非依法規要求或獲得您的同意。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvPrivacyCommit2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="所有個人資訊均採取加密儲存，並符合 個人資料保護法及相關資安規範。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tv_privacy_policy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pt_4"
+                        android:drawableLeft="@drawable/icon_dots_black"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="您可隨時透過隱私權政策了解更多資訊，並管理您的個人資料使用權限。"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tvPrivacyContact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:text="若有任何疑問，請聯絡WingStars官方客服，我們將竭誠為您服務！"
+                        android:textColor="@color/text_subtitle"
+                        android:textSize="@dimen/sp_14" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</layout>

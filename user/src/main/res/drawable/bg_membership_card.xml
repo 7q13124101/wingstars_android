@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Lớp 1: Nền bo góc (Tùy chọn, có thể bỏ nếu không cần nền) -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="8dp" />
+            <!-- Đặt màu nền cho thẻ nếu muốn, ví dụ màu trắng -->
+            <solid android:color="@android:color/white" />
+        </shape>
+    </item>
+
+    <!-- Lớp 2: Ảnh Bitmap của bạn -->
+    <!-- Thêm một chút padding để ảnh không bị tràn ra sát viền -->
+    <item
+        android:left="1dp"
+        android:right="1dp"
+        android:top="1dp"
+        android:bottom="1dp">
+        <bitmap
+            android:src="@drawable/ic_membership_card"
+            android:gravity="center" />
+    </item>
+
+    <!-- Lớp 3: Mặt nạ bo góc (quan trọng nhất) -->
+    <!-- Lớp này sẽ che đi các góc vuông của ảnh bitmap ở trên -->
+    <item>
+        <shape android:shape="rectangle">
+            <!-- Góc bo của mặt nạ phải khớp với góc bo của nền -->
+            <corners android:radius="8dp" />
+
+            <!-- Không có nền (trong suốt) -->
+            <solid android:color="@android:color/transparent" />
+
+            <!-- Tạo một đường viền có cùng màu với nền của màn hình -->
+            <!-- Ví dụ, nếu màn hình có nền trắng (#FFFFFF), dùng màu trắng -->
+            <!-- Độ dày (width) phải đủ lớn để che góc vuông -->
+        </shape>
+    </item>
+
+</layer-list>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@drawable/bg_dialog_round"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_393">
+
+    <ImageView
+        android:id="@+id/btn_close"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_modal_dialogs" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="刪除帳號後您的相關資料和訊息將徹底刪除掉無法恢復，請您確認是否刪除該帳號。"
+        android:textColor="@color/color_101828"
+        android:textSize="@dimen/sp_16"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_20">
+
+        <EditText
+            android:id="@+id/edt_mobile"
+            android:layout_width="@dimen/dp_136"
+            android:layout_height="@dimen/dp_47"
+            android:background="@drawable/bg_button_off"
+            android:padding="12dp"
+            android:text="是"
+            android:gravity="center"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_14" />
+        <View
+            android:layout_width="20dp"
+            android:layout_height="1dp"/>
+
+        <EditText
+            android:id="@+id/edt_mobile1"
+            android:layout_width="@dimen/dp_136"
+            android:layout_height="@dimen/dp_47"
+            android:background="@drawable/bg_button_on"
+            android:padding="12dp"
+            android:text="否"
+            android:gravity="center"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_14"/>
+    </LinearLayout>
+
+</LinearLayout>

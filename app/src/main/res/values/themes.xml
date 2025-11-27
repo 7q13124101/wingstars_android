@@ -12,4 +12,15 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
     </style>
+
+    <style name="Theme.WingStars.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/color_pink_20</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.WingStars</item>
+    </style>
+    <style
+        name="Theme.Wingstars"
+        parent="Theme.MaterialComponents.Light.NoActionBar">
+    </style>
+
 </resources>

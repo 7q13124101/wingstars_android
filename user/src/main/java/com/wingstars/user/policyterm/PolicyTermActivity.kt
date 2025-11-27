@@ -1,0 +1,106 @@
+package com.wingstars.user.policyterm
+
+import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextUtils
+import android.text.style.LeadingMarginSpan
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowInsetsControllerCompat
+import com.wingstars.user.BaseApplication
+import com.wingstars.user.R
+import com.wingstars.user.databinding.ActivityUserTermsBinding
+
+class PolicyTermActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityUserTermsBinding
+    private val viewModel: PolicyTermModel by viewModels()
+    private var tag = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.isAppearanceLightStatusBars = true
+//        window.statusBarColor = getColor(R.color.color_DE9DBA)
+
+        binding = ActivityUserTermsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        tag = intent?.getStringExtra("tag").toString()
+        initView()
+//        initRefresh()
+    }
+
+    private fun initView() {
+        binding.ivBack.setOnClickListener { finish() }
+        if (tag == "PrivacyPolicy") {
+            viewModel.getPrivacyPolicyJson(this)
+            binding.txtTitle.text = getString(R.string.user_privacy_policy)
+            binding.txtTitleTop.visibility = View.VISIBLE
+            binding.txtContentTop.visibility = View.VISIBLE
+            viewModel.privacyPolicyData.observe(this) { privacyPolicyResponse ->
+                if (privacyPolicyResponse != null) {
+                    binding.txtTitleTop.text = privacyPolicyResponse.top_title ?: ""
+                    binding.txtContentTop.text = privacyPolicyResponse.top_title_content ?: ""
+                    val list = privacyPolicyResponse.policy_data
+                    if (!list.isNullOrEmpty()) {
+                        binding.llPolicyContent.removeAllViews()
+                        for (dataDTO in list) {
+                            val inflate = LayoutInflater.from(this)
+                                .inflate(R.layout.item_policy, binding.llPolicyContent, false)
+                            val tvPolicyTitle: TextView? = inflate.findViewById(R.id.tv_policy_title)
+                            val tvPolicyContent: TextView? = inflate.findViewById(R.id.tv_policy_content)
+                            tvPolicyContent?.layoutParams?.let { lp ->
+                                if (lp is LinearLayout.LayoutParams) {
+                                    lp.rightMargin = BaseApplication.shared()?.dp2px(5F)?.toInt() ?: 0
+                                    lp.topMargin = BaseApplication.shared()?.dp2px(5F)?.toInt() ?: 0
+                                    lp.bottomMargin = BaseApplication.shared()?.dp2px(5F)?.toInt() ?: 0
+                                    tvPolicyContent.layoutParams = lp
+                                }
+                            }
+                            if (dataDTO.title.isNullOrEmpty()) {
+                                tvPolicyTitle?.visibility = View.GONE
+                            } else {
+                                tvPolicyTitle?.visibility = View.VISIBLE
+                                tvPolicyTitle?.text = dataDTO.title
+                            }
+                            val safeContent = dataDTO.content ?: ""
+                            tvPolicyContent?.text = formatNumberedText(safeContent)
+                            binding.llPolicyContent.addView(inflate)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private fun formatNumberedText(raw: String?): CharSequence {
+        if (raw.isNullOrEmpty()) return ""
+
+        val ssb = SpannableStringBuilder(raw)
+        val regex = Regex("(?m)^\\d+\\.\\s")
+        regex.findAll(raw).forEach { m ->
+            ssb.setSpan(
+                LeadingMarginSpan.Standard(0, dp(24)),
+                m.range.first,
+                raw.indexOf('\n', m.range.first).takeIf { it >= 0 } ?: raw.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        return ssb
+    }
+
+    private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
+
+//    private fun initRefresh() {
+//        binding.srlUserRecord.setOnRefreshListener {
+//            binding.srlUserRecord.finishRefresh()
+//        }
+//    }
+
+
+}

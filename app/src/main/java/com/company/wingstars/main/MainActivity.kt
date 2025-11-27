@@ -9,8 +9,8 @@ import com.company.wingstars.R
 import com.company.wingstars.databinding.ActivityMainBinding
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.calendar.fragment.CalendarFragment
-import com.wingstars.count.CountFragment
-import com.wingstars.home.HomeFragment
+import com.wingstars.count.fragment.CountFragment
+import com.wingstars.home.fragment.HomeFragment
 import com.wingstars.member.fragment.MemberFragment
 import com.wingstars.user.UserFragment
 

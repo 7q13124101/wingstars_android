@@ -4,4 +4,10 @@
     <string name="count">點數</string>
     <string name="calendar">日曆</string>
     <string name="user">會員</string>
+
+    <string name="refresh_failed" translatable="false">重整失敗</string>
+    <string name="refresh_success">重整成功</string>
+    <string name="refreshing">正在重整…</string>
+    <string name="release_to_refresh">釋放重整</string>
+    <string name="last_update">最後更新 M-d HH:mm</string>
 </resources>

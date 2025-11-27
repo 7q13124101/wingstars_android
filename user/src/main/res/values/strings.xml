@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="user_refresh_failed" translatable="false">重整失敗</string>
+    <string name="user_refresh_success">重整成功</string>
+    <string name="user_pull_down_to_refresh">下拉重整</string>
+    <string name="user_refreshing">正在重整…</string>
+    <string name="user_release_to_refresh">釋放重整</string>
+    <string name="user_last_update">最後更新 M-d HH:mm</string>
+
+    <string name="user_cs_amount">累積消費金額</string>
+    <string name="user_single_transaction">單筆消費</string>
+    <string name="user_shopping_credits">回饋購物金</string>
+    <string name="user_medal_of_achievement">成就勳章</string>
+    <string name="user_first_time_supporting">初次應援</string>
+    <string name="user_sing_in">簽到達人</string>
+    <string name="user_support_star">聲援之星</string>
+    <string name="user_membership_management">會員管理</string>
+    <string name="user_cheering_mode">歡呼模式</string>
+    <string name="user_membership_levels">會員等級</string>
+    <string name="user_member_information">會員資料</string>
+    <string name="user_notification_settings">通知設定</string>
+    <string name="user_support_services">支援服務</string>
+    <string name="user_store_locations">營業門市</string>
+    <string name="user_faq">常見問題</string>
+    <string name="user_c_customer_service">聯絡客服</string>
+    <string name="user_share_app">分享APP</string>
+    <string name="user_other">其他</string>
+    <string name="user_terms_of_use">使用者條款</string>
+    <string name="user_privacy_policy">隱私條款</string>
+    <string name="user_log_out">登出帳號</string>
+    <string name="user_error_network">請檢查您的網路連線，確保裝置已連接至網路後再重試。</string>
+    <string name="user_mem_bar_code">會員條碼</string>
+    <string name="user_tsg_bar_code">Wing Stars 會員條碼</string>
+    <string name="user_add_mobile_barcode">前往會員資料，新增手機條碼載具</string>
+    <string name="user_hint_code_larger">點擊放大條碼，掃描更方便！</string>
+    <string name="user_tsg_phone_code">手機條碼載具</string>
+    <string name="user_hint_code_smaller">點擊條碼縮小</string>
+
+    <string name="user_phone_number">手機號碼</string>
+    <string name="user_id_number">身分證字號</string>
+    <string name="user_birthday">生日</string>
+    <string name="user_gender">性別</string>
+    <string name="user_fav_member">喜歡的成員</string>
+    <string name="user_n_entered_yet">尚未輸入</string>
+    <string name="user_password">密碼</string>
+    <string name="user_member_account">會員帳號</string>
+    <string name="user_per_d_m_account">永久刪除會員帳號</string>
+    <string name="user_edit_m_profile">編輯會員資料</string>
+    <string name="user_select_fav_member">選擇喜歡的成員</string>
+    <string name="hint_user_first">第一順位</string>
+    <string name="hint_user_second">第二順位</string>
+    <string name="hint_user_third">第三順位</string>
+    <string name="user_save">儲存</string>
+    <string name="user_wingstars_member">Wing Stars 成員</string>
+    <string name="user_enter_your_mobile">輸入您的手機條碼載具</string>
+    <string name="user_change_password">修改會員密碼</string>
+    <string name="user_main_visitors">會員</string>
+    <string name="user_delete_account">刪除帳號</string>
+    <string name="user_points_task">點數任務</string>
+    <string name="user_register_login">註冊登入</string>
+    <string name="user_download_and_install">下載安裝</string>
+    <string name="main_no_data">暫無數據</string>
+    <string name="txt_share_app">嗨！📣 想推薦你一起體驗 Wing Stars 啦啦隊 APP 🎀 隨時掌握最新消息、參加粉絲互動，還能收集...</string>
+</resources>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_title_home">首頁</string>
+    <string name="title_review">賽事回顧</string>
+    <string name="title_recent_events">近期賽事</string>
+    <string name="title_hot_product">熱銷商品</string>
+    <string name="home_product">前往商城</string>
+    <string name="home_official_film">前往Youtube</string>
+    <string name="home_latest_news">前往官網</string>
+
+    <string name="app_name">台鋼獵鷹</string>
+    <string name="welcome_login">歡迎登入</string>
+    <string name="login_hint">如果您曾是獵鷹商城會員，請點選 會員綁定</string>
+    <string name="hint_phone">請輸入手機</string>
+    <string name="hint_psd">請輸入密碼</string>
+    <string name="remember_psd">記住帳號</string>
+    <string name="login">登入</string>
+    <string name="login_close">關閉</string>
+    <string name="account">帳號</string>
+    <string name="forget_psd">忘記密碼</string>
+    <string name="register">註冊</string>
+    <string name="register_terms">個人資料</string>
+    <string name="register_termss">註冊條款</string>
+    <string name="user_privacy_policy">隱私條款</string>
+
+
+    <string name="user_register">註冊會員</string>
+    <string name="why_identity_information">為何需要身分資料</string>
+    <string name="why_birthday_information">為何需要生日資料</string>
+    <string name="error_phone_format">請輸入正確手機號碼格式</string>
+    <string name="error_format">請輸入正確格式</string>
+    <string name="error_empty">請輸入帳號與密碼</string>
+    <string name="error_phone_login">您尚未註冊，請先註冊會員</string>
+    <string name="error_psd_not_match">兩次輸入的密碼不相符，請重新確認</string>
+
+
+    <string name="error_psd_empty">請輸入密碼</string>
+    <string name="note_phone_code">輸入您的手機號碼，驗證碼將會傳送到您的手機。</string>
+    <string name="send_phone_code">發送驗證碼</string>
+    <string name="hint_phone_code">請輸入驗證碼</string>
+    <string name="hint_input_new_psd">請輸入新密碼</string>
+    <string name="hint_input_new_psd_again">請再次輸入相同密碼</string>
+    <string name="error_two_psd">兩次輸入的密碼不相符，請重新確認</string>
+    <string name="note_right_psd">輸入您的新密碼，密碼限 8~20 個字元，必須包含至少一個英文字母及數字。</string>
+    <string name="register_member_account_task">我已詳細閱讀且同意 會員帳號移轉作業。</string>
+    <string name="delete_account">刪除帳號</string>
+
+    <string name="name">姓名</string>
+    <string name="hint_name">請輸入姓名</string>
+    <string name="phone">帳號</string>
+    <string name="hint_phone_register">請輸入手機號碼</string>
+    <string name="phone_code">驗證碼</string>
+    <string name="hint_phone_code_register">請輸入手機驗證碼</string>
+    <string name="password">密碼</string>
+    <string name="note_register_psd">密碼限 8~20 個字元，必須包含至少一個英文字母及數字。</string>
+    <string name="register_psd_confirm">密碼確認</string>
+    <string name="confirm">確定</string>
+    <string name="next_step">下一步</string>
+    <string name="email">E-mail</string>
+    <string name="hint_email">請輸入常用 E-mail</string>
+    <string name="error_email">請輸入正確E-mail格式</string>
+    <string name="error_mobile_code">發票開立格式不正確</string>
+    <string name="id_card">身分證字號、居留證編碼</string>
+    <string name="hint_id_card">請輸入身分證字號</string>
+    <string name="error_id_card">請輸入正確身分證字號</string>
+    <string name="birthday">生日</string>
+    <string name="hint_birthday">年/月/日</string>
+    <string name="note_birthday">*可獲得生日專屬禮，註冊後將無法修改</string>
+    <string name="sex">性別</string>
+    <string name="sex_male">男</string>
+    <string name="privacy_policy">隱私條款</string>
+    <string name="user_agreement">使用者條款</string>
+
+    <string name="sex_female">女</string>
+    <string name="sex_secrecy">保密</string>
+    <string name="note_register_1">我已詳細閱讀且同意</string>
+    <string name="note_register_2">會員服務條款</string>
+    <string name="note_register_3">，並同意放棄契約審閱期，且授權貴公司於條款目的範圍內，進行本人之個人資料搜集、處裡及利用。</string>
+    <!--    <string name="note_register">我已詳細閱讀且同意 會員服務條款，並同意放棄契約審閱期，且授權貴公司於條款目的範圍內，進行本人之個人資料搜集、處裡及利用。</string>-->
+    <string name="note_register">我已詳細閱讀且同意 隱私條款 及 使用者條款，並同意放棄契約審閱期，且授權貴公司於條款目的範圍內，進行本人之個人資料搜集、處裡及利用。</string>
+    <string name="register_finish_1">恭喜加入獵鷹大家庭！</string>
+    <string name="register_finish_2">您已成功加入獵鷹籃球APP。別忘了立即登入，查看\n即將到來的比賽日程，參與更多互動活動！</string>
+    <string name="goto_login">前往登入</string>
+    <string name="goto_connect">前往</string>
+    <string name="bluetooth_close">藍牙功能未開啟，請開啟藍牙功能</string>
+
+
+    <string name="main_tab_home">首頁</string>
+    <string name="main_tab_calendar">賽程</string>
+    <string name="main_tab_count">點數</string>
+    <string name="main_tab_ticket">票匣</string>
+    <string name="main_tab_user">會員</string>
+    <string name="main_visitors">訪客</string>
+</resources>

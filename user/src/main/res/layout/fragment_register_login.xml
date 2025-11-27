@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".user.frequentlyaskedquestions.registerandlogin.RegisterAndLoginFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_F5F5F5">
+
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+            android:id="@+id/srl_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:ignore="MissingConstraints">
+
+            <com.scwang.smart.refresh.header.ClassicsHeader
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/color_E2518D"
+                app:srlTextFailed="@string/user_refresh_failed"
+                app:srlTextFinish="@string/user_refresh_success"
+                app:srlTextPulling="@string/user_pull_down_to_refresh"
+                app:srlTextRefreshing="@string/user_refreshing"
+                app:srlTextRelease="@string/user_release_to_refresh"
+                app:srlTextUpdate="@string/user_last_update" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_20"
+                android:orientation="vertical">
+
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/nsv_register_and_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:visibility="gone">
+
+                    <com.wingstars.user.SuperExpandleListView
+                        android:id="@+id/rv_register_and_login_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@null"
+                        android:dividerHeight="@dimen/dp_0"
+                        android:groupIndicator="@null"
+                        android:listSelector="@android:color/transparent"
+                        android:nestedScrollingEnabled="true"
+                        android:scrollbars="none"
+                        tools:ignore="MissingClass" />
+                </androidx.core.widget.NestedScrollView>
+
+                <TextView
+                    android:id="@+id/ll_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:text="@string/main_no_data"
+                    android:textColor="@color/color_101828"
+                    android:textSize="@dimen/sp_14"
+                    android:visibility="gone"/>
+            </LinearLayout>
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

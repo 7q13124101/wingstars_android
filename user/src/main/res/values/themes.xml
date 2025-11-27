@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="UpLoadingDialog" parent="android:Theme.Dialog">
+<!--        //是否去除边框-->
+        <item name="android:windowFrame">@null</item>
+<!--        //是否浮在activity上-->
+        <item name="android:windowIsFloating">true</item>
+<!--        //窗口是否设置为半透明-->
+        <item name="android:windowIsTranslucent">false</item>
+<!--        //是否去除标题-->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+<!--        //是否模糊（为false 窗口就不会有那种透明的效果了）-->
+        <item name="android:backgroundDimEnabled">false</item>
+<!--        //背景颜色及透明度，整个窗口的背景，包扣边框和内部-->
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="CustomDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+    <style name="CustomBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+    </style>
+
+    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_dialog_round</item>
+    </style>
+    <style name="TabTextStyle" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+    </style>
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+</resources>

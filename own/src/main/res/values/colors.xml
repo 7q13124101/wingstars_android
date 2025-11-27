@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
     <color name="color_101828">#101828</color>
+    <color name="color_F5F5F5">#F5F5F5</color>
+    <!--    điểm đầu bên trái-->
+    <color name="color_DE9DBA">#DE9DBA</color>
+    <!--    điểm cuối bên trái-->
+    <color name="color_99FFE8A3">#99FFE8A3</color>
+    <!--    điểm giữa đầu-->
+    <color name="color_EFC3AF">#EFC3AF</color>
+    <!--    điểm giữa thứ 2-->
+    <color name="color_E7B0B4">#E7B0B4</color>
+
+    <color name="color_E6BCC0">#E5B1C0</color>
+    <color name="color_ECC5C4">#EEC8C3</color>
+    <color name="color_F6E0C6">#F7E0C7</color>
 </resources>

@@ -39,6 +39,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        dataBinding = true
     }
 }
 
@@ -66,9 +67,16 @@ dependencies {
     implementation(project(":calendar"))
     implementation(project(":user"))
     implementation(project(":member"))
+    implementation(project(":login"))
     implementation ("com.github.lihangleo2:ShadowLayout:3.3.3")
     //沉浸式状态栏 基础依赖包，必须要依赖
     implementation("com.geyifeng.immersionbar:immersionbar:3.2.2")
     //kotlin扩展（可选）
     implementation("com.geyifeng.immersionbar:immersionbar-ktx:3.2.2")
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("io.github.scwang90:refresh-layout-kernel:3.0.0-alpha")
+    implementation("io.github.scwang90:refresh-header-classics:3.0.0-alpha")
+    implementation("io.github.scwang90:refresh-footer-classics:3.0.0-alpha")
+
 }

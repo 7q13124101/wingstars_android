@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/dp_16">
+    <TextView
+        android:id="@+id/tv_policy_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text=""
+        android:textStyle="bold"
+        android:textSize="@dimen/pt_14"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_20"
+        android:paddingRight="@dimen/dp_20"
+        android:background="@color/color_F5F5F5"
+        android:paddingBottom="@dimen/dp_10"
+        android:textColor="@color/color_101828"/>
+    <TextView
+        android:id="@+id/tv_policy_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_20"
+        android:paddingRight="@dimen/dp_20"
+        android:textStyle="normal"
+        android:text=""
+        android:textSize="@dimen/pt_14"
+
+        android:textColor="@color/color_101828" />
+</LinearLayout>
