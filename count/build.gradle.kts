@@ -57,4 +57,5 @@ dependencies {
     implementation("io.github.scwang90:refresh-header-classics:2.1.0")
     implementation("io.github.scwang90:refresh-footer-classics:2.1.0")
     implementation("com.github.lihangleo2:ShadowLayout:3.4.0")
+    implementation("io.github.youth5201314:banner:2.2.2")
 }
