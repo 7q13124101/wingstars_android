@@ -12,7 +12,8 @@ import java.util.ArrayList
 
 class CountNewDetailAdapter(
     private val context: Context,
-    private var dataList: MutableList<CountNewDetailViewModel>?
+    private var dataList: MutableList<CountNewDetailViewModel>?,
+    private val onItemClick: (CountNewDetailViewModel) -> Unit
 ) : RecyclerView.Adapter<CountNewDetailAdapter.CountNewDetailViewHolder>() {
 
     private var originalList: ArrayList<CountNewDetailViewModel> = ArrayList()
@@ -68,7 +69,7 @@ class CountNewDetailAdapter(
             dataList!!.addAll(originalList)
         } else {
             for (item in originalList) {
-                if (item.title?.contains(text, ignoreCase = true) == true) {
+                if (item.title.contains(text, ignoreCase = true) == true) {
                     dataList!!.add(item)
                 }
             }
@@ -93,6 +94,10 @@ class CountNewDetailAdapter(
             Glide.with(context)
                 .load(item.image)
                 .into(binding.ivGoodsImage)
+
+            binding.root.setOnClickListener {
+                onItemClick(item)
+                }
         }
         fun setMarginLeft(view: View, left: Int) {
             val params = view.layoutParams

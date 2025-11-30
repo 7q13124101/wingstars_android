@@ -15,6 +15,9 @@
         <activity
             android:name=".activity.CountHistoryActivity"
             android:exported="false" />
+        <activity
+            android:name=".activity.GiftDetailsActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>

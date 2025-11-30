@@ -20,6 +20,7 @@
     <string name="count_none_records">目前沒有紀錄</string>
     <string name="confirm">確定</string>
     <string name="count_gift_exchange">贈品兌換</string>
+    <string name="count_exchange">活動兌換</string>
     <string name="my_count">我的點數</string>
     <string name="enter_exchange_name">輸入兌換名稱</string>
     <string name="count_none_gift">目前沒有紀錄</string>
@@ -38,13 +39,14 @@
     <string name="gift_details">贈品兌換詳情</string>
     <string name="count_special_offer">特別優惠</string>
 
-    <string name="exchange_points">兌換期間</string>
+    <string name="exchange_points">兌換點數</string>
+    <string name="time_points">兌換期間</string>
     <string name="usage_status">兌換對象</string>
     <string name="exchange_cap">兌換上限</string>
     <string name="total_nums">全站數量</string>
     <string name="exchange_object">兌換地點</string>
     <string name="usage_rules">使用規則</string>
-    <string name="precautions">注意事項</string>
+    <string name="precautions">兌換地點</string>
     <string name="redeem_immediately">立即兌換</string>
 
 
@@ -54,7 +56,6 @@
     <string name="refreshing">正在重整…</string>
     <string name="refresh_success">重整成功</string>
     <string name="refresh_failed" translatable="false">重整失敗</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="et_otp">輸入手機驗證碼</string>
 
 </resources>

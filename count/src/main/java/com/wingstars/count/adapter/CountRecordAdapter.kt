@@ -4,14 +4,17 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.wingstars.count.R
 import com.wingstars.count.databinding.ItemCountRecordsBinding
 import com.wingstars.count.viewmodel.CountRecordsItemViewModel
 import java.util.ArrayList
 
 class CountRecordAdapter(
     private val context: Context,
-    private var dataList: MutableList<CountRecordsItemViewModel>?
+    private var dataList: MutableList<CountRecordsItemViewModel>?,
+    private val isUsageRecord: Boolean = false
 ) : RecyclerView.Adapter<CountRecordAdapter.CountRecordViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountRecordViewHolder {
@@ -65,8 +68,17 @@ class CountRecordAdapter(
             binding.tvTitle.text = item.title
             binding.tvInfo.text = item.info
             binding.tvTime.text = item.time
-            binding.tvObtained.text = item.count
 
+            if (isUsageRecord) {
+                binding.tvObtained.setTextColor(ContextCompat.getColor(context, R.color.color_101828))
+                val pointText = if (item.count.startsWith("-")) item.count else "-${item.count}"
+                binding.tvObtained.text = pointText
+
+            } else {
+                binding.tvObtained.setTextColor(ContextCompat.getColor(context, R.color.color_E2518D))
+                val pointText = if (item.count.startsWith("+")) item.count else "+${item.count}"
+                binding.tvObtained.text = pointText
+            }
         }
 
         fun setMarginLeft(view: View, left: Int) {
