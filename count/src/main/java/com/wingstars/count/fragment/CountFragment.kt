@@ -25,12 +25,16 @@ import android.graphics.drawable.ColorDrawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.view.Gravity
 import android.view.Window
+import android.widget.RadioButton
+import androidx.core.widget.NestedScrollView
 import com.wingstars.count.activity.ActivityExchangeActivity
 import com.wingstars.count.activity.CountHistoryActivity
 import com.wingstars.count.activity.ExchangeHistoryActivity
 import com.wingstars.count.activity.GiftExchangeActivity
 import com.wingstars.count.databinding.DialogPublicPopupBoxBinding
+import com.wingstars.count.databinding.DialogPublicPopupSortTypeBinding
 
 class CountFragment : BaseFragment(){
     private lateinit var viewModel : CountViewModel
@@ -40,6 +44,8 @@ class CountFragment : BaseFragment(){
     private var select =0
     private var eventType ="limited"
     private lateinit var adapter: CountSingleAdapter
+    private var fullDataList: List<CountSingleItemViewModel> = ArrayList()
+    private var isExpanded = false
 
     private data class CheckInDay(
         val reward: String,
@@ -69,6 +75,13 @@ class CountFragment : BaseFragment(){
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        isExpanded = false
+        if (fullDataList.isNotEmpty()) {
+            updateListDisplay()
+        }
+    }
 
 
     private fun initView() {
@@ -139,6 +152,37 @@ class CountFragment : BaseFragment(){
             startActivity(intent)
         }
 
+        binding.tvList.setOnClickListener {
+            showSortDialog()
+        }
+
+        binding.tvViewMore.setOnClickListener {
+            isExpanded = true
+            updateListDisplay()
+        }
+
+        binding.top.setOnClickListener{
+            binding.flTop.smoothScrollTo(0, 0)
+        }
+
+        binding.flTop.setOnScrollChangeListener { _: NestedScrollView, _: Int, scrollY: Int, _: Int, _: Int ->
+            if (scrollY > 300) {
+                if (binding.top.visibility != View.VISIBLE) {
+                    binding.top.visibility = View.VISIBLE
+                    binding.top.alpha = 0f
+                    binding.top.animate().alpha(1f).setDuration(200).start()
+                }
+            } else {
+                if (binding.top.visibility == View.VISIBLE && binding.top.alpha == 1f) {
+                    binding.top.animate()
+                        .alpha(0f)
+                        .setDuration(200)
+                        .withEndAction { binding.top.visibility = View.GONE }
+                        .start()
+                }
+            }
+        }
+
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.VANILLA_ICE_CREAM){
             binding.root.setOnApplyWindowInsetsListener{ v, insets ->
@@ -160,9 +204,12 @@ class CountFragment : BaseFragment(){
             CountSingleItemViewModel("安之軒 10/03 生日留言","到官方FB專頁，在生日貼文留言祝福，... ","2025年10月3日", "10 點", R.drawable.ic_count_im, R.drawable.bg_count_deep),
             CountSingleItemViewModel("2025 WS LOGO卡冊 Get!","凡購買10月份指定商品即可獲得點數! ","2025年4月2日 ～ 2025年12月31日", "20 點", R.drawable.ic_count_im, R.drawable.bg_count_deep),
             CountSingleItemViewModel("2025 WS 女孩卡冊 Get!","凡購買11月份指定商品即可獲得點數! ","2025年4月2日 ～ 2025年12月31日", "20 點", R.drawable.ic_count_im, R.drawable.bg_count_deep),
+            CountSingleItemViewModel("YouTube 星迷","訂閱官方 YouTube 頻道","2025年10月3日", "1 點", R.drawable.ic_count_im, R.drawable.bg_count_deep),
             CountSingleItemViewModel("YouTube 星迷","訂閱官方 YouTube 頻道","2025年10月3日", "1 點", R.drawable.ic_count_im, R.drawable.bg_count_deep)
         )
-        adapter.setList(testData)
+        fullDataList = testData
+        isExpanded = false
+        updateListDisplay()
     }
 
     private fun setupCheckInUI() {
@@ -257,6 +304,70 @@ class CountFragment : BaseFragment(){
         }
 
         dialog.show()
+    }
+
+    private fun showSortDialog() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogBinding = DialogPublicPopupSortTypeBinding.inflate(LayoutInflater.from(requireContext()))
+
+        dialog.setContentView(dialogBinding.root)
+
+        dialog.window?.apply {
+            val displayMetrics = resources.displayMetrics
+            val screenHeight = displayMetrics.heightPixels
+            val halfScreenHeight = (screenHeight * 0.5).toInt()
+            setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                halfScreenHeight
+            )
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setGravity(Gravity.BOTTOM)
+        }
+
+        dialogBinding.ivCloseDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogBinding.rgSort.setOnCheckedChangeListener { group, checkedId ->
+            val selectedRadioButton = group.findViewById<RadioButton>(checkedId)
+            if (selectedRadioButton != null) {
+                val selectedText = selectedRadioButton.text.toString()
+                binding.tvList.text = selectedText
+            }
+
+            when (checkedId) {
+                R.id.rb_sort_date_new_to_old -> { }
+                R.id.rb_sort_date_old_to_new -> { }
+                R.id.rb_sort_points_high_to_low -> { }
+                R.id.rb_sort_points_low_to_high -> { }
+            }
+
+            dialogBinding.root.postDelayed({
+                if (isAdded && activity != null && !requireActivity().isFinishing && !requireActivity().isDestroyed && dialog.isShowing) {
+                    dialog.dismiss()
+                }
+            }, 500)
+        }
+        dialog.show()
+    }
+
+    private fun updateListDisplay() {
+        val displayList = if (isExpanded) {
+            binding.tvViewMore.visibility = View.GONE
+            fullDataList
+        } else {
+            if (fullDataList.size > 3) {
+                binding.tvViewMore.visibility = View.VISIBLE
+                fullDataList.take(3)
+            } else {
+                binding.tvViewMore.visibility = View.GONE
+                fullDataList
+            }
+        }
+
+        // Cập nhật vào Adapter
+        adapter.setList(displayList.toMutableList())
     }
 
 

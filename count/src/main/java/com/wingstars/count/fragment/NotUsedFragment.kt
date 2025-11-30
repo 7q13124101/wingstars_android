@@ -50,8 +50,8 @@ class NotUsedFragment : Fragment() {
 
     private fun loadData() {
         val mockData = listOf(
-            CouponViewModel("1", "2025 WS單曲寫真壓克力鑰匙圈", "兌換期間：2025/10/28 13:00 ~ 2025/11/09 12:00",R.drawable.ic_count_gift_4),
-            CouponViewModel("2", "2025 WS單曲寫真女孩貼紙包", "兌換期間：2025/10/28 13:00 ~ 2025/11/09 12:00",R.drawable.ic_count_gift_2),
+            CouponViewModel("1", "2025 WS單曲寫真壓克力鑰匙圈", "兌換期間：2025/10/28 13:00 ~ 2025/11/09 12:00",R.drawable.ic_count_gift_1),
+            CouponViewModel("2", "2025 WS單曲寫真女孩貼紙包", "兌換期間：2025/10/28 13:00 ~ 2025/11/09 12:00",R.drawable.ic_count_gift_3),
             CouponViewModel("3", "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "兌換期間：2025/10/28 13:00 ~ 2025/11/09 12:00",R.drawable.bg_round_image),
             CouponViewModel("4", "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）", "兌換期間：2025/10/28 13:00 ~ 2025/11/09 12:00",R.drawable.bg_round_image),
         )

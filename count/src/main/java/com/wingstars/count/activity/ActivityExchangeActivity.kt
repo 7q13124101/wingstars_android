@@ -83,7 +83,13 @@ class ActivityExchangeActivity : AppCompatActivity() {
         dialog.setContentView(dialogBinding.root)
 
         dialog.window?.apply {
-            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val displayMetrics = resources.displayMetrics
+            val screenHeight = displayMetrics.heightPixels
+            val halfScreenHeight = (screenHeight * 0.5).toInt()
+            setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                halfScreenHeight
+            )
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             setGravity(Gravity.BOTTOM)
         }
@@ -110,7 +116,7 @@ class ActivityExchangeActivity : AppCompatActivity() {
                 if (!isFinishing && !isDestroyed && dialog.isShowing) {
                     dialog.dismiss()
                 }
-            }, 200)
+            }, 500)
         }
         dialog.show()
     }

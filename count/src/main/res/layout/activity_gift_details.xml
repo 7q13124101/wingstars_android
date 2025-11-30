@@ -21,7 +21,6 @@
         app:srlTextRelease="@string/release_to_refresh"
         app:srlTextUpdate="@string/last_update" />
         <RelativeLayout
-            android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/color_F5F5F5"
@@ -38,8 +37,7 @@
     <RelativeLayout
     android:id="@+id/rl_top"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/pt_42"
-   >
+    android:layout_height="@dimen/pt_30">
         <RelativeLayout
             android:id="@+id/img_back"
             android:layout_width="@dimen/pt_70"
@@ -51,7 +49,7 @@
         android:layout_width="@dimen/pt_15"
         android:layout_height="@dimen/pt_15"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/pt_20"
+        android:layout_marginStart="@dimen/pt_10"
         android:src="@drawable/ic_back_black" />
         </RelativeLayout>
     <TextView
@@ -125,14 +123,8 @@
             app:cardCornerRadius="@dimen/pt_20">-->
        <com.lihang.ShadowLayout
            android:layout_marginBottom="@dimen/pt_86"
-           android:layout_marginTop="@dimen/pt_12"
-           android:layout_marginLeft="@dimen/pt_6"
-           android:layout_marginRight="@dimen/pt_6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:hl_cornerRadius="@dimen/dp_12"
-        app:hl_shadowColor="@color/color_19000000"
-        app:hl_shadowLimit="5dp">
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
            <FrameLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content">
@@ -146,12 +138,12 @@
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
                        android:orientation="horizontal">
-                       <ImageView
-                           android:id="@+id/left"
-                           android:layout_gravity="center"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:src="@drawable/home_04"/>
+<!--                       <ImageView-->
+<!--                           android:id="@+id/left"-->
+<!--                           android:layout_gravity="center"-->
+<!--                           android:layout_width="wrap_content"-->
+<!--                           android:layout_height="wrap_content"-->
+<!--                           android:src="@drawable/home_04"/>-->
                        <FrameLayout
                            android:layout_marginLeft="@dimen/pt_9"
                            android:layout_width="@dimen/pt_120"
@@ -168,20 +160,20 @@
                                    android:layout_height="match_parent"
                                    android:background="@drawable/gift_details_image_background" />
                            </com.youth.banner.Banner>
-                           <!--    <ImageView
+                               <ImageView
                                    android:layout_margin="@dimen/pt_1"
                                    android:id="@+id/merchandise"
                                    android:scaleType="fitXY"
                                    android:layout_width="match_parent"
-                                   android:layout_height="match_parent"/>-->
+                                   android:layout_height="match_parent"/>
                        </FrameLayout>
-                       <ImageView
-                           android:id="@+id/right"
-                           android:layout_marginLeft="@dimen/pt_9"
-                           android:layout_gravity="center"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:src="@drawable/home_05"/>
+<!--                       <ImageView-->
+<!--                           android:id="@+id/right"-->
+<!--                           android:layout_marginLeft="@dimen/pt_9"-->
+<!--                           android:layout_gravity="center"-->
+<!--                           android:layout_width="wrap_content"-->
+<!--                           android:layout_height="wrap_content"-->
+<!--                           android:src="@drawable/home_05"/>-->
                    </LinearLayout>
 
 <!--                   <TextView-->
@@ -200,48 +192,89 @@
 
                    <TextView
                        android:id="@+id/coupon_name"
-                       android:gravity="center_horizontal"
-                       android:layout_marginLeft="@dimen/pt_20"
-                       android:layout_marginRight="@dimen/pt_20"
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
                        android:textSize="@dimen/sp_20"
+                       android:layout_marginTop="@dimen/pt_20"
                        android:textColor="@color/color_101828"
                        android:textStyle="bold"/>
 
                    <RelativeLayout
-                       android:layout_marginTop="@dimen/pt_30"
-                       android:layout_marginLeft="@dimen/pt_20"
-                       android:layout_marginRight="@dimen/pt_20"
                        android:layout_width="match_parent"
-                       android:layout_height="wrap_content">
+                       android:layout_height="wrap_content"
+                       android:layout_marginTop="@dimen/pt_10"
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:paddingStart="20dp"
+                       android:paddingEnd="20dp"
+                       android:paddingTop="12dp"
+                       android:paddingBottom="12dp"
+                       android:background="@drawable/bg_rounded_light_pink">
+
                        <TextView
                            android:id="@+id/point_costs"
-                           android:textSize="@dimen/sp_14"
-                           android:textColor="@color/color_E2518D"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
-                           android:text="@string/exchange_points"/>
-
+                           android:layout_centerVertical="true"
+                           android:text="@string/exchange_points"
+                           android:textColor="@color/color_101828"
+                           android:textSize="@dimen/sp_14" />
                        <TextView
                            android:id="@+id/point_cost"
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"
+                           android:layout_toEndOf="@id/point_costs"
                            android:layout_toRightOf="@id/point_costs"
+                           android:layout_centerVertical="true"
+                           android:gravity="end|right"
                            android:ellipsize="end"
-                           android:gravity="right"
                            android:singleLine="true"
+                           android:text="499 點"
                            android:textColor="@color/color_101828"
                            android:textSize="@dimen/sp_14"
                            android:textStyle="bold" />
                    </RelativeLayout>
 
+                   <LinearLayout
+                       android:layout_marginTop="@dimen/pt_15"
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:orientation="vertical"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content">
+                       <TextView
+                           android:id="@+id/tv_coupon_times"
+                           android:textSize="@dimen/sp_14"
+                           android:textColor="@color/color_E2518D"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="@string/time_points"
+                           android:layout_marginBottom="@dimen/pt_7"/>
 
-                   <RelativeLayout
-                       android:id="@+id/use_state"
-                       android:layout_marginTop="@dimen/pt_16"
-                       android:layout_marginLeft="@dimen/pt_20"
-                       android:layout_marginRight="@dimen/pt_20"
+                       <TextView
+                           android:id="@+id/tv_coupon_time"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:ellipsize="end"
+                           android:singleLine="true"
+                           android:textColor="@color/color_101828"
+                           android:textSize="@dimen/sp_14" />
+                   </LinearLayout>
+
+                   <View
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginTop="@dimen/pt_7"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:background="@drawable/dashed_line"
+                       android:layout_width="match_parent"
+                       android:layout_height="5dp"/>
+
+
+                   <LinearLayout
+                       android:layout_marginTop="@dimen/pt_15"
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:orientation="vertical"
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content">
                        <TextView
@@ -250,25 +283,32 @@
                            android:textColor="@color/color_E2518D"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
-                           android:text="@string/usage_status"/>
+                           android:text="@string/usage_status"
+                           android:layout_marginBottom="@dimen/pt_7"/>
                        <TextView
                            android:textStyle="bold"
                            android:id="@+id/status"
                            android:ellipsize="end"
                            android:singleLine="true"
-                           android:layout_toRightOf="@id/state"
                            android:textColor="@color/color_101828"
-                           android:text="未使用"
-                           android:gravity="right"
                            android:textSize="@dimen/sp_14"
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"/>
-                   </RelativeLayout>
+                   </LinearLayout>
 
-                   <RelativeLayout
-                       android:layout_marginTop="@dimen/pt_16"
-                       android:layout_marginLeft="@dimen/pt_20"
-                       android:layout_marginRight="@dimen/pt_20"
+                   <View
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginTop="@dimen/pt_7"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:background="@drawable/dashed_line"
+                       android:layout_width="match_parent"
+                       android:layout_height="5dp"/>
+
+                   <LinearLayout
+                       android:layout_marginTop="@dimen/pt_15"
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:orientation="vertical"
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content">
                        <TextView
@@ -277,81 +317,97 @@
                            android:textColor="@color/color_E2518D"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
-                           android:text="@string/exchange_cap"/>
+                           android:text="@string/exchange_cap"
+                           android:layout_marginBottom="@dimen/pt_7"/>
                        <TextView
                            android:id="@+id/max_per_member"
                            android:textStyle="bold"
                            android:ellipsize="end"
                            android:singleLine="true"
-                           android:layout_toRightOf="@id/points1"
                            android:textColor="@color/color_101828"
-                           android:gravity="right"
                            android:textSize="@dimen/sp_14"
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"/>
-                   </RelativeLayout>
+                   </LinearLayout>
 
-
-                   <RelativeLayout
-                       android:id="@+id/total"
-                       android:visibility="gone"
-                       android:layout_marginTop="@dimen/pt_16"
-                       android:layout_marginLeft="@dimen/pt_20"
-                       android:layout_marginRight="@dimen/pt_20"
+                   <View
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginTop="@dimen/pt_7"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:background="@drawable/dashed_line"
                        android:layout_width="match_parent"
-                       android:layout_height="wrap_content">
-                       <TextView
-                           android:id="@+id/total1"
-                           android:textSize="@dimen/sp_14"
-                           android:textColor="@color/color_E2518D"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:text="@string/total_nums"/>
-                       <TextView
-                           android:id="@+id/total_quantity"
-                           android:textStyle="bold"
-                           android:ellipsize="end"
-                           android:singleLine="true"
-                           android:layout_toRightOf="@id/total1"
-                           android:textColor="@color/color_101828"
-                           android:gravity="right"
-                           android:textSize="@dimen/sp_14"
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"/>
-                   </RelativeLayout>
-
-                   <RelativeLayout
-                       android:id="@+id/exchange"
-                       android:visibility="gone"
-                       android:layout_marginTop="@dimen/pt_16"
-                       android:layout_marginLeft="@dimen/pt_20"
-                       android:layout_marginRight="@dimen/pt_20"
-                       android:layout_width="match_parent"
-                       android:layout_height="wrap_content">
-                       <TextView
-                           android:id="@+id/exchange_tv"
-                           android:textSize="@dimen/sp_14"
-                           android:textColor="@color/color_E2518D"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:text="@string/exchange_object"/>
-                       <TextView
-                           android:layout_marginLeft="@dimen/pt_30"
-                           android:textStyle="bold"
-                           android:id="@+id/eligibility"
-                           android:layout_toRightOf="@id/exchange_tv"
-                           android:textColor="@color/color_101828"
-                           android:gravity="right"
-                           android:textSize="@dimen/sp_14"
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"/>
-                   </RelativeLayout>
+                       android:layout_height="5dp"/>
 
 
-                   <RelativeLayout
-                       android:layout_marginTop="@dimen/pt_16"
-                       android:layout_marginLeft="@dimen/pt_20"
-                       android:layout_marginRight="@dimen/pt_20"
+<!--                   <LinearLayout-->
+<!--                       android:id="@+id/total"-->
+<!--                       android:visibility="gone"-->
+<!--                       android:layout_marginTop="@dimen/pt_15"-->
+<!--                       android:layout_marginLeft="@dimen/pt_10"-->
+<!--                       android:layout_marginRight="@dimen/pt_10"-->
+<!--                       android:orientation="vertical"-->
+<!--                       android:layout_width="match_parent"-->
+<!--                       android:layout_height="wrap_content">-->
+<!--                       <TextView-->
+<!--                           android:id="@+id/total1"-->
+<!--                           android:textSize="@dimen/sp_14"-->
+<!--                           android:textColor="@color/color_E2518D"-->
+<!--                           android:layout_width="wrap_content"-->
+<!--                           android:layout_height="wrap_content"-->
+<!--                           android:text="@string/total_nums"-->
+<!--                           android:layout_marginBottom="@dimen/pt_7"/>-->
+<!--                       <TextView-->
+<!--                           android:id="@+id/total_quantity"-->
+<!--                           android:textStyle="bold"-->
+<!--                           android:ellipsize="end"-->
+<!--                           android:singleLine="true"-->
+<!--                           android:textColor="@color/color_101828"-->
+<!--                           android:textSize="@dimen/sp_14"-->
+<!--                           android:layout_width="match_parent"-->
+<!--                           android:layout_height="wrap_content"/>-->
+<!--                   </LinearLayout>-->
+
+<!--                   <View-->
+<!--                       android:layout_marginLeft="@dimen/pt_10"-->
+<!--                       android:layout_marginTop="@dimen/pt_7"-->
+<!--                       android:layout_marginRight="@dimen/pt_10"-->
+<!--                       android:background="@drawable/dashed_line"-->
+<!--                       android:layout_width="match_parent"-->
+<!--                       android:layout_height="5dp"/>-->
+
+
+<!--                   <LinearLayout-->
+<!--                       android:id="@+id/exchange"-->
+<!--                       android:visibility="gone"-->
+<!--                       android:layout_marginTop="@dimen/pt_15"-->
+<!--                       android:layout_marginLeft="@dimen/pt_10"-->
+<!--                       android:layout_marginRight="@dimen/pt_10"-->
+<!--                       android:orientation="vertical"-->
+<!--                       android:layout_width="match_parent"-->
+<!--                       android:layout_height="wrap_content">-->
+<!--                       <TextView-->
+<!--                           android:id="@+id/exchange_tv"-->
+<!--                           android:textSize="@dimen/sp_14"-->
+<!--                           android:textColor="@color/color_E2518D"-->
+<!--                           android:layout_width="wrap_content"-->
+<!--                           android:layout_height="wrap_content"-->
+<!--                           android:text="@string/exchange_object"-->
+<!--                           android:layout_marginBottom="@dimen/pt_7"/>-->
+<!--                       <TextView-->
+<!--                           android:textStyle="bold"-->
+<!--                           android:id="@+id/eligibility"-->
+<!--                           android:textColor="@color/color_101828"-->
+<!--                           android:textSize="@dimen/sp_14"-->
+<!--                           android:layout_width="match_parent"-->
+<!--                           android:layout_height="wrap_content"/>-->
+<!--                   </LinearLayout>-->
+
+
+                   <LinearLayout
+                       android:layout_marginTop="@dimen/pt_15"
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:orientation="vertical"
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content">
                        <TextView
@@ -360,25 +416,33 @@
                            android:textColor="@color/color_E2518D"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
-                           android:text="@string/usage_rules"/>
+                           android:text="@string/total_nums"
+                           android:layout_marginBottom="@dimen/pt_7"/>
 
                        <TextView
                            android:id="@+id/activity_time"
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"
-                           android:layout_toRightOf="@id/points2"
                            android:ellipsize="end"
-                           android:gravity="right"
                            android:singleLine="true"
                            android:textColor="@color/color_101828"
                            android:textSize="@dimen/sp_14"
                            android:textStyle="bold" />
-                   </RelativeLayout>
+                   </LinearLayout>
 
-                   <RelativeLayout
-                       android:layout_marginTop="@dimen/pt_16"
-                       android:layout_marginLeft="@dimen/pt_20"
-                       android:layout_marginRight="@dimen/pt_20"
+                   <View
+                       android:layout_marginLeft="@dimen/pt_7"
+                       android:layout_marginTop="@dimen/pt_10"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:background="@drawable/dashed_line"
+                       android:layout_width="match_parent"
+                       android:layout_height="5dp"/>
+
+                   <LinearLayout
+                       android:layout_marginTop="@dimen/pt_15"
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:orientation="vertical"
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content">
                        <TextView
@@ -387,28 +451,140 @@
                            android:textColor="@color/color_E2518D"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
-                           android:text="@string/precautions"/>
+                           android:text="@string/exchange_object"
+                           android:layout_marginBottom="@dimen/pt_7"/>
                        <TextView
                            android:id="@+id/finish_time"
                            android:textStyle="bold"
                            android:ellipsize="end"
                            android:singleLine="true"
-                           android:layout_toRightOf="@id/points3"
                            android:textColor="@color/color_101828"
-                           android:gravity="right"
                            android:textSize="@dimen/sp_14"
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"/>
-                   </RelativeLayout>
-
+                   </LinearLayout>
 
                    <View
-                       android:layout_marginLeft="@dimen/pt_20"
-                       android:layout_marginTop="@dimen/pt_20"
-                       android:layout_marginRight="@dimen/pt_20"
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginTop="@dimen/pt_10"
+                       android:layout_marginRight="@dimen/pt_10"
                        android:background="@drawable/dashed_line"
                        android:layout_width="match_parent"
                        android:layout_height="5dp"/>
+
+                   <LinearLayout
+                       android:layout_marginTop="@dimen/pt_15"
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:orientation="vertical"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content">
+
+                       <RelativeLayout
+                           android:id="@+id/rl_rule_header"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:background="?attr/selectableItemBackground"
+                           android:clickable="true"
+                           android:focusable="true">
+
+                           <TextView
+                               android:id="@+id/points4"
+                               android:textSize="@dimen/sp_14"
+                               android:textColor="@color/color_EE97BB"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="@string/usage_rules"
+                               android:layout_centerVertical="true"
+                               android:textStyle="bold"/>
+
+                           <ImageView
+                               android:id="@+id/iv_arrow"
+                               android:layout_width="@dimen/pt_12"
+                               android:layout_height="@dimen/pt_12"
+                               android:layout_alignParentEnd="true"
+                               android:layout_alignParentRight="true"
+                               android:layout_centerVertical="true"
+                               android:src="@drawable/ic_arrow_down"
+                               app:tint="@color/color_101828"/>
+                       </RelativeLayout>
+
+                       <TextView
+                           android:id="@+id/tv_usage_rules"
+                           android:visibility="gone"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:textColor="@color/color_101828"
+                           android:textSize="@dimen/sp_14"
+                           android:lineSpacingExtra="4dp"
+                           android:text="• 部分商品數量有限，換完為止。\n\n• 兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。\n\n• 本券僅限於指定兌換地點使用，請於現場出示 APP 票券 QRCODE條碼。\n\n• 兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。\n\n• 期限內若無完成兌換，本券視同失效，點數不予退回。" />
+                   </LinearLayout>
+
+                   <View
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginTop="@dimen/pt_10"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:background="@drawable/dashed_line"
+                       android:layout_width="match_parent"
+                       android:layout_height="5dp"/>
+
+                   <LinearLayout
+                       android:layout_marginTop="@dimen/pt_15"
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:orientation="vertical"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content">
+
+                       <RelativeLayout
+                           android:id="@+id/rl_precautions"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:background="?attr/selectableItemBackground"
+                           android:clickable="true"
+                           android:focusable="true">
+
+                           <TextView
+                               android:id="@+id/points5"
+                               android:textSize="@dimen/sp_14"
+                               android:textColor="@color/color_EE97BB"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="@string/usage_rules"
+                               android:layout_centerVertical="true"
+                               android:textStyle="bold"/>
+
+                           <ImageView
+                               android:id="@+id/iv_arrow1"
+                               android:layout_width="@dimen/pt_12"
+                               android:layout_height="@dimen/pt_12"
+                               android:layout_alignParentEnd="true"
+                               android:layout_alignParentRight="true"
+                               android:layout_centerVertical="true"
+                               android:src="@drawable/ic_arrow_down"
+                               app:tint="@color/color_101828"/>
+                       </RelativeLayout>
+
+                       <TextView
+                           android:id="@+id/tv_precautions"
+                           android:visibility="gone"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:textColor="@color/color_101828"
+                           android:textSize="@dimen/sp_14"
+                           android:lineSpacingExtra="4dp"
+                           android:text="• 部分商品數量有限，換完為止。\n\n• 兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。\n\n• 本券僅限於指定兌換地點使用，請於現場出示 APP 票券 QRCODE條碼。\n\n• 兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。\n\n• 期限內若無完成兌換，本券視同失效，點數不予退回。" />
+                   </LinearLayout>
+
+                   <View
+                       android:layout_marginLeft="@dimen/pt_10"
+                       android:layout_marginTop="@dimen/pt_10"
+                       android:layout_marginRight="@dimen/pt_10"
+                       android:background="@drawable/dashed_line"
+                       android:layout_width="match_parent"
+                       android:layout_height="5dp"/>
+
+
 
                </LinearLayout>
                <com.lihang.ShadowLayout
@@ -422,8 +598,6 @@
                    app:hl_shadowHidden="true"
                    app:hl_layoutBackground="@android:color/transparent"
                    app:hl_cornerRadius="0dp">
-
-                   <!-- nền tam giác vàng -->
                    <ImageView
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
@@ -445,72 +619,24 @@
                        android:translationX="-10dp"
                        android:translationY="14dp"/>
                </com.lihang.ShadowLayout>
-<!--               <com.lihang.ShadowLayout-->
-<!--                   android:visibility="gone"-->
-<!--                   app:hl_shadowHidden ="false"-->
-<!--                   app:hl_layoutBackground="@color/color_D9AE35"-->
-<!--                   app:hl_cornerRadius="@dimen/dp_20"-->
-<!--                   android:layout_marginRight="@dimen/pt_10"-->
-<!--                   android:layout_marginTop="@dimen/pt_10"-->
-<!--                   android:id="@+id/label"-->
-<!--                   android:layout_gravity="right"-->
-<!--                   android:layout_width="wrap_content"-->
-<!--                   android:layout_height="wrap_content">-->
-
-<!--                   <ImageView-->
-<!--                       android:visibility="gone"-->
-<!--                       android:layout_width="wrap_content"-->
-<!--                       android:layout_height="wrap_content"-->
-<!--                       android:src="@drawable/home_01"/>-->
-<!--                   <TextView-->
-<!--                       android:minWidth="@dimen/pt_58"-->
-<!--                       android:paddingTop="@dimen/pt_2"-->
-<!--                       android:paddingBottom="@dimen/pt_2"-->
-<!--                       android:paddingLeft="@dimen/pt_5"-->
-<!--                       android:paddingRight="@dimen/pt_5"-->
-<!--                       android:id="@+id/label_tv"-->
-<!--                       android:layout_marginRight="@dimen/pt_3"-->
-<!--                       android:textSize="@dimen/sp_12"-->
-<!--                       android:textColor="@color/white"-->
-<!--                       android:gravity="center"-->
-<!--                       android:layout_gravity="right"-->
-<!--                       android:layout_width="wrap_content"-->
-<!--                       android:layout_height="wrap_content"-->
-<!--                       />-->
-<!--               </com.lihang.ShadowLayout>-->
-
            </FrameLayout>
-      <!--  </androidx.cardview.widget.CardView>-->
        </com.lihang.ShadowLayout>
 
     </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-
-
-
-
-
 
     <RelativeLayout
         android:id="@+id/button"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pt_80">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/pt_1"
-            android:background="@color/color_CCCCCC"/>
+        android:layout_height="@dimen/pt_40">
         <androidx.appcompat.widget.AppCompatButton
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/pt_35"
-            android:layout_marginRight="@dimen/pt_35"
             android:id="@+id/btn_exchange"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@drawable/bg_login_btn_able"
-            android:elevation="0dp"
             android:stateListAnimator="@null"
             android:textColor="@color/white"
             android:text="@string/redeem_immediately"
