@@ -16,7 +16,7 @@ class MemberLevelActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = true  // icon đen
-        window.statusBarColor = getColor(R.color.color_DE9DBA)
+//        window.statusBarColor = getColor(R.color.color_DE9DBA)
 
 
 

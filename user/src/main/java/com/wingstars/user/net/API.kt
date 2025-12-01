@@ -109,8 +109,6 @@ class API {
                 .client(builder.build())
                 .build()
         }
-
-    // ⚡️ Thêm dòng này (quan trọng)
     val dataApi: DataApi by lazy {
         retrofitClient.create(DataApi::class.java)
     }

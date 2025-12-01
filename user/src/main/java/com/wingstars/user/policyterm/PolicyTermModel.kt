@@ -15,7 +15,7 @@ class PolicyTermModel : ViewModel() {
 
     fun getPrivacyPolicyJson(context: Context) {
 //        val fileName = "hi.json"
-        val jsonDataStr = GetJsonDataUtil().getJson(context, "hi.json")
+        val jsonDataStr = GetJsonDataUtil().getJson(context, "privacy_policy.json")
 //        Log.d("PolicyTerm", "jsonDataStr = $jsonDataStr")
         val response = PrivacyPolicyResponse(null, null, null)
         try {

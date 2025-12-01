@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/user_wingstars_member"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp_14"
             android:textColor="@color/color_101828" />
 
         <ImageView

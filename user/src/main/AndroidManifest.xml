@@ -12,6 +12,8 @@
         <activity android:name=".code.MemBarCodeActivity" />
         <activity android:name=".storelocation.StoreLocationActivity" />
         <activity android:name=".policyterm.PolicyTermActivity" />
+        <activity android:name=".code.ChangeMemberPasswordActivity"/>
+        <activity android:name=".membercontact.ContactCustomerActivity"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

@@ -39,7 +39,7 @@
             android:gravity="center"
             android:inputType="text"
             android:singleLine="true"
-            android:textColor="@color/black"
+            android:textColor="@color/color_E2518D"
             android:textSize="@dimen/sp_14" />
         <View
             android:layout_width="20dp"
@@ -55,7 +55,7 @@
             android:gravity="center"
             android:inputType="text"
             android:singleLine="true"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_14"/>
     </LinearLayout>
 

@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:text="@string/user_notification_settings"
         android:textColor="@color/color_101828"
-        android:textSize="18sp"
+        android:textSize="@dimen/dp_20"
         android:layout_marginTop="16dp"/>
 
     <TextView
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:text="開啟通知，隨時掌握啦啦隊最新動態！"
         android:textColor="@color/color_6A7282"
-        android:textSize="14sp"
+        android:textSize="@dimen/sp_14"
         android:layout_marginTop="8dp"/>
 
     <LinearLayout
@@ -41,8 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="APP 訊息通知"
-            android:textSize="16sp"
-            android:textColor="#4A5565" />
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/color_4A5565" />
 
         <ImageView
             android:id="@+id/toggles_off"

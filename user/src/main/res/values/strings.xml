@@ -22,7 +22,7 @@
     <string name="user_support_services">支援服務</string>
     <string name="user_store_locations">營業門市</string>
     <string name="user_faq">常見問題</string>
-    <string name="user_c_customer_service">聯絡客服</string>
+    <string name="user_contact_customer_service">聯絡客服</string>
     <string name="user_share_app">分享APP</string>
     <string name="user_other">其他</string>
     <string name="user_terms_of_use">使用者條款</string>
@@ -61,4 +61,12 @@
     <string name="user_download_and_install">下載安裝</string>
     <string name="main_no_data">暫無數據</string>
     <string name="txt_share_app">嗨！📣 想推薦你一起體驗 Wing Stars 啦啦隊 APP 🎀 隨時掌握最新消息、參加粉絲互動，還能收集...</string>
+
+    <string name="password">密碼</string>
+    <string name="enter_your_new_pass">輸入您的新密碼，密碼限 8~20 個字元，必須包含至少一個英文字母及數字。</string>
+    <string name="old_password">舊密碼</string>
+    <string name="new_password">新密碼</string>
+    <string name="new_pass_confirm">新密碼確認</string>
+    <string name="send_phone_code">發送驗證碼</string>
+    <string name="enter_confirmation_code">輸入驗證碼</string>
 </resources>

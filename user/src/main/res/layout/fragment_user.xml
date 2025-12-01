@@ -3,8 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="210dp"
@@ -12,7 +11,8 @@
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_42"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <View
@@ -29,25 +29,26 @@
         <com.scwang.smart.refresh.layout.SmartRefreshLayout
             android:id="@+id/srl_user_record"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/bg_header"
-            android:layout_marginTop="64dp"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:fitsSystemWindows="true">
 
             <com.scwang.smart.refresh.header.ClassicsHeader
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/color_E2518D"
+                android:layout_height="@dimen/dp_50"
+                android:layout_marginTop="@dimen/dp_95"
                 app:srlTextFailed="@string/user_refresh_failed"
                 app:srlTextFinish="@string/user_refresh_success"
                 app:srlTextPulling="@string/user_pull_down_to_refresh"
                 app:srlTextRefreshing="@string/user_refreshing"
                 app:srlTextRelease="@string/user_release_to_refresh"
-                app:srlTextUpdate="@string/user_last_update" />
+                app:srlTextUpdate="@string/user_last_update"/>
 
             <androidx.core.widget.NestedScrollView
+                android:id="@+id/content"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:scrollbars="none"
                 android:overScrollMode="never"
                 android:fillViewport="true">
@@ -55,9 +56,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!-- Thẻ hội viên -->
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/dp_64">
                     <LinearLayout
                         android:id="@+id/card_container"
                         android:layout_width="wrap_content"
@@ -625,7 +625,7 @@
                             android:id="@+id/user_c_customer_service"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="@string/user_c_customer_service"
+                            android:text="@string/user_contact_customer_service"
                             android:layout_marginStart="16dp"
                             app:layout_constraintStart_toEndOf="@id/ic_message_multiple"
                             app:layout_constraintTop_toTopOf="parent"
@@ -816,11 +816,12 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                     <ImageView
+
                         android:layout_width="60dp"
                         android:layout_height="41dp"
                         android:layout_marginTop="@dimen/dp_30"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_ws_logo"/>
+                        android:src="@drawable/ws_logo"/>
                     <TextView
                         android:id="@+id/tv_version"
                         android:layout_width="wrap_content"
@@ -828,7 +829,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="0dp"
                         android:text=""
-                        android:textColor="@color/black"
+                        android:textColor="@color/color_6A7282"
                         android:textSize="12dp" />
                     <LinearLayout
                         android:layout_width="112dp"
@@ -898,14 +899,7 @@
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp">
-
-<!--        <View-->
-<!--            android:id="@+id/bg_header"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:background="@drawable/bg_review_gradient"/>-->
-
+        android:layout_height="wrap_content">
         <include
             layout="@layout/layout_main_top"
             android:layout_width="match_parent"

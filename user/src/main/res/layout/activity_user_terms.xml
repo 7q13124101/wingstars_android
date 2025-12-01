@@ -40,7 +40,7 @@
                 android:textColor="@color/color_101828"
                 android:layout_centerInParent="true"
                 android:text=""
-                android:textSize="@dimen/sp_16"
+                android:textSize="@dimen/sp_14"
                 tools:ignore="RelativeOverlap"/>
         </RelativeLayout>
         <com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -53,7 +53,6 @@
             <com.scwang.smart.refresh.header.ClassicsHeader
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/color_E2518D"
                 app:srlTextFailed="@string/user_refresh_failed"
                 app:srlTextFinish="@string/user_refresh_success"
                 app:srlTextPulling="@string/user_pull_down_to_refresh"
@@ -78,21 +77,21 @@
                             android:id="@+id/txt_title_top"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text=""
-                            android:textColor="@color/color_101828"
                             android:textSize="@dimen/sp_14"
+                            android:textColor="@color/color_101828"
                             android:textStyle="bold"
                             android:visibility="gone"
                             android:layout_marginBottom="@dimen/dp_10"/>
+
                         <TextView
                             android:id="@+id/txt_content_top"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text=""
-                            android:textColor="@color/color_101828"
                             android:textSize="@dimen/sp_14"
+                            android:textColor="@color/color_101828"
                             android:visibility="gone"
                             android:layout_marginBottom="@dimen/dp_10"/>
+
                         <LinearLayout
                             android:id="@+id/ll_policy_content"
                             android:layout_width="match_parent"

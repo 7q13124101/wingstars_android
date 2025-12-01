@@ -19,14 +19,9 @@ class MemBarCodeActivity : BaseActivity(){
         phone = intent.getStringExtra("phone")
 //        initData()
         initView()
-        // SET MÀU SAU CÙNG
-//        window.statusBarColor = Color.BLACK
-//        window.navigationBarColor = Color.BLACK
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = false
-        window.statusBarColor = getColor(R.color.color_DE9DBA)
-
-// Cho layout trải sát status bar
+//        window.statusBarColor = getColor(R.color.color_DE9DBA)
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
     }

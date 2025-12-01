@@ -6,10 +6,10 @@ import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import com.wingstars.user.R
 
-class Form4Dialog(
+class NotificationDialog(
     private var initialState: Boolean = false,
     private val onToggleChanged: ((Boolean) -> Unit)? = null
-) : BaseBottomDialog(R.layout.dialog_form4) {
+) : BaseBottomDialog(R.layout.dialog_notification) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

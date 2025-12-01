@@ -61,7 +61,7 @@
                     android:layout_height="match_parent"
                     android:text="@string/user_tsg_phone_code"
                     android:textStyle="bold"
-                    android:textColor="@color/black"
+                    android:textColor="@color/color_101828"
                     android:layout_marginLeft="@dimen/dp_20"
                     android:textSize="24sp"/>
 
@@ -71,7 +71,7 @@
                         android:text="@string/user_enter_your_mobile"
                         android:textSize="@dimen/sp_14"
                         android:layout_marginLeft="@dimen/dp_20"
-                        android:textColor="@color/black"
+                        android:textColor="@color/color_101828"
                         android:layout_marginBottom="@dimen/dp_8"/>
                 <RelativeLayout
                     android:id="@+id/rl_mobile"
@@ -88,6 +88,8 @@
                         android:padding="5dp"
                         android:background="@drawable/bg_form_mobile"
                         android:hint="@string/user_enter_your_mobile"
+                        android:textColor="@color/color_101828"
+                        android:textColorHint="@color/color_99A1AF"
                         android:paddingStart="20dp"
                         android:singleLine="true"
                         android:completionThreshold="0"
@@ -123,8 +125,8 @@
                 android:paddingBottom="@dimen/pt_14"
                 android:text="@string/user_save"
                 android:gravity="center"
-                android:textColor="@color/black"
-                android:background="@color/color_F3F4F6" />
+                android:textColor="@color/color_6A7282"
+                android:background="@color/color_E5E7EB" />
 
         </RelativeLayout>
 

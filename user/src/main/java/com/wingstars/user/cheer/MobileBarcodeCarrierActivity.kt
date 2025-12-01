@@ -20,7 +20,12 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
 
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = true
-        window.statusBarColor = getColor(R.color.color_DE9DBA)
+//        setTitleFoot(
+//            view1 = binding.root,
+//            statusBarColor = R.color.color_F3F4F6,
+//            navigationBarColor = R.color.color_F3F4F6
+//        )
+//        window.statusBarColor = getColor(R.color.color_DE9DBA)
         initView()
     }
     override fun initView() {

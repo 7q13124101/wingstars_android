@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.user.KeyboardUtils
 import com.wingstars.user.R
+import com.wingstars.user.code.ChangeMemberPasswordActivity
 import com.wingstars.user.databinding.ActivityChooseMemberBinding
 import com.wingstars.user.databinding.ActivityMemberInformationBinding
 import com.wingstars.user.dialog.DeleteAccountDialog
@@ -24,27 +25,18 @@ class MemberInformationActivity : BaseActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val controller = WindowInsetsControllerCompat(window, window.decorView)
-        controller.isAppearanceLightStatusBars = true  // icon đen
-        window.statusBarColor = getColor(com.wingstars.base.R.color.color_F6E0C6)
         binding = ActivityMemberInformationBinding.inflate(layoutInflater)
         setContentView(binding.root)
+//        setTitleFoot(
+//            view1 = binding.root,
+//            statusBarColor = R.color.color_F3F4F6,
+//            navigationBarColor = R.color.color_F3F4F6
+//        )
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.isAppearanceLightStatusBars = true
 
         initView()
 
-//        val view = ActivityMemberInformationBinding.inflate(layoutInflater)
-//        setTitleFoot(
-//            view.root,
-//            setHeadAndFoot = true,
-//            initialization = object : BaseActivity.OnInitialization {
-//                override fun onInitializationSuccessful() {
-//                    binding = view
-//                    initView()
-//                    // Đổi màu status bar riêng
-////                    changeStatusBarColor(getColor(R.color.color_DE9DBA), light = true)
-//                }
-//            }
-//        )
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
@@ -70,7 +62,10 @@ class MemberInformationActivity : BaseActivity() {
             barcodeLauncher.launch(Intent(this, MobileBarcodeCarrierActivity::class.java))
 
         }
-
+        binding.ivIdCard.setOnClickListener {
+            var intent = Intent(this, ChangeMemberPasswordActivity::class.java)
+            startActivity(intent)
+        }
         binding.edtDeleteAccount.setOnClickListener {
             DeleteAccountDialog(this) {
                 // Xử lý khi người dùng xác nhận xóa

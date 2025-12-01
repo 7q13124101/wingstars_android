@@ -1,31 +1,31 @@
 package com.wingstars.user.cheer
 
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.MotionEvent
-import android.view.View
-import android.widget.AutoCompleteTextView
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.wingstars.user.KeyboardUtils
+import com.wingstars.base.base.BaseActivity
 import com.wingstars.user.R
 import com.wingstars.user.databinding.ActivityChooseMemberBinding
 import com.wingstars.user.dialog.ChooseMemberDialog
 
-class ChooseMemberActivity : AppCompatActivity() {
+class ChooseMemberActivity : BaseActivity() {
 
     private lateinit var binding: ActivityChooseMemberBinding
 
     private val members = listOf(
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_01),
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_01),
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_01),
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_01)
+        MemberUI(R.drawable.bg_image_member, R.drawable.ic_02),
+        MemberUI(R.drawable.bg_image_member, R.drawable.ic_22),
+        MemberUI(R.drawable.bg_image_member, R.drawable.ic_90),
+        MemberUI(R.drawable.bg_image_member, R.drawable.ic_05)
+    )
+    private val members1 = listOf(
+        MemberUI(R.drawable.bg_image_member, R.drawable.ic_08),
+        MemberUI(R.drawable.bg_image_member, R.drawable.ic_39),
+        MemberUI(R.drawable.bg_image_member, R.drawable.ic_57),
+        MemberUI(R.drawable.bg_image_member, R.drawable.ic_99)
     )
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -35,19 +35,23 @@ class ChooseMemberActivity : AppCompatActivity() {
         setContentView(binding.root)
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = true  // icon đen
-        window.statusBarColor = getColor(R.color.color_DE9DBA)
-        window.navigationBarColor = getColor(R.color.color_DE9DBA)
-
+//        window.statusBarColor = getColor(R.color.color_DE9DBA)
+//        window.navigationBarColor = getColor(R.color.color_DE9DBA)
+//        setTitleFoot(
+//            view1 = binding.root,
+//            statusBarColor = R.color.white,
+//            navigationBarColor = R.color.color_F3F4F6
+//        )
 
         initView()
 
     }
 
-    private fun initView() {
+    override fun initView() {
         binding.ivBack.setOnClickListener { finish() }
 
         val adapter = MemberUIAdapter(members)
-        val adapter2 = MemberUIAdapter(members)
+        val adapter2 = MemberUIAdapter(members1)
 
         binding.rvMember.adapter = adapter
         binding.rvMember.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)

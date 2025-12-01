@@ -18,14 +18,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.fragment.app.viewModels
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.user.databinding.FragmentUserBinding
 import com.wingstars.user.cheer.MemberInformationActivity
 import com.wingstars.user.code.MemBarCodeActivity
-import com.wingstars.user.dialog.Form4Dialog
+import com.wingstars.user.dialog.NotificationDialog
 import com.wingstars.user.frequentlyaskedquestion.FrequentlyAskedQuestionsActivity
+import com.wingstars.user.membercontact.ContactCustomerActivity
 import com.wingstars.user.memberlevel.MemberLevelActivity
 import com.wingstars.user.storelocation.StoreLocationActivity
 import com.wingstars.user.policyterm.PolicyTermActivity
@@ -36,7 +35,6 @@ class UserFragment : BaseFragment(){
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
     private val TAG = "UserFragment"
-    private val viewModel: UserViewModel by viewModels()
     private var isNotificationOn = false
 
 
@@ -45,12 +43,15 @@ class UserFragment : BaseFragment(){
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentUserBinding.inflate(inflater, container, false)
-        val root = binding.root
-        initView()
-        return root
+        binding.srlUserRecord.setEnableNestedScroll(true)
+
+        return binding.root
     }
 
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView()
+    }
     private fun initView() {
         val packageManager: PackageManager =  requireActivity().packageManager
         val packageInfo: PackageInfo = packageManager.getPackageInfo(requireActivity().packageName, 0)
@@ -68,22 +69,9 @@ class UserFragment : BaseFragment(){
             }
             binding.srlUserRecord.finishRefresh()
         }
-// QR code
 
         binding.rlVisitorsQrCode.setOnClickListener {
             val intent = Intent(requireActivity(), MemBarCodeActivity::class.java)
-//            val intent = Intent(this@UserFragment.requireActivity(), MemBarCodeActivity::class.java)
-//            intent.putExtra("phone", viewModel.memberDetailData.value?.Phone)
-//            if (viewModel.crmExtraDataData.isInitialized && viewModel.crmExtraDataData.value != null) {
-//                if (viewModel.crmExtraDataData.value!!.invoice_option == "mobileCarrier") {
-//                    if (viewModel.crmExtraDataData.value!!.invoice_number.isNotEmpty()) {
-//                        intent.putExtra(
-//                            "invoiceNumber",
-//                            viewModel.crmExtraDataData.value!!.invoice_number
-//                        )
-//                    }
-//                }
-//            }
             startActivity(intent)
         }
         binding.llUserMemberInformation.setOnClickListener {
@@ -91,8 +79,8 @@ class UserFragment : BaseFragment(){
             startActivity(intent)
         }
         binding.llUserNotificationSettings.setOnClickListener {
-            val dialog = Form4Dialog(isNotificationOn) { isOn ->
-                isNotificationOn = isOn // lưu trạng thái
+            val dialog = NotificationDialog(isNotificationOn) { isOn ->
+                isNotificationOn = isOn
                 binding.form4Status.text = if (isOn) "已開啟" else ""
             }
             dialog.show(parentFragmentManager)
@@ -128,9 +116,10 @@ class UserFragment : BaseFragment(){
             startActivity(Intent.createChooser(intent, "Chia sẻ ứng dụng"))
 
         }
-
-
-
+        binding.llUserCCustomerService.setOnClickListener {
+            val intent = Intent(requireActivity(), ContactCustomerActivity::class.java)
+            startActivity(intent)
+        }
         binding.llUserFacebook.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse("https://www.facebook.com/Tainan.TSG.GhostHawks/?locale=zh_TW")
@@ -146,23 +135,10 @@ class UserFragment : BaseFragment(){
             intent.data = Uri.parse("https://www.youtube.com/@tainantsgghosthawks662")
             startActivity(intent)
         }
-//        Log.d(TAG, "initView: Bắt đầu thiết lập các View...")
-
-        // Thêm log trước mỗi thao tác quan trọng
-//        Log.d(TAG, "initView: Chuẩn bị setOnRefreshListener cho SmartRefreshLayout.")
-//        Log.d(TAG, "initView: Đã setOnClickListener THÀNH CÔNG.")
-
-//        Log.d(TAG, "initView: Hoàn thành tất cả thiết lập trong initView.")
-
-        //kéo để lam mới
         binding.srlUserRecord.setOnRefreshListener { refreshLayout ->
             Toast.makeText(requireContext(),"loading", Toast.LENGTH_SHORT).show()
             refreshLayout.finishRefresh(1500/*ms*/)
         }
-//        Log.d(TAG, "initView: Đã setOnRefreshListener THÀNH CÔNG.")
-
-//        Log.d(TAG, "initView: Chuẩn bị setOnClickListener cho rlVisitorsQrCode.")
-
     }
     private fun getImageUri(requireContext: Context, logoShare: Int): Uri {
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.logo_share)!!
@@ -197,10 +173,4 @@ class UserFragment : BaseFragment(){
         super.onDestroyView()
         _binding = null
     }
-//    fun setBackgroundColor(colorResId: Int) {
-//        // Khối lệnh bên trong 'let' sẽ chỉ thực thi nếu _binding không phải là null.
-//        _binding?.let { safeBinding ->
-//            safeBinding.myLayout.setBackgroundResource(colorResId)
-//        }
-//    }
 }

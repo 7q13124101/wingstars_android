@@ -60,6 +60,7 @@
                     android:layout_height="match_parent"
                     android:text="@string/user_select_fav_member"
                     android:textStyle="bold"
+                    android:textColor="@color/color_101828"
                     android:layout_marginLeft="@dimen/dp_20"
                     android:textSize="24sp"/>
                 <androidx.recyclerview.widget.RecyclerView
@@ -102,6 +103,7 @@
                         android:focusable="true"
                         android:layout_toStartOf="@id/iv_arrow_down"
                         android:ellipsize="end"
+                        android:textColor="@color/color_99A1AF"
                         android:scrollHorizontally="true"/>
 
                     <ImageView
@@ -138,6 +140,7 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:ellipsize="end"
+                        android:textColor="@color/color_99A1AF"
                         android:scrollHorizontally="true"/>
 
                     <ImageView
@@ -174,6 +177,7 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:ellipsize="end"
+                        android:textColor="@color/color_99A1AF"
                         android:scrollHorizontally="true"/>
 
                     <ImageView
@@ -207,8 +211,8 @@
                 android:paddingBottom="@dimen/pt_14"
                 android:text="@string/user_save"
                 android:gravity="center"
-                android:textColor="@color/black"
-                android:background="@color/color_F3F4F6" />
+                android:textColor="@color/color_6A7282"
+                android:background="@color/color_E5E7EB" />
 
         </RelativeLayout>
 
