@@ -2,6 +2,7 @@ package com.wingstars.user.membercontact
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowInsetsControllerCompat
 import com.wingstars.user.UpLoadingDialog
 import com.wingstars.user.databinding.ActivityContactCustomerBinding
 import com.wingstars.user.databinding.ActivityMemBarCodeBinding
@@ -10,8 +11,11 @@ class ContactCustomerActivity: AppCompatActivity() {
     private lateinit var binding: ActivityContactCustomerBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var controller = WindowInsetsControllerCompat(window,window.decorView)
+        controller.isAppearanceLightStatusBars = true
         binding = ActivityContactCustomerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initView()
     }
     private fun initView(){
         binding.ivBack.setOnClickListener {

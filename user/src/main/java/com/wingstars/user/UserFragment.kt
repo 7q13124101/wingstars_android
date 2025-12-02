@@ -98,6 +98,11 @@ class UserFragment : BaseFragment(){
             intent.putExtra("tag", "PrivacyPolicy")
             startActivity(intent)
         }
+        binding.llUserTermsOfUse.setOnClickListener {
+            val intent = Intent(requireActivity(), PolicyTermActivity::class.java)
+            intent.putExtra("tag", "UserTerms")
+            startActivity(intent)
+        }
         binding.llUserMembershipLevels.setOnClickListener {
             val intent = Intent(requireActivity(), MemberLevelActivity::class.java)
             startActivity(intent)
