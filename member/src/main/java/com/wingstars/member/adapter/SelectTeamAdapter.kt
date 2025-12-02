@@ -10,13 +10,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
 import com.wingstars.member.databinding.ItemCategoryListBinding
+import com.wingstars.member.viewmodel.TeamType
 
 
 data class SelectTeamFunBean(
-    var title: String,
-    var image: Int,
-    var selImage: Int
-)
+    val teamType: TeamType,
+    val image: Int,
+    val selImage: Int
+) {
+    val teamName: String
+        get() {
+            var name = "全部"
+            when (teamType) {
+                TeamType.TEAM_ALL -> name = "全部"
+                TeamType.TEAM_BASEBALL -> name = "雄鷹"
+                TeamType.TEAM_BASKETBALL -> name = "獵鷹"
+                TeamType.TEAM_VOLLEYBALL -> name = "天鷹"
+            }
+            return name
+        }
+}
 
 class SelectTeamAdapter     // -------------------------------------------
     (
@@ -73,7 +86,7 @@ class SelectTeamAdapter     // -------------------------------------------
 
         fun binding(position: Int) {
             var data = dataList!![position]
-            binding.name.text = data.title
+            binding.name.text = data.teamName
             if (position == selPosition) {
                 binding.name.setTextColor(context.getColor(R.color.color_E2518D))
                 binding.image.setImageResource(data.selImage)
@@ -95,8 +108,8 @@ class SelectTeamAdapter     // -------------------------------------------
                 if (selPosition != position) {
                     selPosition = position
                     notifyDataSetChanged()
+                    listener.onItemClick(data, position)
                 }
-                listener.onItemClick(data, position)
             }
         }
 

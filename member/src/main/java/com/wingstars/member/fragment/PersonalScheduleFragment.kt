@@ -5,10 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.member.adapter.PersonalScheduleItemAdapter
+import com.wingstars.member.adapter.ScheduleFunBean
 import com.wingstars.member.adapter.SelectTeamAdapter
 import com.wingstars.member.adapter.SelectTeamFunBean
 import com.wingstars.member.databinding.FragmentPersonalScheduleBinding
@@ -84,15 +84,15 @@ class PersonalScheduleFragment : Fragment() {
         return sdf.format(calendar.time)
     }
 
-    private  fun dateEvent(){
+    private fun dateEvent() {
         binding.tvDate.text = wingStarsMonth
         binding.ivPrev.setOnClickListener {
             wingStarsMonth = changeMonth(wingStarsMonth, -1)
             binding.tvDate.text = wingStarsMonth
 
-            if(viewModel.dataDTOArrayList.value.isNullOrEmpty()){
+            if (viewModel.dataDTOArrayList.value.isNullOrEmpty()) {
                 viewModel.getWingStarsScheduleJson(wingStarsMonth)
-            }else{
+            } else {
                 viewModel.getOtherMonthData(wingStarsMonth)
             }
         }
@@ -100,9 +100,9 @@ class PersonalScheduleFragment : Fragment() {
             wingStarsMonth = changeMonth(wingStarsMonth, 1)
             binding.tvDate.text = wingStarsMonth
 
-            if(viewModel.dataDTOArrayList.value.isNullOrEmpty()){
+            if (viewModel.dataDTOArrayList.value.isNullOrEmpty()) {
                 viewModel.getWingStarsScheduleJson(wingStarsMonth)
-            }else{
+            } else {
                 viewModel.getOtherMonthData(wingStarsMonth)
             }
         }
@@ -119,7 +119,7 @@ class PersonalScheduleFragment : Fragment() {
             mutableListOf(),
             object : SelectTeamAdapter.OnItemListener {
                 override fun onItemClick(data: SelectTeamFunBean, position: Int) {
-                    //Toast.makeText(requireActivity(), data.title, Toast.LENGTH_LONG).show()
+                    viewModel.setScheduleListByTeam(data)
                 }
             })
         binding.rvTeamList.layoutManager =
@@ -129,6 +129,7 @@ class PersonalScheduleFragment : Fragment() {
         //set team category adapter data.
         viewModel.teamCategoryList.observe(viewLifecycleOwner) {
             teamCategoryAdapter.setList(it)
+            viewModel.setScheduleListByTeam(it[0])
         }
 
         //create personal Schedule adapter.
@@ -138,21 +139,27 @@ class PersonalScheduleFragment : Fragment() {
 
         //set personal Schedule adapter data.
         viewModel.personalScheduleList.observe(viewLifecycleOwner) {
-            if (it.isNullOrEmpty()) {
-                binding.slWsSchedule.visibility = View.GONE
-                binding.llWsWeeklyEmpty.visibility = View.VISIBLE
-
-            } else {
-                personalScheduleItemAdapter.setList(it)
-                binding.slWsSchedule.visibility = View.VISIBLE
-                binding.llWsWeeklyEmpty.visibility = View.GONE
-            }
+            setScheduleListData(it)
         }
+
 
         binding.srlPersonalScheduleRecord.setOnRefreshListener {
             binding.srlPersonalScheduleRecord.finishRefresh()
         }
 
+    }
+
+    private fun setScheduleListData(it: MutableList<ScheduleFunBean>?) {
+        if (it.isNullOrEmpty()) {
+            binding.slWsSchedule.visibility = View.GONE
+            binding.llWsWeeklyEmpty.visibility = View.VISIBLE
+
+        } else {
+            personalScheduleItemAdapter.setList(it)
+            binding.slWsSchedule.visibility = View.VISIBLE
+            binding.llWsWeeklyEmpty.visibility = View.GONE
+            binding.scrollView.scrollTo(0, 0)
+        }
     }
 
     override fun onDestroy() {

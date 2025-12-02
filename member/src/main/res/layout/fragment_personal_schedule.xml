@@ -75,6 +75,7 @@
             app:srlTextUpdate="@string/last_update" />
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
@@ -89,6 +90,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_24"
+                    android:visibility="gone"
                     app:hl_cornerRadius="@dimen/dp_16"
                     app:hl_layoutBackground="@color/white"
                     app:hl_shadowHidden="false"
@@ -99,6 +101,7 @@
                         android:id="@+id/rv_ws_schedule"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_4"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:listitem="@layout/item_month_personal_schedule" />
                 </com.lihang.ShadowLayout>

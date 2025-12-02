@@ -79,11 +79,12 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
 
 
         val personalScheduleFragment = PersonalScheduleFragment()
-        val personalBundle = Bundle()
-            personalBundle.putString(
+        val personalBundle = Bundle().apply {
+            putString(
                 "wing_stars_month",
                 SimpleDateFormat("yyyy/MM").format(Date())
             )
+        }
         intent.putExtras(personalBundle)
         personalScheduleFragment.arguments = personalBundle
         fragmentAdapter.add(personalScheduleFragment)
