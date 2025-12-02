@@ -6,25 +6,23 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Window
 import android.view.WindowManager
-import com.wingstars.user.databinding.DialogDeleteAccountBinding
+import com.wingstars.user.databinding.DialogLogoutAccountBinding
 
-class DeleteAccountDialog (
+class LogoutDialog(
     context: Context,
-    private val onConfirm:()-> Unit
-){
+    private val onConfirm: () -> Unit
+) {
     private val dialog = Dialog(context)
-    private val binding: DialogDeleteAccountBinding
+    private val binding: DialogLogoutAccountBinding
 
     init {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         val inflater = LayoutInflater.from(context)
-        binding = DialogDeleteAccountBinding.inflate(inflater)
+        binding = DialogLogoutAccountBinding.inflate(inflater)
         dialog.setContentView(binding.root)
 
         dialog.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)
-
-            // FULL WIDTH
             setLayout(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT
@@ -35,16 +33,19 @@ class DeleteAccountDialog (
 
         dialog.setCancelable(true)
 
-//        binding.btnCancel.setOnClickListener {
-//            dialog.dismiss()
-//        }
-//        binding.btnConfirm.setOnClickListener {
-//            dialog.dismiss()
-//            onConfirm.invoke()
-//
+        // Xử lý nút Cancel
+        binding.edtMobile.setOnClickListener {
+            dialog.dismiss()
         }
-    fun show(){
-        dialog.show()
+
+        // Xử lý nút Confirm
+        binding.edtMobile1.setOnClickListener {
+            dialog.dismiss()
+            onConfirm.invoke()  // Gọi performLogout()
+        }
     }
 
+    fun show() {
+        dialog.show()
+    }
 }
