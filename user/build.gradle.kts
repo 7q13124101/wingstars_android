@@ -77,5 +77,8 @@ dependencies {
 
     implementation("me.jessyan:autosize:1.2.1")
 
+    implementation(project(":login"))
+
+
     implementation("androidx.recyclerview:recyclerview:1.3.1")
 }
