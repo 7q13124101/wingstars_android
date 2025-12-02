@@ -15,14 +15,9 @@ class MemberLevelActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val controller = WindowInsetsControllerCompat(window, window.decorView)
-        controller.isAppearanceLightStatusBars = true  // icon đen
-//        window.statusBarColor = getColor(R.color.color_DE9DBA)
-
-
-
+        controller.isAppearanceLightStatusBars = true
         binding = ActivityMembershipLevelsBinding.inflate(layoutInflater)
-        setContentView(binding.root) // dùng root của binding
-
+        setContentView(binding.root)
         initView()
     }
     private fun initView(){

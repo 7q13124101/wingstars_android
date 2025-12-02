@@ -76,6 +76,44 @@ class PolicyTermActivity : AppCompatActivity() {
                     }
                 }
             }
+        }else if (tag == "UserTerms") {
+            viewModel.getUserTermsJson(this)
+            binding.txtTitle.text = getString(R.string.user_terms_of_use)
+            binding.txtTitleTop.visibility = View.VISIBLE
+            binding.txtContentTop.visibility = View.VISIBLE
+            viewModel.userTermsData.observe(this) { userTermsResponse ->
+                if (userTermsResponse != null) {
+                    binding.txtTitleTop.text = userTermsResponse.top_title ?: ""
+                    binding.txtContentTop.text = userTermsResponse.top_title_content ?: ""
+                    val list = userTermsResponse.policy_data
+                    if (!list.isNullOrEmpty()) {
+                        binding.llPolicyContent.removeAllViews()
+                        for (dataDTO in list) {
+                            val inflate = LayoutInflater.from(this)
+                                .inflate(R.layout.item_policy, binding.llPolicyContent, false)
+                            val tvPolicyTitle: TextView? = inflate.findViewById(R.id.tv_policy_title)
+                            val tvPolicyContent: TextView? = inflate.findViewById(R.id.tv_policy_content)
+                            tvPolicyContent?.layoutParams?.let { lp ->
+                                if (lp is LinearLayout.LayoutParams) {
+                                    lp.rightMargin = BaseApplication.shared()?.dp2px(5F)?.toInt() ?: 0
+                                    lp.topMargin = BaseApplication.shared()?.dp2px(5F)?.toInt() ?: 0
+                                    lp.bottomMargin = BaseApplication.shared()?.dp2px(5F)?.toInt() ?: 0
+                                    tvPolicyContent.layoutParams = lp
+                                }
+                            }
+                            if (dataDTO.title.isNullOrEmpty()) {
+                                tvPolicyTitle?.visibility = View.GONE
+                            } else {
+                                tvPolicyTitle?.visibility = View.VISIBLE
+                                tvPolicyTitle?.text = dataDTO.title
+                            }
+                            val safeContent = dataDTO.content ?: ""
+                            tvPolicyContent?.text = formatNumberedText(safeContent)
+                            binding.llPolicyContent.addView(inflate)
+                        }
+                    }
+                }
+            }
         }
     }
     private fun formatNumberedText(raw: String?): CharSequence {

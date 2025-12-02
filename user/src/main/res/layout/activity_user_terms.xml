@@ -69,8 +69,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:paddingLeft="@dimen/dp_10"
-                        android:paddingRight="@dimen/dp_10"
+                        android:paddingLeft="@dimen/dp_20"
+                        android:paddingRight="@dimen/dp_20"
                         android:paddingTop="@dimen/dp_10"
                         android:paddingBottom="@dimen/dp_20">
                         <TextView

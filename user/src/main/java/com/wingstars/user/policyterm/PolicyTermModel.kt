@@ -7,14 +7,14 @@ import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.wingstars.user.GetJsonDataUtil
 import com.wingstars.user.net.beans.PrivacyPolicyResponse
+import com.wingstars.user.net.beans.UserTermResponse
 import org.json.JSONObject
 
 class PolicyTermModel : ViewModel() {
 
     var privacyPolicyData = MutableLiveData<PrivacyPolicyResponse>()
-
+    var userTermsData = MutableLiveData<UserTermResponse>()
     fun getPrivacyPolicyJson(context: Context) {
-//        val fileName = "hi.json"
         val jsonDataStr = GetJsonDataUtil().getJson(context, "privacy_policy.json")
 //        Log.d("PolicyTerm", "jsonDataStr = $jsonDataStr")
         val response = PrivacyPolicyResponse(null, null, null)
@@ -36,6 +36,33 @@ class PolicyTermModel : ViewModel() {
             }
             response.policy_data = list
             privacyPolicyData.postValue(response)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    fun getUserTermsJson(context: Context) {
+        val jsonDataStr = GetJsonDataUtil().getJson(context, "user_terms.json")
+//        Log.d("Userterms", "jsonDataStr = $jsonDataStr")
+        val response = UserTermResponse(null, null, null)
+        try {
+            val jsonObject = JSONObject(jsonDataStr)
+            response.top_title = jsonObject.optString("top_title")
+            response.top_title_content = jsonObject.optString("top_title_content")
+            val list = ArrayList<UserTermResponse.UserTermsData>()
+            val gson = Gson()
+            val arr = jsonObject.optJSONArray("policy_data")
+            if (arr != null) {
+                for (i in 0 until arr.length()) {
+                    val item = gson.fromJson(
+                        arr.getJSONObject(i).toString(),
+                        UserTermResponse.UserTermsData::class.java
+                    )
+                    list.add(item)
+                }
+            }
+            response.policy_data = list
+            userTermsData.postValue(response)
 
         } catch (e: Exception) {
             e.printStackTrace()
