@@ -1,12 +1,9 @@
-package com.wingstars.user.code
+package com.wingstars.user.cheer
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
 import com.wingstars.base.base.BaseActivity
-import com.wingstars.user.R
 import com.wingstars.user.databinding.ActivityChangeMemberPasswordBinding
-import com.wingstars.user.databinding.ActivityChooseMemberBinding
 
 class ChangeMemberPasswordActivity: BaseActivity() {
     private lateinit var binding: ActivityChangeMemberPasswordBinding

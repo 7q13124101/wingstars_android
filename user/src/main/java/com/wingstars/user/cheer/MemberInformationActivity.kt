@@ -14,7 +14,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.user.KeyboardUtils
 import com.wingstars.user.R
-import com.wingstars.user.code.ChangeMemberPasswordActivity
+import com.wingstars.user.cheer.ChangeMemberPasswordActivity
 import com.wingstars.user.databinding.ActivityChooseMemberBinding
 import com.wingstars.user.databinding.ActivityMemberInformationBinding
 import com.wingstars.user.dialog.DeleteAccountDialog

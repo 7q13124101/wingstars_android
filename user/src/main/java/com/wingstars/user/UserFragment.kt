@@ -19,9 +19,11 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.wingstars.base.base.BaseFragment
+import com.wingstars.login.LoginActivity
 import com.wingstars.user.databinding.FragmentUserBinding
 import com.wingstars.user.cheer.MemberInformationActivity
 import com.wingstars.user.code.MemBarCodeActivity
+import com.wingstars.user.dialog.LogoutDialog
 import com.wingstars.user.dialog.NotificationDialog
 import com.wingstars.user.frequentlyaskedquestion.FrequentlyAskedQuestionsActivity
 import com.wingstars.user.membercontact.ContactCustomerActivity
@@ -30,6 +32,7 @@ import com.wingstars.user.storelocation.StoreLocationActivity
 import com.wingstars.user.policyterm.PolicyTermActivity
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.jvm.java
 
 class UserFragment : BaseFragment(){
     private var _binding: FragmentUserBinding? = null
@@ -118,12 +121,17 @@ class UserFragment : BaseFragment(){
 
                 clipData = ClipData.newUri(requireContext().contentResolver, "Logo", imageUri)
             }
-            startActivity(Intent.createChooser(intent, "Chia sẻ ứng dụng"))
+            startActivity(Intent.createChooser(intent, "Share APP"))
 
         }
         binding.llUserCCustomerService.setOnClickListener {
             val intent = Intent(requireActivity(), ContactCustomerActivity::class.java)
             startActivity(intent)
+        }
+        binding.llUserLogOut.setOnClickListener {
+            LogoutDialog(requireContext()) {
+                performLogout()
+            }.show()
         }
         binding.llUserFacebook.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
@@ -173,6 +181,13 @@ class UserFragment : BaseFragment(){
             drawable.draw(canvas)
             bitmap
         }
+    }
+    private fun performLogout() {
+        val sharedPref = requireActivity().getSharedPreferences("user_prefs", 0)
+        sharedPref.edit().clear().apply()
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
     override fun onDestroyView() {
         super.onDestroyView()
