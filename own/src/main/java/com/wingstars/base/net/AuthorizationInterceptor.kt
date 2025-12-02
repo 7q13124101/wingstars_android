@@ -8,7 +8,8 @@ import okio.Buffer
 import org.json.JSONObject
 import com.wingstars.base.utils.MMKVManagement
 import java.io.IOException
-
+import android.util.Base64
+import com.wingstars.base.net.beans.CRMHashKey
 
 class AuthorizationInterceptor : Interceptor {
     @Throws(IOException::class)
@@ -38,6 +39,28 @@ class AuthorizationInterceptor : Interceptor {
         var response = chain.proceed(request)
 
         logIntercept(request, response)
+        if (urlS.startsWith(NetBase.HOST_HAWKS)) {
+            try {
+                // 1. Giải mã Username và Password từ HashKey
+                val account = CRMHashKey.decrypt(NetBase.HAWKS_ACCOUNT_ENC)
+                val password = CRMHashKey.decrypt(NetBase.HAWKS_PASSWORD_ENC)
+
+                // 2. Tạo chuỗi Basic Auth (username:password)
+                val credentials = "$account:$password"
+
+                // 3. Mã hóa Base64 chuẩn (NO_WRAP để tránh xuống dòng)
+                val base64Credentials = Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
+
+                // 4. Thêm vào Header
+                requestBuilder.addHeader("Authorization", "Basic $base64Credentials")
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        return chain.proceed(requestBuilder.build())
+    }
 
 //        if(urlS.startsWith(BaseApplication.HOST_CRM) && (response.code == 401)) {
 //            //response.code == 401 账号密码错误的code也是401，不能直接使用401判断token过期 因为response.body.string()只能调用一次，多次调用会导致 java.lang.IllegalStateException: closed
@@ -165,8 +188,8 @@ class AuthorizationInterceptor : Interceptor {
 //            }
 //        }
 
-        return response
-    }
+//        return response
+//    }
 
     private fun requestBodyString(request: Request): String {
         val buffer = Buffer()

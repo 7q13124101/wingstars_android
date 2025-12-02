@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.base.base.BaseFragment
+import com.wingstars.base.net.beans.LatestNewsResponse
 import com.wingstars.home.R
 import com.wingstars.home.activity.TodayItineraryDetailsActivity
 
@@ -242,8 +243,28 @@ class HomeFragment : BaseFragment() ,View.OnClickListener{ // Giữ nguyên
         binding.rvPopularityRanking.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
             binding.rvPopularityRanking.adapter = memberAdapter
         }
-        viewModel.newsDataList.observe(viewLifecycleOwner){dataList ->
-            val newsAdapter = NewsAdapter(requireActivity(), dataList)
+        viewModel.newsDataList.observe(viewLifecycleOwner) { dataList ->
+            // 1. Tạo Listener để xử lý sự kiện click
+            val newsListener = object : NewsAdapter.OnItemListener {
+                override fun onItemClick(data: LatestNewsResponse, position: Int) {
+                    val intent = Intent(requireActivity(), com.wingstars.home.activity.LatestNewsDetailActivity::class.java)
+
+                    // 2. Đóng gói dữ liệu vào Intent (key là "NEWS_DATA")
+                    intent.putExtra("NEWS_DATA", data)
+
+                    // 3. Khởi chạy Activity
+                    startActivity(intent)
+                }
+            }
+            val limitedList = dataList.take(3).toMutableList()
+            // 2. Khởi tạo Adapter với ĐỦ 3 THAM SỐ (Context, List, Listener)
+            val newsAdapter = NewsAdapter(
+                requireActivity(),
+                limitedList, // Chuyển List thành MutableList
+                newsListener
+            )
+
+            // 3. Gán vào RecyclerView
             binding.rvNews.layoutManager = LinearLayoutManager(requireActivity())
             binding.rvNews.adapter = newsAdapter
         }
