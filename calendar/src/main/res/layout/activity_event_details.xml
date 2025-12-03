@@ -12,7 +12,7 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="活動詳情" />
+        app:title="@string/calendar_event_details" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nsv_top"
@@ -126,7 +126,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/dp_8"
-                            android:text="活動日期"
+                            android:text="@string/calendar_event_date"
                             android:textColor="@color/color_DE9DBA"
                             android:textSize="@dimen/sp_16"
                             android:textStyle="bold" />
@@ -156,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:text="活動地點"
+                    android:text="@string/calendar_event_location"
                     android:textColor="@color/color_DE9DBA"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold" />
@@ -191,7 +191,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:layout_weight="1"
-                        android:text="活動資訊"
+                        android:text="@string/calendar_event_information"
                         android:textColor="@color/color_DE9DBA"
                         android:textSize="@dimen/sp_16"
                         android:textStyle="bold" />
@@ -241,7 +241,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:layout_weight="1"
-                        android:text="注意事項"
+                        android:text="@string/calendar_precautions"
                         android:textColor="@color/color_DE9DBA"
                         android:textSize="@dimen/sp_16"
                         android:textStyle="bold" />
