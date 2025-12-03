@@ -33,16 +33,29 @@ import com.wingstars.member.databinding.FragmentMemberBinding
 import com.wingstars.member.viewmodel.MemberViewModel
 import com.wingstars.base.inter.IPermissionsCallback
 import com.wingstars.base.net.NetBase
+import com.wingstars.base.net.beans.WSMemberResponse
+import com.wingstars.member.activity.MemberDetailsActivity
 
 
 class MemberFragment : BaseFragment(), View.OnClickListener,
     PopularityAdapter.onPopularityRankingListener, SupportFashionAdapter.onSupportFashionListener {
     private lateinit var viewModel: MemberViewModel
     private lateinit var binding: FragmentMemberBinding
-    private var maxHight  = 0
+    private var maxHight = 0
     private var currentHeight = 0
-    private var minHight=0
-    private lateinit var permissionsCallback:IPermissionsCallback
+    private var minHight = 0
+    private lateinit var permissionsCallback: IPermissionsCallback
+
+    private lateinit var girlIntroductionAdapter: GirlIntroductionAdapter
+
+    private var isDataLoaded = false // 标记数据是否加载过
+    override fun onResume() {
+        super.onResume()
+        if (!isDataLoaded) {
+            loadData()
+            isDataLoaded = true
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +67,9 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
         return root
     }
 
+    private fun loadData() {
+        viewModel.getWsMembersData()
+    }
 
     private fun initView() {
         /*binding.image.post {
@@ -66,16 +82,16 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
 
         val authorization =
             NetBase.base64Encode("$account:$password".toByteArray(Charsets.UTF_8))
-        Log.e("authorization","authorization=$authorization")
+        Log.e("authorization", "authorization=$authorization")
 
         val params = binding.image!!.layoutParams
         var smallwidth = ScreenUtils.getWidth(requireActivity())
-        maxHight = (smallwidth*0.965).toInt()
+        maxHight = (smallwidth * 0.965).toInt()
         currentHeight = maxHight
         params.width = smallwidth
         params.height = maxHight
         binding.image!!.setLayoutParams(params)
-        binding.scroll.setOnScrollChangeListener(object: NestedScrollView.OnScrollChangeListener{
+        binding.scroll.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
             override fun onScrollChange(
                 v: NestedScrollView,
                 scrollX: Int,
@@ -85,22 +101,24 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
             ) {
                 val isScrollingDown = scrollY > oldScrollY
                 val isScrollingUp = scrollY < oldScrollY
-               // Log.e("scrollY","scrollY=$scrollY oldScrollY=$oldScrollY")
-                if (isScrollingDown){
+                // Log.e("scrollY","scrollY=$scrollY oldScrollY=$oldScrollY")
+                if (isScrollingDown) {
                     val i = Math.abs(scrollY - oldScrollY)
-                    if (currentHeight>minHight){
-                        currentHeight = if (currentHeight-i>minHight)  currentHeight-i else minHight
+                    if (currentHeight > minHight) {
+                        currentHeight =
+                            if (currentHeight - i > minHight) currentHeight - i else minHight
                         val params = binding.image!!.layoutParams
                         params.width = ViewGroup.LayoutParams.MATCH_PARENT
                         params.height = currentHeight
                         binding.image!!.setLayoutParams(params)
                     }
                 }
-                if (isScrollingUp){
-                    if (scrollY<=maxHight-minHight){
+                if (isScrollingUp) {
+                    if (scrollY <= maxHight - minHight) {
                         val i = Math.abs(scrollY - oldScrollY)
-                        if (currentHeight<maxHight){
-                            currentHeight = if (currentHeight+i>maxHight)  maxHight else currentHeight+i
+                        if (currentHeight < maxHight) {
+                            currentHeight =
+                                if (currentHeight + i > maxHight) maxHight else currentHeight + i
                             val params = binding.image!!.layoutParams
                             params.width = ViewGroup.LayoutParams.MATCH_PARENT
                             params.height = currentHeight
@@ -116,14 +134,14 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             binding.root.setOnApplyWindowInsetsListener { v, insets ->
                 val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
-                minHight = statusBarHeight+ DPUtils.dpToPx(64f,requireActivity()).toInt()
+                minHight = statusBarHeight + DPUtils.dpToPx(64f, requireActivity()).toInt()
                 Log.e("statusBarHeight", "statusBarHeight=$statusBarHeight")
                 setViewTop(binding.title, statusBarHeight)
                 binding.root.setOnApplyWindowInsetsListener(null)
                 insets
             }
         } else {
-            minHight = getStatusBarHeight()+ DPUtils.dpToPx(64f,requireActivity()).toInt()
+            minHight = getStatusBarHeight() + DPUtils.dpToPx(64f, requireActivity()).toInt()
             setViewTop(binding.title, getStatusBarHeight())
         }
 
@@ -135,20 +153,34 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
             )
             binding.chartList.adapter = adapter
 
-            var adapter1 = SupportFashionAdapter(requireActivity(), it,this)
+            var adapter1 = SupportFashionAdapter(requireActivity(), it, this)
             binding.supportFashionList.layoutManager = LinearLayoutManager(
                 requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false
             )
             binding.supportFashionList.adapter = adapter1
-
-            var adapter2 = GirlIntroductionAdapter(requireActivity(), it)
-            binding.girlsList.layoutManager = LinearLayoutManager(
-                requireActivity(),
-                LinearLayoutManager.HORIZONTAL, false
-            )
-            binding.girlsList.adapter = adapter2
         }
+
+        //[成員] 成員介紹 layout
+        girlIntroductionAdapter =
+            GirlIntroductionAdapter(requireActivity(), mutableListOf(), object :
+                GirlIntroductionAdapter.onItemListener {
+                override fun onItemClick(data: WSMemberResponse, position: Int) {
+                    val intent = Intent(requireActivity(), MemberDetailsActivity::class.java)
+                    startActivity(intent)
+                }
+            })
+        binding.girlsList.layoutManager = LinearLayoutManager(
+            requireActivity(),
+            LinearLayoutManager.HORIZONTAL, false
+        )
+        binding.girlsList.adapter = girlIntroductionAdapter
+
+        viewModel.wsMembersData.observe(viewLifecycleOwner) {
+            if (!it.isNullOrEmpty())
+                girlIntroductionAdapter.setList(it)
+        }
+
         viewModel.getPopularitylist()
         binding.popularityRanking.setOnClickListener(this)
         binding.take.setOnClickListener(this)
@@ -222,6 +254,7 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
             throw RuntimeException("$context must implement IActivityCallback")
         }
     }
+
     private fun applyPermission() {
         permissionsCallback.setPermissions(1)
         var permission = ArrayList<String>();
