@@ -127,7 +127,7 @@ abstract class BaseActivity : AppCompatActivity()  {
 
 
 
-    fun showToast(tip: String){
+    open fun showToast(tip: String){
         Toast.makeText(this, tip, Toast.LENGTH_LONG).show()
     }
 

@@ -144,11 +144,7 @@ class ChangeMemberPasswordActivity: BaseActivity() {
         dialog.show()
     }
 
-
-
-
-
-    private fun showToast(message: String) {
+    override fun showToast(message: String) {
         android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
     }
 
