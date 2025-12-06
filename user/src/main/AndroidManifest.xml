@@ -5,14 +5,17 @@
 
     <application>
 
-        <activity android:name=".cheer.MemberInformationActivity" />
+        <activity android:name=".cheer.MemberInformationActivity"/>
         <activity android:name=".cheer.ChooseMemberActivity" />
         <activity android:name=".frequentlyaskedquestion.FrequentlyAskedQuestionsActivity" />
-        <activity android:name=".cheer.MobileBarcodeCarrierActivity" />
+        <activity android:name=".cheer.MobileBarcodeCarrierActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".code.MemBarCodeActivity" />
         <activity android:name=".storelocation.StoreLocationActivity" />
         <activity android:name=".policyterm.PolicyTermActivity" />
-        <activity android:name=".cheer.ChangeMemberPasswordActivity"/>
+        <activity android:name=".cheer.ChangeMemberPasswordActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:theme="@style/AppTheme"/>
         <activity android:name=".membercontact.ContactCustomerActivity"/>
         <provider
             android:name="androidx.core.content.FileProvider"
