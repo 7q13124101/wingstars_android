@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.widget.AutoCompleteTextView
+import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,13 @@ import com.wingstars.user.dialog.DeleteAccountDialog
 
 class MemberInformationActivity : BaseActivity() {
     private lateinit var binding: ActivityMemberInformationBinding
+    private val changePasswordLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val newPassword = result.data?.getStringExtra("new_password") ?: ""
+                binding.edtIdCard.setText(newPassword) // edt_id_card trong layout
+            }
+        }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +50,7 @@ class MemberInformationActivity : BaseActivity() {
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (ev.action == MotionEvent.ACTION_DOWN) {
             val view = currentFocus
-            if (view is AutoCompleteTextView) {
+            if (view is EditText || view is AutoCompleteTextView) {
                 val outRect = Rect()
                 view.getGlobalVisibleRect(outRect)
                 if (!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
@@ -64,7 +72,7 @@ class MemberInformationActivity : BaseActivity() {
         }
         binding.ivIdCard.setOnClickListener {
             var intent = Intent(this, ChangeMemberPasswordActivity::class.java)
-            startActivity(intent)
+            changePasswordLauncher.launch(intent)
         }
         binding.edtDeleteAccount.setOnClickListener {
             DeleteAccountDialog(this) {
@@ -80,10 +88,6 @@ class MemberInformationActivity : BaseActivity() {
             val name1 = result.data?.getStringExtra("name1")?:""
             val name2 = result.data?.getStringExtra("name2")?:""
             val name3 = result.data?.getStringExtra("name3")?:""
-//            val displayText = listOf(name1,name2,name3).filter { it.isNotEmpty() }.joinToString(separator = ",")
-//            if(displayText.isNotEmpty()){
-//                binding.edtFavMember.setText(displayText)
-//            }
             val displayText = listOf(name1, name2, name3)
                 .filter { it.isNotEmpty() }
                 .joinToString("、") { it.replace("|", " ") }
