@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:layout_marginTop="0dp"
+    android:fitsSystemWindows="false">
+
+    <RelativeLayout
+        android:id="@+id/rl_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <include
+            android:id="@+id/include_top"
+            layout="@layout/item_top" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_code_small"
+        android:layout_width="@dimen/dp_402"
+        android:layout_height="@dimen/dp_645"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:background="@drawable/bg_barcode_layout"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_24"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/user_tsg_bar_code"
+            android:textColor="@color/color_101828"
+            android:textSize="@dimen/sp_16" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/bg_barcode_outside"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_30"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_30">
+
+            <ImageView
+                android:id="@+id/iv_qr_larger"
+                android:layout_width="@dimen/dp_346"
+                android:layout_height="@dimen/dp_346"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/bg_barcode_inside"
+                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginBottom="@dimen/dp_40"
+                android:scaleType="fitXY"/>
+            <LinearLayout
+                android:id="@+id/ll_null_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/dp_30"
+                android:padding="@dimen/dp_16"
+                android:gravity="center"
+                android:visibility="gone"
+                android:background="@drawable/bg_barcode_inside">
+                <ImageView
+                    android:id="@+id/iv_add_bar_lager"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:src="@drawable/plus_circle"/>
+
+                <TextView
+                    android:id="@+id/tv_add_string"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:textSize="@dimen/sp_14"
+                    android:text="@string/user_add_mobile_barcode"
+                    android:textColor="@color/color_99A1AF"
+                    android:singleLine="true"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:gravity="center"
+            android:text="點擊條碼縮小"
+            android:textColor="@color/color_6A7282"
+            android:textSize="@dimen/sp_14" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_bar_larger"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_30"
+        android:background="@drawable/bg_barcode_layout"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_24"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_top">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/user_tsg_phone_code"
+            android:textColor="@color/color_101828"
+            android:textSize="@dimen/sp_16" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_513"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/bg_barcode_outside"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_10"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_bar_small"
+                android:layout_width="@dimen/dp_489"
+                android:layout_height="@dimen/dp_163"
+                android:background="@drawable/bg_barcode_inside"
+                android:padding="@dimen/dp_28"
+                android:rotation="90"
+                android:scaleType="fitXY"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+            <TextView
+                android:id="@+id/tv_code_small"
+                android:layout_width="@dimen/dp_489"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_13"
+                android:textColor="@color/color_101828"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginRight="-24dp"
+                android:singleLine="true"
+                android:gravity="center"
+                android:rotation="90"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:gravity="center"
+            android:text="@string/user_hint_code_smaller"
+            android:textColor="@color/color_6A7282"
+            android:textSize="@dimen/sp_14" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_qr_larger"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_30"
+        android:background="@drawable/bg_barcode_layout"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_24"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_top">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/user_tsg_bar_code"
+            android:textColor="@color/color_101828"
+            android:textSize="@dimen/sp_16" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_513"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/bg_barcode_outside"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_10"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_qr_small"
+                android:layout_width="@dimen/dp_319"
+                android:layout_height="@dimen/dp_319"
+                android:background="@drawable/bg_barcode_inside"
+                android:padding="@dimen/dp_16"
+                android:scaleType="fitXY"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:gravity="center"
+            android:text="@string/user_hint_code_smaller"
+            android:textColor="@color/color_6A7282"
+            android:textSize="@dimen/sp_14" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
