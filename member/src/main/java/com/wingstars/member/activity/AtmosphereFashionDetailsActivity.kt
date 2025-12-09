@@ -132,8 +132,8 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
         var smallwidth  = width - DPUtils.dpToPx(50f,this).toInt()
         var smallwidths = smallwidth/2
         var smallhight = smallwidths.toInt()*1.585
-        binding.list.adapter = SupportSuitAdapter(this, list,smallwidths.toInt()
-            ,smallhight.toInt(),this)
+     /*   binding.list.adapter = SupportSuitAdapter(this, list,smallwidths.toInt()
+            ,smallhight.toInt(),this)*/
     }
 
 

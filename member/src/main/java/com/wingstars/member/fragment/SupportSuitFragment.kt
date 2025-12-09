@@ -2,12 +2,14 @@ package com.wingstars.member.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.base.utils.ScreenUtils
@@ -35,15 +37,40 @@ class SupportSuitFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
     }
 
     private fun initView() {
-        binding.list.layoutManager = GridLayoutManager(requireActivity(),2)
-        val list = mutableListOf("1","2","3","4","5","6")
+       // binding.list.layoutManager = GridLayoutManager(requireActivity(),2)
+     //   val list = mutableListOf("1","2","3","4","5","6")
         var width = ScreenUtils.getWidth(requireActivity())
         var smallwidth  = width - DPUtils.dpToPx(50f,requireActivity()).toInt()
         var smallwidths = smallwidth/2
         var smallhight = smallwidths.toInt()*1.585
-        binding.list.adapter = SupportSuitAdapter(requireActivity(), list,smallwidths.toInt()
-        ,smallhight.toInt(),this)
+
+
+      /*  binding.list.adapter = SupportSuitAdapter(requireActivity(), list,smallwidths.toInt()
+        ,smallhight.toInt(),this)*/
         viewModel = ViewModelProvider(this)[SupportSuitViewModel::class.java]
+        viewModel.loading.observe(viewLifecycleOwner) {
+            showLoadingUI(it, requireActivity())
+        }
+        viewModel.wsFashions.observe(viewLifecycleOwner) {
+            it.forEach { data ->
+                val fashionCategoryf = data.fashion_categoryF
+                var wsRankDatalist = viewModel.wsFashionCategorysData.value
+                val typeData = wsRankDatalist!!.find { it.id == fashionCategoryf }
+                if (typeData != null) {
+                    data.type = when (typeData.name.trim()) {
+                        "應援服" -> 1
+                        "活動服" -> 2
+                        else -> 0
+                    }
+
+                }
+            }
+            Log.e("wsFashions", "${Gson().toJson(it)}")
+            var adapter1 = SupportSuitAdapter(requireActivity(), it, smallwidths.toInt()
+            ,smallhight.toInt(),this)
+            binding.list.adapter = adapter1
+        }
+        viewModel.wsFashionCategorys()
         viewModel.categorylist.observe(viewLifecycleOwner){ list->
             binding.categoryList.layoutManager = LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL,false)
@@ -52,7 +79,12 @@ class SupportSuitFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
         viewModel.getCategoryList()
     }
 
-    override fun onItemClick(position: Int) {
-         startActivity(Intent(requireActivity(), AtmosphereFashionDetailsActivity::class.java))
+    override fun onItemClick(memberId: Int) {
+        val intent = Intent(
+            requireActivity(),
+            AtmosphereFashionDetailsActivity::class.java
+        )
+        intent.putExtra("memberId", memberId)
+        startActivity(intent)
     }
 }

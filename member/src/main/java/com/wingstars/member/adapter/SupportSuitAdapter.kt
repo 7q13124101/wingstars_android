@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.wingstars.base.net.beans.WSFashionResponse
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
 import com.wingstars.member.databinding.ItemSupportSuitListsBinding
@@ -18,7 +19,7 @@ import com.wingstars.member.view.TopRoundedCornersTransformation
 class SupportSuitAdapter     // -------------------------------------------
     (
     private val context: Context,
-    private var dataList: MutableList<String>?,
+    private var dataList: MutableList<WSFashionResponse>?,
     private var smallwidth:Int,
     private var smallhight:Int,
     private val listener: OnItemListener,
@@ -45,7 +46,7 @@ class SupportSuitAdapter     // -------------------------------------------
     }
 
     // -------------------------------------------
-    fun setList(list: MutableList<String>?) {
+    fun setList(list: MutableList<WSFashionResponse>?) {
         dataList = if (dataList == null) {
             ArrayList()
         } else {
@@ -57,7 +58,7 @@ class SupportSuitAdapter     // -------------------------------------------
     }
 
 
-    fun getData(): MutableList<String>? {
+    fun getData(): MutableList<WSFashionResponse>? {
         if (dataList == null) {
             return null
         }
@@ -70,25 +71,19 @@ class SupportSuitAdapter     // -------------------------------------------
         RecyclerView.ViewHolder(binding.root) {
 
         fun binding(position: Int) {
-            binding.item.setOnClickListener { listener.onItemClick(position) }
+            val data = dataList!![position]
             binding.item.setStrokeWidth(DPUtils.dpToPx(1f,context))
             binding.item.setStrokeColor(context.resources.getColor(R.color.color_F3F4F6))
             setImage(binding.item,smallwidth,smallhight,if (position>0&&position%2==1) true else false)
-           // var smallhights = smallhight - DPUtils.dpToPx(44f,context).toInt()
-           // setImage(binding.image,smallwidth,smallhights)
             binding.image.setPadding(DPUtils.dpToPx(1f,context).toInt())
-/*
-            if (position==0){
-                setMarginLeft(binding.item, DPUtils.dpToPx(20f,context).toInt())
-            }else{
-                setMarginLeft(binding.item, 0)
-            }
-*/
-
             Glide.with(context)
-                .load(R.mipmap.ic_demo1)
+                .load(data.urlF) //R.mipmap.ic_demo1
                 .transform(TopRoundedCornersTransformation(DPUtils.dpToPx(20f, context))) // 核心：应用自定义变换
                 .into(binding.image)
+            var imageType =  if (data.type==1){ R.mipmap.ic_member_jersey} else {R.mipmap.ic_member_activity}
+            binding.imageType.setImageResource(imageType)
+            binding.title.text = "${data.titleF}"
+            binding.item.setOnClickListener { listener.onItemClick(data.id) }
 
         }
 
@@ -114,7 +109,7 @@ class SupportSuitAdapter     // -------------------------------------------
 
 
     interface OnItemListener {
-        fun onItemClick(position: Int)
+        fun onItemClick(memberId: Int)
     }
 
 
