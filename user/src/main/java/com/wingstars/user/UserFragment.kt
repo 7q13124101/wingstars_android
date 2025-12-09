@@ -135,17 +135,17 @@ class UserFragment : BaseFragment(){
         }
         binding.llUserFacebook.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse("https://www.facebook.com/Tainan.TSG.GhostHawks/?locale=zh_TW")
+            intent.data = Uri.parse("https://www.facebook.com/tsgwingstars/?locale=zh_TW")
             startActivity(intent)
         }
         binding.llUserInstagram.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse("https://www.instagram.com/tainan_tsg_ghosthawks/")
+            intent.data = Uri.parse("https://www.instagram.com/wing_stars_official/")
             startActivity(intent)
         }
         binding.llUserYoutube.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse("https://www.youtube.com/@tainantsgghosthawks662")
+            intent.data = Uri.parse("https://www.youtube.com/@WingStars-TSG")
             startActivity(intent)
         }
         binding.srlUserRecord.setOnRefreshListener { refreshLayout ->
