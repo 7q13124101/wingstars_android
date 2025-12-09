@@ -61,6 +61,17 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
                          recommend!!.add(recommend1)
                      }
                  }
+                if (recommend!!.size>=1){
+                    if (smallCommodityAdapter==null){
+                        smallCommodityAdapter = SmallCommodityAdapter(
+                            this@AtmosphereFashionDetailsActivity,
+                            mutableListOf(recommend!![0])
+                        )
+                        binding.smallCommodityList.adapter  = smallCommodityAdapter
+                    }else{
+                        smallCommodityAdapter!!.setList(mutableListOf(recommend!![0]))
+                    }
+                }
 
 
                 if (gallery!=null){
