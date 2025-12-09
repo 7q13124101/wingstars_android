@@ -146,16 +146,16 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
             setViewTop(binding.title, getStatusBarHeight())
         }
 
-   /*     viewModel.popularitylist.observe(viewLifecycleOwner) {
+        /*     viewModel.popularitylist.observe(viewLifecycleOwner) {
 
 
-            var adapter1 = SupportFashionAdapter(requireActivity(), it, this)
-            binding.supportFashionList.layoutManager = LinearLayoutManager(
-                requireActivity(),
-                LinearLayoutManager.HORIZONTAL, false
-            )
-            binding.supportFashionList.adapter = adapter1
-        }*/
+                 var adapter1 = SupportFashionAdapter(requireActivity(), it, this)
+                 binding.supportFashionList.layoutManager = LinearLayoutManager(
+                     requireActivity(),
+                     LinearLayoutManager.HORIZONTAL, false
+                 )
+                 binding.supportFashionList.adapter = adapter1
+             }*/
 
         //[成員] 成員介紹 layout
         girlIntroductionAdapter =
@@ -186,11 +186,11 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
 
         binding.rlMemberIntroduction.setOnClickListener(this)
         binding.atmosphere.setOnClickListener(this)
-        viewModel.loading.observe(viewLifecycleOwner){
+        viewModel.loading.observe(viewLifecycleOwner) {
             showLoadingUI(it, requireActivity())
         }
-        viewModel.wsRankData.observe(viewLifecycleOwner){
-            Log.e("wsRankData","${Gson().toJson(it)}")
+        viewModel.wsRankData.observe(viewLifecycleOwner) {
+            Log.e("wsRankData", "${Gson().toJson(it)}")
             var adapter = PopularityAdapter(requireActivity(), it, this)
             binding.chartList.layoutManager = LinearLayoutManager(
                 requireActivity(),
@@ -199,21 +199,21 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
             binding.chartList.adapter = adapter
         }
         viewModel.getRenderedList()
-        viewModel.wsFashions.observe(viewLifecycleOwner){
-               it.forEach { data->
-                   val fashionCategoryf = data.fashion_categoryF
-                  var wsRankDatalist  = viewModel.wsFashionCategorysData.value
-                   val typeData = wsRankDatalist!!.find { it.id == fashionCategoryf }
-                   if (typeData!=null){
-                       data.type = when(typeData.name.trim()){
-                           "應援服" -> 1
-                           "活動服" -> 2
-                           else -> 0
-                       }
+        viewModel.wsFashions.observe(viewLifecycleOwner) {
+            it.forEach { data ->
+                val fashionCategoryf = data.fashion_categoryF
+                var wsRankDatalist = viewModel.wsFashionCategorysData.value
+                val typeData = wsRankDatalist!!.find { it.id == fashionCategoryf }
+                if (typeData != null) {
+                    data.type = when (typeData.name.trim()) {
+                        "應援服" -> 1
+                        "活動服" -> 2
+                        else -> 0
+                    }
 
-                   }
-               }
-            Log.e("wsFashions","${Gson().toJson(it)}")
+                }
+            }
+            Log.e("wsFashions", "${Gson().toJson(it)}")
             var adapter1 = SupportFashionAdapter(requireActivity(), it, this)
             binding.supportFashionList.adapter = adapter1
         }
@@ -332,12 +332,12 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
         )
     }
 
-    override fun onSupportFashionClickItem(position: Int) {
-        startActivity(
-            Intent(
-                requireActivity(),
-                AtmosphereFashionDetailsActivity::class.java
-            )
+    override fun onSupportFashionClickItem(memberId: Int) {
+        val intent = Intent(
+            requireActivity(),
+            AtmosphereFashionDetailsActivity::class.java
         )
+        intent.putExtra("memberId", memberId)
+        startActivity(intent)
     }
 }

@@ -19,7 +19,7 @@ import com.wingstars.member.bean.WSRankBean.ACFBean
 import kotlin.collections.forEach
 
 
-class MemberViewModel: ViewModel() {
+class MemberViewModel : ViewModel() {
     var popularitylist = MutableLiveData<MutableList<Int>>()
     var wsMembersData = MutableLiveData<MutableList<WSMemberResponse>>()
     var loading = MutableLiveData<Boolean>()
@@ -27,58 +27,54 @@ class MemberViewModel: ViewModel() {
     var wsFashions = MutableLiveData<MutableList<WSFashionResponse>>()
 
     var wsFashionCategorysData = MutableLiveData<MutableList<WSFashionCategoryResponse>>()
-    public fun  getPopularitylist(){
-        var arrayList = mutableListOf(1,2,3)
+    public fun getPopularitylist() {
+        var arrayList = mutableListOf(1, 2, 3)
         popularitylist.postValue(arrayList)
 
 //        NetBase.ut()
     }
 
-    public fun wsFashionCategorys(){
+    public fun wsFashionCategorys() {
         API.shared?.api?.let {
             val observer = it.wsFashionCategorys()
             observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
                 AndroidSchedulers.mainThread()
             )?.subscribe(
                 { next ->
-                    if (!next.isNullOrEmpty()){
+                    if (!next.isNullOrEmpty()) {
                         wsFashionCategorysData.postValue(next)
                         wsFashions()
-                    }else{
-                        loading.postValue(false)
                     }
                 },
                 { error ->
-                    loading.postValue(false)
+
                 }
             )
         }
     }
-    public fun wsFashions(){
+
+    public fun wsFashions() {
         API.shared?.api?.let {
             val emptyHashMap: java.util.HashMap<String?, Int?>? = HashMap()
-            val observer = it.wsFashions(emptyHashMap,3,1)
+            val observer = it.wsFashions(emptyHashMap, 3, 1)
             observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
                 AndroidSchedulers.mainThread()
             )?.subscribe(
                 { next ->
-                    if (!next.isNullOrEmpty()){
-                        Log.e("wsFashions","${next}")
+                    if (!next.isNullOrEmpty()) {
+                        Log.e("wsFashions", "${next}")
                         wsFashions.postValue(next)
-                    }else{
-                        loading.postValue(false)
                     }
                 },
                 { error ->
-                    Log.e("wsFashions","error=${error.message}")
-                    loading.postValue(false)
+
                 }
             )
         }
     }
 
 
-    public fun getRenderedList(){
+    public fun getRenderedList() {
         loading.postValue(true)
         API.shared?.api?.let {
             val observer = it.wsRank()
@@ -86,33 +82,34 @@ class MemberViewModel: ViewModel() {
                 AndroidSchedulers.mainThread()
             )?.subscribe(
                 { next ->
-                    if (!next.isNullOrEmpty()){
+                    if (!next.isNullOrEmpty()) {
                         var data = mutableListOf<WSMemberRankBean>()
-                        Log.e("getRenderedList","${Gson().toJson(next)}")
+                        Log.e("getRenderedList", "${Gson().toJson(next)}")
                         next.forEach {
-                             val title = it.title
+                            val title = it.title
                             var rendered = ""
-                            if (title!=null){
-                                 rendered = title.rendered
+                            if (title != null) {
+                                rendered = title.rendered
                             }
                             val acf = it.acf
                             var name = ""
                             var volume = ""
-                            if (acf!=null){
+                            if (acf != null) {
                                 val rankBean = acf.rankBean(1)
-                                if (rankBean!=null){
-                                    name  = rankBean.name
+                                if (rankBean != null) {
+                                    name = rankBean.name
                                     volume = rankBean.volume
                                 }
                             }
-                            var bean = WSMemberRankBean(title=rendered,name=name,volume =volume)
+                            var bean =
+                                WSMemberRankBean(title = rendered, name = name, volume = volume)
                             data.add(bean)
                         }
 
                         wsPhotos(data)
 
 
-                    }else{
+                    } else {
                         loading.postValue(false)
                     }
                 },
@@ -122,7 +119,8 @@ class MemberViewModel: ViewModel() {
             )
         }
     }
-    private fun  wsPhotos(data: MutableList<WSMemberRankBean>){
+
+    private fun wsPhotos(data: MutableList<WSMemberRankBean>) {
         API.shared?.api?.let {
             val observer = it.wsPhotos()
             observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
@@ -130,20 +128,20 @@ class MemberViewModel: ViewModel() {
             )?.subscribe(
                 { next ->
                     loading.postValue(false)
-                    if (!next.isNullOrEmpty()){
+                    if (!next.isNullOrEmpty()) {
                         data.forEach {
                             val acf = it.name
-                            if (acf!=null){
-                                val imageList = next.filter { it.title.rendered.trim()== acf}
-                                if (!imageList.isNullOrEmpty()){
+                            if (acf != null) {
+                                val imageList = next.filter { it.title.rendered.trim() == acf }
+                                if (!imageList.isNullOrEmpty()) {
                                     val acf1 = imageList[0].acf
-                                    if (acf1!=null){
-                                        it.number =  acf1.number
+                                    if (acf1 != null) {
+                                        it.number = acf1.number
                                     }
                                     var yoast_head_json = imageList[0].yoast_head_json
-                                    if (yoast_head_json!=null){
+                                    if (yoast_head_json != null) {
                                         val ogImage = yoast_head_json.og_image
-                                        if (!ogImage.isNullOrEmpty()){
+                                        if (!ogImage.isNullOrEmpty()) {
                                             it.image = ogImage[0].url
                                         }
                                     }
@@ -152,7 +150,7 @@ class MemberViewModel: ViewModel() {
                         }
                         wsRankData.postValue(data)
 
-                    }else{
+                    } else {
                         loading.postValue(false)
                     }
                 },
@@ -163,7 +161,7 @@ class MemberViewModel: ViewModel() {
         }
     }
 
-    fun  getWsMembersData() {
+    fun getWsMembersData() {
         Log.e("getWsMembersData", "getWsMembersData")
         //成员 > 成员介绍
         API.shared?.api?.let {

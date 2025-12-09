@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <RelativeLayout
+        android:id="@+id/item"
         android:layout_marginTop="@dimen/dp_21"
         android:layout_width="@dimen/dp_112"
         android:layout_height="@dimen/dp_44"
@@ -17,6 +18,7 @@
             android:layout_height="@dimen/dp_30"
             android:background="@drawable/ic_white_circle_border">
             <ImageView
+                android:scaleType="fitCenter"
                 android:id="@+id/image"
                 android:layout_centerInParent="true"
                 android:layout_width="@dimen/dp_22"
@@ -24,6 +26,7 @@
                 android:src="@mipmap/ic_demo3"/>
         </RelativeLayout>
         <TextView
+            android:id="@+id/title"
             android:ellipsize="end"
             android:maxLines="2"
             android:text="緞帶蝴蝶結髮飾の曲儿我去玩儿防守打法收到"

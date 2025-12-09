@@ -19,7 +19,7 @@ import com.wingstars.member.view.TopRoundedCornersTransformation
 class GuideAdapter     // -------------------------------------------
     (
     private val context: Context,
-    private var dataList: MutableList<Int>?
+    private var dataList: MutableList<String>?
 ) : RecyclerView.Adapter<GuideAdapter.NormalItemViewHolder>() {
    private var pos = 0
 
@@ -49,7 +49,7 @@ class GuideAdapter     // -------------------------------------------
     }
 
     // -------------------------------------------
-    fun setList(list: MutableList<Int>?) {
+    fun setList(list: MutableList<String>?) {
         dataList = if (dataList == null) {
             ArrayList()
         } else {
@@ -61,7 +61,7 @@ class GuideAdapter     // -------------------------------------------
     }
 
 
-    fun getData(): MutableList<Int>? {
+    fun getData(): MutableList<String>? {
         if (dataList == null) {
             return null
         }
