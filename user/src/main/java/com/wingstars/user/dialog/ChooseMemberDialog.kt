@@ -1,17 +1,20 @@
 package com.wingstars.user.dialog
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.wingstars.user.R
 import com.wingstars.user.cheer.MemberAdapter
 import com.wingstars.user.cheer.MemberInfo
 
 class ChooseMemberDialog(
     private val onMemberSelected: (String) -> Unit,
-    private val selectedName: String? = null ,// item chọn trước đó
+    private val selectedName: String? = null ,
 ) : BaseBottomDialog(R.layout.dialog_choose_member) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,6 +47,24 @@ class ChooseMemberDialog(
             onMemberSelected("${selected.number}|${selected.name}")
             dismiss()
         }
+        view.post {
+            val bottomSheet = dialog?.findViewById<View>(
+                com.google.android.material.R.id.design_bottom_sheet
+            ) ?: return@post
+            val behavior = BottomSheetBehavior.from(bottomSheet)
+            val headerView = requireActivity().findViewById<View>(R.id.rl_top)
+            val location = IntArray(2)
+            headerView.getLocationOnScreen(location)
+            val headerBottom = location[1] + headerView.height
+            val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+            val desiredHeight = screenHeight - headerBottom
+            bottomSheet.layoutParams.height = desiredHeight
+            bottomSheet.requestLayout()
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.skipCollapsed = true
+            behavior.isDraggable = true
+        }
+
 
     }
 }

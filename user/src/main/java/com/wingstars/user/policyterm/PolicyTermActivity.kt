@@ -21,19 +21,14 @@ class PolicyTermActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUserTermsBinding
     private val viewModel: PolicyTermModel by viewModels()
     private var tag = ""
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = true
-//        window.statusBarColor = getColor(R.color.color_DE9DBA)
-
         binding = ActivityUserTermsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         tag = intent?.getStringExtra("tag").toString()
         initView()
-//        initRefresh()
     }
 
     private fun initView() {
@@ -41,12 +36,15 @@ class PolicyTermActivity : AppCompatActivity() {
         if (tag == "PrivacyPolicy") {
             viewModel.getPrivacyPolicyJson(this)
             binding.txtTitle.text = getString(R.string.user_privacy_policy)
+            binding.txtTitle.setTextColor(getColor(R.color.color_101828))
             binding.txtTitleTop.visibility = View.VISIBLE
             binding.txtContentTop.visibility = View.VISIBLE
             viewModel.privacyPolicyData.observe(this) { privacyPolicyResponse ->
                 if (privacyPolicyResponse != null) {
                     binding.txtTitleTop.text = privacyPolicyResponse.top_title ?: ""
+                    binding.txtTitleTop.setTextColor(getColor(R.color.color_101828))
                     binding.txtContentTop.text = privacyPolicyResponse.top_title_content ?: ""
+                    binding.txtContentTop.setTextColor(getColor(R.color.color_4A5565))
                     val list = privacyPolicyResponse.policy_data
                     if (!list.isNullOrEmpty()) {
                         binding.llPolicyContent.removeAllViews()
@@ -68,9 +66,11 @@ class PolicyTermActivity : AppCompatActivity() {
                             } else {
                                 tvPolicyTitle?.visibility = View.VISIBLE
                                 tvPolicyTitle?.text = dataDTO.title
+                                tvPolicyTitle?.setTextColor(getColor(R.color.color_101828))
                             }
                             val safeContent = dataDTO.content ?: ""
                             tvPolicyContent?.text = formatNumberedText(safeContent)
+                            tvPolicyContent?.setTextColor(getColor(R.color.color_4A5565))
                             binding.llPolicyContent.addView(inflate)
                         }
                     }
@@ -79,12 +79,15 @@ class PolicyTermActivity : AppCompatActivity() {
         }else if (tag == "UserTerms") {
             viewModel.getUserTermsJson(this)
             binding.txtTitle.text = getString(R.string.user_terms_of_use)
+            binding.txtTitle.setTextColor(getColor(R.color.color_101828))
             binding.txtTitleTop.visibility = View.VISIBLE
             binding.txtContentTop.visibility = View.VISIBLE
             viewModel.userTermsData.observe(this) { userTermsResponse ->
                 if (userTermsResponse != null) {
                     binding.txtTitleTop.text = userTermsResponse.top_title ?: ""
+                    binding.txtTitleTop.setTextColor(getColor(R.color.color_101828))
                     binding.txtContentTop.text = userTermsResponse.top_title_content ?: ""
+                    binding.txtContentTop.setTextColor(getColor(R.color.color_4A5565))
                     val list = userTermsResponse.policy_data
                     if (!list.isNullOrEmpty()) {
                         binding.llPolicyContent.removeAllViews()
@@ -109,6 +112,7 @@ class PolicyTermActivity : AppCompatActivity() {
                             }
                             val safeContent = dataDTO.content ?: ""
                             tvPolicyContent?.text = formatNumberedText(safeContent)
+                            tvPolicyContent?.setTextColor(getColor(R.color.color_101828))
                             binding.llPolicyContent.addView(inflate)
                         }
                     }
@@ -133,12 +137,6 @@ class PolicyTermActivity : AppCompatActivity() {
     }
 
     private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
-
-//    private fun initRefresh() {
-//        binding.srlUserRecord.setOnRefreshListener {
-//            binding.srlUserRecord.finishRefresh()
-//        }
-//    }
 
 
 }

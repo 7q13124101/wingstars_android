@@ -34,64 +34,50 @@ class ChooseMemberActivity : BaseActivity() {
         binding = ActivityChooseMemberBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val controller = WindowInsetsControllerCompat(window, window.decorView)
-        controller.isAppearanceLightStatusBars = true  // icon đen
-//        window.statusBarColor = getColor(R.color.color_DE9DBA)
-//        window.navigationBarColor = getColor(R.color.color_DE9DBA)
-//        setTitleFoot(
-//            view1 = binding.root,
-//            statusBarColor = R.color.white,
-//            navigationBarColor = R.color.color_F3F4F6
-//        )
-
+        controller.isAppearanceLightStatusBars = true
         initView()
-
     }
-
     override fun initView() {
         binding.ivBack.setOnClickListener { finish() }
-
         val adapter = MemberUIAdapter(members)
         val adapter2 = MemberUIAdapter(members1)
-
         binding.rvMember.adapter = adapter
         binding.rvMember.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-
         binding.rvMemberSecond.adapter = adapter2
         binding.rvMemberSecond.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-
         var selectedName: String? = null
         var selectedName1: String? = null
         var selectedName2: String? = null
-
         binding.rlTeamMember.setOnClickListener {
             ChooseMemberDialog({ selected ->
                 val parts = selected.split("|")
                 val number = parts.getOrNull(0)?:""
                 val name = parts.getOrNull(1)?:""
                 selectedName = selected
-                binding.edtTeamMember.setText(name)
+                binding.edtTeamMember.setText("$number $name")
+                binding.edtTeamMember.setTextColor(getColor(R.color.color_4A5565))
                 checkEnableSaveButton()
             }, selectedName).show(supportFragmentManager, "choose")
         }
-
         binding.ivArrowDown1.setOnClickListener {
             ChooseMemberDialog({ selected ->
                 val parts = selected.split("|")
                 val number = parts.getOrNull(0) ?: ""
                 val name = parts.getOrNull(1) ?: ""
                 selectedName1 = selected
-                binding.edtTeamMember1.setText(name)
+                binding.edtTeamMember1.setText("$number $name")
+                binding.edtTeamMember1.setTextColor(getColor(R.color.color_4A5565))
                 checkEnableSaveButton()
             }, selectedName1).show(supportFragmentManager, "choose")
         }
-
         binding.ivArrowDown2.setOnClickListener {
             ChooseMemberDialog({ selected ->
                 val parts = selected.split("|")
                 val number = parts.getOrNull(0) ?: ""
                 val name = parts.getOrNull(1) ?: ""
                 selectedName2 = selected
-                binding.edtTeamMember2.setText(name)
+                binding.edtTeamMember2.setText("$number $name")
+                binding.edtTeamMember2.setTextColor(getColor(R.color.color_4A5565))
                 checkEnableSaveButton()
             }, selectedName2).show(supportFragmentManager, "choose")
         }
@@ -103,29 +89,23 @@ class ChooseMemberActivity : BaseActivity() {
             setResult(RESULT_OK, intent)
             finish()
         }
-
-
-
     }
     private fun checkEnableSaveButton() {
         val has1 = !binding.edtTeamMember.text.isNullOrEmpty()
         val has2 = !binding.edtTeamMember1.text.isNullOrEmpty()
         val has3 = !binding.edtTeamMember2.text.isNullOrEmpty()
-
         val allSelected = has1 && has2 && has3
-
         if (allSelected) {
             binding.btnSave.isEnabled = true
             binding.btnSave.setBackgroundColor(getColor(R.color.color_DE9DBA))
             binding.bottomLayout.setBackgroundColor(getColor(R.color.color_DE9DBA))
+            binding.btnSave.setTextColor(getColor(R.color.white))
             window.navigationBarColor = getColor(R.color.color_DE9DBA)
-
         } else {
             binding.btnSave.isEnabled = false
             binding.btnSave.setBackgroundColor(getColor(R.color.color_F3F4F6))
             binding.bottomLayout.setBackgroundColor(getColor(R.color.color_F3F4F6))
             window.navigationBarColor = getColor(R.color.color_F3F4F6)
-
         }
     }
 

@@ -9,8 +9,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="42dp"
-        android:paddingBottom="@dimen/dp_10">
+        android:layout_marginTop="@dimen/dp_42"
+        android:paddingBottom="@dimen/dp_4">
 
         <ImageView
             android:id="@+id/iv_icon"

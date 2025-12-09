@@ -23,12 +23,12 @@ open class BaseBottomDialog(
 
     override fun onStart() {
         super.onStart()
-
         val bottomSheet = dialog?.findViewById<View>(
             com.google.android.material.R.id.design_bottom_sheet
-        )
-        bottomSheet?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        bottomSheet?.requestLayout()
-    }
+        ) ?: return
+        bottomSheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        val behavior = com.google.android.material.bottomsheet.BottomSheetBehavior.from(bottomSheet)
+        behavior.state = com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+        behavior.skipCollapsed = true    }
 
 }

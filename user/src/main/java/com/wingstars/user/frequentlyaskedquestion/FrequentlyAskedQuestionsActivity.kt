@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.NonNull
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -26,18 +27,10 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        immersionBar {
-//            statusBarColor(R.color.color_6A0F18)
-//            navigationBarColor(R.color.color_F5F5F5)
-//            navigationBarDarkIcon(true)
-//
-//            fitsSystemWindows(true)
-//        }
-
         binding = ActivityFrequentlyAskedQuestionBinding.inflate(layoutInflater)
-        setTitleFoot(binding.root)
-
+        setContentView(binding.root)
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.isAppearanceLightStatusBars = true
         initData()
     }
 
@@ -104,7 +97,7 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
 
         })
 
-        binding.imgBack.setOnClickListener {
+        binding.includeTop.imgBack.setOnClickListener {
             finish()
         }
     }
@@ -132,7 +125,7 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
     }
 
     override fun initView() {
-        binding.imgBack.setOnClickListener {
+        binding.includeTop.imgBack.setOnClickListener {
             finish()
         }
     }

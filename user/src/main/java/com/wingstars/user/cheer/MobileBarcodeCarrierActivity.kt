@@ -20,18 +20,24 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
 
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = true
-//        setTitleFoot(
-//            view1 = binding.root,
-//            statusBarColor = R.color.color_F3F4F6,
-//            navigationBarColor = R.color.color_F3F4F6
-//        )
-//        window.statusBarColor = getColor(R.color.color_DE9DBA)
         initView()
     }
     override fun initView() {
         binding.ivBack.setOnClickListener { finish() }
-        KeyboardUtils.showKeyboard(binding.edtMobile)
-
+        binding.rlMobile.setOnClickListener {
+            binding.edtMobile.requestFocus()
+            binding.edtMobile.hint = ""
+            KeyboardUtils.showKeyboard(binding.edtMobile)
+        }
+        binding.edtMobile.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.edtMobile.hint = ""
+            } else {
+                if (binding.edtMobile.text.isNullOrEmpty()) {
+                    binding.edtMobile.hint = getString(R.string.user_enter_your_mobile)
+                }
+            }
+        }
         binding.edtMobile.addTextChangedListener{
             val input = it.toString()
             if(input.length >= 8){
