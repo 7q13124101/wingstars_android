@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.login.LoginActivity
+import com.wingstars.user.achievement.AchievementActivity
 import com.wingstars.user.databinding.FragmentUserBinding
 import com.wingstars.user.cheer.MemberInformationActivity
 import com.wingstars.user.code.MemBarCodeActivity
@@ -92,6 +93,12 @@ class UserFragment : BaseFragment(){
             val intent = Intent(requireActivity(), FrequentlyAskedQuestionsActivity::class.java)
             startActivity(intent)
         }
+
+        binding.achievement.setOnClickListener{
+            val intent = Intent(requireActivity(), AchievementActivity::class.java)
+            startActivity(intent)
+        }
+
         binding.llUserStoreLocations.setOnClickListener {
             val intent = Intent(requireActivity(), StoreLocationActivity::class.java)
             startActivity(intent)
