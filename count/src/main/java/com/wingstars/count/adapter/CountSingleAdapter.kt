@@ -13,7 +13,8 @@ import java.util.ArrayList
 
 class CountSingleAdapter(
     private val context: Context,
-    private var dataList: MutableList<CountSingleItemViewModel>?
+    private var dataList: MutableList<CountSingleItemViewModel>?,
+    private val onItemClick: (CountSingleItemViewModel) -> Unit
 ) : RecyclerView.Adapter<CountSingleAdapter.CountSingleViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountSingleViewHolder {
@@ -62,7 +63,7 @@ class CountSingleAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun binding(position: Int) {
-            val item = dataList!![position]
+            val item = dataList?.getOrNull(position) ?: return
 
             binding.tvTitle.text = item.title
             binding.tvInfo.text = item.info
@@ -77,18 +78,10 @@ class CountSingleAdapter(
                 .load(item.countIconRes)
                 .into(binding.rlIcon)
 
-        }
-
-        fun setMarginLeft(view: View, left: Int) {
-            val params = view.layoutParams
-            if (params is RecyclerView.LayoutParams) {
-                params.leftMargin = left
-                view.layoutParams = params
-            } else if (params is ViewGroup.MarginLayoutParams) {
-                // Fallback
-                params.leftMargin = left
-                view.layoutParams = params
+            binding.root.setOnClickListener {
+                onItemClick(item)
             }
+
         }
     }
 }

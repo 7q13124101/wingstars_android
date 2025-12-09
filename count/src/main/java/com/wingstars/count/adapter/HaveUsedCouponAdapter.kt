@@ -5,13 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wingstars.count.databinding.ItemHaveUsedCouponsBinding
-import com.wingstars.count.databinding.ItemUnusedCouponsBinding
-import com.wingstars.count.viewmodel.CouponViewModel
+import com.wingstars.count.viewmodel.CountListItemViewModel
 
-class HaveUsedCouponAdapter (private var list: List<CouponViewModel> = listOf()) :
-    RecyclerView.Adapter<HaveUsedCouponAdapter.CouponViewHolder>() {
+class HaveUsedCouponAdapter (
+    private var list: List<CountListItemViewModel> = listOf(),
+    private val onItemClick: (CountListItemViewModel) -> Unit
+) : RecyclerView.Adapter<HaveUsedCouponAdapter.CouponViewHolder>() {
 
-    fun setData(newList: List<CouponViewModel>) {
+    fun setData(newList: List<CountListItemViewModel>) {
         this.list = newList
         notifyDataSetChanged()
     }
@@ -32,12 +33,15 @@ class HaveUsedCouponAdapter (private var list: List<CouponViewModel> = listOf())
     inner class CouponViewHolder(private val binding: ItemHaveUsedCouponsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: CouponViewModel) {
+        fun bind(item: CountListItemViewModel) {
             binding.tvExchangeName.text = item.title
-            binding.tvExchangePeriod1.text = item.expiryDate
+            binding.tvExchangePeriod1.text = item.time
             Glide.with(binding.root.context)
-                .load(item.imageResId)
+                .load(item.leftImageRes)
                 .into(binding.ivGoodsImage)
+            binding.root.setOnClickListener {
+                onItemClick(item)
+            }
         }
     }
 }

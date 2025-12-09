@@ -21,9 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/pt_10"
+            android:paddingLeft="@dimen/pt_5"
             android:paddingTop="@dimen/pt_7"
-            android:paddingRight="@dimen/pt_10"
+            android:paddingRight="@dimen/pt_5"
             android:paddingBottom="@dimen/pt_7">
 
             <RelativeLayout
@@ -84,8 +84,7 @@
                     android:gravity="bottom"
                     android:text="兌換期間：2025/05/02 12：00 ～ 2025/05/04 18：00"
                     android:textColor="@color/color_101828"
-                    android:textSize="@dimen/sp_12"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/sp_12" />
             </LinearLayout>
 
         </LinearLayout>

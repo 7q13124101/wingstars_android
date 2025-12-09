@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
+
+        <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        android:layout_marginBottom="-10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:paddingBottom="25dp"> <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/barcode_redemption"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
+                android:textColor="@color/color_101828" />
+
+            <ImageView
+                android:id="@+id/iv_close_dialog"
+                android:layout_width="@dimen/pt_20"
+                android:layout_height="@dimen/pt_20"
+                android:src="@drawable/ic_cancel"
+                android:padding="4dp"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/pt_10"
+                android:layout_marginEnd="@dimen/pt_10"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:padding="5dp">
+                <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp">
+                <LinearLayout
+                    android:id="@+id/ll_exchange_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:paddingEnd="16dp">
+
+                    <RelativeLayout
+                        android:layout_width="80dp"
+                        android:layout_height="80dp">
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/iv_goods_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/bg_round_image"
+                            app:shapeAppearanceOverlay="@style/CornersRounded" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="match_parent" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="@dimen/pt_10">
+
+                        <TextView
+                            android:id="@+id/tv_exchange_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="2025 WS單曲寫真壓克力鑰匙圈"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:ellipsize="end" />
+
+                        <TextView
+                            android:id="@+id/tv_exchange_period1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tv_exchange_name"
+                            android:layout_marginTop="4dp"
+                            android:text="兌換期間：2025/10/28 ~ 2025/11/09"
+                            android:textColor="@color/color_101828"
+                            android:textSize="12sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+                    <FrameLayout
+                        android:id="@+id/label"
+                        android:layout_width="80dp"
+                        android:layout_height="72dp"
+                        android:layout_gravity="top|end"
+                        android:layout_marginTop="-5dp"
+                        android:layout_marginEnd="-5dp">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_corner_badge_yellow"
+                            android:scaleType="centerCrop"
+                            android:outlineProvider="background"
+                            app:strokeColor="#1A000000"
+                            app:shapeAppearanceOverlay="@style/BadgeTopRightCorner" />
+                        <TextView
+                            android:id="@+id/label_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|end"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="@dimen/pt_10"
+                            android:text="星會員"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:elevation="11dp"
+                            android:textSize="12sp" />
+                    </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+            </FrameLayout>
+
+            <ImageView
+                android:id="@+id/iv_qr_code"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:src="@drawable/ic_qr_code_placeholder" />
+
+            <TextView
+                android:id="@+id/tv_qr_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/pt_10"
+                android:text="@string/click_to_enlarge"
+                android:textColor="@color/color_101828"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:gravity="center"
+                android:text="請勿以翻拍或截圖方式傳輸本券，以免影響條碼辨識，造成無法使用。"
+                android:textColor="@color/color_101828"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:weightSum="2">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_prev"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/pt_24"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_button_gray"
+                    android:text="上一張"
+                    android:textSize="@dimen/sp_14"
+                    android:textColor="@color/color_101828" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_next"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/pt_24"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_checkin_button"
+                    app:backgroundTint="@null"
+                    android:text="下一張"
+                    android:textSize="@dimen/sp_14"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -2,6 +2,7 @@ package com.wingstars.count.activity
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -58,9 +59,17 @@ class ActivityExchangeActivity : AppCompatActivity() {
 
     private fun initView() {
 
-        adapter = CountListAdapter(this, null)
-        binding.rvGoodsList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        adapter = CountListAdapter(this, null) { item ->
+            android.util.Log.d("DEBUG_CLICK", "Đã click vào item: ${item.title}")
+            val intent = Intent(this, ExchangeDetailsActivity::class.java)
+            intent.putExtra("EXTRA_GIFT_ITEM", item)
+
+            startActivity(intent)
+        }
+
+        binding.rvGoodsList.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 1)
         binding.rvGoodsList.adapter = adapter
+
         setupSearchInput()
     }
 
@@ -83,7 +92,13 @@ class ActivityExchangeActivity : AppCompatActivity() {
         dialog.setContentView(dialogBinding.root)
 
         dialog.window?.apply {
-            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val displayMetrics = resources.displayMetrics
+            val screenHeight = displayMetrics.heightPixels
+            val halfScreenHeight = (screenHeight * 0.5).toInt()
+            setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                halfScreenHeight
+            )
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             setGravity(Gravity.BOTTOM)
         }
@@ -110,7 +125,7 @@ class ActivityExchangeActivity : AppCompatActivity() {
                 if (!isFinishing && !isDestroyed && dialog.isShowing) {
                     dialog.dismiss()
                 }
-            }, 200)
+            }, 500)
         }
         dialog.show()
     }
@@ -127,10 +142,26 @@ class ActivityExchangeActivity : AppCompatActivity() {
 
     private suspend fun fetchListFromRepository(): List<CountListItemViewModel> {
         return listOf(
-            CountListItemViewModel("有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image),
-            CountListItemViewModel("有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image),
-            CountListItemViewModel("有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image),
-            CountListItemViewModel("安芝儇 x Mingo 一日店長，專屬福利送不停", "2025/09/20 (六)", "150", R.drawable.bg_round_image)
+            CountListItemViewModel(1,"有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image,"所有會員皆適用","1次","80","澄清湖棒球場（高雄市烏松區大埤路113號）","部分商品數量有限，換完為止。 \n" +
+                    "兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。 \n" +
+                    "本券僅限於指定兌換地點使用，請於現場出示 APP 票券QRCODE條碼。 \n" +
+                    "兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。 \n" +
+                    "期限內若無完成兌換，本券視同失效，點數不予退回。 ","aa",""),
+            CountListItemViewModel(2,"有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image,"所有會員皆適用","1次","80","澄清湖棒球場（高雄市烏松區大埤路113號）","部分商品數量有限，換完為止。 \n" +
+                    "兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。 \n" +
+                    "本券僅限於指定兌換地點使用，請於現場出示 APP 票券QRCODE條碼。 \n" +
+                    "兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。 \n" +
+                    "期限內若無完成兌換，本券視同失效，點數不予退回。 ","aa",""),
+            CountListItemViewModel(3,"有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image,"所有會員皆適用","1次","80","澄清湖棒球場（高雄市烏松區大埤路113號）","部分商品數量有限，換完為止。 \n" +
+                    "兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。 \n" +
+                    "本券僅限於指定兌換地點使用，請於現場出示 APP 票券QRCODE條碼。 \n" +
+                    "兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。 \n" +
+                    "期限內若無完成兌換，本券視同失效，點數不予退回。 ","aa",""),
+            CountListItemViewModel(4,"安芝儇 x Mingo 一日店長，專屬福利送不停", "2025/09/20 (六)", "150", R.drawable.bg_round_image,"所有會員皆適用","1次","80","澄清湖棒球場（高雄市烏松區大埤路113號）","部分商品數量有限，換完為止。 \n" +
+                    "兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。 \n" +
+                    "本券僅限於指定兌換地點使用，請於現場出示 APP 票券QRCODE條碼。 \n" +
+                    "兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。 \n" +
+                    "期限內若無完成兌換，本券視同失效，點數不予退回。 ","aa","")
         )
     }
 

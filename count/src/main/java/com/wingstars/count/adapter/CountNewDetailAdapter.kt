@@ -6,13 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.wingstars.count.R
 import com.wingstars.count.databinding.ItemGoodsNewDetailBinding
 import com.wingstars.count.viewmodel.CountNewDetailViewModel
 import java.util.ArrayList
 
 class CountNewDetailAdapter(
     private val context: Context,
-    private var dataList: MutableList<CountNewDetailViewModel>?
+    private var dataList: MutableList<CountNewDetailViewModel>?,
+    private val onItemClick: (CountNewDetailViewModel) -> Unit
 ) : RecyclerView.Adapter<CountNewDetailAdapter.CountNewDetailViewHolder>() {
 
     private var originalList: ArrayList<CountNewDetailViewModel> = ArrayList()
@@ -68,7 +70,7 @@ class CountNewDetailAdapter(
             dataList!!.addAll(originalList)
         } else {
             for (item in originalList) {
-                if (item.title?.contains(text, ignoreCase = true) == true) {
+                if (item.title.contains(text, ignoreCase = true) == true) {
                     dataList!!.add(item)
                 }
             }
@@ -92,7 +94,13 @@ class CountNewDetailAdapter(
 
             Glide.with(context)
                 .load(item.image)
+                .placeholder(R.drawable.gift_details_image_background)
+                .error(R.drawable.gift_details_image_background)
                 .into(binding.ivGoodsImage)
+
+            binding.root.setOnClickListener {
+                onItemClick(item)
+                }
         }
         fun setMarginLeft(view: View, left: Int) {
             val params = view.layoutParams

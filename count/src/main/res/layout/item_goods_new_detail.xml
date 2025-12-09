@@ -28,7 +28,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_count_gift_1"
+                    android:src="@drawable/ic_count_gift_4"
                     app:shapeAppearanceOverlay="@style/TopCornersRounded" />
 
                 <LinearLayout

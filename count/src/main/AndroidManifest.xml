@@ -3,6 +3,12 @@
 
     <application>
         <activity
+            android:name=".activity.ExchangeDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Count_Item_Activity"
+            android:exported="false" />
+        <activity
             android:name=".activity.ExchangeHistoryActivity"
             android:exported="false" />
         <activity
@@ -14,6 +20,9 @@
             android:theme="@style/Theme.WingStars" />
         <activity
             android:name=".activity.CountHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.GiftDetailsActivity"
             android:exported="false" />
     </application>
 

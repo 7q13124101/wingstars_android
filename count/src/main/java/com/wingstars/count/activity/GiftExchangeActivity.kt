@@ -2,6 +2,7 @@ package com.wingstars.count.activity
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -13,7 +14,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.EditText
 import android.widget.RadioButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -58,7 +58,13 @@ class GiftExchangeActivity : AppCompatActivity() {
 
     private fun initView() {
 
-        adapter = CountNewDetailAdapter(this, null)
+        adapter = CountNewDetailAdapter(this, null) { item ->
+            val intent = Intent(this, GiftDetailsActivity::class.java)
+            intent.putExtra("EXTRA_GIFT_ITEM", item)
+
+            startActivity(intent)
+        }
+
         binding.rvGoodsList.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 2)
         binding.rvGoodsList.adapter = adapter
 
@@ -127,13 +133,23 @@ class GiftExchangeActivity : AppCompatActivity() {
     }
 
     private suspend fun fetchDetailFromRepository(): List<CountNewDetailViewModel> {
+        val commonRules = "部分商品數量有限，換完為止。 \n" +
+                "兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。 \n" +
+                "本券僅限於指定兌換地點使用，請於現場出示 APP 票券QRCODE條碼。 \n" +
+                "兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。 \n" +
+                "期限內若無完成兌換，本券視同失效，點數不予退回。 "
+        val precautions = "部分商品數量有限，換完為止。 \n" +
+                "兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。 \n" +
+                "本券僅限於指定兌換地點使用，請於現場出示 APP 票券QRCODE條碼。 \n" +
+                "兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。 \n" +
+                "期限內若無完成兌換，本券視同失效，點數不予退回。 "
         return listOf(
-            CountNewDetailViewModel(R.drawable.ic_count_gift_4,"2025 WS單曲寫真壓克力鑰匙圈","2499"),
-            CountNewDetailViewModel(R.drawable.ic_count_gift_3,"2025 WS單曲紀念專輯吊飾","2099"),
-            CountNewDetailViewModel(R.drawable.ic_count_gift_2,"2025 WS單曲寫真女孩貼紙包","1699"),
-            CountNewDetailViewModel(R.drawable.ic_count_gift_1,"2025 WS LOGO杯墊","799"),
-            CountNewDetailViewModel(R.drawable.ic_count_gift_5,"2025 WS LOGO燈箱吊飾","499"),
-            CountNewDetailViewModel(R.drawable.ic_count_gift_6,"2024 WS立牌拼圖｜WS款","199")
+            CountNewDetailViewModel(1,R.drawable.ic_count_gift_1,"2025 WS單曲寫真壓克力鑰匙圈","2499","2025/07/01 12:00 ~ 2026/02/02 23:59","所有會員皆適用","1次","2,000","Stars House門市（高雄市左營區崇德路428號）",commonRules,precautions),
+            CountNewDetailViewModel(2,R.drawable.ic_count_gift_2,"2025 WS單曲紀念專輯吊飾","2099","2025/07/01 12:00 ~ 2026/02/02 23:59","所有會員皆適用","1次","2,000","Stars House門市（高雄市左營區崇德路428號）",commonRules,precautions),
+            CountNewDetailViewModel(3,R.drawable.ic_count_gift_3,"2025 WS單曲寫真女孩貼紙包","1699","2025/07/01 12:00 ~ 2026/02/02 23:59","所有會員皆適用","1次","2,000","Stars House門市（高雄市左營區崇德路428號）",commonRules,precautions),
+            CountNewDetailViewModel(4,R.drawable.ic_count_gift_4,"2025 WS LOGO杯墊","799","2025/07/01 12:00 ~ 2026/02/02 23:59","所有會員皆適用","1次","2,000","Stars House門市（高雄市左營區崇德路428號）",commonRules,precautions),
+            CountNewDetailViewModel(5,R.drawable.ic_count_gift_5,"2025 WS LOGO燈箱吊飾","499","2025/07/01 12:00 ~ 2026/02/02 23:59","所有會員皆適用","1次","2,000","Stars House門市（高雄市左營區崇德路428號）",commonRules,precautions),
+            CountNewDetailViewModel(6,R.drawable.ic_count_gift_6,"2024 WS立牌拼圖｜WS款","199","2025/07/01 12:00 ~ 2026/02/02 23:59","所有會員皆適用","1次","2,000","Stars House門市（高雄市左營區崇德路428號）",commonRules,precautions)
         )
     }
 

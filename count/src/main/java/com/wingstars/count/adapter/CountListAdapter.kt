@@ -12,7 +12,8 @@ import java.util.ArrayList
 
 class CountListAdapter (
     private val context: Context,
-    private var dataList: MutableList<CountListItemViewModel>?
+    private var dataList: MutableList<CountListItemViewModel>?,
+    private val onItemClick: (CountListItemViewModel) -> Unit
 ) : RecyclerView.Adapter<CountListAdapter.CountListViewHolder>() {
     private var originalList: ArrayList<CountListItemViewModel> = ArrayList()
 
@@ -95,6 +96,10 @@ class CountListAdapter (
             Glide.with(context)
                 .load(item.leftImageRes)
                 .into(binding.image)
+
+            binding.llWingStarsRoot.setOnClickListener {
+                onItemClick(item)
+            }
         }
     }
 }
