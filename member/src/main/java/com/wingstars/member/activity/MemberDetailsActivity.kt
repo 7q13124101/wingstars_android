@@ -7,6 +7,8 @@ import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
@@ -22,6 +24,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.base.net.beans.WSMemberResponse
+import com.wingstars.base.utils.DPUtils
+import com.wingstars.base.utils.ScreenUtils
 import com.wingstars.base.view.DynamicWidthIndicatorDrawable
 import com.wingstars.member.R
 import com.wingstars.member.databinding.ActivityMemberDetailsBinding
@@ -51,6 +55,8 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
             setContentView(binding.root)
             setStatusBarColor()
             setMarginTop(binding.rlTop, getStatusBarHeight())
+            setMarginTops(binding.rlTops, getStatusBarHeight())
+            setScrollView(getStatusBarHeight())
             initData()
             initView()
         } else {
@@ -58,6 +64,22 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
         }
     }
 
+    fun setScrollView(statusBarHeight:Int){
+        var top = statusBarHeight+ DPUtils.dpToPx(389f,this).toInt()
+        var params = binding.shadow.layoutParams as LinearLayout.LayoutParams
+        params.topMargin = top
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT
+        params.height = ScreenUtils.getHeight(this) - statusBarHeight - DPUtils.dpToPx(84f,this).toInt()
+        binding.shadow.layoutParams = params
+
+    }
+
+
+    fun setMarginTops(view: View, top: Int) {
+        var params = view.layoutParams as FrameLayout.LayoutParams
+        params.topMargin = top
+        view.layoutParams = params
+    }
     fun setMarginTop(view: View, top: Int) {
         var params = view.layoutParams as LinearLayout.LayoutParams
         params.topMargin = top
@@ -256,5 +278,7 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
         initData()
         initView()
         setMarginTop(binding.rlTop, getStatusBarHeights())
+        setMarginTops(binding.rlTops, getStatusBarHeights())
+        setScrollView(getStatusBarHeights())
     }
 }

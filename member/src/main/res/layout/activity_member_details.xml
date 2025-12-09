@@ -8,43 +8,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@mipmap/ic_member_page_background"
         android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/rl_top"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_64">
+            android:layout_height="@dimen/dp_64"/>
 
-            <RelativeLayout
-                android:id="@+id/img_back"
-                android:layout_width="@dimen/dp_70"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/dp_20"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:src="@drawable/ic_arrow_left_white" />
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_16" />
-        </RelativeLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -127,45 +99,82 @@
                         android:scaleType="fitXY" />
                 </LinearLayout>
             </RelativeLayout>
+    </LinearLayout>
 
-            <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.lihang.ShadowLayout
+                app:clickable="false"
+                android:id="@+id/shadow"
+                android:layout_marginTop="400dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                app:hl_cornerRadius_leftTop="@dimen/dp_20"
+                app:hl_cornerRadius_rightTop="@dimen/dp_20"
+                app:hl_shadowHidden="false">
 
-                <com.lihang.ShadowLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="325dp"
-                    app:hl_cornerRadius_leftTop="@dimen/dp_20"
-                    app:hl_cornerRadius_rightTop="@dimen/dp_20"
-                    app:hl_shadowHidden="false">
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tabLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:layout_height="@dimen/dp_48"
+                        app:tabBackground="@android:color/transparent"
+                        app:tabGravity="fill"
+                        app:tabIndicatorColor="@color/color_E2518D"
+                        app:tabIndicatorHeight="4dp"
+                        app:tabMode="fixed"
+                        app:tabRippleColor="@android:color/transparent"
+                        app:tabSelectedTextColor="@color/color_E2518D"
+                        app:tabTextColor="@color/color_4A5565" />
 
-                        <com.google.android.material.tabs.TabLayout
-                            android:id="@+id/tabLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/dp_48"
-                            app:tabBackground="@android:color/transparent"
-                            app:tabGravity="fill"
-                            app:tabIndicatorColor="@color/color_E2518D"
-                            app:tabIndicatorHeight="4dp"
-                            app:tabMode="fixed"
-                            app:tabRippleColor="@android:color/transparent"
-                            app:tabSelectedTextColor="@color/color_E2518D"
-                            app:tabTextColor="@color/color_4A5565" />
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/viewPager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+            </com.lihang.ShadowLayout>
+        </LinearLayout>
 
-                        <androidx.viewpager2.widget.ViewPager2
-                            android:id="@+id/viewPager"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-                    </LinearLayout>
-                </com.lihang.ShadowLayout>
-            </LinearLayout>
-        </FrameLayout>
-    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <RelativeLayout
+        android:id="@+id/rl_tops"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_64">
+
+        <RelativeLayout
+            android:id="@+id/img_back"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_20"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:src="@drawable/ic_arrow_left_white" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_16" />
+    </RelativeLayout>
 </FrameLayout>
