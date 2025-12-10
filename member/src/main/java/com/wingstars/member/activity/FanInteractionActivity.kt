@@ -18,11 +18,16 @@ import android.util.Log
 import android.view.Surface
 import android.view.TextureView
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.google.gson.Gson
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.base.utils.ScreenUtils
 import com.wingstars.member.R
@@ -30,6 +35,7 @@ import com.wingstars.member.databinding.ActivityFanInteractionBinding
 import com.wingstars.member.utils.DateUtils
 import com.wingstars.member.view.TakePhotosMemberPopupView
 import com.wingstars.base.view.UpLoadingDialog
+import com.wingstars.member.bean.TakePhotosMembersListBean
 import com.wingstars.member.viewmodel.FanInteractionViewModel
 import java.io.File
 import java.io.FileOutputStream
@@ -37,18 +43,20 @@ import java.io.IOException
 
 
 class FanInteractionActivity : BaseActivity(), View.OnClickListener,
-    TextureView.SurfaceTextureListener {
+    TextureView.SurfaceTextureListener, TakePhotosMemberPopupView.OnSelectImageUrl {
     private var mBackCameraInfo: Camera.CameraInfo? = null
     private val viewModel: FanInteractionViewModel by viewModels()
-    private  var surface: SurfaceTexture?=null
+    private var surface: SurfaceTexture? = null
     private var open = false
     private var type = 1
     private var REQUEST_SELECT_MEDIA = 30
     private var mCamera: Camera? = null
     private var width: Int = 0
     private var uploadDialog: UpLoadingDialog? = null
+    private var takePhotosMembersList = mutableListOf<TakePhotosMembersListBean>()
 
     private var image_background = R.mipmap.fans1
+    private var pos = 0
     private lateinit var binding: ActivityFanInteractionBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,8 +67,18 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
     }
 
 
-
     override fun initView() {
+        viewModel.takePhotosMembersList.observe(this) {
+            Log.e("takePhotosMembersList", "${Gson().toJson(it)}")
+            takePhotosMembersList.addAll(it)
+            if (it.size > 0) {
+                onSelectImageUrl(0)
+            }
+        }
+        viewModel.loading.observe(this) {
+            showLoadingUI(it, this)
+        }
+        viewModel.wsPhotoFrames()
         binding.title.setBackClickListener { finish() }
         var width = ScreenUtils.getWidth(this@FanInteractionActivity)
         setImage(width, width)
@@ -72,20 +90,20 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
                         @SuppressLint("ResourceType")
                         override fun run() {
                             runOnUiThread {
-                             showLoadingUI(true, this@FanInteractionActivity)
+                                showLoadingUI(true, this@FanInteractionActivity)
                             }
                             val bitmap = getBitmap(data!!)
-                            var rotates:Bitmap? = null
-                            if (type==0){
+                            var rotates: Bitmap? = null
+                            if (type == 0) {
                                 rotates = rotate(bitmap!!, 90f)
-                            }else{
+                            } else {
                                 var rotate = rotate(bitmap!!, -90f)
-                                rotates=  flipBitmapHorizontally(rotate)
+                                rotates = flipBitmapHorizontally(rotate)
                             }
 
-                            if (type==0) {
+                            if (type == 0) {
                                 saveFile1(rotates, image_background, 1)
-                            }else{
+                            } else {
                                 // addFrameAndSave(this@FanInteractionActivity,rotates,image_background)
                                 saveFile1(rotates, image_background, 1)
                             }
@@ -123,13 +141,16 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_SELECT_MEDIA)
     }
 
-    private fun saveFile1(originalBitmap: Bitmap, int: Int,types: Int) {
+    private fun saveFile1(originalBitmap: Bitmap, int: Int, types: Int) {
 
         Log.e("saveFile", "saveFile 开始保存")
         try {
             val frameBitmap = BitmapFactory.decodeResource(resources, int)  //R.drawable.fans1
 
-            Log.e("originalBitmap","frameBitmap.width = ${frameBitmap.width},frameBitmap.height=${frameBitmap.height}")
+            Log.e(
+                "originalBitmap",
+                "frameBitmap.width = ${frameBitmap.width},frameBitmap.height=${frameBitmap.height}"
+            )
 // 2. 创建与边框图片同大小的Bitmap
             val result =
                 Bitmap.createBitmap(frameBitmap.width, frameBitmap.height, Bitmap.Config.ARGB_8888)
@@ -178,12 +199,12 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
             runOnUiThread {
                 //  binding.images.setImageBitmap(rotate)
                 closeLoadingDialog()
-            /*  val intent = Intent(this, TakeMomentsDisplayActivity::class.java)
-                intent.putExtra("file",fusionFile.path)
-                intent.putExtra("state",1)
-                intent.putExtra("hide",true)
-                startActivity(intent)*/
-                if (types==2){
+                /*  val intent = Intent(this, TakeMomentsDisplayActivity::class.java)
+                    intent.putExtra("file",fusionFile.path)
+                    intent.putExtra("state",1)
+                    intent.putExtra("hide",true)
+                    startActivity(intent)*/
+                if (types == 2) {
                     binding.surfaceView.visibility = View.VISIBLE
                     binding.selectImage.visibility = View.GONE
                 }
@@ -238,7 +259,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
             val localUri = Uri.fromFile(file)
             val localIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri)
             sendBroadcast(localIntent)
-            Log.e("saveImage", "saveFile 保存成功" )
+            Log.e("saveImage", "saveFile 保存成功")
         } catch (e: IOException) {
             Log.e("saveImage", "saveFile 保存失败 e=" + e.message)
             e.printStackTrace()
@@ -259,12 +280,12 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         try {
             mCamera!!.setPreviewTexture(surface)
             mCamera!!.startPreview()
-            mCamera!!.autoFocus(object:AutoFocusCallback{
+            mCamera!!.autoFocus(object : AutoFocusCallback {
                 override fun onAutoFocus(
                     success: Boolean,
                     camera: Camera?
                 ) {
-                    Log.e("autoFocus","success=$success")
+                    Log.e("autoFocus", "success=$success")
                 }
 
             })
@@ -327,9 +348,6 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
     }
 
 
-
-
-
     private fun setImage(width: Int, height: Int) {
 
         Log.e("width", "width=" + width)
@@ -347,9 +365,11 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
     }
 
     private fun showPopupWindow() {
-        val takePhotosMembersList = viewModel.getTakePhotosMembersList()
-        var popupWindow = TakePhotosMemberPopupView(this,getNavigationBarHeight(),
-            takePhotosMembersList)
+        // val takePhotosMembersList = viewModel.getTakePhotosMembersList()
+        var popupWindow = TakePhotosMemberPopupView(
+            this, getNavigationBarHeight(),
+            takePhotosMembersList, this
+        )
         popupWindow.show(binding.main)
     }
 
@@ -369,12 +389,12 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         try {
             mCamera!!.setPreviewTexture(surface)
             mCamera!!.startPreview()
-            mCamera!!.autoFocus(object:AutoFocusCallback{
+            mCamera!!.autoFocus(object : AutoFocusCallback {
                 override fun onAutoFocus(
                     success: Boolean,
                     camera: Camera?
                 ) {
-                    Log.e("autoFocus","success=$success")
+                    Log.e("autoFocus", "success=$success")
                 }
 
             })
@@ -383,27 +403,27 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         }
     }
 
-    fun cameraDisplayRotation(type:Int) {
+    fun cameraDisplayRotation(type: Int) {
         val rotation: Int = this.windowManager
             .defaultDisplay.rotation
 
         var degrees = 0
         when (rotation) {
-            Surface. ROTATION_0-> degrees = 0
-            Surface. ROTATION_90-> degrees = 90
-            Surface. ROTATION_180-> degrees = 180
-            Surface.ROTATION_270-> degrees = 270
+            Surface.ROTATION_0 -> degrees = 0
+            Surface.ROTATION_90 -> degrees = 90
+            Surface.ROTATION_180 -> degrees = 180
+            Surface.ROTATION_270 -> degrees = 270
         }
 
-        var result=0
+        var result = 0
         if (type == 1) {
             result = (mBackCameraInfo!!.orientation + degrees) % 360;
             result = (360 - result) % 360;  // compensate the mirror
         } else {  // back-facing
             result = (mBackCameraInfo!!.orientation - degrees + 360) % 360;
         }
-        Log.e("result","result=$result")
-        mCamera!!. setDisplayOrientation(result);
+        Log.e("result", "result=$result")
+        mCamera!!.setDisplayOrientation(result);
     }
 
     private fun getSupportList(mCamera: Camera?) {
@@ -428,21 +448,24 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
 
                     for (size1 in sizes) {
                         if (size1.width == size1.height) {
-                            Log.e("CameraSizes", "size1 Width: " + size1.width + " size1 Height: " + size1.height)
+                            Log.e(
+                                "CameraSizes",
+                                "size1 Width: " + size1.width + " size1 Height: " + size1.height
+                            )
                             parameters.setPictureSize(size1.width, size1.height)
                             break
                         }
                     }
                     //   parameters.setPictureSize(size.width, size.height)
-                    Log.e("size.width","${size.width}")
+                    Log.e("size.width", "${size.width}")
                     if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
                         parameters.focusMode = Camera.Parameters.FOCUS_MODE_AUTO;
                     }
 
                     mCamera.parameters = parameters
 
-                }catch (e: Exception){
-                    Log.e("getSupportList","e=${e.message}")
+                } catch (e: Exception) {
+                    Log.e("getSupportList", "e=${e.message}")
                     val defaultParams: Camera.Parameters? = mCamera.getParameters()
                     mCamera.setParameters(defaultParams)
                 }
@@ -454,13 +477,19 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
             for (i in supportedSizes.indices) {
                 val size = supportedSizes[i]
                 if (size.width <= width && size.height <= width) {
-                    Log.e("CameraSizes", "size Width: " + size.width + "size Height: " + size.height)
+                    Log.e(
+                        "CameraSizes",
+                        "size Width: " + size.width + "size Height: " + size.height
+                    )
                     try {
                         parameters.setPreviewSize(size.width, size.height)
                         // parameters.setPictureSize(size.width, size.height)
                         for (size1 in sizes) {
                             if (size1.width <= width && size1.height <= width) {
-                                Log.e("CameraSizes", "size1 Width: " + size1.width + "size1 Height: " + size1.height)
+                                Log.e(
+                                    "CameraSizes",
+                                    "size1 Width: " + size1.width + "size1 Height: " + size1.height
+                                )
                                 parameters.setPictureSize(size1.width, size1.height)
                                 break
                             }
@@ -469,7 +498,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
                             parameters.focusMode = Camera.Parameters.FOCUS_MODE_AUTO;
                         }
                         mCamera.parameters = parameters
-                    }catch (e: Exception){
+                    } catch (e: Exception) {
 
                     }
                     break
@@ -478,7 +507,6 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         }
 
     }
-
 
 
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
@@ -514,6 +542,42 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
             }
         }
         return null
+    }
+
+    override fun onSelectImageUrl(pos: Int) {
+        this.pos = pos
+        val bean = takePhotosMembersList[pos]
+        binding.name.text = "#${bean.number} ${bean.name}"
+        //
+        Glide.with(this).asBitmap()
+            .load("${bean.imgae}").into(object : CustomTarget<Bitmap>() {
+                // 成功获取 Bitmap 回调
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap>?
+                ) {
+                    // resource 即为目标 Bitmap，可直接使用
+                    // 例如：设置到 ImageView / 保存到本地 / 处理图片等
+                    // imageView.setImageBitmap(resource)
+                    binding.image.setImageBitmap(resource)
+                    //Toast.makeText(this@FanInteractionActivity, "Bitmap 加载成功，尺寸：${resource.width}x${resource.height}", Toast.LENGTH_SHORT).show()
+                }
+
+                // 加载失败/取消回调
+                override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {
+                    // 可选：清理资源（如 Bitmap 回收）
+                }
+
+                // 可选：加载失败回调
+                override fun onLoadFailed(errorDrawable: android.graphics.drawable.Drawable?) {
+                    super.onLoadFailed(errorDrawable)
+                    Toast.makeText(
+                        this@FanInteractionActivity,
+                        getString(R.string.image_loading_failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
     }
 
 }

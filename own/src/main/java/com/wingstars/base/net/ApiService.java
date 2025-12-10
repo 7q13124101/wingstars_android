@@ -61,7 +61,7 @@ public interface ApiService {
 
     //成员 > 拍照图框
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/member_list?_fields=id,title,acf.number,acf.photoFrame,acf.photoFrame_image_urls")
-    Observable<List<WSPhotoFrameResponse>> wsPhotoFrames(@Query("per_page") int per_page, @Query("page") int page);
+    Observable<List<WSPhotoFrameResponse>> wsPhotoFrames();
 
     //成员 > 氛围时尚-分类
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/fashion_category?_fields=id,name")

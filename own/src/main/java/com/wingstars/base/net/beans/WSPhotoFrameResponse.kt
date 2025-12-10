@@ -8,7 +8,10 @@ data class WSPhotoFrameResponse(
 ) {
     val titleF: String              //title format
         get() {
-            return title.rendered
+            return when (title.rendered) {
+                null -> ""
+                else -> title.rendered
+            }
         }
 
     val frameUrlF: String           //acf.photoFrame_image_urls.image1.full format
@@ -29,6 +32,15 @@ data class WSPhotoFrameResponse(
         val number: String,         //背號
         val photoFrame_image_urls: PhotoFrameImageUrls,        //臉書連結
     ) : java.io.Serializable {
+
+        val numberF: String              //title format
+            get() {
+                return when (number) {
+                    null -> ""
+                    else -> number
+                }
+            }
+
         data class PhotoFrameImageUrls(
             val image1: Image,
         ) : java.io.Serializable {
