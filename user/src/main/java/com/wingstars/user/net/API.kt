@@ -1,6 +1,6 @@
 package com.wingstars.user.net
 
-import com.wingstars.user.BaseApplication
+import com.wingstars.user.net.BaseApplication
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.util.Collections

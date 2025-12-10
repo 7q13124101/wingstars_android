@@ -12,7 +12,7 @@ import com.wingstars.calendar.fragment.CalendarFragment
 import com.wingstars.count.fragment.CountFragment
 import com.wingstars.home.fragment.HomeFragment
 import com.wingstars.member.fragment.MemberFragment
-import com.wingstars.user.UserFragment
+import com.wingstars.user.fragment.UserFragment
 
 class MainActivity : BaseActivity(), View.OnClickListener {
     private lateinit var binding: ActivityMainBinding

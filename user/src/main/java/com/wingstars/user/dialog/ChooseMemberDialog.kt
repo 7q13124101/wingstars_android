@@ -3,14 +3,13 @@ package com.wingstars.user.dialog
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.wingstars.user.R
-import com.wingstars.user.cheer.MemberAdapter
-import com.wingstars.user.cheer.MemberInfo
+import com.wingstars.user.adapter.MemberAdapter
+import com.wingstars.user.adapter.MemberInfo
 
 class ChooseMemberDialog(
     private val onMemberSelected: (String) -> Unit,
