@@ -2,7 +2,7 @@ package com.wingstars.user.net
 
 import android.util.Log
 import com.tencent.mmkv.MMKV
-import com.wingstars.user.BaseApplication
+import com.wingstars.user.net.BaseApplication
 import com.wingstars.user.net.beans.CRMHashKey
 import com.wingstars.user.net.beans.CRMSignInRequest
 import com.wingstars.user.net.beans.CRMVerifyRequest

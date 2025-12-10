@@ -41,7 +41,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <com.wingstars.user.SuperExpandleListView
+                    <com.wingstars.user.view.SuperExpandleListView
                         android:id="@+id/rv_download_and_install_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

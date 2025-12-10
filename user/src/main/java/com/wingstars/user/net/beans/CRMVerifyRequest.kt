@@ -1,7 +1,7 @@
 package com.wingstars.user.net.beans
 
 import android.util.Log
-import com.wingstars.user.BaseApplication
+import com.wingstars.user.net.BaseApplication
 
 class CRMVerifyRequest (
     var apiKey: String = "",
