@@ -18,7 +18,7 @@ import com.wingstars.count.fragment.CountFragment
 import com.wingstars.home.fragment.HomeFragment
 import com.wingstars.member.activity.FanInteractionActivity
 import com.wingstars.member.fragment.MemberFragment
-import com.wingstars.user.UserFragment
+import com.wingstars.user.fragment.UserFragment
 
 class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClickListener,
     IPermissionsCallback {

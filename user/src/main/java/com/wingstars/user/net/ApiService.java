@@ -8,7 +8,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
 
-import com.wingstars.user.frequentlyaskedquestion.FrequentlyQuestionsResponse;
+import com.wingstars.user.net.beans.FrequentlyQuestionsResponse;
 import com.wingstars.user.net.beans.CRMBaseResponse;
 import com.wingstars.user.net.beans.CRMMemberContactResponse;
 import com.wingstars.user.net.beans.CRMMemberDetailResponse;
