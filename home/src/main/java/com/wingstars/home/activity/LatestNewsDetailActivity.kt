@@ -28,7 +28,7 @@ class LatestNewsDetailActivity : BaseActivity() {
         }
 
         // 2. Nhận dữ liệu từ Intent
-        val newsData = intent.getSerializableExtra("NEWS_DATA") as? WSPostResponse
+        val newsData = intent.getSerializableExtra("ITEM_NEWS_DATA") as? WSPostResponse
 
         if (newsData != null) {
             // --- HIỂN THỊ DỮ LIỆU ---

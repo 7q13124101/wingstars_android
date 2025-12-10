@@ -43,15 +43,10 @@ class LatestNewsFragment : Fragment() {
     }
 
     private fun initView() {
-        // Khởi tạo Adapter với list rỗng ban đầu
         val newsListener = object : LatestNewsAdapter.onItemListener {
             override fun onItemClick(data: WSPostResponse, position: Int) {
                 val intent = Intent(requireActivity(), LatestNewsDetailActivity::class.java)
-
-                // 2. Đóng gói dữ liệu vào Intent (key là "NEWS_DATA")
-                intent.putExtra("NEWS_DATA", data)
-
-                // 3. Khởi chạy Activity
+                intent.putExtra("ITEM_NEWS_DATA", data)
                 startActivity(intent)
             }
         }
@@ -70,7 +65,6 @@ class LatestNewsFragment : Fragment() {
             binding.scrollView.smoothScrollTo(0, 0)
         }
 
-        // Hiện / ẩn nút Top theo scroll
         binding.scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             if (scrollY == 0) {
                 if (binding.top.isVisible) binding.top.visibility = View.GONE
@@ -79,7 +73,6 @@ class LatestNewsFragment : Fragment() {
             }
         }
 
-        // Tắt refresh/loadMore cho layout này
         binding.srlNotUsed.setEnableRefresh(false)
         binding.srlNotUsed.setEnableLoadMore(false)
     }

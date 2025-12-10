@@ -69,7 +69,7 @@ class ItineraryBannerAdapter(datas: List<WSCalendarResponse>) :
 
             // Gán Text
             tvTitle.text = data.titleF
-            tvTime.text = data.dateF
+            tvTime.text = data.st_dateF
             tvPlace.text = data.mapF
         }
     }

@@ -40,7 +40,7 @@ class TodayItineraryDetailsActivity : BaseActivity() {
     private fun bindData(data: WSCalendarResponse) {
         // --- A. Hiển thị thông tin cơ bản ---
         binding.tvEventTitle.text = data.titleF
-        binding.tvEventDate.text = data.dateF
+        binding.tvEventDate.text = data.st_dateF
         binding.tvEventLocation.text = data.mapF
         Log.e("bindData", "bindData=${data.urlF}")
 

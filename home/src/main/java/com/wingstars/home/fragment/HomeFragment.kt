@@ -51,8 +51,12 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun initView() {
-        // 1. Khởi tạo ViewModel
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        val window = requireActivity().window
+
+        window.statusBarColor = requireContext().getColor(android.R.color.white)
+
+        androidx.core.view.WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
         handleStatusBar()
         setupUI()
         setupComingSoonBanner()

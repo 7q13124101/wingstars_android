@@ -14,19 +14,6 @@
         app:title="@string/latest_news"
         tools:context=".activity.StyleOutfitsActivity"/>
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
-        app:tabBackground="@android:color/transparent"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/color_E2518D"
-        app:tabIndicatorHeight="4dp"
-        app:tabMode="fixed"
-        app:tabRippleColor="@android:color/transparent"
-        app:tabSelectedTextColor="@color/color_E2518D"
-        app:tabTextColor="@color/color_4A5565" />
-
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"

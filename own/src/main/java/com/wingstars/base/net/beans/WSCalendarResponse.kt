@@ -9,7 +9,7 @@ data class WSCalendarResponse(
     val calendar_category: List<Int>,   //活動分類. 369:生日, 368:一般活動, 366:啦啦隊, 365:天鷹, 364:獵鷹, 363:雄鷹
     val acf: Acf,
     val yoast_head_json: YoastHeadJson  //精選圖片 数据类型有误
-) {
+) : Serializable{
     val titleF: String                  //title format
         get() {
             return title.rendered
@@ -38,7 +38,8 @@ data class WSCalendarResponse(
         get() {
             return acf.Activity_time.ed_date?: ""
         }
-
+    val contentRaw: String
+        get() = content.rendered
     val mapF: String                    //acf.map format
         get() {
             return acf?.map?: ""

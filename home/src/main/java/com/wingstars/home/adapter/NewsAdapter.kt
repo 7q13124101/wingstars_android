@@ -94,9 +94,8 @@ class NewsAdapter(
     inner class NormalItemViewHolder(private val binding: ItemNewsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        // 4. Sửa hàm binding: Bỏ tham số listener (vì đã có ở class level)
         fun binding(position: Int) {
-            val data = dataList[position] // Bỏ !! vì dataList không nullable
+            val data = dataList[position]
             val rawUrl = data.urlF
 
             Glide.with(binding.imgNews.context).clear(binding.imgNews)
