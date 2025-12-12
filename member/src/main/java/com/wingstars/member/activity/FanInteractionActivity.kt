@@ -368,8 +368,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         // val takePhotosMembersList = viewModel.getTakePhotosMembersList()
         var popupWindow = TakePhotosMemberPopupView(
             this, getNavigationBarHeight(),
-            takePhotosMembersList, this
-        )
+            takePhotosMembersList, this,pos)
         popupWindow.show(binding.main)
     }
 
