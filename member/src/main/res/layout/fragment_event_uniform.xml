@@ -17,22 +17,68 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </RelativeLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/srl_member_introduction"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-<!--    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"
-        android:background="@color/white">
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_centerVertical="true"
+        android:layout_height="match_parent">
+
+        <com.scwang.smart.refresh.header.ClassicsHeader
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>-->
+            android:layout_height="wrap_content"
+            app:srlTextFailed="@string/refresh_failed"
+            app:srlTextFinish="@string/refresh_success"
+            app:srlTextPulling="@string/pull_down_to_refresh"
+            app:srlTextRefreshing="@string/refreshing"
+            app:srlTextRelease="@string/release_to_refresh"
+            app:srlTextUpdate="@string/last_update" />
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/not_data"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_marginTop="@dimen/dp_57"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_gravity="center_horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_not_data"/>
+                    <TextView
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:textSize="@dimen/sp_14"
+                        android:textColor="@color/color_6A7282"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_record"/>
+                </LinearLayout>
+            </RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:visibility="gone"
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2" />
+        </FrameLayout>
+
+
+        <com.scwang.smart.refresh.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srlTextFailed="@string/loading_failed"
+            app:srlTextFinish="@string/loading_success"
+            app:srlTextLoading="@string/loading"
+            app:srlTextRelease="@string/release_loading" />
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
 </LinearLayout>

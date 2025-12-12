@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.wingstars.base.base.BaseFragment
+import com.wingstars.base.net.beans.WSFashionResponse
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.base.utils.ScreenUtils
 import com.wingstars.member.activity.AtmosphereFashionDetailsActivity
@@ -24,6 +25,10 @@ class EventUniformFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
     private lateinit var binding: FragmentEventUniformBinding
     private lateinit var viewModel: SupportSuitViewModel
     private var initShow = false
+    var isMore = false
+
+    private var adapter1: SupportSuitAdapter? = null
+    private var dataList: MutableList<WSFashionResponse> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,19 +43,24 @@ class EventUniformFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
 
     override fun onResume() {
         super.onResume()
-       if (!initShow){
-           initShow = true
-           initData()
-       }
+        if (!initShow) {
+            initShow = true
+            initData()
+        }
     }
 
-    private fun  initData(){
+    private fun initData() {
         var width = ScreenUtils.getWidth(requireActivity())
-        var smallwidth  = width - DPUtils.dpToPx(50f,requireActivity()).toInt()
-        var smallwidths = smallwidth/2
-        var smallhight = smallwidths.toInt()*1.585
+        var smallwidth = width - DPUtils.dpToPx(50f, requireActivity()).toInt()
+        var smallwidths = smallwidth / 2
+        var smallhight = smallwidths.toInt() * 1.585
         viewModel = ViewModelProvider(this)[SupportSuitViewModel::class.java]
         viewModel.wsFashions.observe(viewLifecycleOwner) {
+            if (it.size == viewModel.PER_PAGE) {
+                isMore = true
+            }
+            binding.notData.visibility = View.GONE
+            binding.list.visibility = View.VISIBLE
             it.forEach { data ->
                 val fashionCategoryf = data.fashion_categoryF
                 var wsRankDatalist = viewModel.wsFashionCategorysData.value
@@ -65,28 +75,72 @@ class EventUniformFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
                 }
             }
             Log.e("wsFashions", "${Gson().toJson(it)}")
-            var adapter1 = SupportSuitAdapter(requireActivity(), it, smallwidths.toInt()
-                ,smallhight.toInt(),this)
-            binding.list.adapter = adapter1
+            /* var adapter1 = SupportSuitAdapter(requireActivity(), it, smallwidths.toInt()
+                 ,smallhight.toInt(),this)
+             binding.list.adapter = adapter1*/
+            dataList.clear()
+            dataList.addAll(it)
+            //Log.e("wsFashions", "${Gson().toJson(it)}")
+            if (adapter1 == null) {
+                adapter1 = SupportSuitAdapter(
+                    requireActivity(), dataList, smallwidths.toInt(), smallhight.toInt(), this
+                )
+                binding.list.adapter = adapter1
+            } else {
+                adapter1!!.notifyDataSetChanged()
+            }
+        }
+
+        viewModel.wsMoreFashions.observe(viewLifecycleOwner) {
+            it.forEach { data ->
+                val fashionCategoryf = data.fashion_categoryF
+                var wsRankDatalist = viewModel.wsFashionCategorysData.value
+                val typeData = wsRankDatalist!!.find { it.id == fashionCategoryf }
+                if (typeData != null) {
+                    data.type = when (typeData.name.trim()) {
+                        "應援服" -> 1
+                        "活動服" -> 2
+                        else -> 0
+                    }
+
+                }
+            }
+            dataList.addAll(it)
+            adapter1!!.notifyDataSetChanged()
+
         }
         viewModel.loading.observe(viewLifecycleOwner) {
             showLoadingUI(it, requireActivity())
+        }
+
+        binding.srlMemberIntroduction.setOnRefreshListener {
+            binding.srlMemberIntroduction.finishRefresh()
+            viewModel.PAGE = 1
+            isMore = false
+            viewModel.wsFashionCategorys(2)
+        }
+        binding.srlMemberIntroduction.setOnLoadMoreListener {
+            binding.srlMemberIntroduction.finishLoadMore()
+            Log.e("isMore", "isMore=$isMore")
+            if (isMore) {
+                viewModel.wsFashions(isShowLoading = true, isLoadMore = true)
+            }
         }
         viewModel.wsFashionCategorys(2)
     }
 
     private fun initView() {
-     //   val list = mutableListOf("1","2","3","4","5","6")
+        //   val list = mutableListOf("1","2","3","4","5","6")
 
-       /* binding.list.adapter = SupportSuitAdapter(requireActivity(), list,smallwidths.toInt()
-            ,smallhight.toInt(),this)*/
+        /* binding.list.adapter = SupportSuitAdapter(requireActivity(), list,smallwidths.toInt()
+             ,smallhight.toInt(),this)*/
 
 
-       /* viewModel.categorylist.observe(viewLifecycleOwner){ list->
-            binding.categoryList.layoutManager = LinearLayoutManager(requireActivity(),
-                LinearLayoutManager.HORIZONTAL,false)
-            binding.categoryList.adapter = CategoryAdapter(requireActivity(),list)
-        }*/
+        /* viewModel.categorylist.observe(viewLifecycleOwner){ list->
+             binding.categoryList.layoutManager = LinearLayoutManager(requireActivity(),
+                 LinearLayoutManager.HORIZONTAL,false)
+             binding.categoryList.adapter = CategoryAdapter(requireActivity(),list)
+         }*/
         //viewModel.getCategoryList()
     }
 

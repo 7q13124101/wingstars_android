@@ -14,7 +14,11 @@ class SupportSuitViewModel : ViewModel() {
     var categorylist = MutableLiveData<MutableList<String>>()
     var wsFashionCategorysData = MutableLiveData<MutableList<WSFashionCategoryResponse>>()
     var wsFashions = MutableLiveData<MutableList<WSFashionResponse>>()
+    var wsMoreFashions = MutableLiveData<MutableList<WSFashionResponse>>()
     var loading = MutableLiveData<Boolean>()
+    var PER_PAGE = 10             //每页条数
+    var PAGE = 1                //当前页数
+    var fashionIds = 0
     public fun  getCategoryList(){
         var list = mutableListOf<String>()
         list.add("球衣")
@@ -37,6 +41,7 @@ class SupportSuitViewModel : ViewModel() {
                         wsFashionCategorysData.postValue(next)
                         val typeData = next!!.find { it.name ==  if (type==1) "應援服" else "活動服" }
                         if (typeData!=null){
+                            fashionIds = typeData.id
                             wsFashions(typeData.id)
                         }else{
                             loading.postValue(false)
@@ -53,11 +58,17 @@ class SupportSuitViewModel : ViewModel() {
         }
     }
 
-    public fun wsFashions(fashionId: Int) {
+    public fun wsFashions(fashionId: Int=fashionIds,isShowLoading: Boolean = false,isLoadMore: Boolean = false) {
+        if (isShowLoading){
+            loading.postValue(true)
+        }
+        if (isLoadMore){
+            PAGE++
+        }
         API.shared?.api?.let {
             val emptyHashMap: java.util.HashMap<String, Int> = HashMap()
             emptyHashMap["fashion_category"] = fashionId
-            val observer = it.wsFashions(emptyHashMap, 10, 1)
+            val observer = it.wsFashions(emptyHashMap, PER_PAGE, PAGE)
             observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
                 AndroidSchedulers.mainThread()
             )?.subscribe(
@@ -65,10 +76,18 @@ class SupportSuitViewModel : ViewModel() {
                     loading.postValue(false)
                     if (!next.isNullOrEmpty()) {
                         Log.e("wsFashions", "${next}")
-                        wsFashions.postValue(next)
+                        if (!isLoadMore){
+                            wsFashions.postValue(next)
+                        }else{
+                            wsMoreFashions.postValue(next)
+                        }
+
                     }
                 },
                 { error ->
+                    if (PAGE>1){
+                        PAGE=PAGE-1
+                    }
                     loading.postValue(false)
                 }
             )
