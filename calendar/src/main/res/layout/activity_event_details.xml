@@ -97,7 +97,8 @@
                         android:layout_width="@dimen/dp_63"
                         android:layout_height="@dimen/dp_72"
                         android:src="@drawable/calendar_ic_star"
-                        android:translationY="@dimen/dp_neg_24"
+                        android:translationY="@dimen/dp_neg_8"
+                        android:translationX="@dimen/dp_neg_8"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -162,7 +163,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_location"
+                    android:id="@+id/tv_map"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
