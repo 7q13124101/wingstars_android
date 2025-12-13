@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dp_20"
         android:fitsSystemWindows="true"
+        android:background="@color/white"
         tools:context=".user.info.MemberInfoActivity">
 
         <RelativeLayout
@@ -63,6 +64,7 @@
                     android:textStyle="bold"
                     android:textColor="@color/color_101828"
                     android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_30"
                     android:textSize="24sp"/>
 
                     <TextView
@@ -72,13 +74,15 @@
                         android:textSize="@dimen/sp_14"
                         android:layout_marginLeft="@dimen/dp_20"
                         android:textColor="@color/color_101828"
+                        android:layout_marginTop="@dimen/dp_24"
                         android:layout_marginBottom="@dimen/dp_8"/>
                 <RelativeLayout
                     android:id="@+id/rl_mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_user_form"
-                    android:layout_margin="@dimen/dp_20"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
                     android:paddingEnd="5dp">
 
                     <AutoCompleteTextView

@@ -12,6 +12,7 @@
         android:text=""
         android:textStyle="bold"
         android:textSize="@dimen/sp_14"
+        android:paddingStart="@dimen/dp_20"
         android:paddingTop="@dimen/dp_10"
         android:background="@color/color_F5F5F5"
         android:paddingBottom="@dimen/dp_10"
@@ -23,7 +24,8 @@
         android:textStyle="normal"
         android:text=""
         android:textSize="@dimen/sp_14"
-
+        android:paddingLeft="@dimen/dp_20"
+        android:paddingRight="@dimen/dp_20"
         android:textColor="@color/color_101828" />
 
 </LinearLayout>

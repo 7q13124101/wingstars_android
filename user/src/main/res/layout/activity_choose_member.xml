@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dp_20"
         android:fitsSystemWindows="true"
+        android:background="@color/white"
         tools:context=".user.info.MemberInfoActivity">
 
         <RelativeLayout
@@ -49,7 +50,7 @@
             android:layout_height="0dp"
             app:layout_constraintTop_toBottomOf="@id/rl_top"
             app:layout_constraintBottom_toTopOf="@id/bottom_layout"
-            android:background="@color/color_FFFFFF">
+            android:background="@color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,20 +68,22 @@
                     android:id="@+id/rv_member"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
                     android:scrollbars="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_member_second"
                     android:layout_width="match_parent"
-                    android:layout_marginLeft="-70dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
                     android:scrollbars="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
                 <RelativeLayout
                     android:id="@+id/rl_team_member"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/dp_54"
                     android:background="@drawable/bg_user_form"
                     android:layout_margin="@dimen/dp_20"
                     android:paddingEnd="5dp"
@@ -90,21 +93,24 @@
                         android:id="@+id/edt_team_member"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:hint="@string/hint_user_first"
-                        android:singleLine="true"
-                        android:completionThreshold="0"
-                        android:dropDownHeight="wrap_content"
-                        android:dropDownWidth="wrap_content"
-                        android:cursorVisible="true"
-                        android:inputType="text"
+                        android:layout_toStartOf="@id/iv_arrow_down"
                         android:background="@null"
                         android:clickable="true"
-                        android:focusable="true"
-                        android:layout_toStartOf="@id/iv_arrow_down"
+                        android:completionThreshold="0"
+                        android:cursorVisible="true"
+                        android:dropDownWidth="wrap_content"
+                        android:dropDownHeight="wrap_content"
                         android:ellipsize="end"
-                        android:textColor="@color/color_99A1AF"
-                        android:scrollHorizontally="true"/>
+                        android:focusable="true"
+                        android:hint="@string/hint_user_first"
+                        android:inputType="text"
+                        android:padding="5dp"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:textColor="@color/color_99A1AF" />
 
                     <ImageView
                         android:id="@+id/iv_arrow_down"
@@ -113,12 +119,13 @@
                         android:src="@drawable/ic_arrow_down"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/dp_10"
                         android:padding="5dp"/>
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/rl_team_member1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/dp_54"
                     android:background="@drawable/bg_user_form"
                     android:layout_margin="@dimen/dp_20"
                     android:paddingEnd="5dp"
@@ -129,6 +136,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
+                        android:layout_toStartOf="@id/iv_arrow_down1"
                         android:hint="@string/hint_user_second"
                         android:singleLine="true"
                         android:completionThreshold="0"
@@ -141,6 +149,9 @@
                         android:focusable="true"
                         android:ellipsize="end"
                         android:textColor="@color/color_99A1AF"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dp_10"
                         android:scrollHorizontally="true"/>
 
                     <ImageView
@@ -150,12 +161,13 @@
                         android:src="@drawable/ic_arrow_down"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/dp_10"
                         android:padding="5dp"/>
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/rl_team_member2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/dp_54"
                     android:background="@drawable/bg_user_form"
                     android:layout_margin="@dimen/dp_20"
                     android:paddingEnd="5dp"
@@ -166,6 +178,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
+                        android:layout_toStartOf="@id/iv_arrow_down2"
                         android:hint="@string/hint_user_third"
                         android:singleLine="true"
                         android:completionThreshold="0"
@@ -178,6 +191,9 @@
                         android:focusable="true"
                         android:ellipsize="end"
                         android:textColor="@color/color_99A1AF"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dp_10"
                         android:scrollHorizontally="true"/>
 
                     <ImageView
@@ -187,6 +203,7 @@
                         android:src="@drawable/ic_arrow_down"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/dp_10"
                         android:padding="5dp"/>
                 </RelativeLayout>
 

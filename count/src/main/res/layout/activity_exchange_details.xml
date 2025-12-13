@@ -535,16 +535,16 @@
                                         android:textSize="@dimen/sp_14"
                                         android:lineSpacingExtra="4dp"
                                         android:text="• 部分商品數量有限，換完為止。\n\n• 兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。\n\n• 本券僅限於指定兌換地點使用，請於現場出示 APP 票券 QRCODE條碼。\n\n• 兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。\n\n• 期限內若無完成兌換，本券視同失效，點數不予退回。" />
-                                </LinearLayout>
 
-                                <View
-                                    android:layout_width="match_parent"
-                                    android:layout_height="@dimen/pt_1"
-                                    android:alpha="0.2"
-                                    android:background="@color/color_A3A3A3"
-                                    android:layout_marginTop="@dimen/pt_5"
-                                    android:layout_marginStart="@dimen/pt_10"
-                                    android:layout_marginEnd="@dimen/pt_10"/>
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/pt_1"
+                                        android:alpha="0.2"
+                                        android:background="@color/color_A3A3A3"
+                                        android:layout_marginTop="@dimen/pt_5"
+                                        android:layout_marginStart="@dimen/pt_10"
+                                        android:layout_marginEnd="@dimen/pt_10"/>
+                                </LinearLayout>
 
 
 

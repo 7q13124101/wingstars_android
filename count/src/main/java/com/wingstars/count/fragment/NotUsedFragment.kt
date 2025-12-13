@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.GradientDrawable // Cần import cái này để vẽ viền
 import android.os.Bundle
 import android.util.TypedValue // Cần import để tính dp
 import android.view.Gravity
@@ -14,18 +13,17 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatButton // Import đúng loại nút trong XML
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.wingstars.count.R
 import com.wingstars.count.activity.ExchangeDetailsActivity
-import com.wingstars.count.adapter.HaveUsedCouponAdapter
 import com.wingstars.count.adapter.UnusedCouponAdapter
 import com.wingstars.count.databinding.FragmentNotUsedBinding
 import com.wingstars.count.viewmodel.CountListItemViewModel
-import com.wingstars.count.viewmodel.CouponViewModel
+
 
 class NotUsedFragment : Fragment() {
     private var _binding: FragmentNotUsedBinding? = null
@@ -165,6 +163,7 @@ class NotUsedFragment : Fragment() {
 
         dialog.window?.apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            // Quan trọng: xóa padding mặc định để Dialog full width
             decorView.setPadding(0, 0, 0, 0)
             setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             setGravity(Gravity.BOTTOM)

@@ -4,7 +4,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
-import com.wingstars.user.BaseApplication
+import com.wingstars.user.net.BaseApplication
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.time.Instant
