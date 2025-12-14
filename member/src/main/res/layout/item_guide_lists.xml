@@ -21,7 +21,7 @@
             android:id="@+id/not_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_white_circle"/>
+            android:src="@drawable/ic_white_circles"/>
     </LinearLayout>
 
 

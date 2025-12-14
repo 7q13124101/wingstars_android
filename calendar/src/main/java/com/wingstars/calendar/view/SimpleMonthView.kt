@@ -44,11 +44,11 @@ class SimpleMonthView @JvmOverloads constructor(
 
     init {
         setBackgroundColor(Color.TRANSPARENT)
-        background = ContextCompat.getDrawable(context, R.drawable.bg_bottom_radius)
+        background = ContextCompat.getDrawable(context, R.drawable.calendar_bg_bottom_radius)
     }
     // 图标资源（需在res/drawable添加ic_custom.png）
     private val customIcon by lazy {
-        BitmapFactory.decodeResource(resources, R.drawable.ic_birthday_cake)
+        BitmapFactory.decodeResource(resources, R.drawable.calendar_ic_birthday_cake)
     }
 
     // 月历默认显示6行（含星期标题），高度应为单行高度的6倍

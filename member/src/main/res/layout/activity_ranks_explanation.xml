@@ -14,8 +14,19 @@
         app:show_back="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <androidx.recyclerview.widget.RecyclerView
+
+    <TextView
         android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:textStyle="bold"
+        android:text="人氣排行"
+        android:textColor="@color/color_101828"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="@dimen/dp_16"
         android:id="@+id/explanation_list"
         android:layout_marginRight="@dimen/dp_20"
         android:layout_marginLeft="@dimen/dp_20"

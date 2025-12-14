@@ -56,4 +56,11 @@ dependencies {
 
     implementation("io.github.youth5201314:banner:2.2.3")
 
+    implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
+
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.retrofit2:adapter-rxjava3:2.11.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.11.0")
+
 }

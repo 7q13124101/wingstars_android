@@ -9,16 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
-import com.wingstars.member.databinding.ItemPoplarityListBinding
+import com.wingstars.member.databinding.ItemPoplarityListsBinding
 import com.wingstars.member.databinding.ItemRankListBinding
-import com.wingstars.member.databinding.ItemRankingListBinding
+
 
 class RankListAdapter     // -------------------------------------------
     (
     private val context: Context,
-    private var dataList: MutableList<String>?
+    private var dataList: MutableList<String>?,
+    private var listener: onItemListener
 ) : RecyclerView.Adapter<RankListAdapter.NormalItemViewHolder>() {
     private var pos = 0
 
@@ -32,9 +34,20 @@ class RankListAdapter     // -------------------------------------------
         return position.toLong()
     }
 
+    public fun  setPos(name: String){
+        if (!dataList.isNullOrEmpty()){
+            val indexOfFirst = dataList!!.indexOfFirst { it == name }
+            if (indexOfFirst!=0){
+                pos = indexOfFirst
+                notifyDataSetChanged()
+            }
+        }
+
+    }
+
     // -------------------------------------------
     override fun onBindViewHolder(holder: NormalItemViewHolder, position: Int) {
-        holder.binding(position)
+        holder.binding(position,listener)
     }
 
     // -------------------------------------------
@@ -67,13 +80,14 @@ class RankListAdapter     // -------------------------------------------
     inner class NormalItemViewHolder(private val binding: ItemRankListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun binding(position: Int) {
+        fun binding(position: Int,listener:onItemListener) {
             var data = dataList!![position]
             binding.name.text = data
             binding.image.visibility = if (pos == position) View.VISIBLE else View.GONE
             binding.item.setOnClickListener {
                 if (pos!=position){
                     pos = position
+                    listener.onItemClick(data)
                     notifyDataSetChanged()
                 }
 
@@ -92,6 +106,8 @@ class RankListAdapter     // -------------------------------------------
             view.layoutParams = params
         }
     }
-
+    interface onItemListener {
+        fun onItemClick(name: String)
+    }
 
 }

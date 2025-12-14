@@ -11,18 +11,19 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
-import com.wingstars.member.databinding.ItemPoplarityListBinding
+import com.wingstars.member.bean.WSMemberRankBean
+import com.wingstars.member.databinding.ItemPoplarityListsBinding
 
 class PopularityAdapter     // -------------------------------------------
     (
     private val context: Context,
-    private var dataList: MutableList<Int>?,
-    private val listener: onItemListener
+    private var dataList: MutableList<WSMemberRankBean>?,
+    private val listener: onPopularityRankingListener
 ) : RecyclerView.Adapter<PopularityAdapter.NormalItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
         val binding =
-            ItemPoplarityListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemPoplarityListsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return NormalItemViewHolder(binding)
     }
 
@@ -41,7 +42,7 @@ class PopularityAdapter     // -------------------------------------------
     }
 
     // -------------------------------------------
-    fun setList(list: MutableList<Int>?) {
+    fun setList(list: MutableList<WSMemberRankBean>?) {
         dataList = if (dataList == null) {
             ArrayList()
         } else {
@@ -53,7 +54,7 @@ class PopularityAdapter     // -------------------------------------------
     }
 
 
-    fun getData(): MutableList<Int>? {
+    fun getData(): MutableList<WSMemberRankBean>? {
         if (dataList == null) {
             return null
         }
@@ -62,24 +63,27 @@ class PopularityAdapter     // -------------------------------------------
 
 
     // -------------------------------------------
-    inner class NormalItemViewHolder(private val binding: ItemPoplarityListBinding) :
+    inner class NormalItemViewHolder(private val binding: ItemPoplarityListsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun binding(position: Int, listeners: onItemListener) {
-            if (position==0){
-                setMarginLeft(binding.item, DPUtils.Companion.dpToPx(20f,context).toInt())
-            }else{
+        fun binding(position: Int, listeners: onPopularityRankingListener) {
+            if (position == 0) {
+                setMarginLeft(binding.item, DPUtils.Companion.dpToPx(20f, context).toInt())
+            } else {
                 setMarginLeft(binding.item, 0)
             }
+            val bean = dataList!![position]
+            binding.title.text = "${bean.title}"
+            binding.name.text = "${bean.number} ${bean.name}"
+            binding.volume.text = "${bean.volume}"
             Glide.with(context)
-                .load(R.mipmap.ic_demo)
+                .load("${bean.image}")  //
                 .apply(
-                    RequestOptions.bitmapTransform(
-                        RoundedCorners(
-                            DPUtils.Companion.dpToPx(20f, context).toInt()
-                        )
-                    ))
+                    RequestOptions()
+                        .transform(RoundedCorners(DPUtils.dpToPx(20f, context).toInt()))
+                )
                 .into(binding.image)
+            binding.item.setOnClickListener { listeners.onPopularityRankingClickItem(position) }
         }
 
 
@@ -87,20 +91,15 @@ class PopularityAdapter     // -------------------------------------------
 
         }
 
-        fun setMarginLeft(view: View, left: Int){
-           var params = view.layoutParams as LinearLayout.LayoutParams
+        fun setMarginLeft(view: View, left: Int) {
+            var params = view.layoutParams as LinearLayout.LayoutParams
             params.leftMargin = left
             view.layoutParams = params
         }
     }
 
 
-
-
-
-
-
-    interface onItemListener {
-        fun ClickItem(position: Int)
+    interface onPopularityRankingListener {
+        fun onPopularityRankingClickItem(position: Int)
     }
 }

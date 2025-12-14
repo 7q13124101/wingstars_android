@@ -110,9 +110,9 @@ class ExchangeDetailsActivity : AppCompatActivity() {
         val qrCodeButtonState = intent.getIntExtra("qrCodeButton", 0)
 
         if (checkTypeButton == 2) {
-            binding.button.visibility = View.GONE
+            binding.btnExchange.visibility = View.GONE
         } else {
-            binding.button.visibility = View.VISIBLE
+            binding.btnExchange.visibility = View.VISIBLE
             if (qrCodeButtonState == 1) {
                 binding.btnExchange.text = "開啟條碼"
                 binding.btnExchange.setOnClickListener {

@@ -13,13 +13,17 @@
 
 
     <color name="color_80000000">#80000000</color>
+    <color name="color_00000099">#444444</color>
     <color name="color_000000">#000000</color>
+    <color name="color_1E2939">#1E2939</color>
     <color name="color_4A5565">#4A5565</color>
     <color name="color_6A7282">#6A7282</color>
     <color name="color_F3F4F6">#F3F4F6</color>
     <color name="color_F8EBF1">#F8EBF1</color>
     <color name="color_EE97BB">#EE97BB</color>
     <color name="color_DE9DBA">#DE9DBA</color>
+    <color name="color_B81B30">#B81B30</color>
     <color name="color_007A60">#007A60</color>
+    <color name="color_0089D3">#0089D3</color>
     <color name="color_E5E7EB">#E5E7EB</color>
 </resources>

@@ -1,63 +1,126 @@
-package com.wingstars.home.adapter // Hoặc package của bạn
+package com.wingstars.home.adapter
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.wingstars.home.R // Đảm bảo import R của module :home
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.wingstars.base.net.beans.WSPostResponse
+import com.wingstars.home.databinding.ItemNewsBinding
+import java.nio.charset.StandardCharsets
 
-class NewsAdapter(private val context: Context, private val dataList: List<Int>) :
-    RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
-    private val newsImages = listOf(
-        R.drawable.img_news_01,
-        R.drawable.img_news_02,
-        R.drawable.img_news_03,
+class NewsAdapter(
+    private val context: Context,
+    private val dataList: MutableList<WSPostResponse>,
+    private val listener: OnItemListener
+) : RecyclerView.Adapter<NewsAdapter.NormalItemViewHolder>() {
 
+    private val pctEncoded = Regex("%[0-9a-fA-F]{2}")
 
-        )
-
-    // 2. Danh sách Tiêu đề tương ứng (Bạn hãy sửa lại nội dung text ở đây nhé)
-    private val newsTitles = listOf(
-        "情感滿載！球迷美食應援大力支持台鋼雄鷹及Wing Stars", // Tương ứng img_style_01
-        " Stars House 出貨&店休公告",
-        "千千生日會-千堡們戰隊集合",
-    )
-    private val newsDates = listOf(
-        "2025.10.06",
-        "2025.09.23",
-        "2025.09.22",
-    )
-    // ViewHolder giữ các view từ item_news.xml
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val newsImage: ImageView = view.findViewById(R.id.img_news)
-        val newsTitle: TextView = view.findViewById(R.id.tv_news_title)
-        val newsDate: TextView = view.findViewById(R.id.tv_news_date)
+    // 2. Định nghĩa Interface ngay trong class này
+    interface OnItemListener {
+        fun onItemClick(data: WSPostResponse, position: Int)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_news, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
+        val binding = ItemNewsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return NormalItemViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // Lấy dữ liệu
-        val imageIndex = position % newsImages.size
-        val titleIndex = position % newsTitles.size
-        val dateIndex = position % newsDates.size
-
-        // Gán dữ liệu vào view
-
-
-        // --- Bind dữ liệu thật của bạn ở đây ---
-        holder.newsTitle.text = newsTitles[titleIndex]
-        holder.newsDate.text = newsDates[dateIndex]
-        holder.newsImage.setImageResource(newsImages[imageIndex])
+    // 3. Override onBindViewHolder chuẩn xác
+    override fun onBindViewHolder(holder: NormalItemViewHolder, position: Int) {
+        holder.binding(position)
     }
 
     override fun getItemCount(): Int {
         return dataList.size
+    }
+
+    // --- Các hàm xử lý chuỗi giữ nguyên ---
+    private fun encodePathSegment(seg: String): String {
+        // ... (Code cũ của bạn giữ nguyên) ...
+        val sb = StringBuilder(seg.length * 3)
+        var i = 0
+        while (i < seg.length) {
+            val ch = seg[i]
+            if (ch == '%' && i + 2 < seg.length &&
+                seg[i + 1].isLetterOrDigit() && seg[i + 2].isLetterOrDigit() &&
+                pctEncoded.matches(seg.substring(i, i + 3))) {
+                sb.append(seg, i, i + 3)
+                i += 3
+                continue
+            }
+            val isUnreserved = (ch in 'A'..'Z') || (ch in 'a'..'z') || (ch in '0'..'9') ||
+                    ch == '-' || ch == '.' || ch == '_' || ch == '~'
+
+            if (isUnreserved) {
+                sb.append(ch)
+                i++
+            } else {
+                val bytes = ch.toString().toByteArray(StandardCharsets.UTF_8)
+                for (b in bytes) {
+                    val v = b.toInt() and 0xFF
+                    sb.append('%')
+                    val hi = "0123456789ABCDEF"[v ushr 4]
+                    val lo = "0123456789ABCDEF"[v and 0x0F]
+                    sb.append(hi).append(lo)
+                }
+                i++
+            }
+        }
+        return sb.toString()
+    }
+
+    fun String.encodeBlobLikeUrl(): String {
+        return try {
+            val u = Uri.parse(this)
+            if (u.scheme.isNullOrEmpty() || u.authority.isNullOrEmpty()) return this
+            val encodedPath = u.pathSegments.joinToString("/") { seg -> encodePathSegment(seg) }
+            u.buildUpon()
+                .encodedPath(encodedPath)
+                .encodedQuery(u.encodedQuery)
+                .encodedFragment(u.encodedFragment)
+                .build()
+                .toString()
+        } catch (_: Exception) {
+            this
+        }
+    }
+
+    inner class NormalItemViewHolder(private val binding: ItemNewsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun binding(position: Int) {
+            val data = dataList[position]
+            val rawUrl = data.urlF
+
+            Glide.with(binding.imgNews.context).clear(binding.imgNews)
+            if (!data.urlF.isNullOrEmpty()) {
+                val encodedUrl = rawUrl.encodeBlobLikeUrl()
+
+                Glide.with(binding.imgNews)
+                    .load(encodedUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
+                    .dontAnimate()
+                    .format(DecodeFormat.PREFER_RGB_565)
+                    .apply(RequestOptions().disallowHardwareConfig())
+                    .into(binding.imgNews)
+            } else {
+                // Xử lý khi không có ảnh (nếu cần)
+            }
+
+            binding.tvNewsTitle.text = data.titleF
+            binding.tvNewsDate.text = data.dateF
+
+            binding.llNewsRoot.setOnClickListener {
+                // 5. Gọi listener của class cha
+                listener.onItemClick(data, position)
+            }
+        }
     }
 }

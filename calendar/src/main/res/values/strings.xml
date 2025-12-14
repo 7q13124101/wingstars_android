@@ -1,1 +1,15 @@
-<resources></resources>
+<resources>
+    <string name="calendar_title">日曆</string>
+    <string name="calendar_hawks">台鋼雄鷹</string>
+    <string name="calendar_ghost_hawks">台鋼獵鷹</string>
+    <string name="calendar_sky_hawks">台鋼天鷹</string>
+    <string name="calendar_itinerary">行程</string>
+    <string name="calendar_event_details">活動詳情</string>
+    <string name="calendar_event_date">活動日期</string>
+    <string name="calendar_event_location">活動地點</string>
+    <string name="calendar_event_information">活動資訊</string>
+    <string name="calendar_precautions">注意事項</string>
+    <string name="calendar_back_number">背號</string>
+    <string name="calendar_no_events">目前沒有安排活動</string>
+
+</resources>

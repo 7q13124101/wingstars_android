@@ -12,8 +12,7 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="活動詳情" />
-
+        app:title="@string/calendar_event_details" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nsv_top"
@@ -31,48 +30,56 @@
             android:orientation="vertical">
 
             <com.lihang.ShadowLayout
-                android:layout_width="362dp"
-                android:layout_height="452dp"
+                android:layout_width="@dimen/dp_362"
+                android:layout_height="@dimen/dp_452"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_20"
+                android:clipChildren="true"
                 app:clickable="false"
-                app:hl_cornerRadius="16dp"
+                app:hl_cornerRadius="@dimen/dp_16"
                 app:hl_strokeColor="@color/white"
-                app:hl_strokeWith="1dp">
+                app:hl_strokeWith="@dimen/dp_1">
 
                 <ImageView
                     android:id="@+id/iv_dialog_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="1dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_xin_dong_shi_ke" />
+                    android:scaleType="fitCenter"
+                    android:padding="@dimen/dp_1"
+                    android:src="@drawable/calendar_ic_xin_dong_shi_ke" />
 
-                <!--                <LinearLayout-->
-                <!--                    android:id="@+id/ll_play_now"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_gravity="bottom|end"-->
-                <!--                    android:layout_marginEnd="@dimen/dp_5"-->
-                <!--                    android:layout_marginBottom="@dimen/dp_5">-->
+                <LinearLayout
+                    android:id="@+id/ll_page"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:layout_marginBottom="@dimen/dp_12"
+                    android:background="@drawable/calendar_bg_button_radius"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/dp_12"
+                    android:paddingEnd="@dimen/dp_12">
 
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/tv_limited_user"-->
-                <!--                        android:layout_width="match_parent"-->
-                <!--                        android:layout_height="match_parent"-->
-                <!--                        android:background="@color/black"-->
-                <!--                        android:gravity="center"-->
-                <!--                        android:paddingLeft="@dimen/dp_5"-->
-                <!--                        android:paddingTop="@dimen/dp_2"-->
-                <!--                        android:paddingRight="@dimen/dp_5"-->
-                <!--                        android:paddingBottom="@dimen/dp_2"-->
-                <!--                        android:text="llllllll"-->
-                <!--                        android:textColor="@color/white"-->
-                <!--                        android:textSize="@dimen/sp_16"-->
-                <!--                        android:textStyle="bold" />-->
-                <!--                </LinearLayout>-->
+                    <TextView
+                        android:id="@+id/tv_limited_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="1/3"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_12"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:src="@drawable/calendar_ic_bars" />
+
+                </LinearLayout>
             </com.lihang.ShadowLayout>
 
             <LinearLayout
@@ -87,16 +94,16 @@
 
                     <ImageView
                         android:id="@+id/iv_image_type"
-                        android:layout_width="63dp"
-                        android:layout_height="72dp"
-                        android:src="@drawable/ic_star"
+                        android:layout_width="@dimen/dp_63"
+                        android:layout_height="@dimen/dp_72"
+                        android:src="@drawable/calendar_ic_star"
                         android:translationY="@dimen/dp_neg_24"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -119,7 +126,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/dp_8"
-                            android:text="活動日期"
+                            android:text="@string/calendar_event_date"
                             android:textColor="@color/color_DE9DBA"
                             android:textSize="@dimen/sp_16"
                             android:textStyle="bold" />
@@ -138,9 +145,9 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="@dimen/dp_30"
-                    android:layout_marginBottom="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
                     android:background="@color/color_E5E7EB" />
 
                 <TextView
@@ -149,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:text="活動地點"
+                    android:text="@string/calendar_event_location"
                     android:textColor="@color/color_DE9DBA"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold" />
@@ -165,7 +172,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_30"
                     android:layout_marginBottom="@dimen/dp_30"
                     android:background="@color/color_E5E7EB" />
@@ -174,17 +181,17 @@
                     android:id="@+id/ll_event_information"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
                     android:layout_marginBottom="@dimen/dp_8"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tv_event_information"
                         android:layout_width="@dimen/dp_0"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        android:text="活動資訊"
+                        android:layout_weight="1"
+                        android:text="@string/calendar_event_information"
                         android:textColor="@color/color_DE9DBA"
                         android:textSize="@dimen/sp_16"
                         android:textStyle="bold" />
@@ -194,7 +201,7 @@
                         android:layout_width="@dimen/dp_20"
                         android:layout_height="@dimen/dp_20"
                         android:layout_marginStart="@dimen/dp_16"
-                        android:src="@drawable/arrow_up_01" />
+                        android:src="@drawable/calendar_ic_arrow_up" />
                 </LinearLayout>
 
                 <TextView
@@ -215,26 +222,26 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="@dimen/dp_30"
-                    android:layout_marginBottom="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
                     android:background="@color/color_E5E7EB" />
 
                 <LinearLayout
                     android:id="@+id/ll_precautions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
                     android:layout_marginBottom="@dimen/dp_8"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tv_precautions"
                         android:layout_width="@dimen/dp_0"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        android:text="注意事項"
+                        android:layout_weight="1"
+                        android:text="@string/calendar_precautions"
                         android:textColor="@color/color_DE9DBA"
                         android:textSize="@dimen/sp_16"
                         android:textStyle="bold" />
@@ -244,7 +251,7 @@
                         android:layout_width="@dimen/dp_20"
                         android:layout_height="@dimen/dp_20"
                         android:layout_marginStart="@dimen/dp_16"
-                        android:src="@drawable/arrow_up_01" />
+                        android:src="@drawable/calendar_ic_arrow_up" />
                 </LinearLayout>
 
                 <TextView

@@ -13,14 +13,25 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="12dp">
-
-        <ImageView
-            android:id="@+id/imgSchedule"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/placeholder_person"
-            tools:ignore="ContentDescription" />
+        <com.lihang.ShadowLayout
+            android:id="@+id/shadow_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:hl_cornerRadius="10dp"
+            app:hl_shadowHidden="false"
+            app:hl_shadowColor="@color/color_F3F4F6"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1">
+            <ImageView
+                android:id="@+id/imgSchedule"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/placeholder_person"
+                tools:ignore="ContentDescription" />
+        </com.lihang.ShadowLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

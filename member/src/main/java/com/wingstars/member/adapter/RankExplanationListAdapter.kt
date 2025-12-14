@@ -1,31 +1,27 @@
 package com.wingstars.member.adapter
 
 import android.content.Context
+import android.os.Build
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
-import com.wingstars.base.utils.DPUtils
-import com.wingstars.member.R
-import com.wingstars.member.databinding.ItemPoplarityListBinding
-import com.wingstars.member.databinding.ItemRankExplanationListBinding
-import com.wingstars.member.databinding.ItemRankListBinding
-import com.wingstars.member.databinding.ItemRankingListBinding
+import com.wingstars.member.bean.WSRankBean
+import com.wingstars.member.databinding.ItemRanksExplanationListBinding
+
 
 class RankExplanationListAdapter     // -------------------------------------------
     (
     private val context: Context,
-    private var dataList: MutableList<Int>?
+    private var dataList: MutableList<WSRankBean>?
 ) : RecyclerView.Adapter<RankExplanationListAdapter.NormalItemViewHolder>() {
     private var pos = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
         val binding =
-            ItemRankExplanationListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemRanksExplanationListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return NormalItemViewHolder(binding)
     }
 
@@ -44,7 +40,7 @@ class RankExplanationListAdapter     // ----------------------------------------
     }
 
     // -------------------------------------------
-    fun setList(list: MutableList<Int>?) {
+    fun setList(list: MutableList<WSRankBean>?) {
         dataList = if (dataList == null) {
             ArrayList()
         } else {
@@ -56,7 +52,7 @@ class RankExplanationListAdapter     // ----------------------------------------
     }
 
 
-    fun getData(): MutableList<Int>? {
+    fun getData(): MutableList<WSRankBean>? {
         if (dataList == null) {
             return null
         }
@@ -65,13 +61,14 @@ class RankExplanationListAdapter     // ----------------------------------------
 
 
     // -------------------------------------------
-    inner class NormalItemViewHolder(private val binding: ItemRankExplanationListBinding) :
+    inner class NormalItemViewHolder(private val binding: ItemRanksExplanationListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun binding(position: Int) {
-            binding.title.visibility =  if (position==0||position==4) View.VISIBLE else View.GONE
-
-
+            val bean = dataList!![position]
+            binding.title.text = "${bean.title}"
+            var htmlContent = "${bean.content}"
+            binding.contents.text = Html.fromHtml(htmlContent);
         }
 
 

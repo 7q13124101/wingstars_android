@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.lihang.ShadowLayout
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_35"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_12"
+        app:hl_cornerRadius="@dimen/dp_6"
+        app:hl_layoutBackground="@color/color_F3F4F6"
+        app:hl_shadowHidden="false">
+
+        <TextView
+            android:id="@+id/tv_item_hobby"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="end"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:singleLine="true"
+            android:text="吃東西"
+            android:textColor="@color/color_101828"
+            android:textSize="@dimen/sp_16" />
+    </com.lihang.ShadowLayout>
+</LinearLayout>

@@ -20,7 +20,6 @@
             android:layout_height="24dp"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_arrow_left"
-            app:tint="@android:color/black"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -29,8 +28,7 @@
             android:layout_centerInParent="true"
             android:text="最新消息"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="16sp"/>
     </RelativeLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -64,7 +62,6 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/img_new_test_02"
                         tools:ignore="ContentDescription" />
-
                     <LinearLayout
                         android:id="@+id/layoutImageIndicator"
                         android:layout_width="wrap_content"
@@ -98,7 +95,6 @@
 
 
                     </LinearLayout>
-
                 </FrameLayout>
             </androidx.cardview.widget.CardView>
 
@@ -112,22 +108,29 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvNewsContent"
+<!--            <TextView-->
+<!--                android:id="@+id/tvNewsContent"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="16dp"-->
+<!--                android:lineSpacingExtra="6dp"-->
+<!--                android:text="台鋼雄鷹本季賽事進入尾聲，於主場澄清湖棒球場進行倒數第二場比賽，賽事前夕由球迷自主號召，聚集了超過40位熱血球迷，於澄清湖棒球場前的水舞廣場規劃了一場「應援美食盛會」。\n\n-->
+
+<!--現場球迷自籌資源，邀請6台特色餐車進駐，提供多樣美食佳餚，讓到場球迷不僅能享受比賽氛圍，也能共享美味饗宴。這份心意不僅展現出台鋼球迷的凝聚力，更彰顯球迷與球隊之間緊密而深厚的情感連結。\n\n-->
+<!--在美食與應援的雙重加持下，球迷們以實際行動為台鋼雄鷹及桂田文創啦啦隊Wing Stars加油打氣，共同迎接賽季最後的挑戰。-->
+
+<!--台鋼雄鷹與Wing Stars特別感謝所有球迷在這個賽季一路以來的陪伴與支持。無論主場或客場，都能看見球迷們熱情的身影，成為台鋼最堅實的力量。未來，球隊將持續努力，與球迷一同寫下更多精彩篇章。\n\n-->
+
+<!--一粒表示，「看到球迷們自主策劃活動，令我十分感動，深刻感受到大家的用心與支持。這一季以來，陪伴球隊和球迷走過無數比賽，每一刻都格外珍貴。無論是場上拚盡全力的球員，還是場邊全心投入的我們與球迷，大家一路並肩而行，共同成長。」她也提到隨著球季即將告一段落，「我衷心想對所有球迷表達感謝，感謝始終在身旁支持的你們，也感謝新加入我們大家庭的朋友。期盼未來的日子裡，能與大家攜手繼續走下去，共同迎接更多美好的時刻。」"-->
+<!--                android:textColor="#666666"-->
+<!--                android:textSize="15sp" />-->
+            <WebView
+                android:id="@+id/webViewContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:lineSpacingExtra="6dp"
-                android:text="台鋼雄鷹本季賽事進入尾聲，於主場澄清湖棒球場進行倒數第二場比賽，賽事前夕由球迷自主號召，聚集了超過40位熱血球迷，於澄清湖棒球場前的水舞廣場規劃了一場「應援美食盛會」。\n\n
-
-現場球迷自籌資源，邀請6台特色餐車進駐，提供多樣美食佳餚，讓到場球迷不僅能享受比賽氛圍，也能共享美味饗宴。這份心意不僅展現出台鋼球迷的凝聚力，更彰顯球迷與球隊之間緊密而深厚的情感連結。\n\n
-在美食與應援的雙重加持下，球迷們以實際行動為台鋼雄鷹及桂田文創啦啦隊Wing Stars加油打氣，共同迎接賽季最後的挑戰。
-
-台鋼雄鷹與Wing Stars特別感謝所有球迷在這個賽季一路以來的陪伴與支持。無論主場或客場，都能看見球迷們熱情的身影，成為台鋼最堅實的力量。未來，球隊將持續努力，與球迷一同寫下更多精彩篇章。\n\n
-
-一粒表示，「看到球迷們自主策劃活動，令我十分感動，深刻感受到大家的用心與支持。這一季以來，陪伴球隊和球迷走過無數比賽，每一刻都格外珍貴。無論是場上拚盡全力的球員，還是場邊全心投入的我們與球迷，大家一路並肩而行，共同成長。」她也提到隨著球季即將告一段落，「我衷心想對所有球迷表達感謝，感謝始終在身旁支持的你們，也感謝新加入我們大家庭的朋友。期盼未來的日子裡，能與大家攜手繼續走下去，共同迎接更多美好的時刻。」"
-                android:textColor="#666666"
-                android:textSize="15sp" />
+                android:layout_marginTop="20dp"
+                android:scrollbars="none"
+                android:nestedScrollingEnabled="false"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -26,7 +26,7 @@
             android:layout_marginLeft="@dimen/dp_5"
             android:text="身高"
             android:textColor="@color/color_4A5565"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
     <TextView

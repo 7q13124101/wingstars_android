@@ -10,13 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.wingstars.base.net.beans.WSFashionDetailResponse.Acf.Recommend
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
 import com.wingstars.member.databinding.ItemCategoryListBinding
 import com.wingstars.member.databinding.ItemGirlIntoductionListBinding
-import com.wingstars.member.databinding.ItemGuideListBinding
-import com.wingstars.member.databinding.ItemProductListBinding
-import com.wingstars.member.databinding.ItemSmallCommodityListBinding
+import com.wingstars.member.databinding.ItemProductsListBinding
 import com.wingstars.member.view.CircleWithBorderTransformation
 import com.wingstars.member.view.TopRoundedCornersTransformation
 
@@ -24,13 +23,13 @@ import com.wingstars.member.view.TopRoundedCornersTransformation
 class ProductListAdapter     // -------------------------------------------
     (
     private val context: Context,
-    private var dataList: MutableList<Int>?
+    private var dataList: MutableList<Recommend>?
 ) : RecyclerView.Adapter<ProductListAdapter.NormalItemViewHolder>() {
     private var pos = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
         val binding =
-            ItemProductListBinding.inflate(
+            ItemProductsListBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -58,7 +57,7 @@ class ProductListAdapter     // -------------------------------------------
     }
 
     // -------------------------------------------
-    fun setList(list: MutableList<Int>?) {
+    fun setList(list: MutableList<Recommend>?) {
         dataList = if (dataList == null) {
             ArrayList()
         } else {
@@ -70,7 +69,7 @@ class ProductListAdapter     // -------------------------------------------
     }
 
 
-    fun getData(): MutableList<Int>? {
+    fun getData(): MutableList<Recommend>? {
         if (dataList == null) {
             return null
         }
@@ -79,7 +78,7 @@ class ProductListAdapter     // -------------------------------------------
 
 
     // -------------------------------------------
-    inner class NormalItemViewHolder(private val binding: ItemProductListBinding) :
+    inner class NormalItemViewHolder(private val binding: ItemProductsListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun binding(position: Int) {
@@ -88,10 +87,15 @@ class ProductListAdapter     // -------------------------------------------
             }else{
                 setMarginLeft(binding.item, 0)
             }
+            val recommend = dataList!![position]
+
+            binding.productTitle.text = recommend.product_titleF
             Glide.with(context)
-                .load(R.mipmap.ic_demo5)
+                .load(recommend.product_image_url_fullF)  //R.mipmap.ic_demo5
                 .transform(RoundedCorners(DPUtils.dpToPx(20f,context).toInt()))
                 .into(binding.image)
+                 binding.item.visibility = if (recommend.isTitleAndImageEmpty) View.GONE else View.VISIBLE
+
 
         }
 

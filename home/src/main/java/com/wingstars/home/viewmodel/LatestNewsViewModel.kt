@@ -3,8 +3,15 @@ package com.wingstars.home.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.wingstars.home.R
-import com.wingstars.home.adapter.NewsData
+import java.io.Serializable
 
+//import com.wingstars.home.adapter.NewsData
+
+data class NewsData(
+    val title: String,
+    val date: String,
+    val imageUrl: Int // Tạm thời dùng Int (Resource ID) để test ảnh local
+) : Serializable
 class LatestNewsViewModel : ViewModel() {
 
     val newsList = MutableLiveData<List<NewsData>>()

@@ -23,8 +23,9 @@ class PopularityPopupView(
     var activity: Activity,
     var onPopupConfirm: OnPopupConfirm,
     var navigationBarHeight: Int
-) {
+) : RankListAdapter.onItemListener {
     private lateinit var popupWindow: PopupWindow
+    private var adapter:RankListAdapter?=null
     private lateinit var binding: PopupPopularityViewBinding
 
     init {
@@ -47,7 +48,7 @@ class PopularityPopupView(
         popupWindow.isOutsideTouchable = false
         popupWindow.isFocusable = true
         var stringArray = activity.resources.getStringArray(R.array.rank_list)
-        var adapter = RankListAdapter(activity, stringArray.toMutableList())
+         adapter = RankListAdapter(activity, stringArray.toMutableList(),this)
         binding.rankList.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         binding.rankList.adapter = adapter
@@ -119,8 +120,19 @@ class PopularityPopupView(
         setActivityBackgroundDim(activity, 0.5f)
     }
 
+    fun setName(name: String){
+        if (adapter!=null){
+            adapter!!.setPos(name)
+        }
+    }
+
+    override fun onItemClick(name: String) {
+        onPopupConfirm.onPopupConfirm(name)
+        popupWindow.dismiss()
+    }
+
     interface OnPopupConfirm {
-        fun onPopupConfirm()
+        fun onPopupConfirm(name: String)
     }
 
 

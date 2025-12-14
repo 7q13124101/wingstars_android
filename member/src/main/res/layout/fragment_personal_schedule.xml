@@ -1,17 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".fragment.PersonalScheduleFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Personal schedule..."
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_18"
-        android:textStyle="bold" />
-</RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_70">
+
+        <com.wingstars.member.view.NoInterceptHorizontalRecyclerView
+            android:id="@+id/rv_team_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_24" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_prev"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:src="@drawable/ic_arrow_left_gray" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2025/9"
+            android:textColor="#1E2939"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/iv_next"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_16"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:src="@drawable/ic_arrow_right_gray" />
+    </LinearLayout>
+
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/srl_personal_schedule_record"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.scwang.smart.refresh.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srlTextFailed="@string/refresh_failed"
+            app:srlTextFinish="@string/refresh_success"
+            app:srlTextPulling="@string/pull_down_to_refresh"
+            app:srlTextRefreshing="@string/refreshing"
+            app:srlTextRelease="@string/release_to_refresh"
+            app:srlTextUpdate="@string/last_update" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.lihang.ShadowLayout
+                    android:id="@+id/sl_ws_schedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_24"
+                    android:visibility="gone"
+                    app:hl_cornerRadius="@dimen/dp_16"
+                    app:hl_layoutBackground="@color/white"
+                    app:hl_shadowHidden="false"
+                    app:hl_strokeColor="@color/color_E5E7EB"
+                    app:hl_strokeWith="@dimen/dp_1">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_ws_schedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_4"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_month_personal_schedule" />
+                </com.lihang.ShadowLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_ws_weekly_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_75"
+                        android:layout_height="@dimen/dp_75"
+                        android:src="@drawable/ic_schedule_none" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:text="@string/member_personal_schedule_none"
+                        android:textColor="@color/color_6A7282"
+                        android:textSize="@dimen/sp_14" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+</LinearLayout>

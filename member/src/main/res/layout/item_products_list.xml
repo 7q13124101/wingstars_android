@@ -16,6 +16,7 @@
             android:layout_height="@dimen/dp_123"
             android:src="@mipmap/ic_demo5"/>
         <TextView
+            android:id="@+id/product_title"
             android:layout_marginTop="@dimen/dp_8"
             android:textSize="@dimen/sp_14"
             android:textColor="@color/color_4A5565"

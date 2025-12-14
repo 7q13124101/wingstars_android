@@ -9,305 +9,257 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.base.base.BaseFragment
+import com.wingstars.base.net.beans.WSFashionCategoryResponse
+import com.wingstars.base.net.beans.WSFashionResponse
+import com.wingstars.base.net.beans.WSPostResponse
+import com.wingstars.base.net.beans.WSProductResponse
+import com.wingstars.base.utils.ItemHotDecoration
 import com.wingstars.home.R
 import com.wingstars.home.activity.TodayItineraryDetailsActivity
-
-// Import các Adapter cũ
-import com.wingstars.home.adapter.ArticleAdapter
-import com.wingstars.home.adapter.ComingSoonAdapter
-import com.wingstars.home.adapter.ComingSoonData
-import com.wingstars.home.adapter.DotIndicatorAdapter
-import com.wingstars.home.adapter.ItineraryBannerAdapter
-import com.wingstars.home.adapter.ItineraryData
-import com.wingstars.home.adapter.PopularityRankingAdapter
-import com.wingstars.home.adapter.NewsAdapter
-import com.wingstars.home.adapter.ProductAdapter
-import com.wingstars.home.adapter.StyleOutfitsData
-import com.wingstars.home.adapter.StylistOutfitsAdapter
-
-// --- THÊM MỚI: Import 2 Adapter mới ---
-// --- KẾT THÚC ---
-
+import com.wingstars.home.adapter.* // Import hết adapter cho gọn
 import com.wingstars.home.databinding.FragmentHomeBinding
 import com.wingstars.home.viewmodel.HomeViewModel
+import com.youth.banner.listener.OnPageChangeListener
 
-
-class HomeFragment : BaseFragment() ,View.OnClickListener{ // Giữ nguyên
+class HomeFragment : BaseFragment(), View.OnClickListener {
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var viewModel : HomeViewModel
+    private lateinit var viewModel: HomeViewModel
 
+    // Adapter cho các banner, khai báo ở đây để dùng chung
+    private lateinit var hotProductAdapter: ProductAdapter
+    private lateinit var  fashionAdapter: StylistOutfitsAdapter
+
+    private lateinit var indicatorAdapterItinerary: DotIndicatorAdapter
+    private lateinit var indicatorAdapterComingSoon: DotIndicatorAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initView()
-        return root
     }
 
     private fun initView() {
-        // 1. Khởi tạo ViewModel
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+//        handleStatusBar()
+        setupUI()
+        setupComingSoonBanner()
+        observeData()
 
-        // 2. Xử lý Status Bar
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM){
-            binding.root.setOnApplyWindowInsetsListener{ v, insets ->
-                val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
-                Log.e("statusBarHeight","statusBarHeight=$statusBarHeight")
-                setViewTop(binding.title, statusBarHeight)
-                binding.root.setOnApplyWindowInsetsListener(null)
-                insets
-            }
-        } else {
-            setViewTop(binding.title, getStatusBarHeight())
-        }
-//        val itineraryList = mutableListOf(
-//            ItineraryData(
-//                R.drawable.placeholder_person,
-//                "JC生日會「Just Connect」維C能量補給站",
-//                "2025/09/20 (六) 10:00",
-//                "Stars House 門市"
-//            ),
-//            ItineraryData(R.drawable.placeholder_person, "Event 2...", "2025/10/01", "Taipei Arena"),
-//            ItineraryData(R.drawable.placeholder_person, "Event 3...", "2025/11/15", "Kaohsiung")
-//        )
-//
-//        // 2. Setup Adapter cho Banner
-//        val bannerAdapter = ItineraryBannerAdapter(itineraryList)
-//
-//        // Xử lý click vào banner -> Mở màn hình chi tiết
-//        bannerAdapter.onItemClickListener = { data ->
-//            startActivity(Intent(requireActivity(), TodayItineraryDetailsActivity::class.java))
+        viewModel.getCalendarData()
+        viewModel.getHomeData()
+        viewModel.getLatestNewsData()
+    }
+
+//    private fun handleStatusBar() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+//            binding.root.setOnApplyWindowInsetsListener { _, insets ->
+//                val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
+//                Log.e("statusBarHeight", "statusBarHeight=$statusBarHeight")
+//                setViewTop(binding.title, statusBarHeight)
+//                binding.root.setOnApplyWindowInsetsListener(null)
+//                insets
+//            }
+//        } else {
+//            setViewTop(binding.title, getStatusBarHeight())
 //        }
-//
-//        binding.bannerItinerary.apply {
-//            adapter = bannerAdapter
-//            addBannerLifecycleObserver(this@HomeFragment) // Quan trọng để banner tự chạy/dừng theo lifecycle
-//            setBannerGalleryEffect(18, 10) // (Tuỳ chọn) Hiệu ứng Gallery
-//            // setIndicator(CircleIndicator(context)) // Nếu muốn dùng Indicator mặc định của thư viện
-//        }
-        // Trong initView() của HomeFragment
+//    }
 
-// 1. Tạo dữ liệu (3 item, mỗi item 4 biến)
-        val itineraryList = mutableListOf(
-            ItineraryData(
-                R.drawable.placeholder_person,
-                "JC生日會「Just Connect」維C能量補給站",
-                "2025/09/20 (六) 10:00",
-                "Stars House 門市"
-            ),
-            ItineraryData(
-                R.drawable.placeholder_person,
-                "JC生日會「Just Connect」維C能量補給站",
-                "2025/09/20 (六) 10:00",
-                "Stars House 門市"
-            ),
-            ItineraryData(
-                R.drawable.placeholder_person,
-                "JC生日會「Just Connect」維C能量補給站",
-                "2025/09/20 (六) 10:00",
-                "Stars House 門市"
-            )
-        )
+    private fun setupUI() {
+        binding.titleProducts.tvSectionTitle.text = "熱銷商品"
+        binding.titlePopularRanking.tvSectionTitle.text = "人氣排行"
+        binding.titleStylistVibe.tvSectionTitle.text = "氛圍時尚"
+        binding.titleHighlights.tvSectionTitle.text = "活動花絮"
+        binding.titleNews.tvSectionTitle.text = "最新消息"
 
+        binding.icNotification.setOnClickListener(this)
+        binding.titlePopularRanking.root.setOnClickListener(this)
+        binding.titleHighlights.root.setOnClickListener(this)
+        binding.titleStylistVibe.root.setOnClickListener(this)
+        binding.titleNews.root.setOnClickListener(this)
+    }
+
+    private fun setupComingSoonBanner() {
         val comingSoonList = mutableListOf(
-            ComingSoonData(
-                R.drawable.placeholder_calendar,
-                "25-26 WS女孩應援毛巾｜天鷹款\n",
-                "2025/09/20 (六) 10:00",
-
-            ),
-            ComingSoonData(
-                R.drawable.placeholder_calendar,
-                "Event 2 Title",
-                "2025/10/01",
-
-            ),
-            ComingSoonData(
-                R.drawable.placeholder_calendar,
-                "Event 3 Title",
-                "2025/11/15",
-            )
+            ComingSoonData(R.drawable.placeholder_calendar, "25-26 WS女孩應援毛巾｜天鷹款\n", "2025/09/20 (六) 10:00"),
+            ComingSoonData(R.drawable.placeholder_calendar, "Event 2 Title", "2025/10/01"),
+            ComingSoonData(R.drawable.placeholder_calendar, "Event 3 Title", "2025/11/15")
         )
 
-        val bannerAdapter = ItineraryBannerAdapter(itineraryList)
-        bannerAdapter.onItemClickListener = { data ->
-            startActivity(Intent(requireActivity(), TodayItineraryDetailsActivity::class.java))
-        }
         val bannerAdapter2 = ComingSoonAdapter(comingSoonList)
-//        bannerAdapter2.onItemClickListener={data ->
-//            startActivity(Intent(requireActivity(), TodayItineraryDetailsActivity::class.java))}
-        binding.bannerItinerary.apply {
-            addBannerLifecycleObserver(this@HomeFragment)
-            setAdapter(bannerAdapter) // Gắn adapter vào banner
-            // Không cần setIndicator mặc định vì ta dùng RecyclerView bên ngoài làm indicator
-        }
+
         binding.bannerComingSoon.apply {
             addBannerLifecycleObserver(this@HomeFragment)
             setAdapter(bannerAdapter2)
         }
 
-        binding.todayItinerary.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.itemComingSoon.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-// Adapter này vẽ các chấm tròn. Nó chỉ cần biết có bao nhiêu item (itineraryList.size)
-        val indicatorAdapter = DotIndicatorAdapter(itineraryList.size)
-        val comingSoonAdapter = DotIndicatorAdapter(comingSoonList.size)
-        binding.todayItinerary.adapter = indicatorAdapter
-        binding.todayItinerary.visibility =
-            if (itineraryList.size <= 1) View.GONE else View.VISIBLE
-        binding.itemComingSoon.adapter = comingSoonAdapter
-        binding.itemComingSoon.visibility =
-            if (comingSoonList.size <= 1) View.GONE else View.VISIBLE
+        indicatorAdapterComingSoon = DotIndicatorAdapter(comingSoonList.size)
+        binding.itemComingSoon.adapter = indicatorAdapterComingSoon
+        binding.itemComingSoon.visibility = if (comingSoonList.size > 1) View.VISIBLE else View.GONE
 
-
-// 4. Kết nối Banner và Indicator (Logic đồng bộ y hệt ví dụ mẫu)
-        binding.bannerItinerary.addOnPageChangeListener(object : com.youth.banner.listener.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            }
-
+        binding.bannerComingSoon.addOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
-                // Khi banner lướt đến vị trí nào, bảo indicator update sang vị trí đó
-                // (Tương đương adapter.setPos(position) trong ví dụ mẫu)
-                indicatorAdapter.setPosition(position)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-            }
-        })
-        binding.bannerComingSoon.addOnPageChangeListener(object : com.youth.banner.listener.OnPageChangeListener{
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            }
-            override fun onPageSelected(position: Int) {
-                comingSoonAdapter.setPosition(position)
+                indicatorAdapterComingSoon.setPosition(position)
             }
             override fun onPageScrollStateChanged(state: Int) {}
         })
-        binding.titleProducts.tvSectionTitle.text = "熱銷商品"
-        binding.titlePopularRanking.tvSectionTitle.text = "人氣排行"
+    }
 
-// 2. Stylist Vibe
-        binding.titleStylistVibe.tvSectionTitle.text = "氛圍時尚"
-// binding.titleHighlights.tvMore.setOnClickListener { ... }
+    private fun observeData() {
+        viewModel.calendarDataList.observe(viewLifecycleOwner) { list ->
+            if (list.isNullOrEmpty()) {
+                binding.bannerItinerary.visibility = View.GONE
+                binding.todayItinerary.visibility = View.GONE
+            } else {
+                binding.bannerItinerary.visibility = View.VISIBLE
 
-// 3. Bài viết
-        binding.titleHighlights.tvSectionTitle.text = "活動花絮"
+                // Setup Banner Adapter
+                val bannerAdapter = ItineraryBannerAdapter(list)
+                bannerAdapter.onItemClickListener = { data ->
+                    val intent = Intent(requireActivity(), TodayItineraryDetailsActivity::class.java)
+                     intent.putExtra("DATA_ITINERARY", data)
+                    startActivity(intent)
+                }
 
-// 4. Tin tức
-        binding.titleNews.tvSectionTitle.text = "最新消息"
-//        binding.todayItinerary.setOnClickListener {
-//            val intent = Intent(context, TodayItineraryActivity::class.java)
-//
-//            context?.startActivity(intent)
-//        }
+                binding.bannerItinerary.setAdapter(bannerAdapter)
+                binding.bannerItinerary.addBannerLifecycleObserver(this@HomeFragment)
 
-        viewModel.homeDataList.observe(viewLifecycleOwner) { dataList ->
-            // Setup rvProducts (Grid)
-            val productAdapter = ProductAdapter(requireActivity(), dataList)
-            binding.rvProducts.layoutManager = GridLayoutManager(requireActivity(), 2)
-            binding.rvProducts.adapter = productAdapter
+                // Setup Indicator (RecyclerView)
+                binding.todayItinerary.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                indicatorAdapterItinerary = DotIndicatorAdapter(list.size)
+                binding.todayItinerary.adapter = indicatorAdapterItinerary
+                binding.todayItinerary.visibility = if (list.size > 1) View.VISIBLE else View.GONE // Chỉ hiện khi > 1 item
 
-//            // Setup rvMembers (Horizontal)
-//            val memberAdapter = MemberAdapter(requireActivity(), dataList)
-//            binding.rvMembers.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-//            binding.rvMembers.adapter = memberAdapter
-
-            // Setup rvHighlights (Grid)
-            val styleList = mutableListOf<StyleOutfitsData>()
-            dataList.forEach {
-                styleList.add(StyleOutfitsData(tittle = "Item $it", isClick = false))
+                binding.bannerItinerary.addOnPageChangeListener(object : OnPageChangeListener {
+                    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+                    override fun onPageSelected(position: Int) {
+                        indicatorAdapterItinerary.setPosition(position)
+                    }
+                    override fun onPageScrollStateChanged(state: Int) {}
+                })
             }
-            val styleListener = object : StylistOutfitsAdapter.OnItemListener {
-                override fun onItemClick(data: StyleOutfitsData, position: Int) {
-                    // Xử lý khi click vào item (nếu cần)
-                    // Ví dụ: Toast.makeText(requireActivity(), "Click $position", Toast.LENGTH_SHORT).show()
+        }
+
+            hotProductAdapter = ProductAdapter(
+            requireActivity(),
+            mutableListOf(),
+            object : ProductAdapter.OnItemListener {
+                override fun onItemClick(data: WSProductResponse, position: Int) {
+//                    val intent = Intent(
+//                        this@HomeFragment.requireActivity(),
+//                        CommonWebViewActivity::class.java
+//                    )
+//                    intent.putExtra(
+//                        "webTitle",
+//                        getResources().getString(R.string.title_hot_product)
+//                    )
+//                    intent.putExtra("webUrl", data.linkF)
+//                    intent.putExtra("isXShow", true)
+//                    startActivity(intent)
+                }
+            })
+
+        binding.rvProducts.adapter = hotProductAdapter
+
+
+        viewModel.productDataList.observe(viewLifecycleOwner) {
+            if (!it.isNullOrEmpty())
+                hotProductAdapter.setList(it)
+        }
+
+        fashionAdapter = StylistOutfitsAdapter(
+            requireActivity(),
+            mutableListOf(),
+            object : StylistOutfitsAdapter.OnItemListener {
+                override fun onItemClick(data: WSFashionResponse, position: Int) {
+
                 }
             }
-            val highlightAdapter = StylistOutfitsAdapter(requireActivity(), styleList, styleListener)
-            binding.rvStylistVibe.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-            binding.rvStylistVibe.adapter = highlightAdapter
-            // Setup rvArticles (Horizontal)
+        )
+        binding.rvStylistVibe.adapter = fashionAdapter
+        viewModel.fashionDataList.observe(viewLifecycleOwner){
+            if (!it.isNullOrEmpty())
+                fashionAdapter.setList(it)
+        }
+
+        // --- 2. Home Data (Products, Stylist, Articles...) ---
+        viewModel.homeDataList.observe(viewLifecycleOwner) { dataList ->
+//            // Sản phẩm (Products)
+//            val productAdapter = ProductAdapter(requireActivity(), dataList)
+//            binding.rvProducts.layoutManager = GridLayoutManager(requireActivity(), 2)
+//            binding.rvProducts.adapter = productAdapter
+
+            // Stylist Vibe
+//            val styleList = mutableListOf<StyleOutfitsData>()
+//            dataList.forEach { styleList.add(StyleOutfitsData(tittle = "Item $it", isClick = false)) }
+//
+//            val styleListener = object : StylistOutfitsAdapter.OnItemListener {
+//                override fun onItemClick(data: StyleOutfitsData, position: Int) {
+//                    // Xử lý click
+//                }
+//            }
+////            val highlightAdapter = StylistOutfitsAdapter(requireActivity(), styleList, styleListener)
+//            binding.rvStylistVibe.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+//            binding.rvStylistVibe.adapter = highlightAdapter
+
+            // Articles (Hoạt động hoa絮)
             val articleAdapter = ArticleAdapter(requireActivity(), dataList)
             binding.rvArticles.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
             binding.rvArticles.adapter = articleAdapter
-
         }
-        viewModel.memberDataList.observe(viewLifecycleOwner){dataList ->
+
+        // --- 3. Ranking (Thành viên) ---
+        viewModel.memberDataList.observe(viewLifecycleOwner) { dataList ->
             val memberAdapter = PopularityRankingAdapter(requireActivity(), dataList)
-        binding.rvPopularityRanking.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+            binding.rvPopularityRanking.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
             binding.rvPopularityRanking.adapter = memberAdapter
         }
-        viewModel.newsDataList.observe(viewLifecycleOwner){dataList ->
-            val newsAdapter = NewsAdapter(requireActivity(), dataList)
+
+        // --- 4. Tin tức (Latest News) ---
+        viewModel.newsDataList.observe(viewLifecycleOwner) { dataList ->
+            val newsListener = object : NewsAdapter.OnItemListener {
+                override fun onItemClick(data: WSPostResponse, position: Int) {
+                    val intent = Intent(requireActivity(), com.wingstars.home.activity.LatestNewsDetailActivity::class.java)
+                    intent.putExtra("ITEM_NEWS_DATA", data)
+                    startActivity(intent)
+                }
+            }
+
+            val limitedList = dataList.take(3).toMutableList()
+            val newsAdapter = NewsAdapter(requireActivity(), limitedList, newsListener)
+
             binding.rvNews.layoutManager = LinearLayoutManager(requireActivity())
             binding.rvNews.adapter = newsAdapter
         }
-        viewModel.getHomeData()
-
-
-
-
-        // 7. Setup Click Listener (Mở comment)
-        binding.icNotification.setOnClickListener(this)
-//        binding.todayItinerary.setOnClickListener(this)
-        binding.titleProducts.root.setOnClickListener(this)
-        binding.titlePopularRanking.root.setOnClickListener(this)
-        binding.titleHighlights.root.setOnClickListener(this)
-        binding.titleNews.root.setOnClickListener(this)
-        binding.titleStylistVibe.root.setOnClickListener(this)
     }
 
-    // Hàm này đã đúng, giữ nguyên
+    // Hàm helper set margin status bar
     fun setViewTop(view: View, top: Int) {
         val layoutParams = view.layoutParams as LinearLayout.LayoutParams
         layoutParams.topMargin = top
-        view.setLayoutParams(layoutParams);
+        view.layoutParams = layoutParams
     }
 
-    // --- THÊM MỚI: Hàm onClick bị thiếu ---
     override fun onClick(v: View?) {
-        val id = v?.id
-        when(id) {
-            // Dùng .root.id để so sánh
-            binding.icNotification.id -> startActivity(Intent(requireActivity(),
-                com.wingstars.home.activity.NotificationActivity::class.java
-            ))
-//            binding.todayItinerary.id -> startActivity(Intent(requireActivity(),
-//                TodayItineraryDetailsActivity::class.java
-//            ))
-            binding.titlePopularRanking.root.id-> startActivity(Intent(requireActivity(),
-                com.wingstars.member.activity.PopularityRankingActivity::class.java
-            ))
-//            binding.titleProducts.root.id -> startActivity(Intent(requireActivity(),
-//                PopularityRankingActivity::class.java
-//            ))
-            binding.titleHighlights.root.id -> startActivity(Intent(requireActivity(),
-                com.wingstars.member.activity.EventHighlightsActivity::class.java
-            ))
-            binding.titleStylistVibe.root.id -> startActivity(
-                Intent(
-                    requireActivity(),
-                    com.wingstars.member.activity.FashionableAtmosphereActivity::class.java
-                )
-            )
-//            binding.titleHighlights.root.id -> {
-////                Toast.makeText(requireActivity(), "Mở trang Hoa hậu", Toast.SHORT).show()
-//            }
-//            binding.titleArticles.root.id -> {
-////                Toast.makeText(requireActivity(), "Mở trang Bài viết", Toast.SHORT).show()
-//            }
-            binding.titleNews.root.id -> startActivity(
-                Intent(
-                    requireActivity(),
-                    com.wingstars.home.activity.LatestNewsActivity::class.java
-                )
-            )
+        when (v?.id) {
+            binding.icNotification.id -> startActivity(Intent(requireActivity(), com.wingstars.home.activity.NotificationActivity::class.java))
+            binding.titlePopularRanking.root.id -> startActivity(Intent(requireActivity(), com.wingstars.member.activity.PopularityRankingActivity::class.java))
+            binding.titleHighlights.root.id -> startActivity(Intent(requireActivity(), com.wingstars.member.activity.EventHighlightsActivity::class.java))
+            binding.titleStylistVibe.root.id -> startActivity(Intent(requireActivity(), com.wingstars.member.activity.FashionableAtmosphereActivity::class.java))
+            binding.titleNews.root.id -> startActivity(Intent(requireActivity(), com.wingstars.home.activity.LatestNewsActivity::class.java))
         }
     }
-    // --- KẾT THÚC ---
 }

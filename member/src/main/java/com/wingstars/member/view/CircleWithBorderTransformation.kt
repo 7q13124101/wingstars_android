@@ -3,6 +3,7 @@ package com.wingstars.member.view
 import android.graphics.Bitmap
 import android.graphics.BitmapShader
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Shader
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
@@ -69,6 +70,7 @@ class CircleWithBorderTransformation (
             )
         }
         val bitmapRadius = borderRadius - borderWidth
+        bitmapPaint.color = Color.parseColor("#FFFFFF")
         canvas.drawCircle(
             finalWidth / 2f,
             finalHeight / 2f,
@@ -81,14 +83,14 @@ class CircleWithBorderTransformation (
 
 
     override fun updateDiskCacheKey(digest: MessageDigest) {
-        digest.update((ID + borderWidth + borderColor).toByteArray(CHARSET))
+        digest.update((ID + borderWidth + Color.parseColor("#FFFFFF")).toByteArray(CHARSET))
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         other as CircleWithBorderTransformation
-        return borderWidth == other.borderWidth && borderColor == other.borderColor
+        return borderWidth == other.borderWidth && borderColor == Color.parseColor("#FFFFFF")
     }
 
     override fun hashCode(): Int {

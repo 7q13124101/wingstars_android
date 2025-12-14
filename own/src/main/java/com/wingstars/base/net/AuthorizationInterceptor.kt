@@ -24,7 +24,12 @@ class AuthorizationInterceptor : Interceptor {
         val urlS = chain.request().url.toString()
 //        println("* AuthorizationInterceptor url: $urlS\n")
         if(urlS.startsWith(NetBase.HOST_BASE)) {
+            val account = NetBase.decrypt(NetBase.WINGSTARS_ACCOUNT_ENC)
+            val password = NetBase.decrypt(NetBase.WINGSTARS_PASSWORD_ENC)
 
+            val authorization =
+                NetBase.base64Encode("$account:$password".toByteArray(Charsets.UTF_8))
+            requestBuilder.addHeader("Authorization", "Basic $authorization")
         } else {
 //            println("AuthorizationInterceptor. Other host ${BaseApplication.HOST_NEWSOFT}\n")
         }
