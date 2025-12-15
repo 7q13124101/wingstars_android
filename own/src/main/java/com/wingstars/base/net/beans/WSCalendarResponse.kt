@@ -1,5 +1,7 @@
 package com.wingstars.base.net.beans
 
+import java.util.Date
+
 
 data class WSCalendarResponse(
     val id: Int,
