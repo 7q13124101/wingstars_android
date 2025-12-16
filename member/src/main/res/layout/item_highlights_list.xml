@@ -9,10 +9,9 @@
     <com.lihang.ShadowLayout
         app:clickable="false"
         android:id="@+id/image"
-        android:layout_width="150dp"
+        android:layout_width="167dp"
         android:layout_height="93dp"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/dp_20"
         app:hl_cornerRadius="@dimen/dp_8"
         app:hl_strokeColor="@color/white"
         app:hl_strokeWith="@dimen/dp_1">

@@ -1,25 +1,26 @@
 package com.wingstars.member.activity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.Gson
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.member.R
 import com.wingstars.member.adapter.RankExplanationListAdapter
-import com.wingstars.member.databinding.ActivityPopularityRankingBinding
-import com.wingstars.member.databinding.ActivityRankExplanationBinding
-import com.wingstars.member.viewmodel.PopularityRankingViewModel
+import com.wingstars.member.bean.WSRankBean
+import com.wingstars.member.databinding.ActivityRanksExplanationBinding
 import com.wingstars.member.viewmodel.RankExplanationViewModel
 
 class RankExplanationActivity : BaseActivity() {
-    private lateinit var binding: ActivityRankExplanationBinding
+    private lateinit var binding: ActivityRanksExplanationBinding
     private lateinit var viewModel: RankExplanationViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityRankExplanationBinding.inflate(layoutInflater)
+        binding = ActivityRanksExplanationBinding.inflate(layoutInflater)
         setTitleFoot(
             view1 = binding.root,
             statusBarColor = R.color.color_F3F4F6,
@@ -30,12 +31,15 @@ class RankExplanationActivity : BaseActivity() {
     }
 
     private fun initData() {
+        // 1. 获取 Serializable 集合（核心代码）
+        val serializableList = intent.getSerializableExtra("data")
+
+        // 2. 安全强转并判空（避免 ClassCastException/NullPointerException）
+        val productList: List<WSRankBean> = serializableList as? ArrayList<WSRankBean> ?: emptyList()
+        Log.e("productList","${Gson().toJson(productList)}")
         viewModel = ViewModelProvider(this)[RankExplanationViewModel::class.java]
-        viewModel.explanationlist.observe(this) {
-            var adapter = RankExplanationListAdapter(this, it)
-            binding.explanationList.adapter = adapter
-        }
-        viewModel.getExplanationlist()
+        var adapter = RankExplanationListAdapter(this, productList.toMutableList())
+        binding.explanationList.adapter = adapter
     }
 
     override fun initView() {

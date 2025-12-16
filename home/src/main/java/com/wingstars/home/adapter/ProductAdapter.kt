@@ -1,68 +1,77 @@
-package com.wingstars.home.adapter // Đặt package name cho đúng
+package com.wingstars.home.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.wingstars.home.R // Import R của module :home
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.wingstars.base.net.beans.WSProductResponse
+import com.wingstars.home.R
+import com.wingstars.home.databinding.ItemProductBinding
 
-class ProductAdapter(private val context: Context, private val dataList: List<Int>) :
-    RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
+class ProductAdapter(
+    private val context: Context,
+    private var dataList: MutableList<WSProductResponse>?,
+    private val listener: OnItemListener
+) : RecyclerView.Adapter<ProductAdapter.NormalItemViewHolder>() {
 
-    private val productImages = listOf(
-        R.drawable.img_product_01,
-        R.drawable.img_product_02,
-        R.drawable.img_product_03,
-        R.drawable.img_product_04,
-
-        )
-
-    // 2. Danh sách Tiêu đề tương ứng (Bạn hãy sửa lại nội dung text ở đây nhé)
-    private val productTitles = listOf(
-        "2025 WS LOGO卡冊", // Tương ứng img_style_01
-        "2025 WS 女孩卡冊",
-        "2025 巴士迴力車｜WS款",
-        "2025 巴士迴力車｜WS款",
-    )
-    private val productPrices = listOf(
-        "\$200", // Tương ứng img_style_01
-        "\$300",
-        "\$200",
-        "\$200",
-    )
-    // Tạo một ViewHolder đơn giản
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        // (Bạn sẽ lấy các view từ item_product.xml ở đây)
-        // val productName: TextView = view.findViewById(R.id.tv_product_name)
-        val productImage: ImageView = view.findViewById(R.id.img_product)
-        val productTitle: TextView = view.findViewById(R.id.tv_product_name)
-        val productPrice: TextView = view.findViewById(R.id.tv_product_price)
-
+    interface OnItemListener {
+        fun onItemClick(data: WSProductResponse, position: Int)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // Sử dụng layout item_product của bạn
-        val view = LayoutInflater.from(context).inflate(R.layout.item_product, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
+        val binding = ItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return NormalItemViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // Lấy dữ liệu (hiện tại chỉ là số Int)
-        val imageIndex = position % productImages.size
-        val titleIndex = position % productTitles.size
-        val priceIndex = position % productPrices.size
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
 
-        holder.productImage.setImageResource(productImages[imageIndex])
-        holder.productTitle.text = productTitles[titleIndex]
-        holder.productPrice.text = productPrices[titleIndex]
-        // (Bạn sẽ bind dữ liệu vào view ở đây)
-        // holder.productName.text = "Sản phẩm $item"
+    override fun onBindViewHolder(holder: NormalItemViewHolder, position: Int) {
+        holder.binding(position)
     }
 
     override fun getItemCount(): Int {
-        return dataList.size
+        return dataList?.size ?: 0
+    }
+
+    fun setList(list: MutableList<WSProductResponse>?) {
+        dataList = list ?: ArrayList()
+        notifyDataSetChanged()
+    }
+
+    inner class NormalItemViewHolder(private val binding: ItemProductBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun binding(position: Int) {
+            // Check null an toàn
+            if (dataList == null || position >= dataList!!.size) return
+
+            val data = dataList!![position]
+
+            // Load ảnh
+            Glide.with(binding.imgProduct.context).clear(binding.imgProduct)
+
+            val imageUrl = data.imageF
+            if (!imageUrl.isNullOrEmpty()) {
+                Glide.with(binding.imgProduct.context)
+                    .load(imageUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.img_product_01)
+                    .error(R.drawable.img_product_01)
+                    .into(binding.imgProduct)
+            } else {
+                binding.imgProduct.setImageResource(R.drawable.img_product_01)
+            }
+
+            binding.tvProductName.text = data.name
+            binding.tvProductPrice.text = "$" + data.price
+
+            binding.root.setOnClickListener {
+                listener.onItemClick(data, position)
+            }
+        }
     }
 }

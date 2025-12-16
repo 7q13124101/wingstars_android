@@ -55,6 +55,9 @@ class TitleView(context: Context,  attrs: AttributeSet) : RelativeLayout(context
     fun setBackClickListener(listener: OnClickListener){
         binding.backs.setOnClickListener(listener)
     }
+    fun setRightTextClickListener(listener: OnClickListener){
+        binding.rightText.setOnClickListener(listener)
+    }
     fun setRightIconClickListener(listener: OnClickListener){
         binding.rightIcon.setOnClickListener(listener)
     }

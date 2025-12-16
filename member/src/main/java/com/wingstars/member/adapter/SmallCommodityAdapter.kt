@@ -9,26 +9,22 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.wingstars.base.net.beans.WSFashionDetailResponse.Acf.Recommend
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
-import com.wingstars.member.databinding.ItemCategoryListBinding
-import com.wingstars.member.databinding.ItemGirlIntoductionListBinding
-import com.wingstars.member.databinding.ItemGuideListBinding
-import com.wingstars.member.databinding.ItemSmallCommodityListBinding
-import com.wingstars.member.view.CircleWithBorderTransformation
-import com.wingstars.member.view.TopRoundedCornersTransformation
+import com.wingstars.member.databinding.ItemSmallCommoditysListBinding
 
 
 class SmallCommodityAdapter     // -------------------------------------------
     (
     private val context: Context,
-    private var dataList: MutableList<Int>?
+    private var dataList: MutableList<Recommend>?
 ) : RecyclerView.Adapter<SmallCommodityAdapter.NormalItemViewHolder>() {
     private var pos = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
         val binding =
-            ItemSmallCommodityListBinding.inflate(
+            ItemSmallCommoditysListBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -56,7 +52,7 @@ class SmallCommodityAdapter     // -------------------------------------------
     }
 
     // -------------------------------------------
-    fun setList(list: MutableList<Int>?) {
+    fun setList(list: MutableList<Recommend>?) {
         dataList = if (dataList == null) {
             ArrayList()
         } else {
@@ -68,7 +64,7 @@ class SmallCommodityAdapter     // -------------------------------------------
     }
 
 
-    fun getData(): MutableList<Int>? {
+    fun getData(): MutableList<Recommend>? {
         if (dataList == null) {
             return null
         }
@@ -77,14 +73,16 @@ class SmallCommodityAdapter     // -------------------------------------------
 
 
     // -------------------------------------------
-    inner class NormalItemViewHolder(private val binding: ItemSmallCommodityListBinding) :
+    inner class NormalItemViewHolder(private val binding: ItemSmallCommoditysListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun binding(position: Int) {
-
-            Glide.with(context).load(R.mipmap.ic_demo3)
+            val recommend = dataList!![position]
+            Glide.with(context).load(recommend.product_image_url_thumbnailF)  //R.mipmap.ic_demo3
                 .transform(CircleCrop())
                 .into(binding.image)
+            binding.title.text  = recommend.product_titleF
+            binding.item.visibility = if (recommend.isTitleAndImageThumbnailEmpty) View.GONE else View.VISIBLE
         }
 
 

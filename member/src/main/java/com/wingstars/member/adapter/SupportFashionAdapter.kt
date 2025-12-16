@@ -7,21 +7,24 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.wingstars.base.net.beans.WSFashionResponse
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
-import com.wingstars.member.databinding.ItemSupportFashionListBinding
+import com.wingstars.member.databinding.ItemSupportsFashionListBinding
+
 import com.wingstars.member.view.TopRoundedCornersTransformation
 
 
 class SupportFashionAdapter     // -------------------------------------------
     (
     private val context: Context,
-    private var dataList: MutableList<Int>?
+    private var dataList: MutableList<WSFashionResponse>?,
+    private val listener: onSupportFashionListener
 ) : RecyclerView.Adapter<SupportFashionAdapter.NormalItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
         val binding =
-            ItemSupportFashionListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemSupportsFashionListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return NormalItemViewHolder(binding)
     }
 
@@ -31,7 +34,7 @@ class SupportFashionAdapter     // -------------------------------------------
 
     // -------------------------------------------
     override fun onBindViewHolder(holder: NormalItemViewHolder, position: Int) {
-        holder.binding(position)
+        holder.binding(position,listener)
     }
 
     // -------------------------------------------
@@ -40,7 +43,7 @@ class SupportFashionAdapter     // -------------------------------------------
     }
 
     // -------------------------------------------
-    fun setList(list: MutableList<Int>?) {
+    fun setList(list: MutableList<WSFashionResponse>?) {
         dataList = if (dataList == null) {
             ArrayList()
         } else {
@@ -52,7 +55,7 @@ class SupportFashionAdapter     // -------------------------------------------
     }
 
 
-    fun getData(): MutableList<Int>? {
+    fun getData(): MutableList<WSFashionResponse>? {
         if (dataList == null) {
             return null
         }
@@ -61,10 +64,12 @@ class SupportFashionAdapter     // -------------------------------------------
 
 
     // -------------------------------------------
-    inner class NormalItemViewHolder(private val binding: ItemSupportFashionListBinding) :
+    inner class NormalItemViewHolder(private val binding: ItemSupportsFashionListBinding,
+        ) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun binding(position: Int) {
+        fun binding(position: Int,listener: onSupportFashionListener ) {
+            val data = dataList!![position]
             if (position==0){
                 setMarginLeft(binding.item, DPUtils.dpToPx(20f,context).toInt())
             }else{
@@ -72,10 +77,13 @@ class SupportFashionAdapter     // -------------------------------------------
             }
 
             Glide.with(context)
-                .load(R.mipmap.ic_member_page_background)
+                .load("${data.urlF}")  //R.mipmap.ic_member_page_background
                 .transform(TopRoundedCornersTransformation(DPUtils.dpToPx(20f, context))) // 核心：应用自定义变换
                 .into(binding.image)
-
+          var imageType =  if (data.type==1){ R.mipmap.ic_member_jersey} else {R.mipmap.ic_member_activity}
+          binding.imageType.setImageResource(imageType)
+          binding.title.text = "${data.titleF}"
+          binding.item.setOnClickListener { listener.onSupportFashionClickItem(data.id) }
         }
 
 
@@ -91,7 +99,9 @@ class SupportFashionAdapter     // -------------------------------------------
     }
 
 
-
+     interface onSupportFashionListener{
+         fun onSupportFashionClickItem(memberId: Int)
+     }
 
 
 

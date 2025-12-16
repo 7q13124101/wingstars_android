@@ -24,10 +24,6 @@ class LatestNewsActivity : BaseActivity() {
         // Setup nút Back trên TitleView
         binding.title.setBackClickListener { finish() }
 
-        // Vì thiết kế chỉ có 1 màn hình danh sách, ta ẩn TabLayout đi cho giống ảnh
-        // Hoặc nếu bạn muốn giữ Tab thì để lại dòng này
-        binding.tabLayout.visibility = android.view.View.GONE
-
         // Setup ViewPager hiển thị Fragment
         val adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount(): Int = 1

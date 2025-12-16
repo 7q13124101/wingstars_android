@@ -12,15 +12,15 @@ import com.bumptech.glide.request.RequestOptions
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
 import com.wingstars.member.bean.TakePhotosMembersListBean
-import com.wingstars.member.databinding.ItemPoplarityListBinding
+import com.wingstars.member.databinding.ItemPoplarityListsBinding
 import com.wingstars.member.databinding.ItemRankListBinding
-import com.wingstars.member.databinding.ItemRankingListBinding
 import com.wingstars.member.databinding.ItemTakePhotoMemberListBinding
 
 class TakePhotoMemberListAdapter     // -------------------------------------------
     (
     private val context: Context,
-    private var dataList: MutableList<TakePhotosMembersListBean>?
+    private var dataList: MutableList<TakePhotosMembersListBean>?,
+            private var listener: OnItemListener
 ) : RecyclerView.Adapter<TakePhotoMemberListAdapter.NormalItemViewHolder>() {
     private var pos = 0
 
@@ -36,7 +36,7 @@ class TakePhotoMemberListAdapter     // ----------------------------------------
 
     // -------------------------------------------
     override fun onBindViewHolder(holder: NormalItemViewHolder, position: Int) {
-        holder.binding(position)
+        holder.binding(position,listener)
     }
 
     // -------------------------------------------
@@ -69,7 +69,7 @@ class TakePhotoMemberListAdapter     // ----------------------------------------
     inner class NormalItemViewHolder(private val binding: ItemTakePhotoMemberListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun binding(position: Int) {
+        fun binding(position: Int,listener: OnItemListener) {
             var data = dataList!![position]
             binding.name.text = data.name
             binding.number.text = data.number
@@ -78,6 +78,7 @@ class TakePhotoMemberListAdapter     // ----------------------------------------
                 if (pos!=position){
                     pos = position
                     notifyDataSetChanged()
+                    listener.onItemClick(pos)
                 }
 
             }
@@ -94,6 +95,10 @@ class TakePhotoMemberListAdapter     // ----------------------------------------
             params.leftMargin = left
             view.layoutParams = params
         }
+    }
+
+    interface OnItemListener {
+        fun onItemClick(pos: Int)
     }
 
 

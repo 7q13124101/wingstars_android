@@ -48,7 +48,6 @@ class CalendarFragment : Fragment(), OnCalendarSelectListener {
     private fun initCalendar() {
         binding.ivPrev.setOnClickListener {
             binding.calendarView.scrollToPre(true)
-
         }
         binding.ivNext.setOnClickListener {
             binding.calendarView.scrollToNext(true)
@@ -73,64 +72,67 @@ class CalendarFragment : Fragment(), OnCalendarSelectListener {
             // 1. 带图标和绿色圆点的日期（2025年10月28日）
             val calendar1 = Calendar().apply {  // 明确设置年月
                 year = 2025    // 设置年
-                month = 10     // 设置月（注意：1表示1月，12表示12月）
+                month = 12     // 设置月（注意：1表示1月，12表示12月）
                 day = 10       // 设置日
                 addScheme(Calendar.Scheme().apply {
                     shcemeColor = resources.getColor(R.color.color_007A60, null)
                     scheme = "icon_birthday"
                 })
             }
-            put(calendar1.toString(),calendar1)
+            put(calendar1.toString(), calendar1)
 
             // 2. 带红+蓝圆点的日期（2025年10月24日）
             val calendar2 = Calendar().apply {  // 明确设置年月
                 year = 2025    // 设置年
-                month = 11     // 设置月（注意：1表示1月，12表示12月）
+                month = 12     // 设置月（注意：1表示1月，12表示12月）
                 day = 30       // 设置日
                 addScheme(Calendar.Scheme().apply {
                     shcemeColor = resources.getColor(R.color.color_DE9DBA, null)
                     scheme = "icon_birthday"
                 })
             }
-            put(calendar2.toString(),calendar2)
+            put(calendar2.toString(), calendar2)
 
-            // 3. 带红+蓝圆点的日期（2025年10月24日）
+            // 3. 带红+蓝圆点的日期（2025年11月6日）
             val calendar3 = Calendar().apply {  // 明确设置年月
                 year = 2025    // 设置年
-                month = 11     // 设置月（注意：1表示1月，12表示12月）
+                month = 12     // 设置月（注意：1表示1月，12表示12月）
                 day = 6       // 设置日
                 addScheme(Calendar.Scheme().apply {
                     shcemeColor = resources.getColor(R.color.color_DE9DBA, null)
-                    scheme = ""
+                    scheme = "icon_birthday"
                 })
                 addScheme(Calendar.Scheme().apply {
-                    shcemeColor = resources.getColor(R.color.color_007A60, null)
-                    scheme = ""
+                    shcemeColor = resources.getColor(R.color.color_B81B30, null)
+                })
+                addScheme(Calendar.Scheme().apply {
+                    shcemeColor = resources.getColor(R.color.color_0089D3, null)
                 })
             }
-            put(calendar3.toString(),calendar3)
+            put(calendar3.toString(), calendar3)
 
             // 3. 带红+蓝圆点的日期（2025年10月24日）
             val calendar4 = Calendar().apply {  // 明确设置年月
                 year = 2025    // 设置年
-                month = 11     // 设置月（注意：1表示1月，12表示12月）
+                month = 12     // 设置月（注意：1表示1月，12表示12月）
                 day = 16       // 设置日
                 addScheme(Calendar.Scheme().apply {
-                    shcemeColor = resources.getColor(R.color.color_DE9DBA, null)
-                    scheme = ""
+                    shcemeColor = resources.getColor(R.color.color_007A60, null)
                 })
                 addScheme(Calendar.Scheme().apply {
-                    shcemeColor = resources.getColor(R.color.color_007A60, null)
-                    scheme = ""
+                    shcemeColor = resources.getColor(R.color.color_B81B30, null)
+                })
+                addScheme(Calendar.Scheme().apply {
+                    shcemeColor = resources.getColor(R.color.color_0089D3, null)
                 })
             }
-            put(calendar4.toString(),calendar4)
+            put(calendar4.toString(), calendar4)
 
 
             // 3. 带红+蓝圆点的日期（2025年10月24日）
             val calendar5 = Calendar().apply {  // 明确设置年月
                 year = 2025    // 设置年
-                month = 11     // 设置月（注意：1表示1月，12表示12月）
+                month = 12     // 设置月（注意：1表示1月，12表示12月）
                 day = 18       // 设置日
                 addScheme(Calendar.Scheme().apply {
                     shcemeColor = resources.getColor(R.color.color_DE9DBA, null)
@@ -138,17 +140,19 @@ class CalendarFragment : Fragment(), OnCalendarSelectListener {
                 })
                 addScheme(Calendar.Scheme().apply {
                     shcemeColor = resources.getColor(R.color.color_007A60, null)
-                    scheme = "icon_birthday"
+                })
+                addScheme(Calendar.Scheme().apply {
+                    shcemeColor = resources.getColor(R.color.color_0089D3, null)
                 })
             }
-            put(calendar5.toString(),calendar5)
+            put(calendar5.toString(), calendar5)
         }
         // 3. 设置数据并滚动到当前日期
         binding.calendarView.setSchemeDate(schemeMap)
         binding.calendarView.scrollToCurrent()
         updateTitle(binding.calendarView.curYear, binding.calendarView.curMonth)
 
-        binding.tvDateItinerary.text = "${binding.calendarView.curMonth}/${binding.calendarView.curDay}"+" 行程"
+        binding.tvDateItinerary.text ="${binding.calendarView.curMonth}/${binding.calendarView.curDay} ${getString(R.string.calendar_itinerary)}"
     }
 
     /**
@@ -156,11 +160,12 @@ class CalendarFragment : Fragment(), OnCalendarSelectListener {
      */
     private fun initListener() {
         // 日期选中监听
-        binding.calendarView.setOnCalendarSelectListener(object : CalendarView.OnCalendarSelectListener {
+        binding.calendarView.setOnCalendarSelectListener(object :
+            CalendarView.OnCalendarSelectListener {
             override fun onCalendarSelect(calendar: Calendar, isClick: Boolean) {
                 if (isClick) {
-                    binding.calendarView.isSelected=true
-                    val dateStr = "${calendar.month}/${calendar.day} 行程"
+                    binding.calendarView.isSelected = true
+                    val dateStr = "${calendar.month}/${calendar.day} ${getString(R.string.calendar_itinerary)}"
                     binding.tvDateItinerary.text = dateStr
                     binding.calendarView.invalidate()
                 }
@@ -178,19 +183,21 @@ class CalendarFragment : Fragment(), OnCalendarSelectListener {
         }
 
         binding.clEventDetails.setOnClickListener {
-            val intent =Intent(this@CalendarFragment.requireActivity(), EventDetailsActivity::class.java)
+            val intent =
+                Intent(this@CalendarFragment.requireActivity(), EventDetailsActivity::class.java)
             startActivity(intent)
         }
     }
 
     // 正确的状态重置方法：使用CalendarView的API清除选中
     private fun resetSelectionOnViewChange() {
-        binding.calendarView.isSelected=false
+        binding.calendarView.isSelected = false
         // 刷新数据
         binding.calendarView.setSchemeDate(schemeMap)
 //        // 重绘完成后重置标记位
         binding.calendarView.invalidate()
     }
+
     /**
      * 更新标题栏显示当前年月
      */

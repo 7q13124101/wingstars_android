@@ -10,8 +10,8 @@ import com.bumptech.glide.Glide
 
 import com.youth.banner.adapter.BannerAdapter
 
-class ActivityImagesAdapter(images: MutableList<Int>, var contexts: Context) :
-    BannerAdapter<Int, ActivityImagesAdapter.ImageHolder>(images) {
+class ActivityImagesAdapter(images: MutableList<String>, var contexts: Context) :
+    BannerAdapter<String, ActivityImagesAdapter.ImageHolder>(images) {
 
 
     class ImageHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -26,10 +26,10 @@ class ActivityImagesAdapter(images: MutableList<Int>, var contexts: Context) :
         return ImageHolder(imageView)
     }
 
-    override fun onBindView(holder: ImageHolder?, data: Int?, position: Int, size: Int) {
+    override fun onBindView(holder: ImageHolder?, data: String?, position: Int, size: Int) {
         if (data != null) {
           //  holder?.imageView?.setImageResource("$data")
-            Glide.with(contexts).load(data).into(holder?.imageView!!)
+            Glide.with(contexts).load("${data}").into(holder?.imageView!!)
         }
     }
 }

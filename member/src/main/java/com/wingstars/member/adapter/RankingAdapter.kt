@@ -9,21 +9,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
-import com.wingstars.member.databinding.ItemRankingListBinding
-import com.wingstars.member.databinding.ItemSupportFashionListBinding
+import com.wingstars.member.bean.WSRankBean.ACFBean
+import com.wingstars.member.databinding.ItemRankingListsBinding
 import com.wingstars.member.view.CircleWithBorderTransformation
-import com.wingstars.member.view.TopRoundedCornersTransformation
-
 
 class RankingAdapter     // -------------------------------------------
     (
     private val context: Context,
-    private var dataList: MutableList<Int>?
+    private var dataList: MutableList<ACFBean>?
 ) : RecyclerView.Adapter<RankingAdapter.NormalItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
         val binding =
-            ItemRankingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemRankingListsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return NormalItemViewHolder(binding)
     }
 
@@ -42,7 +40,7 @@ class RankingAdapter     // -------------------------------------------
     }
 
     // -------------------------------------------
-    fun setList(list: MutableList<Int>?) {
+    fun setList(list: MutableList<ACFBean>?) {
         dataList = if (dataList == null) {
             ArrayList()
         } else {
@@ -54,7 +52,7 @@ class RankingAdapter     // -------------------------------------------
     }
 
 
-    fun getData(): MutableList<Int>? {
+    fun getData(): MutableList<ACFBean>? {
         if (dataList == null) {
             return null
         }
@@ -63,15 +61,18 @@ class RankingAdapter     // -------------------------------------------
 
 
     // -------------------------------------------
-    inner class NormalItemViewHolder(private val binding: ItemRankingListBinding) :
+    inner class NormalItemViewHolder(private val binding: ItemRankingListsBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val borderColor =  context.getColor(R.color.color_DE9DBA)
-        val toInt = DPUtils.dpToPx(1f, context)
+
         fun binding(position: Int) {
-            Glide.with(context).load(R.mipmap.ic_member_page_background)
+            var data = dataList!![position]
+            val borderColor =  context.getColor(R.color.transparent)
+            val toInt = DPUtils.dpToPx(1f, context)
+            Glide.with(context).load("${data.image}")   //R.mipmap.ic_member_page_background
                 .transform(CircleWithBorderTransformation(toInt, borderColor))
                 .into(binding.image)
-
+            binding.name.text = "${data.name}"
+            binding.volume.text = "${data.volume}"
             binding.nums.text = "${position+4}"
 
 

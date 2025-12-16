@@ -2,13 +2,17 @@ package com.wingstars.member.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.wingstars.base.net.API
 import com.wingstars.member.bean.TakePhotosMembersListBean
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class FanInteractionViewModel : ViewModel() {
     var takePhotosMembersList = MutableLiveData<MutableList<TakePhotosMembersListBean>>()
     var membersList = mutableListOf<TakePhotosMembersListBean>()
+    var loading = MutableLiveData<Boolean>()
 
-    public fun getTakePhotosMembersList() : MutableList<TakePhotosMembersListBean>{
+    /*public fun getTakePhotosMembersList() : MutableList<TakePhotosMembersListBean>{
         if (membersList.isEmpty()){
             membersList.add(TakePhotosMembersListBean(number = "2", name = "安芝儇"))
             membersList.add(TakePhotosMembersListBean(number = "90", name = "Mingo"))
@@ -17,5 +21,39 @@ class FanInteractionViewModel : ViewModel() {
             membersList.add(TakePhotosMembersListBean(number = "5", name = "恬魚"))
         }
         return membersList
+    }*/
+    public fun wsPhotoFrames() {
+        loading.postValue(true)
+        membersList.clear()
+        API.shared?.api?.let {
+            val observer = it.wsPhotoFrames()
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    loading.postValue(false)
+                    if (!next.isNullOrEmpty()) {
+                        next.forEach { data->
+                            val name = data.titleF
+                            val number = data.acf.numberF
+                            var full = ""
+                            val photoframeImageUrls = data.acf.photoFrame_image_urls
+                            if (photoframeImageUrls!=null){
+                                val image1 = photoframeImageUrls.image1
+                                if (image1!=null){
+                                    full =  image1.full
+                                }
+                            }
+                            membersList.add(TakePhotosMembersListBean(number = number, name = name,imgae= full))
+                        }
+                        takePhotosMembersList.postValue(membersList)
+                    }
+                },
+                { error ->
+                    loading.postValue(false)
+                }
+            )
+        }
     }
+
 }

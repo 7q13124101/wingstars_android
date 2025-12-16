@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
+import android.view.MotionEvent
 import androidx.core.content.ContextCompat
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.WeekView
@@ -46,16 +47,23 @@ class SimpleWeekView @JvmOverloads constructor(
     private val rectWidth = dipToPx(48f) // 圆角矩形宽度
     private val rectHeight = dipToPx(48f) // 圆角矩形高度
 
+    // 记录用户手动选中的日期（初始为null）
+    private var userSelectedCalendar: Calendar? = null
+    // 触摸相关参数（判断是否为点击事件）
+    private var touchX = 0f
+    private var touchY = 0f
+    private val clickThreshold = dipToPx(10f) // 点击阈值（避免滑动误判为点击）
+
     init {
         val paddingHorizontal = dipToPx(24f)
         setPadding(paddingHorizontal, 0, paddingHorizontal, 0)
 
         setBackgroundColor(Color.TRANSPARENT)
-        background = ContextCompat.getDrawable(context, R.drawable.bg_bottom_radius)
+        background = ContextCompat.getDrawable(context, R.drawable.calendar_bg_bottom_radius)
     }
 
     private val customIcon by lazy {
-        BitmapFactory.decodeResource(resources, R.drawable.ic_birthday_cake)
+        BitmapFactory.decodeResource(resources, R.drawable.calendar_ic_birthday_cake)
     }
 
     // 周历仅显示1行（含星期标题），高度为单行高度
@@ -65,26 +73,79 @@ class SimpleWeekView @JvmOverloads constructor(
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), totalHeight)
     }
 
+    // 重写触摸事件，监听用户点击（区分点击和滑动）
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                // 记录触摸起始位置
+                touchX = event.x
+                touchY = event.y
+            }
+            MotionEvent.ACTION_UP -> {
+                // 计算触摸偏移量，判断是否为点击（偏移量小于阈值）
+                val dx = Math.abs(event.x - touchX)
+                val dy = Math.abs(event.y - touchY)
+                if (dx < clickThreshold && dy < clickThreshold) {
+                    // 是点击事件，获取点击位置对应的日期
+                    val clickedCalendar = getCalendarByTouchPosition(event.x, event.y)
+                    if (clickedCalendar != null) {
+                        // 更新用户选中日期并刷新视图
+                        userSelectedCalendar = clickedCalendar
+                        invalidate()
+                    }
+                }
+            }
+        }
+        // 不拦截触摸事件，确保滑动功能正常
+        return super.onTouchEvent(event)
+    }
+
+    /**
+     * 根据触摸位置获取对应的日期
+     */
+    private fun getCalendarByTouchPosition(x: Float, y: Float): Calendar? {
+        // 计算点击的列索引（0-6，对应周日-周六或周一-周日，取决于日历配置）
+        val columnIndex = ((x - paddingLeft) / mItemWidth).toInt()
+        // 周历仅1行日期，行索引固定为0
+        val rowIndex = 0
+
+        // 计算对应的日期索引（mItems中的位置）
+        val calendarIndex = rowIndex * 7 + columnIndex
+        return if (calendarIndex >= 0 && calendarIndex < mItems.size) {
+            mItems[calendarIndex]
+        } else {
+            null
+        }
+    }
+
     override fun onDrawSelected(
         canvas: Canvas,
         calendar: Calendar,
         x: Int,
         hasScheme: Boolean
     ): Boolean {
-        // 1. 关键修改：强制绘制今天日期的背景（无论当前遍历的是哪个日期）
+        // 1. 保留今天日期的背景绘制
         drawTodayBackground(canvas)
 
-        if (isSelected(calendar) && !isToday(calendar)) {
-            if(isSelected) {
-                val left = x + mItemWidth / 2 - rectWidth / 2
-                val top = (mItemHeight / 2 - rectHeight / 2) + dipToPx(4f)
-                val right = left + rectWidth
-                val bottom = top + rectHeight
-                val rectF = RectF(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())
-                canvas.drawRoundRect(rectF,rectCornerRadius.toFloat(),rectCornerRadius.toFloat(),currentDayBgPaint)
-            }
+        // 2. 仅当用户手动选中该日期，且不是今天时，才绘制选中背景
+        if (isUserSelected(calendar) && !isToday(calendar)) {
+            val left = x + mItemWidth / 2 - rectWidth / 2
+            val top = (mItemHeight / 2 - rectHeight / 2) + dipToPx(4f)
+            val right = left + rectWidth
+            val bottom = top + rectHeight
+            val rectF = RectF(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())
+            canvas.drawRoundRect(rectF, rectCornerRadius.toFloat(), rectCornerRadius.toFloat(), currentDayBgPaint)
         }
         return true
+    }
+
+    /**
+     * 判断日期是否为用户手动选中
+     */
+    private fun isUserSelected(calendar: Calendar): Boolean {
+        return userSelectedCalendar?.let {
+            it.year == calendar.year && it.month == calendar.month && it.day == calendar.day
+        } ?: false
     }
 
     /**
@@ -157,7 +218,7 @@ class SimpleWeekView @JvmOverloads constructor(
      */
     private fun drawTodayText(canvas: Canvas, x: Int, y: Int) {
         val todayText = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH).toString()
-        val todayTextPaint =mCurDayTextPaint.apply(){ color = Color.WHITE}
+        val todayTextPaint = mCurDayTextPaint.apply() { color = Color.WHITE }
         todayTextPaint.getTextBounds(todayText, 0, todayText.length, textBounds)
         val baseLineY = y + mItemHeight / 2 + textBounds.height() / 2
 
@@ -195,7 +256,8 @@ class SimpleWeekView @JvmOverloads constructor(
         if (!isToday(calendar)) {
             val dayText = calendar.day.toString()
             val centerX = x + mItemWidth / 2
-            val textPaint = getTextPaint(calendar, isSelected, hasScheme)
+            // 优先使用用户手动选中的判断，而非系统的isSelected（避免滑动默认选中）
+            val textPaint = getTextPaint(calendar, isUserSelected(calendar), hasScheme)
             textPaint.getTextBounds(dayText, 0, dayText.length, textBounds)
             val baseLineY = mItemHeight / 2 + textBounds.height() / 2
             canvas.drawText(dayText, centerX.toFloat(), baseLineY.toFloat(), textPaint)

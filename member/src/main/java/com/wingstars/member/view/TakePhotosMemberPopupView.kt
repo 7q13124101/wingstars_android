@@ -22,13 +22,15 @@ import com.wingstars.member.adapter.TakePhotoMemberListAdapter
 import com.wingstars.member.bean.TakePhotosMembersListBean
 import com.wingstars.member.databinding.PopupPopularityViewBinding
 import com.wingstars.member.databinding.PopupTakePhotoMemberViewBinding
+import kotlinx.coroutines.Runnable
 
 
 class TakePhotosMemberPopupView(
     var activity: Activity,
     var navigationBarHeight: Int,
-    var takePhotoList: MutableList<TakePhotosMembersListBean>
-) {
+    var takePhotoList: MutableList<TakePhotosMembersListBean>,
+    var listener: OnSelectImageUrl
+) : TakePhotoMemberListAdapter.OnItemListener {
     private lateinit var popupWindow: PopupWindow
     private lateinit var binding: PopupTakePhotoMemberViewBinding
 
@@ -52,7 +54,7 @@ class TakePhotosMemberPopupView(
         popupWindow.isFocusable = true
         setHeight(binding.shadow)
 
-        var adapter = TakePhotoMemberListAdapter(activity, takePhotoList)
+        var adapter = TakePhotoMemberListAdapter(activity, takePhotoList,this)
         binding.rankList.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         binding.rankList.adapter = adapter
@@ -104,8 +106,22 @@ class TakePhotosMemberPopupView(
         view.layoutParams = params
     }
 
-    interface OnPopupConfirm {
-        fun onPopupConfirm()
+    override fun onItemClick(pos: Int) {
+        Log.e("onItemClick","pos=$pos")
+        Thread(object: Runnable{
+            override fun run() {
+                Thread.sleep(200)
+                activity.runOnUiThread {
+                    listener.onSelectImageUrl(pos)
+                    popupWindow.dismiss()
+                }
+            }
+
+        }).start()
+    }
+
+    interface OnSelectImageUrl {
+        fun onSelectImageUrl(pos:Int)
     }
 
 

@@ -16,7 +16,7 @@ data class HighlightsData(
 class HighlightsAdapter(
     private val context: Context,
     private var dataList: MutableList<HighlightsData>?,
-    private val listener: OnItemListener,
+    private val listener: OnItemListener
 ) : RecyclerView.Adapter<HighlightsAdapter.NormalItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {

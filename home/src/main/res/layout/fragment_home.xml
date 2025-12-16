@@ -7,11 +7,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#F9F9F9">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:background="@color/white" />
     <RelativeLayout
     android:id="@+id/title"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_64"
-    android:background="@android:color/white">
+    android:background="@color/white">
 
     <ImageView
         android:layout_width="47dp"
@@ -147,10 +155,10 @@
                         android:id="@+id/rvStylistVibe"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal"
                         android:layout_marginHorizontal="12dp"
                         android:nestedScrollingEnabled="false"
                         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                        app:spanCount="2"
                         tools:listitem="@layout/item_style"
                         tools:itemCount="2" />
 
@@ -185,4 +193,5 @@
         </androidx.core.widget.NestedScrollView>
 
     </FrameLayout>
+    </LinearLayout>
 </LinearLayout>
