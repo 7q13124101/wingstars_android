@@ -37,9 +37,12 @@ import com.wingstars.member.view.TakePhotosMemberPopupView
 import com.wingstars.base.view.UpLoadingDialog
 import com.wingstars.member.bean.TakePhotosMembersListBean
 import com.wingstars.member.viewmodel.FanInteractionViewModel
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 
 class FanInteractionActivity : BaseActivity(), View.OnClickListener,
@@ -55,8 +58,10 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
     private var uploadDialog: UpLoadingDialog? = null
     private var takePhotosMembersList = mutableListOf<TakePhotosMembersListBean>()
 
-    private var image_background = R.mipmap.fans1
+   // private var image_background = R.mipmap.fans1
     private var pos = 0
+    private var photoBitmap: Bitmap?=null
+    private var photoUrl=""
     private lateinit var binding: ActivityFanInteractionBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,13 +106,23 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
                                 rotates = flipBitmapHorizontally(rotate)
                             }
 
-                            if (type == 0) {
-                                saveFile1(rotates, image_background, 1)
-                            } else {
-                                // addFrameAndSave(this@FanInteractionActivity,rotates,image_background)
-                                saveFile1(rotates, image_background, 1)
+                            if (photoBitmap!=null){
+                                if (type == 0) {
+                                    saveFile1(rotates, photoBitmap!!, 1)
+                                } else {
+                                    saveFile1(rotates, photoBitmap!!, 1)
+                                }
+                            }else{
+                                runOnUiThread {
+                                    Toast.makeText(
+                                        this@FanInteractionActivity,
+                                        getString(R.string.image_loading_failed),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
-                            //  saveFile2(rotates)
+
+
 
                         }
                     }).start()
@@ -127,7 +142,16 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         }
         binding.title.setRightTextClickListener {
             //startActivity(Intent(this@FanInteractionActivity, RelativeActivity::class.java))
-            selectImage()
+            if (photoBitmap!=null){
+                selectImage()
+            }else{
+                Toast.makeText(
+                    this@FanInteractionActivity,
+                    getString(R.string.image_loading_failed),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
         }
         binding.selectMember.setOnClickListener(this)
     }
@@ -141,11 +165,37 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_SELECT_MEDIA)
     }
 
-    private fun saveFile1(originalBitmap: Bitmap, int: Int, types: Int) {
+    /**
+     * URL 转 Bitmap（OkHttp 实现）
+     * @param url 图片网络地址
+     * @return Bitmap 或 null
+     */
+    fun getBitmapFromUrlWithOkHttp(url: String): Bitmap? {
+        val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .build()
+
+        val request = Request.Builder().url(url).build()
+
+        return try {
+            val response = okHttpClient.newCall(request).execute()
+            if (response.isSuccessful && response.body != null) {
+                val inputStream = response.body!!.byteStream()
+                BitmapFactory.decodeStream(inputStream)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+    private fun saveFile1(originalBitmap: Bitmap, frameBitmap: Bitmap, types: Int) {
 
         Log.e("saveFile", "saveFile 开始保存")
         try {
-            val frameBitmap = BitmapFactory.decodeResource(resources, int)  //R.drawable.fans1
+           // val frameBitmap = BitmapFactory.decodeResource(resources, int)  //R.drawable.fans1
 
             Log.e(
                 "originalBitmap",
@@ -199,11 +249,11 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
             runOnUiThread {
                 //  binding.images.setImageBitmap(rotate)
                 closeLoadingDialog()
-                /*  val intent = Intent(this, TakeMomentsDisplayActivity::class.java)
+                  val intent = Intent(this, TakeMomentsDisplayActivity::class.java)
                     intent.putExtra("file",fusionFile.path)
                     intent.putExtra("state",1)
                     intent.putExtra("hide",true)
-                    startActivity(intent)*/
+                    startActivity(intent)
                 if (types == 2) {
                     binding.surfaceView.visibility = View.VISIBLE
                     binding.selectImage.visibility = View.GONE
@@ -229,6 +279,39 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
               resources, R.drawable.your_image
           )*/
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_SELECT_MEDIA && resultCode == RESULT_OK && data != null) {
+            var selectedMediaUri = data.data;
+            // 处理选中的媒体文件
+            //binding.images.setImageURI(selectedMediaUri);
+            // binding.surfaceView.visibility = View.GONE
+            // binding.selectImage.visibility = View.VISIBLE
+
+            // Thread({
+            //var bitmap = getCorrectBitmap(this@FanInteractionActivity,selectedMediaUri!!)
+            runOnUiThread {
+                val intent1 = Intent(this, CropImageViewActivity::class.java)
+                intent1.putExtra("image",selectedMediaUri)
+                intent1.putExtra("photoUrl",photoUrl)
+                startActivity(intent1)
+                //binding.selectImage.setImageBitmap(bitmap)
+
+            }
+
+            //var  rotate = getExifRotation(File(selectedMediaUri.path).absolutePath)
+            //Log.e("rotate","rotate=$rotate")
+            //   val rotate = rotate(bitmap, 90f)
+            /*   runOnUiThread {
+                   BaseApplication.shared()!!.showLoadingUI(true, this@FanInteractionActivity)
+               }
+               saveFile1(bitmap!!,image_background,2)*/
+            // }).start()
+
+
+        }
     }
 
     private fun stopCamera() {
@@ -547,7 +630,6 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         this.pos = pos
         val bean = takePhotosMembersList[pos]
         binding.name.text = "#${bean.number} ${bean.name}"
-        //
         Glide.with(this).asBitmap()
             .load("${bean.imgae}").into(object : CustomTarget<Bitmap>() {
                 // 成功获取 Bitmap 回调
@@ -558,6 +640,8 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
                     // resource 即为目标 Bitmap，可直接使用
                     // 例如：设置到 ImageView / 保存到本地 / 处理图片等
                     // imageView.setImageBitmap(resource)
+                    photoBitmap = resource
+                    photoUrl = "${bean.imgae}"
                     binding.image.setImageBitmap(resource)
                     //Toast.makeText(this@FanInteractionActivity, "Bitmap 加载成功，尺寸：${resource.width}x${resource.height}", Toast.LENGTH_SHORT).show()
                 }
@@ -570,6 +654,8 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
                 // 可选：加载失败回调
                 override fun onLoadFailed(errorDrawable: android.graphics.drawable.Drawable?) {
                     super.onLoadFailed(errorDrawable)
+                    photoBitmap = null
+                    photoUrl=""
                     Toast.makeText(
                         this@FanInteractionActivity,
                         getString(R.string.image_loading_failed),

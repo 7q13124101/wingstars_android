@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application>
         <activity
             android:name=".activity.AtmosphereFashionDetailsActivity"
@@ -33,6 +34,19 @@
         <activity
             android:name=".activity.ExclusiveSongsListActivity"
             android:exported="false" />
+        <activity android:name=".activity.CropImageViewActivity"
+            android:exported="false"/>
+        <activity android:name=".activity.TakeMomentsDisplayActivity"
+            android:exported="false"/>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.company.wingstars.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>
