@@ -25,7 +25,7 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setTitleFoot(view1 = binding.root,
-            navigationBarColor = R.color.color_F9DCE8,
+            navigationBarColor = R.color.white,
             statusBarColor = R.color.color_F9DCE8)
 
         // Status/Navi bar

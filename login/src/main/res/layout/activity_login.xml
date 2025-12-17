@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/pt_10"
-            android:paddingHorizontal="@dimen/dp_30">
+            android:paddingHorizontal="@dimen/dp_20">
             <ImageView
                 android:id="@+id/iv_back"
                 android:layout_width="30dp"
@@ -46,7 +46,7 @@
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_cancel" />
+                android:src="@drawable/ic_close" />
 
 
 
@@ -57,7 +57,7 @@
             android:layout_width="113dp"
             android:layout_height="78dp"
             android:layout_marginBottom="@dimen/dp_50"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="52dp"
             android:src="@drawable/ic_logo_login" />
 
         <androidx.core.widget.NestedScrollView
@@ -83,15 +83,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/welcome_login"
-                    android:textColor="@color/text_tittle"
-                    android:textSize="@dimen/sp_18"
-                    android:textStyle="bold"/>
+                    android:textColor="@color/text_subtitle"
+                    android:textSize="@dimen/sp_18"/>
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="34dp"
+                    android:layout_marginTop="28dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -110,9 +109,9 @@
                         android:background="@drawable/bg_input_selector"
                         android:addStatesFromChildren="true"
                         android:paddingLeft="@dimen/dp_20"
-                        android:paddingTop="@dimen/dp_17"
+                        android:paddingTop="16dp"
                         android:paddingRight="@dimen/dp_20"
-                        android:paddingBottom="@dimen/dp_17"
+                        android:paddingBottom="16dp"
                         android:visibility="visible">
 
 
@@ -170,7 +169,7 @@
                         android:id="@+id/tv_phone_input_error"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_marginTop="8dp"
                         android:textColor="@color/color_FB2C36"
                         android:textSize="@dimen/sp_12"
                         android:text="@string/error_format"
@@ -184,14 +183,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10pt"
+                    android:layout_marginTop="5dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
-                        android:layout_marginBottom="@dimen/pt_8"
+                        android:layout_marginBottom="10dp"
                         android:text="@string/password"
                         android:textColor="@color/text_tittle"
                         android:textSize="@dimen/sp_14" />
@@ -268,7 +267,7 @@
                         android:id="@+id/tv_psd_input_error"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_marginTop="8dp"
                         android:textColor="@color/color_FB2C36"
                         android:textSize="@dimen/sp_12"
                         android:text="@string/error_format"
@@ -280,23 +279,23 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     android:gravity="center_vertical">
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/cb_psd"
-                        android:layout_width="@dimen/dp_20"
-                        android:layout_height="@dimen/dp_20"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
                         android:button="@drawable/checkboxes_remember_pw"
                         android:checked="false" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/pt_8"
+                        android:layout_marginLeft="8dp"
                         android:text="@string/remember_psd"
                         android:textColor="@color/text_tittle"
-                        android:textSize="@dimen/sp_16" />
+                        android:textSize="@dimen/sp_14" />
 
 
                 </LinearLayout>
@@ -312,13 +311,13 @@
                     android:stateListAnimator="@null"
                     android:text="@string/login"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/sp_16"
+                    android:textSize="@dimen/sp_14"
                     app:backgroundTint="@null" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pt_20"
+                    android:layout_marginTop="34dp"
                     android:orientation="horizontal">
 
                     <TextView

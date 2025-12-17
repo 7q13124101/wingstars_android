@@ -20,7 +20,7 @@
     </style>
     <style
         name="Theme.Wingstars"
-        parent="Theme.MaterialComponents.Light.NoActionBar">
+        parent="Theme.AppCompat.Light.NoActionBar">
     </style>
 
 </resources>

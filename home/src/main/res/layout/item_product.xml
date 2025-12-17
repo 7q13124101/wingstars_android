@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:layout_marginBottom="24dp"
     android:layout_marginEnd="6dp"
     android:layout_marginStart="6dp">
 
@@ -40,7 +40,6 @@
         android:ellipsize="end"
         android:textColor="@color/text_tittle"
         android:textSize="14sp"
-        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/shadow_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -49,7 +48,7 @@
         android:id="@+id/tv_product_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="12dp"
         android:text="$399"
         android:textStyle="bold"
         android:textColor="@color/color_E2518D"

@@ -1,27 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.WingStars.Register" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.WingStars.Register" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@color/color_e5e7eb</item>
         <item name="android:windowLightNavigationBar">true</item>
+
+        <item name="bottomSheetDialogTheme">@style/MyBottomSheetDialogTheme</item>
     </style>
 
-    <style name="ShapeAppearanceOverlay.Wing.Large" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">20dp</item>
-        <item name="cornerSizeTopRight">20dp</item>
-        <item name="cornerSizeBottomLeft">0dp</item>
-        <item name="cornerSizeBottomRight">0dp</item>
+    <style name="MyBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bottom_sheet_rounded</item>
     </style>
 
-    <style name="MyBottomSheetStyle" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Wing.Large</item>
-        <item name="android:background">@android:color/white</item> </style>
-
-    <style name="MyBottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+    <style name="MyBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/MyBottomSheetStyle</item>
-    </style>
 
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/white</item>
+    </style>
 
 </resources>
