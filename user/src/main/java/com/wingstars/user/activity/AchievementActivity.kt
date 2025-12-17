@@ -1,4 +1,4 @@
-package com.wingstars.user.achievement
+package com.wingstars.user.activity
 
 import android.os.Bundle
 import android.view.View

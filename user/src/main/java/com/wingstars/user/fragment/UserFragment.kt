@@ -20,7 +20,10 @@ import androidx.core.content.FileProvider
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.login.LoginActivity
 import com.wingstars.user.R
+import com.wingstars.user.activity.AchievementActivity
+import com.wingstars.user.activity.CheerModeActivity
 import com.wingstars.user.activity.ContactCustomerActivity
+import com.wingstars.user.activity.CumulativeAmountActivity
 import com.wingstars.user.activity.FrequentlyAskedQuestionsActivity
 import com.wingstars.user.activity.MemBarCodeActivity
 import com.wingstars.user.activity.MemberInformationActivity
@@ -153,6 +156,22 @@ class UserFragment : BaseFragment(){
             Toast.makeText(requireContext(),"loading", Toast.LENGTH_SHORT).show()
             refreshLayout.finishRefresh(1500/*ms*/)
         }
+
+        binding.achievement.setOnClickListener{
+            val intent = Intent(requireActivity(), AchievementActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.diamond.setOnClickListener{
+            val intent = Intent(requireActivity(), CumulativeAmountActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.llUserCheeringMode.setOnClickListener{
+            val intent = Intent(requireActivity(), CheerModeActivity::class.java)
+            startActivity(intent)
+        }
+
     }
     private fun getImageUri(requireContext: Context, logoShare: Int): Uri {
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.logo_share)!!

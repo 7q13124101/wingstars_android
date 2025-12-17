@@ -25,6 +25,7 @@ object NetBase {
 
     //测试区
     const val HOST_BASE = "https://61.218.209.209"
+    const val HOST_CRM = "https://ws-crm-dev.newretail.tw/"
 
     const val WINGSTARS_ACCOUNT_ENC = "OaAJUXD7ZN20fekfVqN3uJzbbqf4LP8vR7AMXPVlFaU="                        //"newsoftapp"
     const val WINGSTARS_PASSWORD_ENC = "gZR514+qAhvFIRr+eRoQ0Qo5/OVEOrnL4OMd/40ACtKzIvdjNnYFq/vNLe5/Uerm"   //"VU4m E5kG Azeu Rryo JmxT BXAj"

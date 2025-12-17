@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-
-        <activity android:name=".activity.MemberInformationActivity"/>
+        <activity
+            android:name=".activity.CheerModeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Amount_Detail_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CumulativeAmountActivity"
+            android:exported="false" />
+        <activity android:name=".activity.MemberInformationActivity" />
         <activity android:name=".activity.ChooseMemberActivity" />
         <activity android:name=".activity.FrequentlyAskedQuestionsActivity" />
-        <activity android:name=".activity.MobileBarcodeCarrierActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+        <activity
+            android:name=".activity.MobileBarcodeCarrierActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".activity.MemBarCodeActivity" />
         <activity android:name=".activity.StoreLocationActivity" />
         <activity android:name=".activity.PolicyTermActivity" />
-        <activity android:name=".activity.ChangeMemberPasswordActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".activity.ContactCustomerActivity"/>
+        <activity
+            android:name=".activity.ChangeMemberPasswordActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity android:name=".activity.ContactCustomerActivity" />
+        <activity android:name=".activity.AchievementActivity" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -26,7 +39,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <activity android:name=".activity.MemberLevelActivity"/>
 
+        <activity android:name=".activity.MemberLevelActivity" />
     </application>
+
 </manifest>

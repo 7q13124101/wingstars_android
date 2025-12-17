@@ -35,6 +35,7 @@
     <string name="user_hint_code_larger">點擊放大條碼，掃描更方便！</string>
     <string name="user_tsg_phone_code">手機條碼載具</string>
     <string name="user_hint_code_smaller">點擊條碼縮小</string>
+    <string name="user_achievement_medal">成就勳章</string>
 
     <string name="user_phone_number">手機號碼</string>
     <string name="user_id_number">身分證字號</string>
@@ -62,6 +63,14 @@
     <string name="main_no_data">暫無數據</string>
     <string name="txt_share_app">嗨！📣 想推薦你一起體驗 Wing Stars 啦啦隊 APP 🎀 隨時掌握最新消息、參加粉絲互動，還能收集...</string>
 
+
+    <string name="pull_down_to_refresh">下拉重整</string>
+    <string name="release_to_refresh">釋放重整</string>
+    <string name="last_update">最後更新 M-d HH:mm</string>
+    <string name="refreshing">正在重整…</string>
+    <string name="refresh_success">重整成功</string>
+    <string name="refresh_failed" translatable="false">重整失敗</string>
+    <string name="count_none_gift">目前沒有紀錄</string>
     <string name="password">密碼</string>
     <string name="enter_your_new_pass">輸入您的新密碼，密碼限 8~20 個字元，必須包含至少一個英文字母及數字。</string>
     <string name="old_password">舊密碼</string>
@@ -69,4 +78,27 @@
     <string name="new_pass_confirm">新密碼確認</string>
     <string name="send_phone_code">發送驗證碼</string>
     <string name="enter_confirmation_code">輸入驗證碼</string>
+    <string name="user_cumulative_amount">累積消費金額</string>
+    <string name="enter_order">輸入訂單編號貨商品名稱</string>
+    <string name="count_newest_to_oldest_date">日期新到舊</string>
+
+    <string name="dialog_sort_date_new_to_old">日期新到舊</string>
+    <string name="dialog_sort_date_old_to_new">日期舊到新</string>
+    <string name="dialog_sort_points_high_to_low">點數高到低</string>
+    <string name="dialog_sort_points_low_to_high">點數低到高</string>
+    <string name="dialog_sort_type">排序方式</string>
+    <string name="title_cheer">歡呼模式</string>
+    <string name="hint_type_text">輸入文字</string>
+    <string name="hint_type_text1">安芝儇</string>
+    <string name="cheer_font_size">字體大小</string>
+    <string name="cheer_play_speed">播放速度</string>
+    <string name="color">顏色</string>
+    <string name="font">字體</string>
+    <string name="background">背景</string>
+    <string name="select_font_color">字體顏色</string>
+    <string name="select_bg_color">背景顏色</string>
+
+    <string name="cheer_font_size_small">小</string>
+    <string name="cheer_font_size_medium">中</string>
+    <string name="cheer_font_size_large">大</string>
 </resources>
