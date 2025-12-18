@@ -9,11 +9,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.wingstars.base.net.beans.WSCalendarResponse
+import com.wingstars.base.net.beans.WSCalendarNResponse
 import com.wingstars.calendar.R
 import com.wingstars.calendar.databinding.ItemActivityCardBinding
 import com.wingstars.calendar.databinding.ItemSportsCardBinding
 import com.wingstars.calendar.utils.CalendarDateUtils.Companion.formatCalendarDate
+import com.wingstars.calendar.utils.CalendarDateUtils.Companion.formatDateWithWeekday
 import com.wingstars.calendar.viewmodel.CalendarViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -21,11 +22,13 @@ import kotlin.random.Random
 
 class CalendarAdapter(
     private val context: Context,
-    private var dataList: MutableList<WSCalendarResponse>?,
+    private var dataList: MutableList<WSCalendarNResponse>?,
     private val onItemListener: onItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     // 缓存每个位置的随机图片资源ID
     private val randomDrawableCache = mutableMapOf<Int, Int>()
+    // 字符限制常量
+    private val MAX_CHAR_COUNT = 30
 
     init {
         if (dataList == null) {
@@ -68,15 +71,15 @@ class CalendarAdapter(
     override fun getItemViewType(position: Int): Int {
         val item = dataList?.getOrNull(position)
             ?: return CalendarViewModel.CalendarCategory.GENERAL_ACTIVITY
-        return item.calendar_categoryF
+        return item.categoryF
     }
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
-    fun updateData(newData: List<WSCalendarResponse>) {
-        dataList?.clear() ?: mutableListOf<WSCalendarResponse>()
+    fun updateData(newData: List<WSCalendarNResponse>) {
+        dataList?.clear() ?: mutableListOf<WSCalendarNResponse>()
         dataList?.addAll(newData)
 
         // 清除旧的缓存
@@ -84,7 +87,7 @@ class CalendarAdapter(
 
         // 为每个雄鹰项生成随机图片
         newData.forEachIndexed { index, item ->
-            if (item.calendar_categoryF == CalendarViewModel.CalendarCategory.MALE_EAGLE) {
+            if (item.categoryF == CalendarViewModel.CalendarCategory.MALE_EAGLE) {
                 randomDrawableCache[index] = getRandomTakooDrawableId(index)
             }
         }
@@ -118,17 +121,26 @@ class CalendarAdapter(
             .replace("\\n+".toRegex(), "")
     }
 
+    private fun formatTextWithLimit(text: String): String {
+        // 1. 去除所有换行符（根据需求可选）
+        val textWithoutLineBreak = text.replace("\n", "")
+
+        // 2. 判断字符数是否超出限制
+        return if (textWithoutLineBreak.length > MAX_CHAR_COUNT) {
+            // 截取前30个字符 + 省略号
+            textWithoutLineBreak.substring(0, MAX_CHAR_COUNT) + "…"
+        } else {
+            textWithoutLineBreak
+        }
+    }
     inner class NormalActivityCardItemViewHolder(private val binding: ItemActivityCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun binding(data: WSCalendarResponse, position: Int, listener: onItemClickListener) {
-            binding.tvGeneralName.text = getPureTextFromHtml(data.titleF)
-            binding.tvGeneralMap.text = getPureTextFromHtml(data.mapF)
+        fun binding(data: WSCalendarNResponse, position: Int, listener: onItemClickListener) {
+            binding.tvGeneralName.text = formatTextWithLimit(getPureTextFromHtml(data.titleF))
+            binding.tvGeneralMap.text = getPureTextFromHtml(data.locationF)
 
-            val stDate = data.st_dateF
-            val edDate = data.ed_dateF
-            binding.tvGeneralActivityTime.text = formatCalendarDate(stDate, edDate)
-
-            if (data.calendar_categoryF.equals(CalendarViewModel.CalendarCategory.GENERAL_ACTIVITY)) {
+            if (data.categoryF.equals(CalendarViewModel.CalendarCategory.GENERAL_ACTIVITY)) {
+                binding.tvGeneralActivityTime.text = formatCalendarDate(data.st_dateF, data.ed_dateF)
                 binding.ivGeneralType.setImageResource(R.drawable.calendar_ic_star)
 
                 Glide.with(binding.ivGeneralPhoto.context).clear(binding.ivGeneralPhoto)
@@ -147,7 +159,8 @@ class CalendarAdapter(
                         .dontAnimate()
                         .into(binding.ivGeneralPhoto)
                 }
-            } else if (data.calendar_categoryF.equals(CalendarViewModel.CalendarCategory.BIRTHDAY)) {
+            } else if (data.categoryF.equals(CalendarViewModel.CalendarCategory.BIRTHDAY)) {
+                binding.tvGeneralActivityTime.text = formatDateWithWeekday(data.st_dateF)
                 binding.ivGeneralType.setImageResource(R.drawable.calendar_ic_grey_birthday)
 
                 Glide.with(binding.ivGeneralPhoto).clear(binding.ivGeneralPhoto)
@@ -189,15 +202,15 @@ class CalendarAdapter(
 
     inner class NormalSportsCardItemViewHolder(private val binding: ItemSportsCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun binding(data: WSCalendarResponse, position: Int, listener: onItemClickListener) {
+        fun binding(data: WSCalendarNResponse, position: Int, listener: onItemClickListener) {
             binding.tvTitle.text = getPureTextFromHtml(data.titleF)
             binding.tvContentRendered.text = getPureTextFromHtml(data.contentF)
-            binding.tvMap.text = getPureTextFromHtml(data.mapF)
+            binding.tvMap.text = getPureTextFromHtml(data.locationF)
 
             val hourMinute = extractTimeFromStr(data.st_dateF)
             binding.tvAcfActivityTime.text = hourMinute
 
-            if (data.calendar_categoryF == CalendarViewModel.CalendarCategory.MALE_EAGLE) {
+            if (data.categoryF == CalendarViewModel.CalendarCategory.MALE_EAGLE) {
                 binding.ivBaseball.setImageResource(R.drawable.calendar_ic_baseball)
                 binding.ivSportsType.setImageResource(R.drawable.calendar_ic_tg_xy)
                 binding.tvSportsTypeName.setText(R.string.calendar_hawks)
@@ -207,17 +220,16 @@ class CalendarAdapter(
                 if (randomResId != null) {
                     binding.ivTakooType.setImageResource(randomResId)
                 } else {
-                    // 如果缓存中没有，生成一个新的（理论上不会发生）
                     val newResId = getRandomTakooDrawableId(position)
                     binding.ivTakooType.setImageResource(newResId)
                 }
 
-            } else if (data.calendar_categoryF == CalendarViewModel.CalendarCategory.SKY_EAGLE) {
+            } else if (data.categoryF == CalendarViewModel.CalendarCategory.SKY_EAGLE) {
                 binding.ivBaseball.setImageResource(R.drawable.calendar_ic_volleyball)
                 binding.ivSportsType.setImageResource(R.drawable.calendar_ic_tg_ty)
                 binding.tvSportsTypeName.setText(R.string.calendar_sky_hawks)
                 binding.ivTakooType.setImageResource(R.drawable.calendar_ic_sky)
-            } else if (data.calendar_categoryF == CalendarViewModel.CalendarCategory.HUNT_EAGLE) {
+            } else if (data.categoryF == CalendarViewModel.CalendarCategory.HUNT_EAGLE) {
                 binding.ivBaseball.setImageResource(R.drawable.calendar_ic_basketball)
                 binding.ivSportsType.setImageResource(R.drawable.calendar_ic_tg_ly)
                 binding.tvSportsTypeName.setText(R.string.calendar_ghost_hawks)
@@ -238,6 +250,6 @@ class CalendarAdapter(
     }
 
     interface onItemClickListener {
-        fun onItemClick(data: WSCalendarResponse, position: Int)
+        fun onItemClick(data: WSCalendarNResponse, position: Int)
     }
 }

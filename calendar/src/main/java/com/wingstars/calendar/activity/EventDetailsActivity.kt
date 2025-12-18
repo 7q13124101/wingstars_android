@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.wingstars.base.base.BaseActivity
-import com.wingstars.base.net.beans.WSCalendarResponse
+import com.wingstars.base.net.beans.WSCalendarNResponse
 import com.wingstars.calendar.R
 import com.wingstars.calendar.databinding.ActivityEventDetailsBinding
 import com.wingstars.calendar.utils.CalendarDateUtils.Companion.formatCalendarDate
@@ -17,7 +17,7 @@ import com.wingstars.calendar.viewmodel.EventDetailsViewModel
 class EventDetailsActivity : BaseActivity() {
     private lateinit var binding: ActivityEventDetailsBinding
     private lateinit var viewModel: EventDetailsViewModel
-    private var selectedWSCalendar: WSCalendarResponse? = null
+    private var selectedWSCalendar: WSCalendarNResponse? = null
     private var isContentVisible = true
     private var isPrecautionsVisible = true
 
@@ -29,24 +29,28 @@ class EventDetailsActivity : BaseActivity() {
         setTitleFoot(binding.root)
 
         selectedWSCalendar =
-            intent.extras?.getSerializable("WSCalendar_Details") as WSCalendarResponse
+            intent.extras?.getSerializable("WSCalendar_Details") as WSCalendarNResponse
 
         initData()
         initView()
     }
 
     private fun initData() {
-        binding.tvTitleName.text = Html.fromHtml(selectedWSCalendar!!.titleF)
-        val stDate = selectedWSCalendar!!.st_dateF
-        val edDate = selectedWSCalendar!!.ed_dateF
+        binding.tvTitleName.text = Html.fromHtml(selectedWSCalendar?.titleF ?: "")
+        val stDate = selectedWSCalendar?.st_dateF ?: ""
+        val edDate = selectedWSCalendar?.ed_dateF ?: ""
         binding.tvDate.text = formatCalendarDate(stDate, edDate)
-        binding.tvMap.text = Html.fromHtml(selectedWSCalendar!!.mapF)
-        binding.tvEventInformationContent.text = Html.fromHtml(selectedWSCalendar!!.contentF)
-        binding.tvPrecautionsContent.text = Html.fromHtml(selectedWSCalendar!!.PrecautionsF)
-        if (selectedWSCalendar!!.calendar_categoryF.equals(CalendarViewModel.CalendarCategory.GENERAL_ACTIVITY)) {
-            binding.ivImageType.setImageResource(R.drawable.calendar_ic_star)
-        } else if (selectedWSCalendar!!.calendar_categoryF.equals(CalendarViewModel.CalendarCategory.BIRTHDAY)) {
-            binding.ivImageType.setImageResource(R.drawable.calendar_ic_grey_birthday)
+
+        binding.tvMap.text = Html.fromHtml(selectedWSCalendar?.locationF ?: "")
+        binding.tvEventInformationContent.text = Html.fromHtml(selectedWSCalendar?.contentF ?: "")
+        binding.tvPrecautionsContent.text = Html.fromHtml(selectedWSCalendar?.precautionsF ?: "")
+
+        if (selectedWSCalendar?.contentF != null) {
+            if (selectedWSCalendar!!.contentF.equals(CalendarViewModel.CalendarCategory.GENERAL_ACTIVITY)) {
+                binding.ivImageType.setImageResource(R.drawable.calendar_ic_star)
+            } else if (selectedWSCalendar!!.contentF.equals(CalendarViewModel.CalendarCategory.BIRTHDAY)) {
+                binding.ivImageType.setImageResource(R.drawable.calendar_ic_grey_birthday)
+            }
         }
 
         Glide.with(binding.ivDialogImage).clear(binding.ivDialogImage)

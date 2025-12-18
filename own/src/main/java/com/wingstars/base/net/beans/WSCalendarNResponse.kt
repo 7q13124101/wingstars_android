@@ -21,7 +21,7 @@ data class WSCalendarNResponse(
             return content
         }
 
-    val calendar_categoryF: Int             //category format
+    val categoryF: Int             //category format
         get() {
             return category
         }
@@ -37,12 +37,12 @@ data class WSCalendarNResponse(
         }
     val contentRaw: String
         get() = content
-    val mapF: String                        //location format
+    val locationF: String                        //location format
         get() {
             return location
         }
 
-    val PrecautionsF: String                //precautions format
+    val precautionsF: String                //precautions format
         get() {
             return precautions
         }

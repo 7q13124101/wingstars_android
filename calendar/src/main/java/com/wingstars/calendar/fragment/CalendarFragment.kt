@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import com.wingstars.base.base.BaseFragment
-import com.wingstars.base.net.beans.WSCalendarResponse
+import com.wingstars.base.net.beans.WSCalendarNResponse
 import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.calendar.R
 import com.wingstars.calendar.activity.EventDetailsActivity
@@ -23,11 +23,11 @@ import com.wingstars.calendar.databinding.FragmentCalendarBinding
 import com.wingstars.calendar.utils.CalendarDateUtils
 import com.wingstars.calendar.utils.CalendarDateUtils.Companion.BIRTH_DATE_FORMATTER
 import com.wingstars.calendar.viewmodel.CalendarViewModel
+import com.wingstars.calendar.viewmodel.DailyCalendarData
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
-import kotlin.random.Random
 
 class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
     private val viewModel: CalendarViewModel by viewModels()
@@ -35,13 +35,13 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
     private lateinit var schemeMap: MutableMap<String, Calendar>
 
     // 缓存重组后的每日日历数据
-    private var allDailyCalendarList = mutableListOf<WSCalendarResponse.DailyCalendarData>()
+    private var allDailyCalendarList = mutableListOf<DailyCalendarData>()
     // 缓存生日用户数据（独立API返回）
     private val birthdayUserList = mutableListOf<WSMemberResponse>()
     // 缓存选中日期的生日用户列表
     private val selectedBirthdayUsers = mutableListOf<WSMemberResponse>()
     // 缓存选中日期的日历活动列表（用于空视图判断）
-    private var selectedCalendarActivities = mutableListOf<WSCalendarResponse>()
+    private var selectedCalendarActivities = mutableListOf<WSCalendarNResponse>()
 
     // 时间格式化工具
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.TAIWAN)
@@ -168,7 +168,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
         viewModel.wSCalendarData.observe(viewLifecycleOwner) { data ->
             if (data != null && data.isNotEmpty()) {
                 allDailyCalendarList.clear()
-                val dailyCalendarList = mutableListOf<WSCalendarResponse.DailyCalendarData>()
+                val dailyCalendarList = mutableListOf<DailyCalendarData>()
 
                 data.forEach { item ->
                     val startDateStr = item.st_dateF
@@ -234,14 +234,14 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
 
     private fun addDailyCalendarItem(
         calendar: java.util.Calendar,
-        item: WSCalendarResponse,
-        list: MutableList<WSCalendarResponse.DailyCalendarData>
+        item: WSCalendarNResponse,
+        list: MutableList<DailyCalendarData>
     ) {
         val year = calendar.get(java.util.Calendar.YEAR)
         val month = calendar.get(java.util.Calendar.MONTH) + 1
         val day = calendar.get(java.util.Calendar.DAY_OF_MONTH)
         list.add(
-            WSCalendarResponse.DailyCalendarData(
+            DailyCalendarData(
                 date = calendar.time,
                 year = year,
                 month = month,
@@ -261,10 +261,10 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
 
         val dailyGroup = allDailyCalendarList.groupBy { "${it.year}-${it.month}-${it.day}" }
         dailyGroup.forEach { (dateKey, sameDayItems) ->
-            val uniqueTypeItems = mutableListOf<WSCalendarResponse.DailyCalendarData>()
+            val uniqueTypeItems = mutableListOf<DailyCalendarData>()
             val addedCategoryIds = mutableSetOf<Int>()
             sameDayItems.forEach { item ->
-                val categoryId = item.originalItem.calendar_categoryF
+                val categoryId = item.originalItem.categoryF
                 if (!addedCategoryIds.contains(categoryId)) {
                     uniqueTypeItems.add(item)
                     addedCategoryIds.add(categoryId)
@@ -325,7 +325,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
         year: Int,
         month: Int,
         day: Int,
-        displayItems: List<WSCalendarResponse.DailyCalendarData>
+        displayItems: List<DailyCalendarData>
     ): Calendar {
         return Calendar().apply {
             this.year = year
@@ -333,7 +333,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
             this.day = day
 
             displayItems.forEach { item ->
-                addSchemeByCategory(item.originalItem.calendar_categoryF, requireContext())
+                addSchemeByCategory(item.originalItem.categoryF, requireContext())
             }
 
             if (birthdayMonthDaySet.contains("$month-$day")) {
@@ -460,7 +460,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
             requireActivity(),
             mutableListOf(),
             object : CalendarAdapter.onItemClickListener {
-                override fun onItemClick(data: WSCalendarResponse, position: Int) {
+                override fun onItemClick(data: WSCalendarNResponse, position: Int) {
                     // 设置标志，表示即将跳转到详情页
                     isFromDetailsReturn = true
 
@@ -594,7 +594,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
         }
         val sortedList = selectedItems
             .map { it.originalItem }
-            .sortedBy { categoryPriority[it.calendar_categoryF] ?: 6 }
+            .sortedBy { categoryPriority[it.categoryF] ?: 6 }
             .toMutableList()
 
         // 更新选中的活动列表

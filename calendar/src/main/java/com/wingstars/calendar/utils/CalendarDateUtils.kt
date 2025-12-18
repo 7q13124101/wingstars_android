@@ -8,7 +8,7 @@ import java.util.Locale
 
 class CalendarDateUtils {
     companion object {
-        val BIRTH_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd")
+        val BIRTH_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         fun isSameMonthAndDay(birthdate: String, targetMonth: Int, targetDay: Int): Boolean {
             return try {
                 val birthDate = LocalDate.parse(birthdate, BIRTH_DATE_FORMATTER)
@@ -20,18 +20,56 @@ class CalendarDateUtils {
             }
         }
 
+        fun formatDateWithWeekday(dateStr: String?): String {
+            // 空值校验
+            if (dateStr.isNullOrEmpty()) return ""
+
+            val dateTimeParser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.TAIWAN)
+            // 分别定义带时间和不带时间的格式化器
+            val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.TAIWAN) // 仅日期
+            val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.TAIWAN) // 日期+时间
+
+            return try {
+                val date = dateTimeParser.parse(dateStr) ?: return ""
+
+                // 先单独解析时间部分判断是否为 00:00
+                val timeFormatter = SimpleDateFormat("HH:mm", Locale.TAIWAN)
+                val timeStr = timeFormatter.format(date)
+
+                // 根据时间是否为 00:00 选择不同的格式化方式
+                val formattedDate = if (timeStr == "00:00") {
+                    dateFormatter.format(date)
+                } else {
+                    dateTimeFormatter.format(date)
+                }
+
+                // 获取星期并拼接（保留你原有的 simplifyWeekday 逻辑）
+                val weekDayCn = simplifyWeekday(formattedDate)
+
+                // 如果需要返回 "日期 星期" 的格式，使用这行：
+                // "$formattedDate $weekDayCn"
+                // 如果只需要返回星期，保留你原来的逻辑：
+                weekDayCn
+
+            } catch (e: Exception) {
+                // 解析失败返回空字符串
+                e.printStackTrace()
+                ""
+            }
+        }
+
         fun formatCalendarDate(stDate: String?, edDate: String?): String {
             if (stDate.isNullOrEmpty()) return ""
 
             val dateTimeParser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.TAIWAN)
             val dateOnlyParser = SimpleDateFormat("yyyy-MM-dd", Locale.TAIWAN) // 仅解析年月日
-            val fullDateFormatter = SimpleDateFormat("yyyy/MM/dd (E)", Locale.TAIWAN) // 完整日期+单字星期
-            val shortDateFormatter = SimpleDateFormat("MM/dd (E)", Locale.TAIWAN) // 简化日期+单字星期
+//            val fullDateFormatter = SimpleDateFormat("yyyy-MM-dd (E)", Locale.TAIWAN) // 完整日期+单字星期
+//            val shortDateFormatter = SimpleDateFormat("MM-dd (E)", Locale.TAIWAN) // 简化日期+单字星期
             val timeFormatter = SimpleDateFormat("HH:mm", Locale.TAIWAN) // 时分格式
 
             return try {
                 val startDateTime = dateTimeParser.parse(stDate) ?: return ""
-                var startFullDate = fullDateFormatter.format(startDateTime)
+                var startFullDate = dateOnlyParser.format(startDateTime)
                 val startTime = timeFormatter.format(startDateTime)
 
                 startFullDate = simplifyWeekday(startFullDate)
@@ -46,7 +84,7 @@ class CalendarDateUtils {
                     val endDate = dateOnlyParser.parse(dateOnlyParser.format(endDateTime))
                         ?: return "$startFullDate $startTime"
 
-                    var endShortDate = shortDateFormatter.format(endDateTime)
+                    var endShortDate = dateOnlyParser.format(endDateTime)
                     val endTime = timeFormatter.format(endDateTime)
 
                     endShortDate = simplifyWeekday(endShortDate)
@@ -54,7 +92,7 @@ class CalendarDateUtils {
                     if (startDate == endDate) {
                         "$startFullDate $startTime"
                     } else {
-                        "$startFullDate – $endShortDate $endTime"
+                        "$startFullDate $startTime ~ $endShortDate $endTime"
                     }
                 }
             } catch (e: Exception) {

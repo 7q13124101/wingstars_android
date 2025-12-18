@@ -50,7 +50,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
                 <TextView
                     android:id="@+id/tv_content_rendered"
                     android:layout_width="wrap_content"
@@ -59,12 +62,6 @@
                     android:textColor="@color/color_4A5565"
                     android:textSize="@dimen/sp_20"
                     android:textStyle="bold" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
                 <TextView
                     android:id="@+id/tv_acf_activity_time"
                     android:layout_width="wrap_content"

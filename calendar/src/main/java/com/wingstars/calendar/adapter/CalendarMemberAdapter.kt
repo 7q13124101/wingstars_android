@@ -2,35 +2,15 @@ package com.wingstars.calendar.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Matrix
-import android.graphics.drawable.Drawable
-import android.os.Build
-import android.text.Html
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import com.wingstars.base.net.beans.WSCalendarResponse
 import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.calendar.R
-import com.wingstars.calendar.databinding.ItemActivityCardBinding
 import com.wingstars.calendar.databinding.ItemBirthdayCardBinding
-import com.wingstars.calendar.databinding.ItemSportsCardBinding
-import com.wingstars.calendar.utils.CalendarDateUtils.Companion.formatCalendarDate
-import com.wingstars.calendar.viewmodel.CalendarViewModel
-import java.text.SimpleDateFormat
-import java.util.Locale
-import kotlin.math.max
-import kotlin.random.Random
 
 class CalendarMemberAdapter(
     private val context: Context,
