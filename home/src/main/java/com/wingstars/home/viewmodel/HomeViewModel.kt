@@ -3,11 +3,15 @@ package com.wingstars.home.viewmodel // Đặt package name cho đúng
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.gson.Gson
 import com.wingstars.base.net.API
 import com.wingstars.base.net.beans.WSCalendarResponse
 import com.wingstars.base.net.beans.WSFashionResponse
 import com.wingstars.base.net.beans.WSPostResponse
 import com.wingstars.base.net.beans.WSProductResponse
+import com.wingstars.member.bean.WSMemberRankBean
+import com.wingstars.member.bean.WSRankBean
+import com.wingstars.member.bean.WSRankBean.ACFBean
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
@@ -20,9 +24,13 @@ class HomeViewModel : ViewModel() {
     val calendarDataList = MutableLiveData<MutableList<WSCalendarResponse>>()
     val productDataList = MutableLiveData<MutableList<WSProductResponse>>()
     val fashionDataList = MutableLiveData<MutableList<WSFashionResponse>>()
+    var wsRankData = MutableLiveData<MutableList<WSMemberRankBean>>()
+
 
 
     var isLoading = MutableLiveData<Boolean>()
+    var tip = MutableLiveData<String>()
+
 
 
 
@@ -126,6 +134,91 @@ class HomeViewModel : ViewModel() {
                         error.printStackTrace()
                     }
                 )
+        }
+    }
+    public fun getRenderedList() {
+        isLoading.postValue(true)
+        API.shared?.api?.let {
+            val observer = it.wsRank()
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    if (!next.isNullOrEmpty()) {
+                        var data = mutableListOf<WSMemberRankBean>()
+                        Log.e("getRenderedList", "${Gson().toJson(next)}")
+                        next.forEach {
+                            val title = it.title
+                            var rendered = ""
+                            if (title != null) {
+                                rendered = title.rendered
+                            }
+                            val acf = it.acf
+                            var name = ""
+                            var volume = ""
+                            if (acf != null) {
+                                val rankBean = acf.rankBean(1)
+                                if (rankBean != null) {
+                                    name = rankBean.name
+                                    volume = rankBean.volume
+                                }
+                            }
+                            var bean =
+                                WSMemberRankBean(title = rendered, name = name, volume = volume)
+                            data.add(bean)
+                        }
+
+                        wsPhotos(data)
+
+
+                    } else {
+                        isLoading.postValue(false)
+                    }
+                },
+                { error ->
+                    isLoading.postValue(false)
+                }
+            )
+        }
+    }
+    private fun wsPhotos(data: MutableList<WSMemberRankBean>) {
+        API.shared?.api?.let {
+            val observer = it.wsPhotos()
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    isLoading.postValue(false)
+                    if (!next.isNullOrEmpty()) {
+                        data.forEach {
+                            val acf = it.name
+                            if (acf != null) {
+                                val imageList = next.filter { it.title.rendered.trim() == acf }
+                                if (!imageList.isNullOrEmpty()) {
+                                    val acf1 = imageList[0].acf
+                                    if (acf1 != null) {
+                                        it.number = acf1.number
+                                    }
+                                    var yoast_head_json = imageList[0].yoast_head_json
+                                    if (yoast_head_json != null) {
+                                        val ogImage = yoast_head_json.og_image
+                                        if (!ogImage.isNullOrEmpty()) {
+                                            it.image = ogImage[0].url
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        wsRankData.postValue(data)
+
+                    } else {
+                        isLoading.postValue(false)
+                    }
+                },
+                { error ->
+                    isLoading.postValue(false)
+                }
+            )
         }
     }
 }
