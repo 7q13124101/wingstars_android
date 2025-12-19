@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.tencent.mmkv.MMKV
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.base.net.beans.WSFashionResponse
@@ -19,9 +20,11 @@ import com.wingstars.home.activity.TodayItineraryDetailsActivity
 import com.wingstars.home.adapter.*
 import com.wingstars.home.databinding.FragmentHomeBinding
 import com.wingstars.home.viewmodel.HomeViewModel
+import com.wingstars.home.adapter.PopularityAdapter
+import com.wingstars.member.activity.PopularityRankingActivity
 import com.youth.banner.listener.OnPageChangeListener
 
-class HomeFragment : BaseFragment(), View.OnClickListener {
+class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onPopularityRankingListener {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: HomeViewModel
 
@@ -169,11 +172,21 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         }
 
         // --- 5. Bảng xếp hạng (Ranking) ---
-        viewModel.memberDataList.observe(viewLifecycleOwner) { dataList ->
-            val memberAdapter = PopularityRankingAdapter(requireActivity(), dataList)
-            binding.rvPopularityRanking.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-            binding.rvPopularityRanking.adapter = memberAdapter
+//        viewModel.memberDataList.observe(viewLifecycleOwner) { dataList ->
+//            val memberAdapter = PopularityRankingAdapter(requireActivity(), dataList)
+//            binding.rvPopularityRanking.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+//            binding.rvPopularityRanking.adapter = memberAdapter
+//        }
+        viewModel.wsRankData.observe(viewLifecycleOwner) {
+            Log.e("wsRankData", "${Gson().toJson(it)}")
+            var adapter = PopularityAdapter(requireActivity(), it, this)
+            binding.rvPopularityRanking.layoutManager = LinearLayoutManager(
+                requireActivity(),
+                LinearLayoutManager.HORIZONTAL, false
+            )
+            binding.rvPopularityRanking.adapter = adapter
         }
+        viewModel.getRenderedList()
 
         // --- 6. Tin tức (News) ---
         viewModel.newsDataList.observe(viewLifecycleOwner) { dataList ->
@@ -210,5 +223,14 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
             binding.titleStylistVibe.root.id -> startActivity(Intent(requireActivity(), com.wingstars.member.activity.FashionableAtmosphereActivity::class.java))
             binding.titleNews.root.id -> startActivity(Intent(requireActivity(), com.wingstars.home.activity.LatestNewsActivity::class.java))
         }
+    }
+
+    override fun onPopularityRankingClickItem(position: Int) {
+        startActivity(
+            Intent(
+                requireActivity(),
+                PopularityRankingActivity::class.java
+            )
+        )
     }
 }
