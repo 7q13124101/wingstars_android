@@ -192,16 +192,16 @@ class CountFragment : BaseFragment(){
         }
 
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.VANILLA_ICE_CREAM){
-            binding.root.setOnApplyWindowInsetsListener{ v, insets ->
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30 (Android 11)
+            binding.root.setOnApplyWindowInsetsListener { v, insets ->
                 val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
-                Log.e("statusBarHeight","statusBarHeight=$statusBarHeight")
-                setViewTop(binding.title,statusBarHeight)
-                binding.root.setOnApplyWindowInsetsListener(null)
+                Log.e("statusBarHeight", "statusBarHeight=$statusBarHeight")
+                setViewTop(binding.title, statusBarHeight)
+
                 insets
             }
-        }else{
-            setViewTop(binding.title,getStatusBarHeight())
+        } else {
+            setViewTop(binding.title, getStatusBarHeight())
         }
 
 

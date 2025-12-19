@@ -50,7 +50,7 @@ dependencies {
     implementation("com.geyifeng.immersionbar:immersionbar:3.2.2")
     //kotlin扩展（可选）
     implementation("com.geyifeng.immersionbar:immersionbar-ktx:3.2.2")
-    implementation("com.tencent:mmkv:2.2.3")
+    implementation("com.tencent:mmkv:1.3.9")
 
     implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
 
