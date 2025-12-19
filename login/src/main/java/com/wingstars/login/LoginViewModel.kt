@@ -78,28 +78,44 @@ class LoginViewModel : ViewModel(){
                     },
                     { error ->
                         isLoading.postValue(false)
-                        val msg = error.message.toString()
-                        Log.e("LoginDebug", "3. API Gặp Lỗi Exception: $msg")
-                        error.printStackTrace() // In toàn bộ lỗi ra Logcat
+                        var msg = error.message.toString()
 
                         // Check lỗi HTTP
                         if (error is HttpException) {
-                            Log.e("LoginDebug", "Lỗi HTTP code: ${error.code()}")
-                            val errorBody = error.response()?.errorBody()?.string()
-                            Log.e("LoginDebug", "Error Body: $errorBody")
-                            val gson = Gson()
-                            val type = object : TypeToken<CRMBaseFailResponse>() {}.type
-                            val failResponse = gson.fromJson<CRMBaseFailResponse>(errorBody, type)
-                            if (failResponse?.message == "尚未註冊") {
-                                navigator?.showNotRegisteredDialog()
-                                return@subscribe
-                            }
+                            try { // <--- THÊM TRY-CATCH LỚN NÀY
+                                val errorBody = error.response()?.errorBody()?.string()
 
-                            // Nếu lỗi khác thì lấy message để hiện Toast
-//                            if (!errorBody.isNullOrEmpty()) {
-//                                msg = errorBody!!
-//                            }
+                                if (!errorBody.isNullOrEmpty()) {
+                                    // Thử parse JSON
+                                    try {
+                                        val gson = Gson()
+                                        val type = object : TypeToken<CRMBaseFailResponse>() {}.type
+                                        val failResponse = gson.fromJson<CRMBaseFailResponse>(errorBody, type)
+
+                                        // Kiểm tra logic nghiệp vụ
+                                        if (failResponse?.message == "尚未註冊") {
+                                            navigator?.showNotRegisteredDialog()
+                                            return@subscribe
+                                        }
+
+                                        // Lấy message từ JSON trả về
+                                        if (!failResponse?.message.isNullOrEmpty()) {
+                                            msg = failResponse.message!!
+                                        }
+                                    } catch (e: Exception) {
+                                        // NẾU PARSE JSON THẤT BẠI (Do lỗi 404 trả về HTML/String)
+                                        // Ta sẽ không làm gì cả, giữ nguyên biến 'msg' mặc định hoặc gán bằng errorBody
+                                        Log.e("LoginDebug", "Lỗi không phải JSON: $errorBody")
+                                        // msg = "Lỗi kết nối: ${error.code()}" // Tùy chọn
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
                         }
+
+                        // Hiển thị thông báo lỗi (Toast hoặc Dialog)
+                        // _loginError.postValue(msg)
                     }
                 )
         } ?: run {

@@ -11,13 +11,11 @@ import com.wingstars.user.databinding.ActivityMobileBarcodeCarrierBinding
 
 class MobileBarcodeCarrierActivity: BaseActivity() {
     private lateinit var binding: ActivityMobileBarcodeCarrierBinding
-
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         val view = ActivityMobileBarcodeCarrierBinding.inflate(layoutInflater)
         binding = view
         setContentView(view.root)
-
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = true
         initView()
@@ -53,11 +51,14 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
         }
         binding.btnSave.setOnClickListener {
             val mobile = binding.edtMobile.text.toString().trim()
+            val pref = getSharedPreferences("user_prefs", MODE_PRIVATE)
+            pref.edit().putString("barcode_number", mobile).apply()
             val intent = Intent()
             intent.putExtra("mobile_number", mobile)
             setResult(RESULT_OK, intent)
             finish()
         }
+
 
     }
 

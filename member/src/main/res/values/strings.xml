@@ -46,8 +46,7 @@
         <item>星迷心動榜</item>
         <item>人氣銷售榜</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="theme_clothing">主題服裝</string>
     <string name="related_clothing">相關服飾</string>
     <string name="image_loading_failed">拍照圖框加載失敗</string>

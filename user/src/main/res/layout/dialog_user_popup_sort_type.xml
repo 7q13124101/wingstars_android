@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/cl_add_person"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pt_14"
+            android:layout_marginBottom="@dimen/pt_14"
+            android:paddingLeft="@dimen/pt_12"
+            android:paddingRight="@dimen/pt_12">
+
+            <TextView
+                android:id="@+id/tv_dialog_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/dialog_sort_type"
+                android:textColor="@color/color_101828"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/iv_close_dialog"
+                android:layout_width="@dimen/pt_24"
+                android:layout_height="@dimen/pt_24"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_cancel"
+                android:padding="4dp" />
+        </RelativeLayout>
+
+        <RadioGroup
+            android:id="@+id/rg_sort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/rb_sort_date_new_to_old"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:background="?attr/selectableItemBackground"
+                android:checked="false"
+                android:drawableEnd="@drawable/selector_radio_check"
+                android:drawablePadding="@dimen/pt_8"
+                android:paddingStart="@dimen/pt_10"
+                android:paddingTop="@dimen/pt_10"
+                android:paddingEnd="@dimen/pt_10"
+                android:paddingBottom="@dimen/pt_7"
+                android:text="@string/dialog_sort_date_new_to_old"
+                android:textColor="@color/color_101828"
+                android:textStyle="bold"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pt_1"
+                android:alpha="0.2"
+                android:background="@color/color_A3A3A3" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/rb_sort_date_old_to_new"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:background="?attr/selectableItemBackground"
+                android:checked="false"
+                android:drawableEnd="@drawable/selector_radio_check"
+                android:drawablePadding="@dimen/pt_8"
+                android:paddingStart="@dimen/pt_10"
+                android:paddingEnd="@dimen/pt_10"
+                android:paddingTop="@dimen/pt_10"
+                android:paddingBottom="@dimen/pt_7"
+                android:text="@string/dialog_sort_date_old_to_new"
+                android:textColor="@color/color_101828"
+                android:textStyle="bold"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pt_1"
+                android:alpha="0.2"
+                android:background="@color/color_A3A3A3" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/rb_sort_points_high_to_low"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/pt_10"
+                android:paddingBottom="@dimen/pt_7"
+                android:button="@null"
+                android:background="?attr/selectableItemBackground"
+                android:checked="false"
+                android:drawableEnd="@drawable/selector_radio_check"
+                android:drawablePadding="@dimen/pt_8"
+                android:paddingStart="@dimen/pt_10"
+                android:paddingEnd="@dimen/pt_10"
+                android:text="@string/dialog_sort_points_high_to_low"
+                android:textColor="@color/color_101828"
+                android:textStyle="bold"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pt_1"
+                android:alpha="0.2"
+                android:background="@color/color_A3A3A3" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/rb_sort_points_low_to_high"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/pt_10"
+                android:paddingBottom="@dimen/pt_7"
+                android:button="@null"
+                android:background="?attr/selectableItemBackground"
+                android:checked="false"
+                android:drawableEnd="@drawable/selector_radio_check"
+                android:drawablePadding="@dimen/pt_8"
+                android:paddingStart="@dimen/pt_10"
+                android:paddingEnd="@dimen/pt_10"
+                android:text="@string/dialog_sort_points_low_to_high"
+                android:textColor="@color/color_101828"
+                android:textStyle="bold"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pt_1"
+                android:alpha="0.2"
+                android:background="@color/color_A3A3A3" />
+        </RadioGroup>
+    </LinearLayout>
+</layout>

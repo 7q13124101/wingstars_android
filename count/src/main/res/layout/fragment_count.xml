@@ -55,10 +55,10 @@
                <RelativeLayout
                    android:id="@+id/rl_count"
                    android:layout_width="match_parent"
-                   android:layout_height="66pt"
+                   android:layout_height="@dimen/pt_30"
                    android:layout_marginLeft="@dimen/pt_10"
-                   android:layout_marginTop="-20pt"
                    android:layout_marginRight="@dimen/pt_10"
+                   android:layout_marginBottom="@dimen/pt_5"
                    android:orientation="horizontal"
                    app:layout_constraintLeft_toLeftOf="parent"
                    app:layout_constraintTop_toTopOf="parent">
@@ -71,7 +71,7 @@
                       android:src="@drawable/bg_count"/>
 
                   <TextView
-                      android:id="@+id/tv_count_hawks"
+                      android:id="@+id/tv_count_winstar"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:layout_centerVertical="true"
@@ -82,6 +82,57 @@
                       android:textSize="@dimen/sp_24"
                       android:textStyle="bold"/>
                </RelativeLayout>
+
+               <androidx.constraintlayout.widget.ConstraintLayout
+                   android:id="@+id/cl_check_login"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginBottom="@dimen/pt_5"
+                   android:visibility="gone">
+
+               <androidx.cardview.widget.CardView
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   app:cardCornerRadius="@dimen/dp_16"
+                   app:cardElevation="6dp"
+                   app:cardBackgroundColor="@color/white"
+                   android:layout_margin="@dimen/dp_10"
+                   app:layout_constraintTop_toTopOf="parent"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintEnd_toEndOf="parent">
+
+                  <LinearLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:padding="@dimen/pt_10"
+                      android:gravity="center_horizontal">
+
+                     <TextView
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="加入 Wing Stars，別錯過每一次應援時刻"
+                         android:textColor="@color/color_101828"
+                         android:textSize="@dimen/sp_14"
+                         android:textAlignment="center"
+                         android:layout_marginBottom="20dp"/>
+
+                     <androidx.appcompat.widget.AppCompatButton
+                         android:id="@+id/btnCheckLogin"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:background="@drawable/bg_checkin_button"
+                         android:text="@string/login_required"
+                         android:textColor="@color/white"
+                         android:textSize="@dimen/sp_14"
+                         android:textStyle="bold"
+                         android:textAllCaps="false"
+                         android:stateListAnimator="@null"/>
+                  </LinearLayout>
+
+               </androidx.cardview.widget.CardView>
+               </androidx.constraintlayout.widget.ConstraintLayout>
 
                <androidx.cardview.widget.CardView
                    android:layout_width="match_parent"

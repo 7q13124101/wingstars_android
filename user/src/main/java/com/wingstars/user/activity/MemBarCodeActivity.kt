@@ -14,8 +14,6 @@ class MemBarCodeActivity : BaseActivity(){
         setContentView(binding.root)
         phone = intent.getStringExtra("phone")
         initView()
-
-
     }
 
     override fun initView() {

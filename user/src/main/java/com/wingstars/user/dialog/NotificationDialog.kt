@@ -10,7 +10,6 @@ class NotificationDialog(
     private var initialState: Boolean = false,
     private val onToggleChanged: ((Boolean) -> Unit)? = null
 ) : BaseBottomDialog(R.layout.dialog_notification) {
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<ImageView>(R.id.btn_close)?.setOnClickListener {
@@ -38,6 +37,6 @@ class NotificationDialog(
         }
     }
     fun show(fm: FragmentManager) {
-        show(fm, "Form4Dialog")
+        show(fm, "NotificationDialog")
     }
 }

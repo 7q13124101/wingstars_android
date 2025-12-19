@@ -92,14 +92,14 @@
             </LinearLayout>
             <FrameLayout
                 android:id="@+id/label"
-                android:layout_width="80dp"
+                android:layout_width="wrap_content"
                 android:layout_height="72dp"
                 android:layout_gravity="top|end"
                 android:clipChildren="false"
                 android:clipToPadding="false">
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_corner_badge_yellow"
                     android:scaleType="fitXY" />
@@ -108,7 +108,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/dp_20"
-                    android:layout_marginRight="@dimen/pt_3">
+                    android:layout_marginRight="@dimen/pt_7">
 
                     <TextView
                         android:id="@+id/label_tv"
@@ -117,7 +117,7 @@
                         android:text="星朋友"
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/sp_12"
                         android:includeFontPadding="false"
                         android:lineSpacingExtra="0dp"
                         android:lineSpacingMultiplier="0.9"

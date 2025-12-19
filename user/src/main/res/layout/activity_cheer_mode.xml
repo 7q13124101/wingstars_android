@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:id="@+id/fl_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activity.CheerModeActivity">
+
+        <HorizontalScrollView
+            android:id="@+id/rotatedScrollView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fillViewport="true">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textSize="180sp" />
+            </RelativeLayout>
+        </HorizontalScrollView>
+
+        <RelativeLayout
+            android:id="@+id/rl_top"
+            android:layout_width="@dimen/pt_28"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/pt_56"
+            android:layout_marginEnd="@dimen/pt_30"
+            android:layout_marginBottom="@dimen/pt_56"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:id="@+id/iv_back"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pt_70">
+
+                <ImageView
+                    android:layout_width="@dimen/pt_15"
+                    android:layout_height="@dimen/pt_15"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:src="@drawable/ic_up_green" />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/iv_cheer_fragment"
+                android:layout_width="@dimen/pt_15"
+                android:layout_height="@dimen/pt_15"
+                android:layout_alignParentBottom="true"
+                android:rotation="90"
+                android:src="@drawable/ic_text" />
+        </RelativeLayout>
+    </FrameLayout>
+</layout>
