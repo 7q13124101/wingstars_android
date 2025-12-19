@@ -1,12 +1,21 @@
 package com.wingstars.base.net
 
+import android.app.Application
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tencent.mmkv.MMKV
+import com.wingstars.base.net.beans.CRMBaseFailResponse
+import com.wingstars.base.net.beans.CRMGenQRCodeRequest
+import com.wingstars.base.net.beans.CRMVerifyRequest
 import com.wingstars.base.net.beans.EvtTaskResponse
-//import com.wingstars.count.dialog.SortMethod
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import retrofit2.HttpException
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
@@ -14,7 +23,9 @@ import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-object NetBase {
+
+
+object NetBase : Application(){
     private const val AES_ALGORITHM = "AES/CBC/PKCS5Padding"
     private const val KEY_ALGORITHM = "AES"
     private const val IV_LENGTH = 16 // 128 bits for AES block size
@@ -34,6 +45,15 @@ object NetBase {
     const val WINGSTARS_PASSWORD_ENC = "gZR514+qAhvFIRr+eRoQ0Qo5/OVEOrnL4OMd/40ACtKzIvdjNnYFq/vNLe5/Uerm"   //"VU4m E5kG Azeu Rryo JmxT BXAj"
     const val CONSUMER_KEY_ENC = "9humcXmIssTG1JdlihQocOdH6D5tNQDImi7CP5cHvyfkq40DcosNRBXIxd9nFlsFX0QNz6v36iY+vjfMaju7tw=="     //"ck_0de8be632e78d179c2ebcd1215c301198a75944a"
     const val CONSUMER_SECRET_ENC = "XV0kwKPmag27wEZM61zHpFQp6Bjgo2rYdNX6HUycvteJxjVZoD9dcvCpsSQTrwNpYqlCX3UPxAU6Gbjm0yM5Jg=="  //"cs_87db163ae5d871a3913ee961261a37152fd14fe1"
+    const val BROADCAST_LOGIN_SUCCESS_INTENT = "com.tsg.wingstar.BROADCAST_LOGIN_SUCCESS_INTENT"
+    const val BROADCAST_TASK_REFRESH = "com.tsg.wingstar.BROADCAST_TASK_REFRESH"
+
+    const val HOST_HAWK_EVENT = "https://ws-event-dev.newretail.tw"
+    //用户登入
+    const val BROADCAST_USER_LOGIN = "com.tsg.wingstar.BROADCAST_USER_LOGIN"
+
+    //用户登出
+    const val BROADCAST_USER_LOGOUT = "com.tsg.wingstar.BROADCAST_USER_LOGOUT"
 
     //正式区
 //    const val HOST_BASE = "https://www.tsghawks.com"
@@ -57,6 +77,9 @@ object NetBase {
             println("Exception: ${e.message}")
         }
     }
+    private var taskListData: ArrayList<EvtTaskResponse> = ArrayList()
+    private var checkInListData: ArrayList<EvtTaskResponse> = ArrayList()
+    private var taskListIsCompleted = true
 
     public fun base64Encode(data: ByteArray): String {
         return Base64.getEncoder().encodeToString(data)
@@ -116,6 +139,143 @@ object NetBase {
         val iv = ByteArray(IV_LENGTH)
         SecureRandom().nextBytes(iv)
         return iv
+    }
+    private var isCrmTokenCompleted = false
+    fun getCrmTokenCompleted(): Boolean {
+        return isCrmTokenCompleted
+    }
+
+    fun setCrmTokenCompleted(value: Boolean) {
+        this.isCrmTokenCompleted = value
+    }
+    fun getCRMQauthToken() {
+        //Oauth > 客户端验证
+        API?.shared?.api?.let {
+            val observer =
+                it.crmVerify("${NetBase.HOST_CRM}/api/v1/oauth/verify", CRMVerifyRequest())
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    if (next.success) {
+                        setCrmTokenCompleted(true)
+                        val rd = next.data
+                        MMKV.defaultMMKV().encode("crm_client_id", rd.id)
+                        MMKV.defaultMMKV().encode("crm_client_access_token", rd.accessToken)
+                        MMKV.defaultMMKV().encode("crm_client_refresh_token", rd.refreshToken)
+                    }
+                },
+                { error ->
+                    error.message?.let { it1 ->
+                    }
+                }
+            )
+        }
+    }
+    private fun getEvtMemberTasks(encryptedIdentity: String, bRefreshUI: Boolean) {
+        //Event > 会员任务状态列表
+        API.shared?.api?.let {
+
+            // encryptedIdentity 的值通过 api crmGenQRCode 取得
+            //val encryptedIdentity = "RMafhFbPQedleQ0E6fk9P8gNEoXdwAjZTULb1bLk73Ute9axTtxxSAonuM2jJ3WaXsN4zlpq3SkFZUB8NlNVtNAmX1myKBeOBerbk56Uu+YTKlHNB+/0iCh9R+5wEV+HvRNU7/RU/DKZZf+jU2L88w=="
+            val observer = it.evtMemberTasks(
+                "${HOST_HAWK_EVENT}/api/v1/public/members/tasks",
+                encryptedIdentity
+            )
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    if (!next.isNullOrEmpty()) {
+                        next.forEach { tr ->
+                            val node = taskListData.find { it.id == tr.id }
+                            if (node != null) {
+                                node.status = tr.personalEventTaskStatus
+                                node.isSendApiF = false
+                            }
+                        }
+
+                        checkInListData.clear()
+                        taskListData.forEach {
+                            if (it.triggerType == "app" && !it.triggerTag.isNullOrEmpty() && it.triggerTag == "checkin") {
+                                checkInListData.add(it)
+                            }
+
+                        }
+
+                        if (bRefreshUI)
+                            sendBroadcast(Intent(NetBase.BROADCAST_TASK_REFRESH))
+                    }
+                    taskListIsCompleted = true
+                },
+                { error ->
+                    taskListIsCompleted = true
+                    error.message?.let { it1 ->
+                    }
+                }
+            )
+        }
+    }
+    fun refreshEvtTasks(bLogin: Boolean, bRefreshUI: Boolean = true) {
+        if(taskListData.isNotEmpty()) {
+            if (bLogin && MMKV.defaultMMKV().decodeBool("isLogin")) {
+                val id = MMKV.defaultMMKV().decodeString("crm_member_id")
+                val phone = MMKV.defaultMMKV().decodeString("member_phone")
+                API?.shared?.api?.let {
+                    //Member > 会员QRCode
+                    val observer =
+                        it.crmGenQRCode("${NetBase.HOST_CRM}/api/v1/basic/member/${id}/gen-qrcode",
+                            phone?.let { it1 -> CRMGenQRCodeRequest(it1) })
+                    observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                        AndroidSchedulers.mainThread()
+                    )?.subscribe(
+                        { next ->
+
+                            if (next.success && next.data != null) {
+                                getEvtMemberTasks(next.data.MEMQRCODE, bRefreshUI)
+                            } else {
+                                taskListIsCompleted = true
+//                            Toast.makeText(BaseApplication.shared()!!,next.message, Toast.LENGTH_LONG).show()
+                            }
+                        },
+                        { error ->
+                            taskListIsCompleted = true
+                            var msg = error.message.toString()
+
+                            if (error is HttpException) {
+                                try {
+                                    val gson = Gson()
+                                    val type = object : TypeToken<CRMBaseFailResponse>() {}.type
+                                    val failResponse = gson.fromJson<CRMBaseFailResponse>(
+                                        error.response()?.errorBody()?.string(), type
+                                    )
+                                    if (failResponse != null) {
+                                        failResponse.message?.let {
+                                            msg = it
+                                        }
+                                    }
+                                } catch (e: Exception) {
+
+                                }
+                            }
+
+                            msg.let { it1 ->
+//                            Toast.makeText(BaseApplication.shared()!!,"$it1", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    )
+                }
+            } else {
+                //清除任务状态，恢复到原始状态
+                taskListData.forEach {
+                    it.status = "unlock"
+                    it.isSendApiF = false
+                }
+                //退出登录状态，需要重置状态并同步UI中
+                if (bRefreshUI)
+                    sendBroadcast(Intent(NetBase.BROADCAST_TASK_REFRESH))
+            }
+        }
     }
 
     fun ut() {

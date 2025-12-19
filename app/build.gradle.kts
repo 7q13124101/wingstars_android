@@ -82,6 +82,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.constraintlayout)
+
     implementation(project(":own"))
     implementation(project(":home"))
     implementation(project(":count"))
@@ -100,5 +102,15 @@ dependencies {
     implementation("io.github.scwang90:refresh-header-classics:3.0.0-alpha")
     implementation("io.github.scwang90:refresh-footer-classics:3.0.0-alpha")
     implementation("me.jessyan:autosize:1.2.1")
+    implementation("com.tencent:mmkv:1.3.9")
+    implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
+    implementation("com.google.android.gms:play-services-maps:19.2.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-messaging")
 
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.retrofit2:adapter-rxjava3:2.11.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.11.0")
 }

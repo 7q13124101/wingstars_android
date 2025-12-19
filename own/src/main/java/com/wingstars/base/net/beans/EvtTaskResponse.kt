@@ -1,13 +1,15 @@
 package com.wingstars.base.net.beans
 
+import java.io.Serializable
+
 data class ExplainData(
     val remind: String, //新版UI中已经不见这项，暂时留置,等API获取List再决定是否舍去
     val contentList: List<ContentBean>
-) : java.io.Serializable {
+) : Serializable {
     data class ContentBean(
         val contentTitle: String,
         val contentDetail: String
-    ) : java.io.Serializable
+    ) : Serializable
 }
 
 data class EvtTaskResponse(
@@ -50,11 +52,11 @@ data class EvtTaskResponse(
 
     var status: String
         get() {
-            return if(statusInfo == null){
-                "unlock"
-            }else{
-                statusInfo
-            }
+          return if(statusInfo == null){
+              "unlock"
+          }else{
+              statusInfo
+          }
         }
         set(value) {
             statusInfo = value
@@ -73,7 +75,7 @@ data class EvtTaskResponse(
     val sectionTime: String      //时间区间：2025年X月X日(當日賽事)
         get(){
             return if(startDateF.isNotEmpty() && endDateF.isNotEmpty() ) {
-                startDateF +"〜"+endDateF
+                 startDateF +"〜"+endDateF
             }else if(startDateF.isNotEmpty()){
                 startDateF
             }else if(endDateF.isNotEmpty()) {
@@ -92,3 +94,54 @@ data class EvtTaskResponse(
         }
 
 }
+
+/*
+// 任務id uuid
+type EventTaskId = string;
+
+// 觸發類型
+enum TriggerType {
+  app = 'app', // 獵鷹 app 觸發
+  backend = 'backend', // 後台人員編輯
+  pos = 'pos', // pos 送訂單
+  live = 'live' // 現場工作人員發送
+}
+
+// 觸發行為標籤清單
+type ToTalTriggerTag = AppTag | BackendTag | 'none';
+
+// 後台空投 專屬標籤
+enum BackendTag {
+  card = 'card', // 專屬 成功申辦指定會員
+  attendance = 'attendance', // 專屬 當月全勤
+}
+
+// app 專屬標籤
+enum AppTag {
+  mvp = 'mvp', // 專屬 MVP
+  takao = 'takao', // 專屬 應援舞台加油_TAKAO
+  checkin = 'checkin' // 專屬、每日的簽到行為
+  thanks = 'thanks', // 限時 開幕戰感謝有你
+  fb = 'fb', // 限時 按讚官方FB
+  instagram = 'instagram', // 限時 追蹤官方Instagram
+  ytMember = 'ytMember', // 限時 加入 YT 會員
+  yt = 'yt', // 限時 訂閱 官方 YT
+}
+
+// 任務類型
+enum EventType {
+  exclusive = 'exclusive', // 專屬任務
+  daily = 'daily', // 每日任務
+  limited = 'limited' // 限時任務
+}
+
+// 受眾, 多選 ['A001', 'A002']
+enum TargetAudience {
+  Card_Royal = 'A001', // 皇家
+  Card_Noble = 'A002', // 尊爵
+  Card_Family = 'A003', // 親子
+  Card_Regular = 'A004', // 鷹國
+  Normal = 'normal', // 一般會員
+  All = 'all',
+}
+*/

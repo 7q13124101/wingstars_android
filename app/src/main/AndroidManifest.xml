@@ -41,6 +41,10 @@
             android:theme="@style/Theme.WingStars.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".main.PermissionRequestActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WingStars.NoActionBar" />
+        <activity
             android:name="com.wingstars.login.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.WingStars.NoActionBar" />

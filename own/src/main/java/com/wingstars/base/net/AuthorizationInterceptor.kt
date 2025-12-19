@@ -1,6 +1,10 @@
 package com.wingstars.base.net
 
 
+import android.util.Log
+import com.tencent.mmkv.MMKV
+import com.wingstars.base.net.beans.CRMSignInRequest
+import com.wingstars.base.net.beans.CRMVerifyRequest
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -30,7 +34,36 @@ class AuthorizationInterceptor : Interceptor {
             val authorization =
                 NetBase.base64Encode("$account:$password".toByteArray(Charsets.UTF_8))
             requestBuilder.addHeader("Authorization", "Basic $authorization")
-        } else {
+        } else if(urlS.startsWith(NetBase.HOST_CRM)) {
+            if(urlS.contains("/client/")) {
+                if(urlS.contains("/oauth/verify")) {
+                    //不需要token
+                    crmMethodCategory = 0
+                } else if(urlS.contains("/client/sign-in")){
+                    crmMethodCategory = 3
+                    token = MMKV.defaultMMKV().decodeString("crm_client_access_token")
+                    Log.d("token1111",token.toString())
+                    if(token == null || token.isNullOrEmpty()) {
+                        forceRefreshToken = true
+                    }
+                } else{
+                    crmMethodCategory = 1
+                    token = MMKV.defaultMMKV().decodeString("crm_client_access_token")
+                    if(token == null || token.isNullOrEmpty()) {
+                        forceRefreshToken = true
+                    }
+                }
+            }else if(urlS.contains("member/")){
+                    crmMethodCategory = 2
+                    token = MMKV.defaultMMKV().decodeString("crm_member_access_token")
+                    Log.d("token1111",token.toString())
+                    if(token == null || token.isNullOrEmpty()) {
+                        forceRefreshToken = true
+                    }
+                }
+            requestBuilder.addHeader("Authorization", "Bearer $token")
+
+            } else {
 //            println("AuthorizationInterceptor. Other host ${BaseApplication.HOST_NEWSOFT}\n")
         }
 
@@ -39,87 +72,89 @@ class AuthorizationInterceptor : Interceptor {
 
         logIntercept(request, response)
 
-//        if(urlS.startsWith(BaseApplication.HOST_CRM) && (response.code == 401)) {
-//            //response.code == 401 账号密码错误的code也是401，不能直接使用401判断token过期 因为response.body.string()只能调用一次，多次调用会导致 java.lang.IllegalStateException: closed
-//            try{
-//                val jsonResponse = JSONObject(response.peekBody(1024).string())
-//                val message = jsonResponse.getString("message")
-//                if(message == "Token錯誤" || message == "Token已過期" || message.contains("Token", true) || forceRefreshToken){
+        if(urlS.startsWith(NetBase.HOST_CRM) && (response.code == 401)) {
+            //response.code == 401 账号密码错误的code也是401，不能直接使用401判断token过期 因为response.body.string()只能调用一次，多次调用会导致 java.lang.IllegalStateException: closed
+            try{
+                val jsonResponse = JSONObject(response.peekBody(1024).string())
+                val message = jsonResponse.getString("message")
+                if(message == "Token錯誤" || message == "Token已過期" || message.contains("Token", true) || forceRefreshToken){
 //                    val client = CRMHashKey.clientVersion()
 //                    val version = CRMHashKey.appVersion()
-//
-//                    if(crmMethodCategory == 1 || crmMethodCategory == 3) {
-//                        val verifyCall = API.shared?.api!!.crmVerifyCall(
-//                            "${BaseApplication.HOST_CRM}/api/v1/oauth/verify",
-//                            CRMVerifyRequest()
-//                        )
-//                        val execute = verifyCall.execute()
-//                        if(execute.code() == 200) {
-//                            val responseVerify = execute.body()
-//
-//                            if(!responseVerify!!.success || responseVerify!!.data.accessToken == null || responseVerify?.data?.accessToken?.isNullOrEmpty() == true) {
-//                                println("* crm refreshed token is null")
-//                                return response
-//                            }
-//
-//                            MMKVManagement.setCrmClientId(responseVerify!!.data.id)
-//                            MMKVManagement.setCrmClientAccessToken(responseVerify!!.data.accessToken)
-//                            MMKVManagement.setCrmClientRefreshToken(responseVerify!!.data.refreshToken)
-//                            val newRequestBuilder = chain.request().newBuilder()
-//                                .addHeader("Accept", "application/json")
-//                                .addHeader("Content-Type", "application/json")
-//                                .addHeader("Authorization", "Bearer ${responseVerify!!.data.accessToken}")
+
+                    if(crmMethodCategory == 1 || crmMethodCategory == 3) {
+                        val verifyCall = API.shared?.api!!.crmVerifyCall(
+                            "${NetBase.HOST_CRM}/api/v1/oauth/verify",
+                            CRMVerifyRequest()
+                        )
+                        val execute = verifyCall.execute()
+                        if(execute.code() == 200) {
+                            val responseVerify = execute.body()
+
+                            if(!responseVerify!!.success || responseVerify!!.data.accessToken == null || responseVerify?.data?.accessToken?.isNullOrEmpty() == true) {
+                                println("* crm refreshed token is null")
+                                return response
+                            }
+
+                            MMKVManagement.setCrmClientId(responseVerify!!.data.id)
+                            MMKVManagement.setCrmClientAccessToken(responseVerify!!.data.accessToken)
+                            MMKVManagement.setCrmClientRefreshToken(responseVerify!!.data.refreshToken)
+                            val newRequestBuilder = chain.request().newBuilder()
+                                .addHeader("Accept", "application/json")
+                                .addHeader("Content-Type", "application/json")
+                                .addHeader("Authorization", "Bearer ${responseVerify!!.data.accessToken}")
 //                                .addHeader("Client", "$client")
 //                                .addHeader("Version", "$version")
-//
-//                            val newBuild = newRequestBuilder.build()
-//                            response = chain.proceed(newBuild)
-////                            logIntercept(request, response)
-//
-//                            return response
-//                        }
-//                    } else if(crmMethodCategory == 2) {
-//                        val memberPhone =  MMKVManagement.getMemberPhone()
-//                        val memberPsd =  MMKVManagement.getMemberPassword()
-//                        val singInCall = API.shared?.api!!.crmSignInCall("${BaseApplication.HOST_CRM}/api/v1/client/sign-in",
-//                            CRMSignInRequest(memberPhone.toString(),memberPsd.toString()))
-//
-//                        val execute = singInCall.execute()
-//                        if(execute.code() == 200) {
-//                            val signInResponse = execute.body()
-//
-//                            if(!signInResponse!!.success || signInResponse!!.data.accessToken == null || signInResponse?.data?.accessToken?.isNullOrEmpty() == true) {
-//                                println("* crm refreshed token is null")
-//                                return response
-//                            }
-//
-//                            MMKVManagement.setCrmMemberId(signInResponse!!.data.id)
-//                            MMKVManagement.setCrmMemberAccessToken(signInResponse!!.data.accessToken)
-//                            MMKVManagement.setCrmMemberRefreshToken(signInResponse!!.data.refreshToken)
-//                            MMKVManagement.setCrmMemberUserType(signInResponse!!.data.userType)
-//                            MMKVManagement.setCrmMemberCode(signInResponse!!.data.code)
-//
-//                            val newRequestBuilder = chain.request().newBuilder()
-//                                .addHeader("Accept", "application/json")
-//                                .addHeader("Content-Type", "application/json")
-//                                .addHeader("Authorization", "Bearer ${signInResponse!!.data.accessToken}")
+
+                            val newBuild = newRequestBuilder.build()
+                            response = chain.proceed(newBuild)
+//                            logIntercept(request, response)
+
+                            return response
+                        }
+                    } else if(crmMethodCategory == 2) {
+                        val memberPhone =  MMKVManagement.getMemberPhone()
+                        val memberPsd =  MMKVManagement.getMemberPassword()
+                        val singInCall = API.shared?.api!!.crmSignInCall("${NetBase.HOST_CRM}/api/v1/client/sign-in",
+                            CRMSignInRequest(memberPhone.toString(), memberPsd.toString())
+                        )
+
+                        val execute = singInCall.execute()
+                        if(execute.code() == 200) {
+                            val signInResponse = execute.body()
+
+                            if(!signInResponse!!.success || signInResponse!!.data.accessToken == null || signInResponse?.data?.accessToken?.isNullOrEmpty() == true) {
+                                println("* crm refreshed token is null")
+                                return response
+                            }
+
+                            MMKVManagement.setCrmMemberId(signInResponse!!.data.id)
+                            MMKVManagement.setCrmMemberAccessToken(signInResponse!!.data.accessToken)
+                            MMKVManagement.setCrmMemberRefreshToken(signInResponse!!.data.refreshToken)
+                            MMKVManagement.setCrmMemberUserType(signInResponse!!.data.userType)
+                            MMKVManagement.setCrmMemberCode(signInResponse!!.data.code)
+
+                            val newRequestBuilder = chain.request().newBuilder()
+                                .addHeader("Accept", "application/json")
+                                .addHeader("Content-Type", "application/json")
+                                .addHeader("Authorization", "Bearer ${signInResponse!!.data.accessToken}")
 //                                .addHeader("Client", "$client")
 //                                .addHeader("Version", "$version")
-//
-//                            val newBuild = newRequestBuilder.build()
-//                            response = chain.proceed(newBuild)
-////                            logIntercept(request, response)
-//
-//                            return response
-//                        }
-//                    }
-//                }else{
-//                    return response
-//                }
-//            } catch (e: Exception) {
-//                return response
-//            }
-//        } else if(urlS.startsWith(BaseApplication.HOST_NEWSOFT) && !token.isNullOrEmpty()) {
+
+                            val newBuild = newRequestBuilder.build()
+                            response = chain.proceed(newBuild)
+//                            logIntercept(request, response)
+
+                            return response
+                        }
+                    }
+                }else{
+                    return response
+                }
+            } catch (e: Exception) {
+                return response
+            }
+        }
+//        else if(urlS.startsWith(BaseApplication.HOST_NEWSOFT) && !token.isNullOrEmpty()) {
 //            try {
 //                val jsonResponse = JSONObject(response.peekBody(1024).string())
 //                val code = jsonResponse.getInt("code")

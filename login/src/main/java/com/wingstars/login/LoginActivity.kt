@@ -7,55 +7,89 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.tencent.mmkv.MMKV
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.base.net.NetBase
+import com.wingstars.base.net.beans.CRMSignInRequest
 import com.wingstars.login.databinding.ActivityLoginBinding
-import com.wingstars.net.beans.request_respone.RetrofitClient
-import com.wingstars.viewmodel.LoginViewModel
-import com.wingstars.viewmodel.LoginViewModelFactory
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
-class LoginActivity : BaseActivity() {
+class LoginActivity : BaseActivity(), LoginNavigator {
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var viewModel: LoginViewModel
-
-    override fun initView() {}
+    private val viewModel: LoginViewModel by viewModels()
+    private var tag = ""
+    private var isFromSplash = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         setTitleFoot(
             view1 = binding.root,
-            navigationBarColor = R.color.color_F9DCE8,
+            navigationBarColor = R.color.white,
             statusBarColor = R.color.color_F9DCE8
         )
-
-        RetrofitClient.init(this)
-        val factory = LoginViewModelFactory(this)
-        viewModel = ViewModelProvider(this, factory)[LoginViewModel::class.java]
-
-        // Status/Navi bar
         window.statusBarColor = ContextCompat.getColor(this, R.color.color_F9DCE8)
         window.navigationBarColor = ContextCompat.getColor(this, R.color.white)
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = true
 
-        initListeners()
-        setupLiveValidation()
-        observeLogin()
+        tag = intent?.getStringExtra("tag").toString()
+        isFromSplash = intent?.getBooleanExtra("isFromSplash", false) == true
+
+        viewModel.setNavigator(this)
+        initView()
     }
 
-    private fun initListeners() {
+    override fun onDestroy() {
+        super.onDestroy()
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
+    }
+
+    override fun initView() {
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
+
+        // --- MMKV: Ghi nhớ tài khoản ---
+        if (MMKV.defaultMMKV().decodeBool("isRememberAccount")) {
+            val account = MMKV.defaultMMKV().decodeString("member_account")
+            val psd = MMKV.defaultMMKV().decodeString("member_psd")
+            if (!account.isNullOrEmpty() && !psd.isNullOrEmpty()) {
+                binding.edtPhone.setText(account)
+                binding.edtPsd.setText(psd)
+            }
+            binding.cbPsd.isChecked = true
+        } else {
+            binding.cbPsd.isChecked = false
+        }
+
         binding.ivBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+
         binding.ivClose.setOnClickListener {
-            val intent = Intent("com.company.wingstars.OPEN_MAIN")
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            if (intent.resolveActivity(packageManager) != null) startActivity(intent)
+            if (isFromSplash) {
+                navigateToMain()
+            }
             finish()
+        }
+
+        binding.tvPhoneInputError.visibility = View.INVISIBLE
+        binding.tvPsdInputError.visibility = View.INVISIBLE
+
+        setupLiveValidation()
+
+        binding.edtPhone.setOnFocusChangeListener { _, hasFocus ->
+            binding.rlPhone.isActivated = hasFocus
+        }
+        binding.edtPsd.setOnFocusChangeListener { _, hasFocus ->
+            binding.rlPsd.isActivated = hasFocus
         }
 
         binding.cbPsdVisible.setOnCheckedChangeListener { _, isChecked ->
@@ -66,7 +100,31 @@ class LoginActivity : BaseActivity() {
             binding.edtPsd.text?.let { binding.edtPsd.setSelection(it.length) }
         }
 
-        binding.btnLogin.setOnClickListener { onLoginClick() }
+        // --- Nút Login ---
+        binding.btnLogin.setOnClickListener {
+            val phoneStr = binding.edtPhone.text.toString().trim()
+            val psdStr = binding.edtPsd.text.toString().trim()
+
+            if (phoneStr.isEmpty()) {
+                showPhoneError(getString(R.string.hint_phone))
+                return@setOnClickListener
+            }
+            if (!isTaiwanPhone(phoneStr)) {
+                showDialog(getString(R.string.account), getString(R.string.error_phone_format))
+                return@setOnClickListener
+            }
+            if (psdStr.isEmpty()) {
+                showPsdError(getString(R.string.error_psd_empty))
+                return@setOnClickListener
+            }
+            // Check mật khẩu mạnh (từ code bạn của bạn)
+            if (!isPasswordStrong(psdStr)) {
+                showPsdError(getString(R.string.note_register_psd))
+                return@setOnClickListener
+            }
+
+            viewModel.userCheck(CRMSignInRequest(phoneStr, psdStr), binding.cbPsd.isChecked)
+        }
 
         binding.tvRegister.setOnClickListener {
             startActivity(Intent(this, com.wingstars.register.RegisterActivity::class.java))
@@ -77,54 +135,18 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-    private fun observeLogin() {
-        viewModel.loginSuccess.observe(this) { respone ->
-            val sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-            sharedPref.edit().apply {
-                putBoolean("is_logged_in", true)
-                putString("phone", binding.edtPhone.text.toString().trim())
-                putString("password", binding.edtPsd.text.toString())
-                apply()
-            }
-            navigateToMain()
-        }
-        viewModel.loginError.observe(this) { msg ->
-            showDialog(getString(R.string.login), msg)
-        }
-    }
-
     private fun navigateToMain() {
-        val intent = Intent("com.company.wingstars.OPEN_MAIN").apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val intent1 = Intent("com.company.wingstars.OPEN_MAIN")
+        intent?.getStringExtra("fcmTag")?.let {
+            intent1.putExtra("fcmTag", it)
         }
-        startActivity(intent)
-        finish()
+        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (intent1.resolveActivity(packageManager) != null) {
+            startActivity(intent1)
+        }
     }
 
-    private fun onLoginClick() {
-        val phone = binding.edtPhone.text?.toString()?.trim().orEmpty()
-        val password = binding.edtPsd.text?.toString().orEmpty()
-
-        if (phone.isEmpty() || password.isEmpty()) {
-            showDialog(getString(R.string.login), getString(R.string.error_empty))
-            return
-        }
-        if (!isTaiwanPhone(phone)) {
-            showDialog(getString(R.string.account), getString(R.string.error_phone_format))
-            return
-        }
-        if (!isPasswordStrong(password)) {
-            showDialog(getString(R.string.password), getString(R.string.note_register_psd))
-            return
-        }
-
-        viewModel.loginWithToken(
-            apiKey = NetBase.API_KEY,
-            username = phone,
-            password = password
-        )
-    }
-
+    // --- Validation Logic ---
     private fun setupLiveValidation() {
         binding.edtPhone.addTextChangedListener(object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -149,29 +171,35 @@ class LoginActivity : BaseActivity() {
         })
     }
 
-    // ---------------- UI error helpers ----------------
     private fun showPhoneError(msg: String) {
         binding.tvPhoneInputError.text = msg
         binding.tvPhoneInputError.visibility = View.VISIBLE
         binding.alertCircle.visibility = View.VISIBLE
     }
-
     private fun showPhoneNormal() {
+        binding.tvPhoneInputError.text = ""
         binding.tvPhoneInputError.visibility = View.INVISIBLE
         binding.alertCircle.visibility = View.INVISIBLE
     }
-
     private fun showPsdError(msg: String) {
         binding.tvPsdInputError.text = msg
         binding.tvPsdInputError.visibility = View.VISIBLE
     }
-
     private fun showPsdNormal() {
+        binding.tvPsdInputError.text = ""
         binding.tvPsdInputError.visibility = View.INVISIBLE
         binding.cbPsdVisible.visibility = View.VISIBLE
     }
 
-    // ---------------- Validators ----------------
+    private fun showDialog(title: String, message: String) {
+        if (isFinishing) return
+        MaterialAlertDialogBuilder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(getString(R.string.confirm)) { d, _ -> d.dismiss() }
+            .show()
+    }
+
     private fun isTaiwanPhone(phone: String): Boolean = Regex("^09\\d{8}$").matches(phone)
 
     private fun isPasswordStrong(pwd: String): Boolean {
@@ -181,19 +209,70 @@ class LoginActivity : BaseActivity() {
         return hasLetter && hasDigit
     }
 
-    // ---------------- Simple TextWatcher ----------------
     private open class SimpleTW : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(s: Editable?) {}
     }
 
-    private fun showDialog(title: String, message: String) {
+    private fun setUserName(userName: String){
+        MMKV.defaultMMKV().encode("user_name", userName)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: MessageEvent?) {
+    }
+
+    // --- QUAN TRỌNG: LOGIN SUCCESS ---
+    override fun loginSuccess() {
+        NetBase.refreshEvtTasks(true)
+        val phoneStr = binding.edtPhone.text.toString().trim()
+        val psdStr = binding.edtPsd.text.toString().trim()
+
+        setUserName(phoneStr)
+
+        // >>> BỔ SUNG: Lưu SharedPreferences cho UserFragment dùng <<<
+        val sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        sharedPref.edit().apply {
+            putBoolean("is_logged_in", true)
+            putString("phone", phoneStr)
+            putString("password", psdStr)
+            apply()
+        }
+        // >>> KẾT THÚC BỔ SUNG <<<
+
+        sendBroadcast(Intent(NetBase.BROADCAST_USER_LOGIN))
+        if (tag.isNotEmpty()) {
+            val intent = Intent(NetBase.BROADCAST_LOGIN_SUCCESS_INTENT)
+            intent.putExtra("intentTag", tag)
+            sendBroadcast(intent)
+        }
+        EventBus.getDefault().post(MessageEvent(EventState.LOG_IN.name, ""))
+
+        if (isFromSplash) {
+            navigateToMain()
+        } else {
+            finish()
+        }
+    }
+
+    override fun showNotRegisteredDialog() {
+        showCustomWarningDialog()
+    }
+
+    private fun showCustomWarningDialog() {
         if (isFinishing) return
-        MaterialAlertDialogBuilder(this)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton(getString(R.string.confirm)) { dialog, _ -> dialog.dismiss() }
-            .show()
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_warning_custom, null)
+        builder.setView(dialogView)
+        builder.setCancelable(false)
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val btnConfirm = dialogView.findViewById<android.view.View>(R.id.btnConfirm)
+        btnConfirm.setOnClickListener {
+            dialog.dismiss()
+            startActivity(Intent(this, com.wingstars.register.RegisterActivity::class.java))
+        }
+        dialog.show()
     }
 }

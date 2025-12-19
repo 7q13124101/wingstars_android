@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.company.wingstars.databinding.ActivityWelcomeBinding
 import com.gyf.immersionbar.ktx.immersionBar
+import com.tencent.mmkv.MMKV
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.login.LoginActivity
 
@@ -24,9 +25,15 @@ class WelcomeActivity : BaseActivity() {
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = true
 
         binding.btnStart.setOnClickListener {
-            startActivity(Intent(this, com.wingstars.login.LoginActivity::class.java))
-            // Nếu không muốn quay lại màn trước:
-            // finish()
+            MMKV.defaultMMKV().encode("isFirstRun", false)
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.putExtra("isFromSplash", true)
+            this.intent.getStringExtra("fcmTag")?.let {
+                intent.putExtra("fcmTag", it)
+            }
+
+            startActivity(intent)
+            finish()
         }
     }
     fun onInitializationSuccessful() {
