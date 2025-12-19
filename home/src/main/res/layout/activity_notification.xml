@@ -38,7 +38,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:text="全部已讀"
-            android:textColor="@color/color_E2518D"
+            android:textColor="@color/text_tittle"
             android:textSize="14sp" />
     </RelativeLayout>
 

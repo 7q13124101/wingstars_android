@@ -17,7 +17,7 @@
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.NotificationActivity"
+            android:name="com.wingstars.home.activity.NotificationActivity"
             android:exported="false"/>
         <meta-data
             android:name="design_width_in_dp"
