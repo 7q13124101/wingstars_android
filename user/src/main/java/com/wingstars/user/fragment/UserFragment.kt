@@ -220,7 +220,23 @@ class UserFragment : BaseFragment(){
             startActivity(intent)
         }
 
-        binding.diamond.setOnClickListener{
+        binding.qrMember.setOnClickListener{
+            val intent = Intent(requireActivity(), CumulativeAmountActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.llUserCheeringMode.setOnClickListener{
+            val intent = Intent(requireActivity(), CheerModeActivity::class.java)
+            startActivity(intent)
+        }
+
+
+        binding.achievement.setOnClickListener{
+            val intent = Intent(requireActivity(), AchievementActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.qrMember.setOnClickListener{
             val intent = Intent(requireActivity(), CumulativeAmountActivity::class.java)
             startActivity(intent)
         }
