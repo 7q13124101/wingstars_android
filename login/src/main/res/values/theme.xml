@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.WingStars" parent="Theme.AppCompat.Light.NoActionBar" >
+    <style name="Theme.WingStars" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:navigationBarColor">@color/white</item>
+
+        <!-- Các màu cần thiết cho MaterialAlertDialog -->
+        <item name="colorPrimary">@color/color_101828</item>
+        <item name="colorPrimaryVariant">@color/color_101828</item>
+        <item name="colorSecondary">@color/color_101828</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/black</item>
     </style>
     <style name="Theme.WingStars.NoActionBar" parent="Theme.WingStars">
         <item name="windowActionBar">false</item>

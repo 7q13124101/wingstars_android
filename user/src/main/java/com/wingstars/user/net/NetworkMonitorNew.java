@@ -21,7 +21,6 @@ public class NetworkMonitorNew {
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
         currentState = getCurrentNetworkState();
     }
-
     public static synchronized NetworkMonitorNew getInstance(Context context) {
         if (instance == null) {
             instance = new NetworkMonitorNew(context.getApplicationContext());
@@ -29,37 +28,6 @@ public class NetworkMonitorNew {
         return instance;
     }
 
-    // 注册网络监听
-    public void registerListener(NetworkStateListener listener) {
-        this.listener = listener;
-        if (networkCallback == null) {
-            networkCallback = new NetworkCallback();
-            NetworkRequest request = new NetworkRequest.Builder()
-                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                    .build();
-
-            try {
-                connectivityManager.registerNetworkCallback(request, networkCallback);
-            } catch (SecurityException e) {
-                Log.e(TAG, "Network permission not granted", e);
-            }
-        }
-    }
-
-    // 取消注册
-    public void unregisterListener() {
-        if (networkCallback != null) {
-            try {
-                connectivityManager.unregisterNetworkCallback(networkCallback);
-            } catch (IllegalArgumentException e) {
-                Log.e(TAG, "Network callback already unregistered", e);
-            }
-            networkCallback = null;
-        }
-        listener = null;
-    }
-
-    // 获取当前网络状态
     public NetworkState getCurrentNetworkState() {
         if (connectivityManager == null) {
             return new NetworkState(false, NetworkState.TYPE_UNKNOWN);

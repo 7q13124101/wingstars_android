@@ -1,5 +1,6 @@
 package com.wingstars.base.base
 
+import android.content.Context
 import android.os.Build
 
 import android.view.LayoutInflater

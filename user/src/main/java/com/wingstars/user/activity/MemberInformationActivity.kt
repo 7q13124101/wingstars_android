@@ -12,7 +12,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.WindowInsetsControllerCompat
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.user.utils.KeyboardUtils
-import com.wingstars.user.activity.MobileBarcodeCarrierActivity
 import com.wingstars.user.databinding.ActivityMemberInformationBinding
 import com.wingstars.user.dialog.DeleteAccountDialog
 
@@ -22,7 +21,7 @@ class MemberInformationActivity : BaseActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val newPassword = result.data?.getStringExtra("new_password") ?: ""
-                binding.edtIdCard.setText(newPassword) // edt_id_card trong layout
+                binding.edtPassword.setText(newPassword)
             }
         }
 
@@ -31,14 +30,8 @@ class MemberInformationActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMemberInformationBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        setTitleFoot(
-//            view1 = binding.root,
-//            statusBarColor = R.color.color_F3F4F6,
-//            navigationBarColor = R.color.color_F3F4F6
-//        )
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = true
-
         initView()
 
     }
@@ -66,18 +59,15 @@ class MemberInformationActivity : BaseActivity() {
             barcodeLauncher.launch(Intent(this, MobileBarcodeCarrierActivity::class.java))
 
         }
+
         binding.ivIdCard.setOnClickListener {
             var intent = Intent(this, ChangeMemberPasswordActivity::class.java)
             changePasswordLauncher.launch(intent)
         }
         binding.edtDeleteAccount.setOnClickListener {
             DeleteAccountDialog(this) {
-                // Xử lý khi người dùng xác nhận xóa
-                // Ví dụ:
-                // viewModel.deleteAccount()
             }.show()
         }
-
     }
     private val chooseMemberLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
         if(result.resultCode == RESULT_OK){
@@ -98,5 +88,32 @@ class MemberInformationActivity : BaseActivity() {
             binding.edtBarcodeCarrier.setText(mobile)
         }
     }
+    private fun loadMemberInfo() {
+        val pref = getSharedPreferences("user_prefs", MODE_PRIVATE)
+        val isLoggedIn = pref.getBoolean("is_logged_in", false)
+        if (!isLoggedIn) return
+        val password = pref.getString("password", "")
+        val phone = pref.getString("phone", "")
+        val code = pref.getString("code", "")
+        val birthday = pref.getString("birthday", "")
+        val gender = pref.getString("gender", "")
+        binding.phoneMember.text = phone
+        binding.idCardNumber.text = code
+        binding.birthday.text = birthday
+        binding.edtPassword.setText(password)
+        binding.userGender.text = when (gender) {
+            "M", "Male", "男" -> "男"
+            "F", "Female", "女" -> "女"
+            else -> ""
+        }
+        binding.tvUserName.text = pref.getString("name", "")
+        binding.tvUserMail.text = pref.getString("email", "")
+    }
+    override fun onResume() {
+        super.onResume()
+        loadMemberInfo()
+    }
+
+
 
 }

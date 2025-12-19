@@ -12,29 +12,63 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.wingstars.base.base.BaseActivity
+import com.wingstars.net.beans.request_respone.OtpSmsRequest
+import com.wingstars.net.beans.request_respone.RetrofitClient
 import com.wingstars.user.R
 import com.wingstars.user.databinding.ActivityChangeMemberPasswordBinding
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class ChangeMemberPasswordActivity: BaseActivity() {
     private lateinit var binding: ActivityChangeMemberPasswordBinding
     private  var countDownTimer: CountDownTimer? = null
     private var timeLeft = 60
+    private lateinit var phoneNumber: String
+    private lateinit var loginPassword: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChangeMemberPasswordBinding.inflate(layoutInflater)
         val controller = WindowInsetsControllerCompat(window, window.decorView)
-        controller.isAppearanceLightStatusBars = true  // icon đen
+        controller.isAppearanceLightStatusBars = true
         setContentView(binding.root)
+//        phoneNumber = intent.getStringExtra("phone").orEmpty()
+//
+//        if (phoneNumber.isBlank()) {
+//            showToast("手機號碼不存在，請重新登入")
+//            finish()
+//            return
+//        }
+        val pref = getSharedPreferences("user_prefs", MODE_PRIVATE)
+        loginPassword = pref.getString("password", "").orEmpty()
+
+        if (loginPassword.isBlank()) {
+            showToast("登入資訊遺失，請重新登入")
+            finish()
+            return
+        }
         binding.btnSendCode.isEnabled = true
+
+
         initView()
 
     }
     override fun initView(){
         binding.ivBack.setOnClickListener { finish() }
+//        binding.btnSendCode.setOnClickListener {
+//
+//            if (phoneNumber.length != 10 || !phoneNumber.startsWith("09")) {
+//                showToast("手機號碼錯誤")
+//                return@setOnClickListener
+//            }
+//
+//            sendOtp(phoneNumber)
+//        }
         binding.btnSendCode.setOnClickListener {
-            startCountDown()
-            // Call API send OTP
+            sendOtp("")
         }
+
+
         setupTextWatchers()
         checkEnableSaveButton()
         binding.btnSave.setOnClickListener {
@@ -42,6 +76,13 @@ class ChangeMemberPasswordActivity: BaseActivity() {
         }
 
     }
+    private fun sendOtp(phone: String) {
+        binding.btnSendCode.isEnabled = false
+        showToast("驗證碼已發送")
+        startCountDown()
+    }
+
+
     private fun setupTextWatchers() {
         val watcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -54,7 +95,7 @@ class ChangeMemberPasswordActivity: BaseActivity() {
         binding.edtOldCode.addTextChangedListener(watcher)
         binding.edtNewCode.addTextChangedListener(watcher)
         binding.edtNewConfirm.addTextChangedListener(watcher)
-        binding.edtPhone.addTextChangedListener(watcher)
+        binding.edtOtp.addTextChangedListener(watcher)
     }
     private fun startCountDown() {
         binding.btnSendCode.visibility = View.GONE
@@ -69,15 +110,17 @@ class ChangeMemberPasswordActivity: BaseActivity() {
 
             override fun onFinish() {
                 binding.btnSendCode.visibility = View.VISIBLE
+                binding.llCountdown.visibility = View.GONE
+                binding.btnSendCode.isEnabled = true
             }
+
         }.start()
     }
     private fun checkEnableSaveButton() {
         val isOldCodeValid = binding.edtOldCode.text?.length in 8..20
         val isNewCodeValid = binding.edtNewCode.text?.length in 8..20
         val isNewConfirmValid = binding.edtNewConfirm.text?.length in 8..20
-        val isPhoneValid = binding.edtPhone.text?.length == 8
-
+        val isPhoneValid = binding.edtOtp.text?.length == 6
         val allValid = isOldCodeValid && isNewCodeValid && isNewConfirmValid && isPhoneValid
 
         if (allValid) {
@@ -96,42 +139,58 @@ class ChangeMemberPasswordActivity: BaseActivity() {
         val oldCode = binding.edtOldCode.text.toString()
         val newCode = binding.edtNewCode.text.toString()
         val newConfirm = binding.edtNewConfirm.text.toString()
-        val phone = binding.edtPhone.text.toString()
+        val otp = binding.edtOtp.text.toString()
+        fun isPasswordStrong(pwd: String): Boolean {
+            if (pwd.length < 8) return false
+            val hasLetter = pwd.any { it.isLetter() }
+            val hasDigit = pwd.any { it.isDigit() }
+            return hasLetter && hasDigit
+        }
 
         when {
-            oldCode.length !in 8..20 -> {
-                showToast("舊密碼長度必須介於 8 到 20 個字元之間。")
+            oldCode != loginPassword -> {
+                showToast("舊密碼錯誤")
                 binding.edtOldCode.requestFocus()
+                return
             }
             newCode.length !in 8..20 -> {
                 showToast("新密碼長度必須介於 8 到 20 個字元之間。")
                 binding.edtNewCode.requestFocus()
+                return
+            }
+            !isPasswordStrong(newCode) -> {
+                showToast("新密碼必須包含字母和數字")
+                binding.edtNewCode.requestFocus()
+                return
             }
             newConfirm.length !in 8..20 -> {
                 showToast("確認密碼長度必須介於 8 到 20 個字元之間。")
                 binding.edtNewConfirm.requestFocus()
+                return
             }
-            phone.length != 8 -> { // edtPhone chỉ được 8 kí tự
-                showToast("驗證碼長度必須為 8 個字元。")
-                binding.edtPhone.requestFocus()
+            otp.length != 6 -> {
+                showToast("驗證碼長度必須為 6 個字元。")
+                binding.edtOtp.requestFocus()
+                return
             }
             newCode != newConfirm -> {
                 showToast("新密碼和確認資訊不匹配")
                 binding.edtNewConfirm.requestFocus()
+                return
             }
             else -> {
                 showSuccessDialog(newConfirm)
             }
         }
     }
+
+
     @SuppressLint("MissingInflatedId")
     private fun showSuccessDialog(newPassword: String) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_password_change_success, null)
-
         val dialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
         dialog.setContentView(dialogView)
-        dialog.setCancelable(false)  // nếu muốn không đóng ngoài màn hình
-
+        dialog.setCancelable(false)
         val btnOk = dialogView.findViewById<MaterialButton>(R.id.btn_ok)
         btnOk.setOnClickListener {
             dialog.dismiss()
@@ -143,11 +202,6 @@ class ChangeMemberPasswordActivity: BaseActivity() {
 
         dialog.show()
     }
-
-
-
-
-
     override fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }

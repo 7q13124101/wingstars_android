@@ -18,6 +18,7 @@ import com.wingstars.count.fragment.CountFragment
 import com.wingstars.home.fragment.HomeFragment
 import com.wingstars.member.activity.FanInteractionActivity
 import com.wingstars.member.fragment.MemberFragment
+import com.wingstars.net.beans.request_respone.RetrofitClient
 import com.wingstars.user.fragment.UserFragment
 
 class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClickListener,
@@ -29,6 +30,7 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        RetrofitClient.appContext = this
         binding = ActivityMainBinding.inflate(layoutInflater)
 
 

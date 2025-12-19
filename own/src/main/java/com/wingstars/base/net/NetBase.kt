@@ -25,7 +25,9 @@ object NetBase {
 
     //测试区
     const val HOST_BASE = "https://61.218.209.209"
-
+    const val CRM_HOST = "https://ws-crm-dev.newretail.tw"
+    const val API_KEY = "8e2KeU3Bntw43R09tNE1"
+    const val TOKEN_TYPE = "Bearer"
     const val WINGSTARS_ACCOUNT_ENC = "OaAJUXD7ZN20fekfVqN3uJzbbqf4LP8vR7AMXPVlFaU="                        //"newsoftapp"
     const val WINGSTARS_PASSWORD_ENC = "gZR514+qAhvFIRr+eRoQ0Qo5/OVEOrnL4OMd/40ACtKzIvdjNnYFq/vNLe5/Uerm"   //"VU4m E5kG Azeu Rryo JmxT BXAj"
     const val CONSUMER_KEY_ENC = "9humcXmIssTG1JdlihQocOdH6D5tNQDImi7CP5cHvyfkq40DcosNRBXIxd9nFlsFX0QNz6v36iY+vjfMaju7tw=="     //"ck_0de8be632e78d179c2ebcd1215c301198a75944a"

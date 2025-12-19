@@ -2,6 +2,7 @@ package com.wingstars.user.fragment
 
 import android.content.ClipData
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -15,8 +16,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.login.LoginActivity
 import com.wingstars.user.R
@@ -25,6 +30,7 @@ import com.wingstars.user.activity.FrequentlyAskedQuestionsActivity
 import com.wingstars.user.activity.MemBarCodeActivity
 import com.wingstars.user.activity.MemberInformationActivity
 import com.wingstars.user.activity.MemberLevelActivity
+import com.wingstars.user.activity.MobileBarcodeCarrierActivity
 import com.wingstars.user.activity.PolicyTermActivity
 import com.wingstars.user.activity.StoreLocationActivity
 import com.wingstars.user.databinding.FragmentUserBinding
@@ -40,8 +46,8 @@ class UserFragment : BaseFragment(){
     private val binding get() = _binding!!
     private val TAG = "UserFragment"
     private var isNotificationOn = false
-
-
+    private var isBarcodeContentVisible = false
+    private lateinit var originalConstraintSet: ConstraintSet
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,10 +57,16 @@ class UserFragment : BaseFragment(){
 
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        updateLoginUI()
+        showMemberQRCode()
+        originalConstraintSet = ConstraintSet()
+        originalConstraintSet.clone(binding.barcodeMember)
+
+
+
     }
     private fun initView() {
         val packageManager: PackageManager =  requireActivity().packageManager
@@ -63,7 +75,6 @@ class UserFragment : BaseFragment(){
         binding.tvVersion.text = "版本 "+packageInfo.versionName
         binding.srlUserRecord.setOnRefreshListener {
             if (NetworkMonitorNew.getInstance(requireActivity()).currentNetworkState.isConnected) {
-//                refreshUI()
             } else {
                 Toast.makeText(
                     BaseApplication.Companion.shared()!!,
@@ -73,11 +84,58 @@ class UserFragment : BaseFragment(){
             }
             binding.srlUserRecord.finishRefresh()
         }
-
-        binding.rlVisitorsQrCode.setOnClickListener {
-            val intent = Intent(requireActivity(), MemBarCodeActivity::class.java)
+       binding.layoutMain.containerForRectangleAndText.setOnClickListener {
+           val intent = Intent(requireActivity(), LoginActivity::class.java)
+           startActivity(intent)
+       }
+        binding.barcodeNull.setOnClickListener {
+            val intent = Intent(requireActivity(), MobileBarcodeCarrierActivity::class.java)
             startActivity(intent)
         }
+        binding.icArrowDown.setOnClickListener {
+            isBarcodeContentVisible = !isBarcodeContentVisible
+            val hasBarcode = hasBarcode()
+
+            if (isBarcodeContentVisible) {
+                // MỞ
+                if (hasBarcode) {
+                    binding.barcode.visibility = View.VISIBLE
+                    binding.tvBarcodeDesc.visibility = View.VISIBLE
+                    binding.barcodeNull.visibility = View.GONE
+                } else {
+                    binding.barcode.visibility = View.GONE
+                    binding.tvBarcodeDesc.visibility = View.GONE
+                    binding.barcodeNull.visibility = View.VISIBLE
+                }
+
+                val params = binding.barcodeMember.layoutParams
+                params.height = resources.getDimensionPixelSize(R.dimen.dp_186)
+                binding.barcodeMember.layoutParams = params
+
+                originalConstraintSet.applyTo(binding.barcodeMember)
+
+            } else {
+                // ĐÓNG
+                binding.barcode.visibility = View.GONE
+                binding.tvBarcodeDesc.visibility = View.GONE
+                binding.barcodeNull.visibility = View.GONE
+
+                val params = binding.barcodeMember.layoutParams
+                params.height = resources.getDimensionPixelSize(R.dimen.dp_56)
+                binding.barcodeMember.layoutParams = params
+
+                val set = ConstraintSet()
+                set.clone(binding.barcodeMember)
+                set.clear(binding.tvMemberBarcode.id, ConstraintSet.TOP)
+                set.clear(binding.tvMemberBarcode.id, ConstraintSet.BOTTOM)
+                set.clear(binding.icArrowDown.id, ConstraintSet.TOP)
+                set.clear(binding.icArrowDown.id, ConstraintSet.BOTTOM)
+                set.centerVertically(binding.tvMemberBarcode.id, ConstraintSet.PARENT_ID)
+                set.centerVertically(binding.icArrowDown.id, ConstraintSet.PARENT_ID)
+                set.applyTo(binding.barcodeMember)
+            }
+        }
+
         binding.llUserMemberInformation.setOnClickListener {
             val intent = Intent(requireActivity(), MemberInformationActivity::class.java)
             startActivity(intent)
@@ -186,12 +244,116 @@ class UserFragment : BaseFragment(){
     private fun performLogout() {
         val sharedPref = requireActivity().getSharedPreferences("user_prefs", 0)
         sharedPref.edit().clear().apply()
+        updateLoginUI()
         val intent = Intent(requireContext(), LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
+    private fun updateLoginUI() {
+        val sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val isLoggedIn = sharedPref.getBoolean("is_logged_in", false)
+        val userName = sharedPref.getString("name", "")
+        val effectiveDate = sharedPref.getString("effective_date", "")
+
+        binding.cardGeneralMember.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
+        binding.cardFriendshipMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+        binding.qrMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+        binding.barcodeMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+        binding.layoutMain.tvLogin.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
+        binding.layoutMain.tvLoginGenerally.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+        binding.layoutMain.effectiveDate.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+        if (isLoggedIn) {
+            binding.layoutMain.tvUserName.text = userName ?: ""
+            binding.layoutMain.effectiveDate.text = effectiveDate ?: ""
+        }
+    }
+    private fun hasBarcode(): Boolean {
+        val pref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        return !pref.getString("barcode_number", "").isNullOrEmpty()
+    }
+
+    private fun generateQRCode(data: String): Bitmap? {
+        return try {
+            val bitMatrix = MultiFormatWriter().encode(data, BarcodeFormat.QR_CODE, 400, 400)
+            BarcodeEncoder().createBitmap(bitMatrix)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun getMemberInfoString(phone: String?, code: String?, birthday: String?, gender: String?): String {
+        return """
+        {
+            "phone": "$phone",
+            "code": "$code",
+            "birthday": "$birthday",
+            "gender": "$gender"
+        }
+    """.trimIndent()
+    }
+    private fun showMemberQRCode() {
+        val pref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val isLoggedIn = pref.getBoolean("is_logged_in", false)
+        if (!isLoggedIn) return
+
+        val phone = pref.getString("phone", "")
+        val code = pref.getString("code", "")
+        val birthday = pref.getString("birthday", "")
+        val gender = pref.getString("gender", "")
+
+        val qrData = getMemberInfoString(phone, code, birthday, gender)
+        val bitmap = generateQRCode(qrData)
+        bitmap?.let {
+            binding.qrMember.visibility = View.VISIBLE
+            binding.qr.setImageBitmap(it)
+        }
+    }
+    private fun updateBarcodeUI() {
+        val pref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val barcodeNumber = pref.getString("barcode_number", "")
+
+        val hasBarcode = !barcodeNumber.isNullOrEmpty()
+
+        if (hasBarcode) {
+            val bitmap = generateBarcode(barcodeNumber!!)
+            bitmap?.let {
+                binding.barcode.setImageBitmap(it)
+            }
+
+            binding.barcode.visibility = View.VISIBLE
+            binding.tvBarcodeDesc.visibility = View.VISIBLE
+            binding.tvBarcodeDesc.text = barcodeNumber
+
+            binding.barcodeNull.visibility = View.GONE
+            binding.icArrowDown.visibility = View.VISIBLE
+
+        } else {
+            binding.barcode.visibility = View.GONE
+            binding.tvBarcodeDesc.visibility = View.GONE
+
+            binding.barcodeNull.visibility = View.VISIBLE
+            binding.icArrowDown.visibility = View.GONE
+        }
+    }
+    private fun generateBarcode(data: String): Bitmap? {
+        return try {
+            val bitMatrix = MultiFormatWriter()
+                .encode(data, BarcodeFormat.CODE_128, 600, 200)
+                BarcodeEncoder().createBitmap(bitMatrix)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+    override fun onResume() {
+        super.onResume()
+        updateBarcodeUI()
+    }
+
 }

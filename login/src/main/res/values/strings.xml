@@ -22,7 +22,9 @@
     <string name="register_terms">個人資料</string>
     <string name="register_termss">註冊條款</string>
     <string name="user_privacy_policy">隱私條款</string>
-
+    <string name="login_success">đăng nhập thành công</string>
+    <string name="login_error">Đăng nhập thất bại</string>
+    <string name="login_error_phone">tài khoàn chưa đăng kí hoặc sia mật khẩu</string>
 
     <string name="user_register">註冊會員</string>
     <string name="why_identity_information">為何需要身分資料</string>

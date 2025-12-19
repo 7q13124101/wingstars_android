@@ -35,7 +35,7 @@
     <string name="user_hint_code_larger">點擊放大條碼，掃描更方便！</string>
     <string name="user_tsg_phone_code">手機條碼載具</string>
     <string name="user_hint_code_smaller">點擊條碼縮小</string>
-
+    <string name="user_vehicle_barcode">載具條碼</string>
     <string name="user_phone_number">手機號碼</string>
     <string name="user_id_number">身分證字號</string>
     <string name="user_birthday">生日</string>

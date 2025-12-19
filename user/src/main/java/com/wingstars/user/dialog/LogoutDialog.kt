@@ -14,7 +14,6 @@ class LogoutDialog(
 ) {
     private val dialog = Dialog(context)
     private val binding: DialogLogoutAccountBinding
-
     init {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         val inflater = LayoutInflater.from(context)
@@ -30,18 +29,13 @@ class LogoutDialog(
             setGravity(Gravity.BOTTOM)
             attributes.windowAnimations = android.R.style.Animation_Dialog
         }
-
         dialog.setCancelable(true)
-
-        // Xử lý nút Cancel
         binding.edtMobile.setOnClickListener {
             dialog.dismiss()
         }
-
-        // Xử lý nút Confirm
         binding.edtMobile1.setOnClickListener {
             dialog.dismiss()
-            onConfirm.invoke()  // Gọi performLogout()
+            onConfirm.invoke()
         }
     }
 
