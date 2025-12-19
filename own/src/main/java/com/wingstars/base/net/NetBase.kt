@@ -1,19 +1,18 @@
 package com.wingstars.base.net
 
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
+import android.content.Intent
 import android.os.Build
-import android.util.Log
+import com.tencent.mmkv.MMKV
+import com.wingstars.base.net.beans.EvtTaskResponse
+//import com.wingstars.count.dialog.SortMethod
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.security.MessageDigest
 import java.security.SecureRandom
+import java.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
-import java.util.Base64
 import javax.crypto.spec.SecretKeySpec
-
-
 
 object NetBase {
     private const val AES_ALGORITHM = "AES/CBC/PKCS5Padding"
@@ -26,6 +25,7 @@ object NetBase {
     //测试区
     const val HOST_BASE = "https://61.218.209.209"
     const val HOST_CRM = "https://ws-crm-dev.newretail.tw/"
+    const val HOST_EVENT = "https://ws-event-dev.newretail.tw/"
 
     const val WINGSTARS_ACCOUNT_ENC = "OaAJUXD7ZN20fekfVqN3uJzbbqf4LP8vR7AMXPVlFaU="                        //"newsoftapp"
     const val WINGSTARS_PASSWORD_ENC = "gZR514+qAhvFIRr+eRoQ0Qo5/OVEOrnL4OMd/40ACtKzIvdjNnYFq/vNLe5/Uerm"   //"VU4m E5kG Azeu Rryo JmxT BXAj"

@@ -96,8 +96,8 @@ class SelectDialogFragment : BottomSheetDialogFragment() {
 
     private fun initColorData() {
         val basics = listOf(
-            "#000000", "#FFFFFF", "#007AFF", "#34C759", "#FF9500", "#FF3B30",
-            "#FF2D55", "#AF52DE", "#5856D6", "#5AC8FA", "#FFCC00", "#8E8E93"
+            "#000000", "#0060FD", "#31C759", "#FFCC01", "#FF3B2F", "#F4A4C1",
+            "#FFFFFF", "#69FEFF", "#7FFF6F", "#D29D01", "#9629D4", "#E53B7A"
         )
         basicList.clear()
         basics.forEach { hex ->
@@ -106,17 +106,22 @@ class SelectDialogFragment : BottomSheetDialogFragment() {
 
         paletteList.clear()
 
-        val grays = listOf("#FFFFFF", "#E0E0E0", "#C0C0C0", "#A0A0A0", "#808080", "#606060", "#404040", "#202020", "#000000")
-        grays.forEach { paletteList.add(PhrasesBean(it, "", it.equals(initialColor, true))) }
+        val hues = floatArrayOf(0f, 33f, 66f, 99f, 132f, 165f, 198f, 231f, 264f, 297f, 330f)
 
-        val hues = floatArrayOf(0f, 30f, 60f, 120f, 180f, 240f, 270f, 300f, 330f)
-        for (h in hues) {
-            for (i in 1..8) {
-                val sat = 1.0f
-                val value = 1.0f - (i * 0.1f)
-                val hsv = floatArrayOf(h, sat, value)
+        for (row in 0 until 10) {
+            val value = 1.0f - (row * 0.1f)
+            for (col in 0 until 12) {
+                val hsv: FloatArray
+                if (col == 0) {
+                    hsv = floatArrayOf(0f, 0f, value)
+                } else {
+                    val currentHue = hues[col - 1]
+                    hsv = floatArrayOf(currentHue, 1.0f, value)
+                }
+
                 val colorInt = Color.HSVToColor(hsv)
                 val hex = String.format("#%06X", (0xFFFFFF and colorInt))
+
                 paletteList.add(PhrasesBean(hex, "", hex.equals(initialColor, true)))
             }
         }

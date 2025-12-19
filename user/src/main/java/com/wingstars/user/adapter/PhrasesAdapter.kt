@@ -58,7 +58,7 @@ class PhrasesAdapter(
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.item_color_square, parent, false)
                 ColorViewHolder(view)
             }
-            else -> { // MODE_SIMPLE
+            else -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.item_select_phrase, parent, false)
                 SimpleViewHolder(view)
             }
