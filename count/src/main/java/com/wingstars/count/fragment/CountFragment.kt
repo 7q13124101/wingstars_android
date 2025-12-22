@@ -38,6 +38,7 @@ import com.wingstars.count.activity.GiftExchangeActivity
 import com.wingstars.count.adapter.CountAdapter
 import com.wingstars.count.databinding.DialogPublicPopupBoxBinding
 import com.wingstars.count.databinding.DialogPublicPopupSortTypeBinding
+import com.wingstars.count.dialog.SortMethod
 
 class CountFragment : BaseFragment(){
     private lateinit var viewModel : CountViewModel
@@ -116,6 +117,8 @@ class CountFragment : BaseFragment(){
             }
         }, 0)
 
+        binding.titleList.adapter = countTitleAdapter
+
         adapter = CountAdapter()
         adapter.onItemClick = { item ->
             val intent = Intent(requireActivity(), Count_Item_Activity::class.java)
@@ -168,6 +171,8 @@ class CountFragment : BaseFragment(){
             isExpanded = true
             updateListDisplay()
         }
+
+
 
         binding.top.setOnClickListener{
             binding.flTop.smoothScrollTo(0, 0)
@@ -340,12 +345,12 @@ class CountFragment : BaseFragment(){
             }
 
 
-//                when (checkedId) {
-//                    R.id.rb_sort_date_new_to_old -> viewModel.sortTaskListData(CountViewModel.SortMethod.SORT_DATE_NEW_TO_OLD)
-//                    R.id.rb_sort_date_old_to_new -> viewModel.sortTaskListData(CountViewModel.SortMethod.SORT_DATE_OLD_TO_NEW)
-//                    R.id.rb_sort_points_high_to_low -> viewModel.sortTaskListData(CountViewModel.SortMethod.SORT_POINTS_HIGH_TO_LOW)
-//                    R.id.rb_sort_points_low_to_high -> viewModel.sortTaskListData(CountViewModel.SortMethod.SORT_POINTS_LOW_TO_HIGH)
-//            }
+                when (checkedId) {
+                    R.id.rb_sort_date_new_to_old -> viewModel.sortTaskListData(SortMethod.SORT_DATE_NEW_TO_OLD)
+                    R.id.rb_sort_date_old_to_new -> viewModel.sortTaskListData(SortMethod.SORT_DATE_OLD_TO_NEW)
+                    R.id.rb_sort_points_high_to_low -> viewModel.sortTaskListData(SortMethod.SORT_POINTS_HIGH_TO_LOW)
+                    R.id.rb_sort_points_low_to_high -> viewModel.sortTaskListData(SortMethod.SORT_POINTS_LOW_TO_HIGH)
+            }
 
             dialogBinding.root.postDelayed({
                     if (dialog.isShowing) dialog.dismiss()

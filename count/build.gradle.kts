@@ -60,4 +60,5 @@ dependencies {
     implementation("com.github.lihangleo2:ShadowLayout:3.4.0")
     implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
     implementation("io.github.youth5201314:banner:2.2.2")
+    implementation("com.tencent:mmkv:1.3.9")
 }
