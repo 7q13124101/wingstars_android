@@ -5,6 +5,7 @@ import com.wingstars.base.net.beans.CRMBaseResponse;
 import com.wingstars.base.net.beans.CRMGenQRCodeRequest;
 import com.wingstars.base.net.beans.CRMGenQRCodeResponse;
 import com.wingstars.base.net.beans.CRMMemberContactResponse;
+import com.wingstars.base.net.beans.CRMMemberDetailResponse;
 import com.wingstars.base.net.beans.CRMSignInRequest;
 import com.wingstars.base.net.beans.CRMSignInResponse;
 import com.wingstars.base.net.beans.CRMVerifyRequest;
@@ -65,6 +66,9 @@ public interface ApiService {
     @GET()
     Observable<List<EvtMemberTaskResponse>> evtMemberTasks(@Url String url, @Query("encryptedIdentity") String encryptedIdentity);
 
+    //Member > 查询会员详细资料. ${BaseApplication.HOST_CRM}/api/v1/basic/member/{id}
+    @GET(NetBase.HOST_CRM + "/api/v1/basic/member/{id}")
+    Observable<CRMBaseResponse<CRMMemberDetailResponse>> crmMemberDetail();
     //今日行程
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/calendar?_fields=id,title.rendered,acf,content.rendered,yoast_head_json.og_image,calendar_category")
     Observable<List<WSCalendarResponse>> wsSchedule(@Query("per_page") int per_page, @Query("page") int page);
