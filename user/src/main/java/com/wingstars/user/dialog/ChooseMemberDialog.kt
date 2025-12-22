@@ -10,35 +10,23 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.wingstars.user.R
 import com.wingstars.user.adapter.MemberAdapter
 import com.wingstars.user.adapter.MemberInfo
-
+import com.wingstars.user.adapter.MemberUI
 class ChooseMemberDialog(
+    private val memberListFromApi: List<MemberUI>,
     private val onMemberSelected: (String) -> Unit,
-    private val selectedName: String? = null ,
+    private val selectedName: String? = null,
 ) : BaseBottomDialog(R.layout.dialog_choose_member) {
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         view.findViewById<ImageView>(R.id.btn_close).setOnClickListener { dismiss() }
-
         val rv = view.findViewById<RecyclerView>(R.id.rv_member)
         rv.layoutManager = LinearLayoutManager(context)
-
-        val members = listOf(
-            MemberInfo("2", "安芝儇"),
-            MemberInfo("90", "Mingo"),
-            MemberInfo("22", "一粒"),
-            MemberInfo("00", "圈圈"),
-            MemberInfo("5", "恬魚"),
-            MemberInfo("7", "昆昆"),
-            MemberInfo("10", "李樂"),
-            MemberInfo("16", "JC"),
-            MemberInfo("19", "妡0"),
-            MemberInfo("20", "艾琳"),
-            MemberInfo("23", "瑈瑈"),
-            MemberInfo("33", "林浠")
-        )
-
+        val members = memberListFromApi.map{memberUI ->
+            MemberInfo(
+                number = memberUI.memberId,
+                name = memberUI.memberName
+            )
+        }
         rv.adapter = MemberAdapter(
             members,
             selectedName?.split("|")?.getOrNull(0),

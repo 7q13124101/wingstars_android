@@ -36,7 +36,11 @@ object NetBase : Application(){
     //测试区
     const val HOST_BASE = "https://61.218.209.209"
     const val HOST_CRM = "https://ws-crm-dev.newretail.tw"
+    const val HOST_EVENT = "https://ws-event-dev.newretail.tw/"
 
+    const val CRM_HOST = "https://ws-crm-dev.newretail.tw"
+    const val API_KEY = "8e2KeU3Bntw43R09tNE1"
+    const val TOKEN_TYPE = "Bearer"
     const val WINGSTARS_ACCOUNT_ENC = "OaAJUXD7ZN20fekfVqN3uJzbbqf4LP8vR7AMXPVlFaU="                        //"newsoftapp"
     const val WINGSTARS_PASSWORD_ENC = "gZR514+qAhvFIRr+eRoQ0Qo5/OVEOrnL4OMd/40ACtKzIvdjNnYFq/vNLe5/Uerm"   //"VU4m E5kG Azeu Rryo JmxT BXAj"
     const val CONSUMER_KEY_ENC = "9humcXmIssTG1JdlihQocOdH6D5tNQDImi7CP5cHvyfkq40DcosNRBXIxd9nFlsFX0QNz6v36iY+vjfMaju7tw=="     //"ck_0de8be632e78d179c2ebcd1215c301198a75944a"
@@ -497,28 +501,6 @@ object NetBase : Application(){
 //                }
 //            )
 
-            //日历2（新版）
-//            val  params = HashMap<String, String>()
-//            params.put("ym", "2025-12")
-//            //params.put("date", "2025-12-05")
-//            val observer = it.wsCalendarN(params)
-//            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
-//                AndroidSchedulers.mainThread())?.subscribe(
-//                { next ->
-//                    Log.d("API", "[wsCalendarN] next.data.size: ${next.size}")
-//
-//                    for (pd in next) {
-//                        //println("title: ${pd.titleF}, content: ${pd.contentF}, st_date: ${pd.st_dateF}, ed_date: ${pd.ed_dateF}, map: ${pd.mapF}, Precautions: ${pd.PrecautionsF}, category: ${pd.calendar_categoryF}, url: ${pd.urlF}")
-//                        //println("title: ${pd.title}, content: ${pd.content}, st_date: ${pd.start_date}, ed_date: ${pd.end_date}, map: ${pd.location}, Precautions: ${pd.precautions}, category: ${pd.category}, url: ${pd.image_url}")
-//                    }
-//                },
-//                { error ->
-//                    error.message?.let { it1 ->
-//                        Log.d("API", "[wsCalendarN] error.message: ${it1?.toString()}")
-//                    }
-//                }
-//            )
-
             //日历-分类
 //            val observer = it.wsCalendarCategory(100, 1)
 //            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
@@ -533,48 +515,6 @@ object NetBase : Application(){
 //                { error ->
 //                    error.message?.let { it1 ->
 //                        Log.d("API", "[wsCalendarCategory] error.message: ${it1?.toString()}")
-//                    }
-//                }
-//            )
-
-            //班表
-//            val  params = HashMap<String, String>()
-//            params.put("ym", "2025-11") //ym
-//            //params.put("member_number", "90")
-//            //params.put("member_name", "安芝儇")
-//            //params.put("location", "成大")
-//            val observer = it.wsSchedules(params)
-//            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
-//                AndroidSchedulers.mainThread())?.subscribe(
-//                { next ->
-//                    Log.d("API", "[wsSchedules] next.data.size: ${next.size}")
-//
-//                    for (pd in next) {
-//                        println("work_date: ${pd.work_date}, name: ${pd.member_name}, number: ${pd.member_number}, location: ${pd.location}")
-//                    }
-//
-//                    val dateItems = next.groupBy { pd -> pd.work_date } //按日期分组
-//                    dateItems.forEach { (key, value) ->
-//                        println(key)
-//                        value.forEach { di ->
-//                            println("  ${di.work_date}, ${di.member_number}, ${di.member_name}, ${di.location}")
-//                        }
-//                    }
-//
-//                    val dis = dateItems.get("2025-11-01")
-//                    dis?.forEach { di ->
-//                        println("  ${di.work_date}, ${di.member_number}, ${di.member_name}, ${di.location}")
-//                    }
-//
-//                    val dis2 = dateItems.get("2025-11-03")
-//                    dis2?.forEach { di ->
-//                        println("  ${di.work_date}, ${di.member_number}, ${di.member_name}, ${di.location}")
-//                    }
-//
-//                },
-//                { error ->
-//                    error.message?.let { it1 ->
-//                        Log.d("API", "[wsSchedules] error.message: ${it1?.toString()}")
 //                    }
 //                }
 //            )

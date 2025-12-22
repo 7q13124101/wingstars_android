@@ -3,6 +3,8 @@ package com.wingstars.user.activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,23 +14,13 @@ import com.wingstars.user.adapter.MemberUI
 import com.wingstars.user.adapter.MemberUIAdapter
 import com.wingstars.user.databinding.ActivityChooseMemberBinding
 import com.wingstars.user.dialog.ChooseMemberDialog
+import com.wingstars.user.viewmodel.CheerLeaderViewModel
+import kotlin.getValue
 
 class ChooseMemberActivity : BaseActivity() {
 
     private lateinit var binding: ActivityChooseMemberBinding
-
-    private val members = listOf(
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_02),
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_22),
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_90),
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_02)
-    )
-    private val members1 = listOf(
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_99),
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_39),
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_57),
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_99)
-    )
+    private val viewModel: CheerLeaderViewModel by viewModels()
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,22 +30,53 @@ class ChooseMemberActivity : BaseActivity() {
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = true
         initView()
+        observeViewModel()
+        viewModel.fetchCheerLeaderList()
+    }
+    private fun observeViewModel() {
+
+        viewModel.memberListUI.observe(this) { members ->
+            if (members.isNullOrEmpty()) {
+                binding.rvMember.adapter = MemberUIAdapter(emptyList(),this)
+                binding.rvMemberSecond.adapter = MemberUIAdapter(emptyList(), this)
+                return@observe
+            }
+
+            val half = members.size / 2
+            binding.rvMember.adapter =
+                MemberUIAdapter(members.take(half), this)
+
+            binding.rvMemberSecond.adapter =
+                MemberUIAdapter(members.drop(half), this)
+        }
+
+        viewModel.errorMessage.observe(this) { msg ->
+            msg?.takeIf { it.isNotBlank() }?.let {
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+            }
+        }
+        viewModel.isLoading.observe(this) {
+        }
     }
     override fun initView() {
         binding.ivBack.setOnClickListener { finish() }
-        val adapter = MemberUIAdapter(members)
-        val adapter2 = MemberUIAdapter(members1)
-        binding.rvMember.adapter = adapter
         binding.rvMember.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.rvMemberSecond.adapter = adapter2
         binding.rvMemberSecond.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+
+        var currentMemberList: List<MemberUI> = emptyList()
+
+        viewModel.memberListUI.observe(this){
+                members -> currentMemberList = members?: emptyList()
+        }
         var selectedName: String? = null
         var selectedName1: String? = null
         var selectedName2: String? = null
+
         binding.rlTeamMember.setOnClickListener {
-            ChooseMemberDialog({ selected ->
+            ChooseMemberDialog(currentMemberList,{ selected ->
                 val parts = selected.split("|")
                 val number = parts.getOrNull(0) ?: ""
                 val name = parts.getOrNull(1) ?: ""
@@ -64,7 +87,7 @@ class ChooseMemberActivity : BaseActivity() {
             }, selectedName).show(supportFragmentManager, "choose")
         }
         binding.ivArrowDown1.setOnClickListener {
-            ChooseMemberDialog({ selected ->
+            ChooseMemberDialog(currentMemberList, { selected ->
                 val parts = selected.split("|")
                 val number = parts.getOrNull(0) ?: ""
                 val name = parts.getOrNull(1) ?: ""
@@ -75,7 +98,7 @@ class ChooseMemberActivity : BaseActivity() {
             }, selectedName1).show(supportFragmentManager, "choose")
         }
         binding.ivArrowDown2.setOnClickListener {
-            ChooseMemberDialog({ selected ->
+            ChooseMemberDialog(currentMemberList, { selected ->
                 val parts = selected.split("|")
                 val number = parts.getOrNull(0) ?: ""
                 val name = parts.getOrNull(1) ?: ""
@@ -85,6 +108,7 @@ class ChooseMemberActivity : BaseActivity() {
                 checkEnableSaveButton()
             }, selectedName2).show(supportFragmentManager, "choose")
         }
+
         binding.btnSave.setOnClickListener {
             val intent = Intent()
             intent.putExtra("name1", selectedName ?: "")

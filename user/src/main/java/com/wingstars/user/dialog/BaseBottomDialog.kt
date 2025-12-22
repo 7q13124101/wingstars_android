@@ -10,7 +10,6 @@ import com.wingstars.user.R
 open class BaseBottomDialog(
     private val layoutResId: Int
 ) : BottomSheetDialogFragment() {
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -18,7 +17,6 @@ open class BaseBottomDialog(
     ): View? {
         return inflater.inflate(layoutResId, container, false)
     }
-
     override fun getTheme(): Int = R.style.CustomBottomSheetDialog
 
     override fun onStart() {

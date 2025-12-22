@@ -132,9 +132,10 @@
                                 android:textSize="@dimen/sp_14"/>
 
                             <TextView
+                                android:id="@+id/phone_member"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0900000001"
+                                android:text=""
                                 android:textColor="@color/color_101828"
                                 android:layout_marginRight="@dimen/dp_20"/>
                         </LinearLayout>
@@ -155,9 +156,10 @@
                                 android:textSize="@dimen/sp_14"/>
 
                             <TextView
+                                android:id="@+id/id_card_number"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="A123456789"
+                                android:text=""
                                 android:textColor="@color/color_101828"
                                 android:layout_marginRight="@dimen/dp_20"/>
                         </LinearLayout>
@@ -178,9 +180,10 @@
                                 android:textSize="@dimen/sp_14"/>
 
                             <TextView
+                                android:id="@+id/birthday"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="1986/01/01"
+                                android:text=""
                                 android:textColor="@color/color_101828"
                                 android:layout_marginRight="@dimen/dp_20"/>
                         </LinearLayout>
@@ -202,24 +205,26 @@
                                 android:textSize="@dimen/sp_14"/>
 
                             <TextView
+                                android:id="@+id/user_gender"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/dp_20"
                                 android:textColor="@color/color_101828"
-                                android:text="女性" />
+                                android:text="" />
                         </LinearLayout>
 
                     </LinearLayout>
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:paddingLeft="@dimen/dp_24"
                     android:paddingRight="@dimen/dp_24"
-                    android:paddingBottom="@dimen/dp_20"
-                    android:orientation="vertical">
+                    android:paddingBottom="@dimen/dp_20">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -233,27 +238,30 @@
                         android:id="@+id/f_fav_member"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="@dimen/dp_8">
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
+
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/edt_fav_member"
                                 android:layout_width="@dimen/dp_64"
                                 android:layout_height="wrap_content"
+                                android:layout_weight="1"
                                 android:background="@null"
                                 android:hint="@string/user_n_entered_yet"
                                 android:singleLine="true"
-                                android:layout_weight="1"
                                 android:textColor="@color/color_101828"
                                 android:textColorHint="@color/color_99A1AF"
                                 android:textSize="@dimen/sp_16" />
+
                             <ImageView
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
-                                android:src="@drawable/ic_arrow_right"/>
+                                android:src="@drawable/ic_arrow_right" />
                         </LinearLayout>
 
                         <View
@@ -261,7 +269,7 @@
                             android:layout_height="1dp"
                             android:background="@color/color_D1D5DC" />
                     </LinearLayout>
-<!--                    android:nextFocusForward="@id/edt_phone_code"-->
+                    <!--                    android:nextFocusForward="@id/edt_phone_code"-->
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -275,26 +283,29 @@
                         android:id="@+id/f_barcode_carrier"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="@dimen/dp_8">
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
+
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/edt_barcode_carrier"
                                 android:layout_width="@dimen/dp_64"
                                 android:layout_height="wrap_content"
+                                android:layout_weight="1"
                                 android:background="@null"
                                 android:hint="@string/user_n_entered_yet"
                                 android:singleLine="true"
-                                android:layout_weight="1"
                                 android:textColor="@color/color_101828"
                                 android:textColorHint="@color/color_99A1AF"
                                 android:textSize="@dimen/sp_16" />
+
                             <ImageView
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
-                                android:src="@drawable/ic_arrow_right"/>
+                                android:src="@drawable/ic_arrow_right" />
                         </LinearLayout>
 
                         <View
@@ -316,34 +327,38 @@
                         android:id="@+id/ll_edt_id_card"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="@dimen/dp_8">
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
+
                             <androidx.appcompat.widget.AppCompatEditText
-                                android:id="@+id/edt_id_card"
+                                android:id="@+id/edt_password"
                                 android:layout_width="@dimen/dp_64"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:background="@null"
-                                android:text="********"
+                                android:clickable="true"
+                                android:focusable="false"
                                 android:singleLine="true"
+                                android:text=""
+                                android:inputType="textPassword"
                                 android:textColor="@color/color_101828"
                                 android:textColorHint="@color/color_A3A3A3"
-                                android:textSize="@dimen/sp_14"
-                                android:focusable="false"
-                                android:clickable="true"/>
+                                android:textSize="@dimen/sp_14" />
+
                             <ImageView
                                 android:id="@+id/iv_id_card"
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
-                                android:src="@drawable/ic_arrow_right"
                                 android:layout_marginStart="@dimen/dp_6"
-                                android:focusable="false"
+                                android:clickable="true"
                                 android:cursorVisible="false"
+                                android:focusable="false"
                                 android:inputType="none"
-                                android:clickable="true"/>
+                                android:src="@drawable/ic_arrow_right" />
                         </LinearLayout>
 
 
@@ -361,10 +376,12 @@
                         android:text="@string/user_member_account"
                         android:textColor="@color/color_101828"
                         android:textSize="@dimen/sp_14" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/edt_member_account"
                             android:layout_width="wrap_content"
@@ -375,14 +392,15 @@
                             android:textColor="@color/color_101828"
                             android:textColorHint="@color/color_99A1AF"
                             android:textSize="@dimen/sp_16" />
+
                         <TextView
                             android:id="@+id/edt_delete_account"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/user_delete_account"
-                            android:textSize="@dimen/sp_16"
                             android:layout_marginLeft="@dimen/dp_100"
-                            android:textColor="@color/color_E2518D"/>
+                            android:text="@string/user_delete_account"
+                            android:textColor="@color/color_E2518D"
+                            android:textSize="@dimen/sp_16" />
                     </LinearLayout>
 
 

@@ -27,7 +27,6 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
     private lateinit var binding: ActivityFrequentlyAskedQuestionBinding
     private var tabTitleList = arrayListOf<String>()
     private lateinit var fragmentAdapter: OuterPagerAdapter
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFrequentlyAskedQuestionBinding.inflate(layoutInflater)
@@ -43,23 +42,18 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
         }
         return super.getResources()
     }
-
-
     private fun initData() {
         tabTitleList.clear()
         tabTitleList.add(getString(R.string.user_points_task))
         tabTitleList.add(getString(R.string.user_register_login))
         tabTitleList.add(getString(R.string.user_download_and_install))
-
         fragmentAdapter = OuterPagerAdapter(supportFragmentManager, lifecycle)
         fragmentAdapter.add(ApplicationFunctionFragment())
         fragmentAdapter.add(RegisterAndLoginFragment.RegisterAndLoginFragment())
         fragmentAdapter.add(DownloadAndInstallFragment())
-
         binding.viewPager.adapter = fragmentAdapter
         binding.viewPager.isUserInputEnabled = true
         binding.viewPager.offscreenPageLimit = 3
-
         val tabLayoutMediator =
             TabLayoutMediator(binding.tabLayout, binding.viewPager, true, true) { tab, position ->
 
@@ -84,40 +78,29 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
 
         recoverItem()
         tabLayoutMediator.attach()
-
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 recoverItem()
                 chooseTab(tab)
-
             }
-
             override fun onTabUnselected(tab: TabLayout.Tab?) {
             }
-
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
-
         })
-
         binding.includeTop.imgBack.setOnClickListener {
             finish()
         }
     }
-
-
     private fun chooseTab(tab: TabLayout.Tab?) {
-        tab?.view?.findViewById<TextView>(R.id.tv_team_tab)?.setTextColor(getColor(R.color.color_101828))
+        tab?.view?.findViewById<TextView>(R.id.tv_team_tab)?.setTextColor(getColor(R.color.color_DE9DBA))
     }
-
     private fun recoverItem() {
         for (i in 0..2) {
             binding.tabLayout.getTabAt(i)?.view?.findViewById<TextView>(R.id.tv_team_tab)
                 ?.setTextColor(getColor(R.color.color_101828))
         }
     }
-
-
     fun getTabView(context: Context, position: Int): View {
         val view: View =
             LayoutInflater.from(context).inflate(R.layout.item_team_main_tab, null)
@@ -126,23 +109,17 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
         tv_team_tab.isSingleLine=true
         return view
     }
-
     override fun initView() {
         binding.includeTop.imgBack.setOnClickListener {
             finish()
         }
     }
-
     inner class OuterPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
         FragmentStateAdapter(fragmentManager, lifecycle) {
-
         private val mFragments = mutableListOf<Fragment>()
-
         @NonNull
         override fun createFragment(position: Int): Fragment = mFragments[position]
-
         override fun getItemCount(): Int = mFragments.size
-
         fun add(fragment: Fragment) {
             mFragments.add(fragment)
         }

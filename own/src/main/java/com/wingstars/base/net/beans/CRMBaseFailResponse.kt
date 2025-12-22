@@ -4,5 +4,6 @@ data class CRMBaseFailResponse(
     val success: Boolean,
     val message: String,
     val time: String,
-    val code: String
+    var code: String,
+    var data: Any
 )

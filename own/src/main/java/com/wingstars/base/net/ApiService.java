@@ -9,6 +9,21 @@ import com.wingstars.base.net.beans.CRMSignInRequest;
 import com.wingstars.base.net.beans.CRMSignInResponse;
 import com.wingstars.base.net.beans.CRMVerifyRequest;
 import com.wingstars.base.net.beans.CRMVerifyResponse;
+import com.wingstars.base.net.beans.EvtCheckinRequest;
+import com.wingstars.base.net.beans.EvtCheckinResponse;
+import com.wingstars.base.net.beans.EvtMemberBadgeResponse;
+import com.wingstars.base.net.beans.EvtMemberTaskResponse;
+import com.wingstars.base.net.beans.EvtTaskResponse;
+import com.wingstars.base.net.beans.NSInfoRequest;
+import com.wingstars.base.net.beans.NSInfoResponse;
+import com.wingstars.base.net.beans.CRMBaseResponse;
+import com.wingstars.base.net.beans.CRMGenQRCodeRequest;
+import com.wingstars.base.net.beans.CRMGenQRCodeResponse;
+import com.wingstars.base.net.beans.CRMMemberContactResponse;
+import com.wingstars.base.net.beans.CRMSignInRequest;
+import com.wingstars.base.net.beans.CRMSignInResponse;
+import com.wingstars.base.net.beans.CRMVerifyRequest;
+import com.wingstars.base.net.beans.CRMVerifyResponse;
 import com.wingstars.base.net.beans.EvtMemberTaskResponse;
 import com.wingstars.base.net.beans.NSInfoRequest;
 import com.wingstars.base.net.beans.NSInfoResponse;
@@ -129,6 +144,32 @@ public interface ApiService {
     //查询指定客户订单
     @GET(NetBase.HOST_BASE + "/wp-json/wc/v3/orders?status=completed")
     Observable<List<WSOrderResponse>> wsOrders(@Query("consumer_key") String consumer_key, @Query("consumer_secret") String consumer_secret, @Query("customer") int customer, @Query("per_page") int per_page, @Query("page") int page);
+
+
+    //CRM Event Service======
+    //Event > 取得活跃任务列表.   ${BaseApplication.HOST_EVENT}/api/v1/public/events/tasks
+    @GET(NetBase.HOST_EVENT + "api/v1/public/events/tasks")
+    Observable<List<EvtTaskResponse>> evtTasks();
+
+    //Event > 获得点数.   ${BaseApplication.HOST_EVENT}/api/v1/public/events/reward
+    @POST(NetBase.HOST_EVENT + "/api/v1/public/events/reward")
+    Observable<EvtCheckinResponse> evtReward(@Body EvtCheckinRequest evtCheckinRequest);
+
+    //Event > 会员任务状态列表.   ${BaseApplication.HOST_EVENT}/api/v1/public/members/tasks?encryptedIdentity=...
+    @GET(NetBase.HOST_EVENT + "/api/v1/public/members/tasks")
+    Observable<List<EvtMemberTaskResponse>> evtMemberTasks( @Query("encryptedIdentity") String encryptedIdentity);
+
+    //Event > 查询会员勋章列表.   ${BaseApplication.HOST_EVENT}/api/v1/public/member/badges?encryptedIdentity=...
+    @GET(NetBase.HOST_EVENT + "/api/v1/public/member/badges")
+    Observable<List<EvtMemberBadgeResponse>> evtMemberBadges(@Query("encryptedIdentity") String encryptedIdentity);
+
+    //Event > 取得任务详情.   ${BaseApplication.HOST_EVENT}/api/v1/public/event-tasks/{taskid}
+    @GET(NetBase.HOST_EVENT + "/api/v1/public/event-tasks/{taskid}")
+    Observable<EvtTaskResponse> evtTaskInfo();
+
+    //Event > 取得任务详情.   ${BaseApplication.HOST_EVENT}/api/v1/public/event-tasks/{taskid}?encryptedIdentity=...
+    @GET(NetBase.HOST_EVENT + "/api/v1/public/event-tasks/{taskid}")
+    Observable<EvtMemberTaskResponse> evtTaskInfo( @Query("encryptedIdentity") String encryptedIdentity);
 
 
 }

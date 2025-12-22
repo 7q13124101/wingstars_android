@@ -10,17 +10,13 @@ class StoreLocationActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityStoreLocationsBinding
     private var calendar = Calendar.getInstance()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = true
-//        window.statusBarColor = getColor(R.color.color_DE9DBA)
-
         binding = ActivityStoreLocationsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         initView()
         setDefaultDate()
         initClick()

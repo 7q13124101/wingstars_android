@@ -54,6 +54,7 @@
     <string name="precautions">注意事項</string>
     <string name="information">活動資訊</string>
     <string name="redeem_immediately">立即兌換</string>
+    <string name="login_required">登入/註冊</string>
 
 
     <string name="pull_down_to_refresh">下拉重整</string>

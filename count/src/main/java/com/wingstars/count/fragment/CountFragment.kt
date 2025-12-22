@@ -29,11 +29,13 @@ import android.view.Gravity
 import android.view.Window
 import android.widget.RadioButton
 import androidx.core.widget.NestedScrollView
+import com.wingstars.base.net.beans.EvtTaskResponse
 import com.wingstars.count.activity.ActivityExchangeActivity
 import com.wingstars.count.activity.CountHistoryActivity
 import com.wingstars.count.activity.Count_Item_Activity
 import com.wingstars.count.activity.ExchangeHistoryActivity
 import com.wingstars.count.activity.GiftExchangeActivity
+import com.wingstars.count.adapter.CountAdapter
 import com.wingstars.count.databinding.DialogPublicPopupBoxBinding
 import com.wingstars.count.databinding.DialogPublicPopupSortTypeBinding
 
@@ -44,8 +46,8 @@ class CountFragment : BaseFragment(){
     private lateinit var countTitleAdapter: CountTitleAdapter
     private var select =0
     private var eventType ="limited"
-    private lateinit var adapter: CountSingleAdapter
-    private var fullDataList: List<CountSingleItemViewModel> = ArrayList()
+    private lateinit var adapter: CountAdapter
+    private var fullDataList: List<EvtTaskResponse> = ArrayList()
     private var isExpanded = false
 
     private data class CheckInDay(
@@ -87,7 +89,7 @@ class CountFragment : BaseFragment(){
 
     private fun initView() {
         viewModel = ViewModelProvider(this)[CountViewModel::class.java]
-
+        viewModel.getEvtTasks()
         val titleList = mutableListOf(
             getString(R.string.count_limited_time_task),
             getString(R.string.count_birthday_celebration),
@@ -114,9 +116,9 @@ class CountFragment : BaseFragment(){
             }
         }, 0)
 
-        adapter = CountSingleAdapter(requireActivity(), ArrayList()) { item ->
+        adapter = CountAdapter()
+        adapter.onItemClick = { item ->
             val intent = Intent(requireActivity(), Count_Item_Activity::class.java)
-            intent.putExtra("EXTRA_ITEM_DATA", item)
             startActivity(intent)
         }
 
@@ -125,6 +127,8 @@ class CountFragment : BaseFragment(){
             LinearLayoutManager.VERTICAL, false
         )
         binding.girlsList.adapter = adapter
+
+        viewModel.getEvtTasks()
         setupObservers()
 
         setupCheckInUI()
@@ -188,33 +192,27 @@ class CountFragment : BaseFragment(){
         }
 
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.VANILLA_ICE_CREAM){
-            binding.root.setOnApplyWindowInsetsListener{ v, insets ->
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30 (Android 11)
+            binding.root.setOnApplyWindowInsetsListener { v, insets ->
                 val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
-                Log.e("statusBarHeight","statusBarHeight=$statusBarHeight")
-                setViewTop(binding.title,statusBarHeight)
-                binding.root.setOnApplyWindowInsetsListener(null)
+                Log.e("statusBarHeight", "statusBarHeight=$statusBarHeight")
+                setViewTop(binding.title, statusBarHeight)
+
                 insets
             }
-        }else{
-            setViewTop(binding.title,getStatusBarHeight())
+        } else {
+            setViewTop(binding.title, getStatusBarHeight())
         }
 
 
     }
 
     private fun setupObservers() {
-        val testData = mutableListOf(
-            CountSingleItemViewModel(1,"安之軒 10/03 生日留言","到官方FB專頁，在生日貼文留言祝福，... ","2025年10月3日", "10 點", R.drawable.ic_count_im, R.drawable.bg_count_deep,"到官方 Facebook 粉專按讚追蹤","參加資格：官方Facebook按讚即完成任務者。 \n" +
-                    "點數發送：即時完成任務即可獲得該點數，每組帳戶領取以1次為限。"),
-            CountSingleItemViewModel(2,"2025 WS LOGO卡冊 Get!","凡購買10月份指定商品即可獲得點數! ","2025年4月2日 ～ 2025年12月31日", "20 點", R.drawable.ic_count_im, R.drawable.bg_count_deep,"",""),
-            CountSingleItemViewModel(3,"2025 WS 女孩卡冊 Get!","凡購買11月份指定商品即可獲得點數! ","2025年4月2日 ～ 2025年12月31日", "20 點", R.drawable.ic_count_im, R.drawable.bg_count_deep,"",""),
-            CountSingleItemViewModel(4,"YouTube 星迷","訂閱官方 YouTube 頻道","2025年10月3日", "1 點", R.drawable.ic_count_im, R.drawable.bg_count_deep,"",""),
-            CountSingleItemViewModel(5,"YouTube 星迷","訂閱官方 YouTube 頻道","2025年10月3日", "1 點", R.drawable.ic_count_im, R.drawable.bg_count_deep,"","")
-        )
-        fullDataList = testData
-        isExpanded = false
-        updateListDisplay()
+        viewModel.taskList.observe(viewLifecycleOwner) { list ->
+            fullDataList = list ?: ArrayList()
+            isExpanded = false // Reset trạng thái mở rộng khi có dữ liệu mới
+            updateListDisplay()
+        }
     }
 
     private fun setupCheckInUI() {
@@ -341,17 +339,16 @@ class CountFragment : BaseFragment(){
                 binding.tvList.text = selectedText
             }
 
-            when (checkedId) {
-                R.id.rb_sort_date_new_to_old -> { }
-                R.id.rb_sort_date_old_to_new -> { }
-                R.id.rb_sort_points_high_to_low -> { }
-                R.id.rb_sort_points_low_to_high -> { }
-            }
+
+//                when (checkedId) {
+//                    R.id.rb_sort_date_new_to_old -> viewModel.sortTaskListData(CountViewModel.SortMethod.SORT_DATE_NEW_TO_OLD)
+//                    R.id.rb_sort_date_old_to_new -> viewModel.sortTaskListData(CountViewModel.SortMethod.SORT_DATE_OLD_TO_NEW)
+//                    R.id.rb_sort_points_high_to_low -> viewModel.sortTaskListData(CountViewModel.SortMethod.SORT_POINTS_HIGH_TO_LOW)
+//                    R.id.rb_sort_points_low_to_high -> viewModel.sortTaskListData(CountViewModel.SortMethod.SORT_POINTS_LOW_TO_HIGH)
+//            }
 
             dialogBinding.root.postDelayed({
-                if (isAdded && activity != null && !requireActivity().isFinishing && !requireActivity().isDestroyed && dialog.isShowing) {
-                    dialog.dismiss()
-                }
+                    if (dialog.isShowing) dialog.dismiss()
             }, 500)
         }
         dialog.show()
@@ -370,9 +367,8 @@ class CountFragment : BaseFragment(){
                 fullDataList
             }
         }
-
         // Cập nhật vào Adapter
-        adapter.setList(displayList.toMutableList())
+        adapter.setList(displayList)
     }
 
 

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_42"
-        android:paddingBottom="@dimen/dp_4">
+        android:layout_marginBottom="@dimen/dp_10">
 
         <ImageView
             android:id="@+id/iv_icon"
@@ -41,6 +41,7 @@
                 android:textColor="@android:color/black"/>
 
             <TextView
+                android:id="@+id/effective_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="一般訪客"
@@ -61,16 +62,35 @@
             android:layout_centerVertical="true">
 
             <TextView
-                android:id="@+id/tv_on_rectangle"
+                android:id="@+id/tv_login_generally"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="一般會員"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/tv_login_start_member"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="星會員"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/tv_login_start_friend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="星朋友"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
 
             <TextView
-                android:id="@+id/tv_login_logout"
+                android:id="@+id/tv_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="登入/註冊"
@@ -78,7 +98,36 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
         </FrameLayout>
+<!--        <FrameLayout-->
+<!--            android:id="@+id/login_success_generally"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:paddingLeft="16dp"-->
+<!--            android:paddingRight="16dp"-->
+<!--            android:paddingTop="8dp"-->
+<!--            android:paddingBottom="8dp"-->
+<!--            android:background="@drawable/bg_rectangle_white"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_centerVertical="true">-->
 
+<!--            <TextView-->
+<!--                android:id="@+id/tv_on_rectangle"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text=""-->
+<!--                android:textColor="@android:color/black"-->
+<!--                android:textSize="14sp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/tv_login_logout"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="登入/註冊"-->
+<!--                android:textColor="@android:color/black"-->
+<!--                android:textSize="14sp"-->
+<!--                android:textStyle="bold" />-->
+<!--        </FrameLayout>-->
     </RelativeLayout>
 
 

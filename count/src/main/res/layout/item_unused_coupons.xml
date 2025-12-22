@@ -87,12 +87,13 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_corner_badge_yellow"
                     android:scaleType="centerCrop"
+                    android:layout_marginRight="-1dp"
                     app:shapeAppearanceOverlay="@style/BadgeTopRightCorner" />
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/dp_20"
-                    android:layout_marginRight="@dimen/pt_5">
+                    android:layout_marginRight="@dimen/pt_7">
 
                     <TextView
                         android:id="@+id/label_tv"
