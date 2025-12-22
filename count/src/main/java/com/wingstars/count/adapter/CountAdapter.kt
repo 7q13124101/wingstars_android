@@ -40,10 +40,10 @@ class CountAdapter : RecyclerView.Adapter<CountAdapter.CountViewHolder>() {
     inner class CountViewHolder(private val binding: ItemCountSingleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: EvtTaskResponse) {
 
-            binding.tvTitle.text = item.content
-            binding.tvInfo.text = item.pointProcess
-            binding.tvTime.text = item.startDate
-            binding.tvCount.text = "${item.point} pts"
+            binding.tvTitle.text = item.topic
+            binding.tvInfo.text = item.content
+            binding.tvTime.text = item.sectionTime
+            binding.tvCount.text = "${item.point} 點"
 
 
 
