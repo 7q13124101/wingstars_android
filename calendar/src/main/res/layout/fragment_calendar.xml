@@ -87,22 +87,21 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_20"
                         android:layout_marginTop="@dimen/dp_30"
                         android:layout_marginRight="@dimen/dp_20"
+                        android:layout_marginLeft="@dimen/dp_20"
                         android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv_date_itinerary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text=""
                             android:textColor="@color/color_000000"
                             android:textSize="@dimen/sp_16"
                             android:textStyle="bold" />
 
-                        <!-- 修复4：包裹RecyclerView的LinearLayout高度改为wrap_content -->
                         <LinearLayout
+                            android:id="@+id/ll_login_state"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
@@ -150,11 +149,59 @@
                             </LinearLayout>
                         </LinearLayout>
 
+                        <LinearLayout
+                            android:id="@+id/ll_no_login"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_20"
+                            android:visibility="gone"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/my_card_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/white"
+                                app:cardCornerRadius="@dimen/dp_20"
+                                android:layout_marginLeft="@dimen/dp_neg_8"
+                                android:layout_marginRight="@dimen/dp_neg_8"
+                                app:cardElevation="4dp"
+                                app:cardUseCompatPadding="true">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="@dimen/dp_20"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:text="@string/calendar_add_wing_stars"
+                                        android:textColor="@color/color_4A5565"
+                                        android:textSize="@dimen/sp_14" />
+
+                                    <TextView
+                                        android:id="@+id/tv_login"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/dp_35"
+                                        android:layout_marginTop="@dimen/dp_16"
+                                        android:background="@drawable/bg_button"
+                                        android:gravity="center"
+                                        android:text="@string/calendar_login_sign_up"
+                                        android:textColor="@color/white"
+                                        android:textStyle="bold"
+                                        android:textSize="@dimen/sp_14" />
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
+
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_95" />
-
                     </LinearLayout>
+
 
                 </androidx.core.widget.NestedScrollView>
             </com.haibin.calendarview.CalendarLayout>

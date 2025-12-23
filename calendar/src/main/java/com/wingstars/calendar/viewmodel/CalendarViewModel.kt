@@ -68,7 +68,6 @@ class CalendarViewModel : ViewModel() {
                         }
                     }, { error ->
                         completedCount++
-                        val errorMsg = error.message ?: "未知错误"
                         // 个别月份失败，仍等待全部请求完成
                         if (completedCount == 12) {
                             setIsLoading(false)

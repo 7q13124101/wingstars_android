@@ -40,17 +40,21 @@
         android:textSize="16sp"
         android:textColor="@color/gray_500"/>
 
-    <com.google.android.material.button.MaterialButton
+    <TextView
         android:id="@+id/btnGoLogin"
-        app:cornerRadius="@dimen/dp_0"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="57dp"
         android:layout_marginTop="24dp"
+        app:cornerRadius="@dimen/dp_0"
         android:text="前往登入"
-        android:textAllCaps="false"
         android:textSize="16sp"
+        android:gravity="center"
         android:textColor="@android:color/white"
-        android:backgroundTint="@color/color_EE97BB"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"/>
+        android:background="@color/color_EE97BB"
+       />
+    <View
+        android:id="@+id/view"
+        android:background="@color/color_EE97BB"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"/>
 </LinearLayout>

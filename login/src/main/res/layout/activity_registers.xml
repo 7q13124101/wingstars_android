@@ -13,7 +13,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pt_42"
+            android:layout_height="@dimen/dp_64"
             android:background="@color/white">
 
             <TextView
@@ -27,7 +27,7 @@
 
             <RelativeLayout
                 android:id="@+id/iv_close"
-                android:layout_width="@dimen/pt_70"
+                android:layout_width="@dimen/dp_70"
                 android:layout_height="match_parent">
 
                 <ImageView
@@ -61,9 +61,9 @@
                 android:paddingRight="@dimen/dp_20">
 
                 <TextView
+                    android:layout_marginTop="@dimen/dp_10"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:text="@string/phone"
                     android:textColor="@color/text_tittle"
                     android:textSize="@dimen/sp_14" />
@@ -72,62 +72,71 @@
                     android:id="@+id/rl_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pt_8"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:addStatesFromChildren="true"
                     android:background="@drawable/bg_input_selector"
                     android:paddingStart="@dimen/dp_20"
                     android:paddingTop="@dimen/dp_17"
                     android:paddingEnd="@dimen/dp_20"
                     android:paddingBottom="@dimen/dp_17">
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btn_send_code"
+                    <FrameLayout
+                        android:layout_alignParentRight="true"
+                        android:id="@+id/send_code"
                         android:layout_width="wrap_content"
-                        android:layout_height="25dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/bg_send_code_selector"
-                        android:enabled="false"
-                        android:paddingStart="@dimen/dp_12"
-                        android:paddingEnd="@dimen/dp_12"
-                        android:text="@string/send_phone_code"
-                        android:textAlignment="center"
-                        android:textColor="@color/text_tittle"
-                        android:textSize="@dimen/sp_14"
-                        android:visibility="visible" />
+                        android:layout_height="wrap_content">
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:layout_gravity="center"
+                            android:id="@+id/btn_send_code"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="@drawable/bg_sends_code"
+                            android:paddingStart="@dimen/dp_12"
+                            android:paddingEnd="@dimen/dp_12"
+                            android:text="@string/send_phone_code"
+                            android:textAlignment="center"
+                            android:textColor="@color/text_tittle"
+                            android:textSize="@dimen/sp_14"
+                            android:visibility="visible" />
 
-                    <RelativeLayout
-                        android:id="@+id/rl_code_timer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:id="@+id/tv_code_timer"
+                        <RelativeLayout
+                            android:layout_gravity="center"
+                            android:id="@+id/rl_code_timer"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="59s"
-                            android:textColor="@color/color_E2518D"
-                            android:textSize="@dimen/sp_12" />
+                            android:visibility="gone">
 
-                        <TextView
-                            android:id="@+id/tv_resend"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/tv_code_timer"
-                            android:text=" 重新傳送"
-                            android:textColor="@color/text_subtitle"
-                            android:textSize="@dimen/sp_12" />
-                    </RelativeLayout>
+                            <TextView
+                                android:layout_centerVertical="true"
+                                android:id="@+id/tv_code_timer"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="59s"
+                                android:textColor="@color/color_E2518D"
+                                android:textSize="@dimen/sp_12" />
+
+                            <TextView
+                                android:layout_centerVertical="true"
+                                android:id="@+id/tv_resend"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@id/tv_code_timer"
+                                android:text=" 重新傳送"
+                                android:textColor="@color/text_subtitle"
+                                android:textSize="@dimen/sp_12" />
+                        </RelativeLayout>
+
+                    </FrameLayout>
+
+
+
 
                     <androidx.appcompat.widget.AppCompatEditText
+                        android:layout_marginRight="@dimen/dp_20"
+                        android:layout_toLeftOf="@id/send_code"
                         android:id="@+id/edt_phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_toStartOf="@id/rl_code_timer"
                         android:background="@null"
                         android:hint="@string/hint_phone_register"
                         android:imeOptions="actionNext"
@@ -154,7 +163,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pt_10"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/phone_code"
                     android:textColor="@color/text_tittle"
                     android:textSize="@dimen/sp_14" />
@@ -162,7 +171,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pt_8"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:addStatesFromChildren="true"
                     android:background="@drawable/bg_input_selector"
                     android:paddingLeft="@dimen/dp_20"
@@ -208,7 +217,7 @@
                     android:id="@+id/rl_psd"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pt_8"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:addStatesFromChildren="true"
                     android:background="@drawable/bg_input_selector"
                     android:paddingLeft="@dimen/dp_20"
@@ -227,6 +236,7 @@
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/edt_psd"
+                        android:layout_marginRight="@dimen/dp_20"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@id/cb_psd_visible"
@@ -257,7 +267,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pt_10"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/register_psd_confirm"
                     android:textColor="@color/text_tittle"
                     android:textSize="@dimen/sp_14" />
@@ -266,7 +276,7 @@
                     android:id="@+id/rl_psd_confirm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pt_8"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:addStatesFromChildren="true"
                     android:background="@drawable/bg_input_selector"
                     android:paddingLeft="@dimen/dp_20"
@@ -322,7 +332,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pt_8"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:addStatesFromChildren="true"
                     android:background="@drawable/bg_input_selector"
                     android:paddingLeft="@dimen/dp_20"
@@ -355,7 +365,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pt_8"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:addStatesFromChildren="true"
                     android:background="@drawable/bg_input_selector"
                     android:paddingLeft="@dimen/dp_20"
@@ -515,7 +525,7 @@
                     android:id="@+id/rg_sex"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/pt_22"
-                    android:layout_marginTop="@dimen/pt_8"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatRadioButton
@@ -580,6 +590,7 @@
                         android:textColor="@color/gray_400" />
 
                     <TextView
+                        android:id="@+id/privacy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -590,6 +601,8 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_68"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -607,6 +620,7 @@
                         android:textColor="@color/gray_400" />
 
                     <TextView
+                        android:id="@+id/agreement"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -711,19 +725,21 @@
 
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
+        <TextView
             android:id="@+id/btn_confirm"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="@dimen/dp_57"
             android:textSize="@dimen/sp_14"
             android:textColor="@color/gray_500"
-            android:paddingTop="@dimen/dp_18"
-            android:paddingBottom="@dimen/dp_18"
             android:text="@string/next_step"
             android:gravity="center"
             android:background="@color/gray_200"/>
 
+        <View
+            android:id="@+id/bottom_view"
+            android:background="@color/gray_200"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
     </LinearLayout>
 
 </layout>

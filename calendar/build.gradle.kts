@@ -53,11 +53,12 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(project(":own"))
+    implementation(project(":login"))
     implementation(project(":calendarview"))
     implementation("com.github.bumptech.glide:glide:4.15.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.0")
     implementation ("com.github.lihangleo2:ShadowLayout:3.3.3")
-
+    implementation("com.tencent:mmkv:1.3.9")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("com.google.android.material:material:1.6.0") // 包含 TabLayout
 
