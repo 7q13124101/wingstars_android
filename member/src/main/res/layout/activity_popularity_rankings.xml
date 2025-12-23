@@ -15,6 +15,10 @@
         android:layout_height="wrap_content"
         app:icon_right="@mipmap/ic_faq"
         app:title="@string/popularity_ranking" />
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -297,7 +301,31 @@
                 app:hl_cornerRadius_leftTop="@dimen/dp_20"
                 app:hl_cornerRadius_rightTop="@dimen/dp_20"
                 app:hl_shadowHidden="false">
-
+                <RelativeLayout
+                    android:id="@+id/not_data"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:layout_marginTop="@dimen/dp_57"
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <ImageView
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/ic_not_data"/>
+                        <TextView
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:textSize="@dimen/sp_14"
+                            android:textColor="@color/color_6A7282"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_record"/>
+                    </LinearLayout>
+                </RelativeLayout>
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rank_list"
                     android:layout_width="match_parent"
@@ -309,4 +337,5 @@
             </com.lihang.ShadowLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

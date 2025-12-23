@@ -11,5 +11,16 @@
     <string name="calendar_precautions">注意事項</string>
     <string name="calendar_back_number">背號</string>
     <string name="calendar_no_events">目前沒有安排活動</string>
+    <string name="calendar_login_sign_up">登入/註冊</string>
+    <string name="calendar_add_wing_stars">加入 Wing Stars，別錯過每一次應援時刻</string>
+
+    <string name="pull_down_to_refresh">下拉重整</string>
+    <string name="release_to_refresh">釋放重整</string>
+    <string name="last_update">最後更新 M-d HH:mm</string>
+    <string name="refreshing">正在重整…</string>
+    <string name="refresh_success">重整成功</string>
+    <string name="refresh_failed">重整失敗</string>
+    <string name="calendar_birthday_star">生日壽星</string>
+    <string name="calendar_happy_birthday">生日快樂！</string>
 
 </resources>

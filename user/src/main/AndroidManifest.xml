@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -22,7 +23,15 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".activity.MemBarCodeActivity" />
         <activity android:name=".activity.StoreLocationActivity" />
-        <activity android:name=".activity.PolicyTermActivity" />
+        <activity android:name=".activity.PolicyTermActivity"
+            android:exported="true">
+            <intent-filter>
+            <!-- 自定义Action（必须唯一，建议用包名+标识） -->
+            <action android:name="policy_term" />
+            <!-- 默认Category（隐式Intent必须包含） -->
+            <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activity.ChangeMemberPasswordActivity"
             android:theme="@style/AppTheme"
@@ -30,7 +39,7 @@
         <activity android:name=".activity.ContactCustomerActivity" />
         <activity android:name=".activity.AchievementActivity" />
 
-        <provider
+   <!--     <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
@@ -38,7 +47,7 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
-        </provider>
+        </provider>-->
 
         <activity android:name=".activity.MemberLevelActivity" />
     </application>

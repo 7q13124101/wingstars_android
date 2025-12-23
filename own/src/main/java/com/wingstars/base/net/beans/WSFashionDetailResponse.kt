@@ -86,14 +86,14 @@ data class WSFashionDetailResponse(
         }
 
         data class GalleryImageUrls(
-            val image1: String,           //
-            val image2: String,           //
-            val image3: String,           //
-            val image4: String,           //
-            val image5: String,           //
+            val image1: Any,           //
+            val image2: Any,           //
+            val image3: Any,           //
+            val image4: Any,           //
+            val image5: Any,           //
         ) : java.io.Serializable {
 
-            fun image(index: Int): String? {        //image1 ~ image5 format
+            fun image(index: Int): Any? {        //image1 ~ image5 format
                 return when (index) {
                     1 -> image1
                     2 -> image2

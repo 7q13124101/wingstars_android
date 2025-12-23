@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application>
         <activity
             android:name=".activity.AtmosphereFashionDetailsActivity"
@@ -33,6 +35,12 @@
         <activity
             android:name=".activity.ExclusiveSongsListActivity"
             android:exported="false" />
+        <activity android:name=".activity.CropImageViewActivity"
+            android:exported="false"/>
+        <activity android:name=".activity.TakeMomentsDisplayActivity"
+            android:exported="false"/>
+        <!--tools:replace="android:authorities"-->
+
     </application>
 
 </manifest>

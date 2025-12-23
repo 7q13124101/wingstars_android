@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.TakeMomentsDisplayActivity">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:background="@color/white">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:id="@+id/rl_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_64">
+
+                <RelativeLayout
+                    android:id="@+id/img_back"
+                    android:layout_width="70dp"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="20dp"
+                        android:src="@mipmap/ic_title_back" />
+                </RelativeLayout>
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/photo_frame"
+                    android:textColor="@color/color_101828"
+                    android:textSize="@dimen/sp_16" />
+
+
+            </RelativeLayout>
+
+
+            <FrameLayout
+                android:id="@+id/frame"
+                android:layout_marginTop="@dimen/dp_30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <VideoView
+                    android:visibility="gone"
+                    android:id="@+id/video_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <ImageView
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    android:id="@+id/image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
+
+
+
+
+
+
+            <RelativeLayout
+                android:id="@+id/take2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_F8EBF1">
+                <FrameLayout
+                    android:id="@+id/down_load"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/home_26"/>
+                    <ImageView
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/home_27"/>
+
+                    <ImageView
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/home_28"/>
+                </FrameLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/share"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/dp_40"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="@dimen/dp_42"
+                    android:layout_height="@dimen/dp_42"
+                    android:background="@drawable/home_30">
+                    <ImageView
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/home_25"/>
+                </RelativeLayout>
+                <FrameLayout
+                    android:visibility="gone"
+                    android:id="@+id/up_load"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/home_30"/>
+
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/home_29"/>
+                </FrameLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

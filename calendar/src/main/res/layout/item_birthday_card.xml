@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/ll_event_details"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_170"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/calendar_bg_radius_pink"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_baseball"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:src="@drawable/calendar_ic_birthdaycake"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:text="@string/calendar_birthday_star"
+                    android:textColor="@color/color_101828"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold"
+                    app:layout_constraintBaseline_toBaselineOf="@id/iv_baseball"
+                    app:layout_constraintStart_toEndOf="@id/iv_baseball" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_title_rendered"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="JC"
+                android:textColor="@color/color_4A5565"
+                android:textSize="@dimen/sp_20"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/tv_map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:text="@string/calendar_happy_birthday"
+                android:textColor="@color/color_4A5565"
+                android:textSize="@dimen/sp_24"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/dp_220"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_66"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="@drawable/calendar_ic_rectangle"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/tv_number"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_gravity="top|center_horizontal"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:background="@drawable/calendar_ic_ellipse"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@color/color_DE9DBA"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_number_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:text="@string/calendar_back_number"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true">
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/iv_member_type1"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="@dimen/dp_8"-->
+<!--                    android:layout_marginEnd="@dimen/dp_45"-->
+<!--                    android:layout_marginBottom="@dimen/dp_2"-->
+<!--                    android:scaleType="centerCrop"-->
+<!--                    android:src="@drawable/calendar_ic_jc_16" />-->
+
+                <com.wingstars.calendar.utils.TopCropImageView
+                    android:id="@+id/iv_member_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_45"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    android:src="@drawable/calendar_ic_jc_16" />
+
+                <ImageView
+                    android:id="@+id/iv_right_image"
+                    android:layout_width="@dimen/dp_70"
+                    android:layout_height="@dimen/dp_70"
+                    android:layout_gravity="end|bottom"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_14"
+                    android:src="@drawable/calendar_ic_vector" />
+
+            </FrameLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</layout>

@@ -31,6 +31,7 @@ data class WSPhotoFrameResponse(
     data class Acf(
         val number: String,         //背號
         val photoFrame_image_urls: PhotoFrameImageUrls,        //臉書連結
+        val photoFrame:PhotoFrameBean
     ) : java.io.Serializable {
 
         val numberF: String              //title format
@@ -52,4 +53,13 @@ data class WSPhotoFrameResponse(
             ) : java.io.Serializable
         }
     }
+    data class PhotoFrameBean(
+        val image1:ImageBean
+    )
+    data class ImageBean(
+        val sizes:SizeBean
+    )
+    data class SizeBean(
+        val `1536x1536`: String
+    )
 }

@@ -36,6 +36,8 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:singleLine="true"
+                    android:ellipsize="end"
                     android:id="@+id/tv_wing_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -47,6 +49,7 @@
                     android:textStyle="bold" />
 
                 <LinearLayout
+                    android:id="@+id/ll_social_account"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -92,12 +95,13 @@
                     android:id="@+id/iv_image"
                     android:layout_width="@dimen/dp_236"
                     android:layout_height="@dimen/dp_318"
-                    android:scaleType="fitXY" />
+                    android:scaleType="fitCenter" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <com.wingstars.member.activity.InterceptNestedScrollView
+        android:id="@+id/nsv_member_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -142,7 +146,7 @@
                 </LinearLayout>
             </com.lihang.ShadowLayout>
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </com.wingstars.member.activity.InterceptNestedScrollView>
 
     <RelativeLayout
         android:id="@+id/rl_title"

@@ -39,6 +39,11 @@ class TakePhotoMemberListAdapter     // ----------------------------------------
         holder.binding(position,listener)
     }
 
+    public fun  setPos(pos: Int){
+        this.pos = pos
+        notifyDataSetChanged()
+    }
+
     // -------------------------------------------
     override fun getItemCount(): Int {
         return if (dataList != null) dataList!!.size else 0

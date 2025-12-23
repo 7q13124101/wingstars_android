@@ -18,9 +18,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.HttpException
 import java.security.MessageDigest
 import java.security.SecureRandom
-import java.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
+import java.util.Base64
 import javax.crypto.spec.SecretKeySpec
 
 
@@ -39,6 +39,9 @@ object NetBase : Application(){
     const val HOST_EVENT = "https://ws-event-dev.newretail.tw/"
 
     const val CRM_HOST = "https://ws-crm-dev.newretail.tw"
+    const val HOST_GOOGLE = "https://www.googleapis.com"
+    const val YOUTUBE_CHANNEL_ID = "UCSEI3nk0QSGcQKR75O6vM6Q"
+    const val YOUTUBE_API_KEY = "AIzaSyAzRyrgUFVXePO4vfx0RuVKqn2W64RlyQk"
     const val API_KEY = "8e2KeU3Bntw43R09tNE1"
     const val TOKEN_TYPE = "Bearer"
     const val WINGSTARS_ACCOUNT_ENC = "OaAJUXD7ZN20fekfVqN3uJzbbqf4LP8vR7AMXPVlFaU="                        //"newsoftapp"
