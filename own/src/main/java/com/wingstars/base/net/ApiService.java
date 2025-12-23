@@ -29,6 +29,7 @@ import com.wingstars.base.net.beans.WSPhotoFrameResponse;
 import com.wingstars.base.net.beans.WSPostResponse;
 import com.wingstars.base.net.beans.WSProductResponse;
 import com.wingstars.base.net.beans.WSRankResponse;
+import com.wingstars.base.net.beans.YoutubeSearchResponse;
 
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
@@ -65,6 +66,18 @@ public interface ApiService {
     Observable<CRMBaseResponse<CRMGenQRCodeResponse>> crmGenQRCode(@Url String url, @Body CRMGenQRCodeRequest genQRCodeRequest);
     @GET()
     Observable<List<EvtMemberTaskResponse>> evtMemberTasks(@Url String url, @Query("encryptedIdentity") String encryptedIdentity);
+
+    //首頁 > Youtube
+// Trong Interface API của bạn
+    @GET(NetBase.HOST_GOOGLE + "/youtube/v3/search")
+    Observable<YoutubeSearchResponse> getYoutubeVideos(
+            @Query("part") String part,       // Truyền "snippet"
+            @Query("channelId") String channelId,
+            @Query("maxResults") int maxResults,
+            @Query("order") String order,     // Truyền "date"
+            @Query("type") String type,       // Truyền "video"
+            @Query("key") String apiKey
+    );
 
     //Member > 查询会员详细资料. ${BaseApplication.HOST_CRM}/api/v1/basic/member/{id}
     @GET(NetBase.HOST_CRM + "/api/v1/basic/member/{id}")
