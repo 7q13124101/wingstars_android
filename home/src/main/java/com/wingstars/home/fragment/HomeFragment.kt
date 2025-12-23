@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -164,11 +163,18 @@ class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onP
             if (!it.isNullOrEmpty()) fashionAdapter.setList(it)
         }
 
-        // --- 4. Hoạt động (Articles) ---
-        viewModel.homeDataList.observe(viewLifecycleOwner) { dataList ->
-            val articleAdapter = ArticleAdapter(requireActivity(), dataList)
-            binding.rvArticles.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-            binding.rvArticles.adapter = articleAdapter
+        // --- 4. youtube ---
+//        viewModel.homeDataList.observe(viewLifecycleOwner) { dataList ->
+//            val articleAdapter = YoutubeAdapter(requireActivity(), dataList)
+//            binding.rvArticles.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+//            binding.rvArticles.adapter = articleAdapter
+//        }
+        val youtubeAdapter = YoutubeAdapter(requireContext())
+        binding.rvArticles.adapter = youtubeAdapter // Gán vào RecyclerView
+
+        // 2. Lắng nghe dữ liệu từ ViewModel
+        viewModel.youtubeVideoList.observe(viewLifecycleOwner) { list ->
+            youtubeAdapter.setList(list)
         }
 
         // --- 5. Bảng xếp hạng (Ranking) ---
