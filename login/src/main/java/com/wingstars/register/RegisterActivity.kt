@@ -6,38 +6,61 @@ import android.os.CountDownTimer
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.wingstars.base.base.BaseActivity
+import com.wingstars.base.net.beans.CRMSignUpRequest
+import com.wingstars.base.utils.DPUtils
+import com.wingstars.base.utils.ScreenUtils
 import com.wingstars.login.R
-import com.wingstars.login.databinding.ActivityRegisterBinding
+import com.wingstars.login.databinding.ActivityRegistersBinding
 import com.wingstars.register.registrationterms.RegistrationTermsActivity
+import kotlin.getValue
 
-class RegisterActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityRegisterBinding
+class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnInitialization,
+    RegisterNavigator {
+    private lateinit var binding: ActivityRegistersBinding
     private var timer: CountDownTimer? = null
     private val phoneRegex = Regex("^09\\d{8}$")     // Taiwan mobile (ví dụ)
+    private val viewModel: RegisterViewModel by viewModels()
+    private var gender ="M"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityRegisterBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.btnConfirm.isEnabled = true
+        binding = ActivityRegistersBinding.inflate(layoutInflater)
+        setTitleFoot(view1=binding.root,navigationBarColor=R.color.gray_200,setFoot=false,initialization=this)
+
+        binding.btnConfirm.isEnabled = false
+        viewModel.setNavigator(this)
 //        updateConfirmButtonState()
 //        updateSendButtonState()
+        binding.tvResend.setOnClickListener(this)
         binding.ivClose.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
         binding.tvPhoneInputError.visibility = View.INVISIBLE
         binding.tvPsdInputError.visibility = View.INVISIBLE
+        binding.privacy.setOnClickListener(this)
+        binding.agreement.setOnClickListener(this)
         setupLiveValidation()
         binding.edtPhone.setOnFocusChangeListener { _, hasFocus ->
             binding.rlPhone.isActivated = hasFocus
             val colorRes = if (hasFocus && binding.btnSendCode.isEnabled) R.color.white
             else R.color.text_tittle
             val colorBg = if (hasFocus && binding.btnSendCode.isEnabled) R.drawable.bg_send_code_able
-            else R.drawable.bg_send_code
+            else R.drawable.bg_sends_code
             binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
+            Log.e("edtPhone","edtPhone")
             binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
         }
         binding.edtPhone.addTextChangedListener(object : TextWatcher {
@@ -51,14 +74,19 @@ class RegisterActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable?) {}
         })
+        viewModel.isLoading.observe(this){
+            showLoadingUI(it, this)
+        }
+        viewModel.message.observe(this){
+            showToast("$it")
+        }
         binding.btnSendCode.setOnClickListener {
             val phone = binding.edtPhone.text?.toString().orEmpty()
             if (!phoneRegex.matches(phone)) {
                 binding.tvPhoneInputError.visibility = View.VISIBLE
                 return@setOnClickListener
             }
-            showTimerUI()      // ẩn nút, hiện đồng hồ
-            startCountDown()   // 60 giây
+           viewModel.getRegisterPhoneCode(phone)
 
         }
         binding.cbPsdConfirmVisible.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -135,7 +163,36 @@ class RegisterActivity : AppCompatActivity() {
         })
         binding.btnConfirm.setOnClickListener {
 //            if (!isAllValid()) return@setOnClickListener
-            showRegisterSuccessDialog()
+           // showRegisterSuccessDialog()
+            val password = binding.edtPsd.text.toString()
+
+            val name = binding.edtName.text.toString()
+            val phone = binding.edtPhone.text.toString()
+            val otp = binding.edtPhoneCode.text.toString()
+            val email = binding.edtEmail.text.toString()
+
+            if (binding.rbSexMale.isChecked){
+                gender ="M"
+            }else if (binding.rbSexFemale.isChecked){
+                gender ="F"
+            }else{
+                gender ="S"
+            }
+
+
+
+            viewModel.checkPhone(
+                CRMSignUpRequest(
+                    name,
+                    phone,
+                    otp,
+                    password,
+                    email,
+                    "",
+                    gender,
+                    ""
+                )
+            )
         }
     }
     private fun startCountDown(totalMs: Long = 60_000) {
@@ -167,8 +224,9 @@ class RegisterActivity : AppCompatActivity() {
         val hasFocus = binding.edtPhone.hasFocus()
         val colorRes = if (hasFocus && ok) R.color.white else R.color.text_tittle
         val colorBg = if (hasFocus && ok) R.drawable.bg_send_code_able
-        else R.drawable.bg_send_code
+        else R.drawable.bg_sends_code
         binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
+        Log.e("edtPhone","updateSendButtonState")
         binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
 
     }
@@ -267,11 +325,11 @@ class RegisterActivity : AppCompatActivity() {
         val agreed   = binding.rbPrivacyPolicy?.isChecked == true && binding.rbUserTerms?.isChecked == true
 
         val phoneOk  = isTaiwanPhone(phone)
-        val codeOk   = code.isNotEmpty() || binding.rlCodeTimer?.visibility == View.VISIBLE // nếu đang trong timer coi như đã gửi
+        val codeOk   = code.isNotEmpty()
         val pwdOk    = isPasswordStrong(pwd)
         val matchOk  = confirm.isNotEmpty() && pwd == confirm
         val nameOk   = name.isNotEmpty()
-        val emailOk  = email.isEmpty() || isEmailValid(email) // nếu email là optional thì cho phép trống
+        val emailOk  = isEmailValid(email) // nếu email là optional thì cho phép trống
 
         return nameOk && phoneOk && codeOk && pwdOk && matchOk && emailOk && agreed
     }
@@ -280,9 +338,11 @@ class RegisterActivity : AppCompatActivity() {
         val enabled = isAllValid()
         binding.btnConfirm.isEnabled = enabled
         if (enabled) {
+            binding.bottomView.setBackgroundColor(getColor(R.color.color_EE97BB))
             binding.btnConfirm.background = ContextCompat.getDrawable(this, R.drawable.bg_button_login_able)
             binding.btnConfirm.setTextColor(ContextCompat.getColor(this, R.color.white))
         } else {
+            binding.bottomView.setBackgroundColor(getColor(R.color.gray_200))
             binding.btnConfirm.background = ContextCompat.getDrawable(this, R.drawable.bg_button_login_disable)
             binding.btnConfirm.setTextColor(ContextCompat.getColor(this, R.color.gray_500))
         }
@@ -315,17 +375,105 @@ private fun showRegisterSuccessDialog() {
     val view = layoutInflater.inflate(R.layout.dialog_register_success, null)
     dialog.setContentView(view)
     dialog.setCancelable(false)
+    dialog.setOnDismissListener {
 
+    }
+    val btnGoLogin = view.findViewById<TextView>(R.id.btnGoLogin)
+    dialog.window?.apply {
+        // 关键代码：允许内容延伸到导航栏下方
+        setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        // setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
+        // 全屏模式 + 沉浸式处理
+        decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                )
 
-    view.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnGoLogin)
-        .setOnClickListener {
-            startActivity(Intent(this, com.wingstars.login.LoginActivity::class.java))
-            dialog.dismiss()
+        val params = attributes
+        params.flags =
+            params.flags or WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+        attributes = params
+
+        setGravity(Gravity.BOTTOM)
+    }
+    btnGoLogin.setOnClickListener {
             finish()
         }
-
+    val view1 = view.findViewById<View>(R.id.view)
+    val navigationBarHeight = getNavigationBarHeight()
+    if (navigationBarHeight!=0){
+        var height =navigationBarHeight
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            height
+        )
+        view1?.layoutParams = layoutParams
+    }
     dialog.show()
 }
+
+    override fun initView() {
+
+    }
+
+    override fun onClick(v: View?) {
+          var id = v?.id
+         when(id){
+             binding.privacy.id-> {
+                 val intent = Intent()
+                 intent.action = "policy_term"
+                 intent.addCategory(Intent.CATEGORY_DEFAULT)
+                 intent.putExtra("tag", "PrivacyPolicy")
+                 if (intent.resolveActivity(packageManager) != null) {
+                     startActivity(intent)
+                 }
+             }
+             binding.agreement.id->{
+                 val intent = Intent()
+                 intent.action = "policy_term"
+                 intent.addCategory(Intent.CATEGORY_DEFAULT)
+                 intent.putExtra("tag", "UserTerms")
+                 if (intent.resolveActivity(packageManager) != null) {
+                     startActivity(intent)
+                 }
+             }
+             //重新发送
+             binding.tvResend.id->{
+                 val phone = binding.edtPhone.text?.toString().orEmpty()
+                 if (!phoneRegex.matches(phone)) {
+                     binding.tvPhoneInputError.visibility = View.VISIBLE
+                     return
+                 }
+                 viewModel.getRegisterPhoneCode(phone)
+             }
+         }
+    }
+
+    override fun onInitializationSuccessful() {
+        binding.btnSendCode.isEnabled = false
+        val navigationBarHeight = getNavigationBarHeight()
+        if (navigationBarHeight!=0){
+            var height =navigationBarHeight
+            val layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                height
+            )
+            binding.bottomView?.layoutParams = layoutParams
+        }
+    }
+
+    override fun getPhoneCodeSuccess() {
+        showTimerUI()      // ẩn nút, hiện đồng hồ
+        startCountDown()   // 60 giây
+    }
+
+    override fun registerSuccess() {
+        showRegisterSuccessDialog()
+    }
 
     // TextWatcher rút gọn
     private open class SimpleTW : TextWatcher {

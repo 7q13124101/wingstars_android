@@ -23,7 +23,15 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".activity.MemBarCodeActivity" />
         <activity android:name=".activity.StoreLocationActivity" />
-        <activity android:name=".activity.PolicyTermActivity" />
+        <activity android:name=".activity.PolicyTermActivity"
+            android:exported="true">
+            <intent-filter>
+            <!-- 自定义Action（必须唯一，建议用包名+标识） -->
+            <action android:name="policy_term" />
+            <!-- 默认Category（隐式Intent必须包含） -->
+            <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activity.ChangeMemberPasswordActivity"
             android:theme="@style/AppTheme"
