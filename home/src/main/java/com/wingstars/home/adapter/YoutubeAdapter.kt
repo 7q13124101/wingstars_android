@@ -30,7 +30,6 @@ class YoutubeAdapter(
         return NormalItemViewHolder(binding)
     }
 
-    // 2. Phải có hàm này để đổ dữ liệu
     override fun onBindViewHolder(holder: NormalItemViewHolder, position: Int) {
         holder.bind(dataList[position])
     }
@@ -53,14 +52,12 @@ class YoutubeAdapter(
             // Set Date
             binding.tvArticleDate.text = item.date
 
-            // Load Ảnh (Dùng Glide, bo góc 20)
             Glide.with(context)
                 .load(item.imageUrl)
                 .apply(RequestOptions().transform(RoundedCorners(20)))
                 .into(binding.imgArticle)
 
-            // Sự kiện Click: Mở link Youtube
-            binding.root.setOnClickListener {
+            binding.item.setOnClickListener {
                 try {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.videoUrl))
                     context.startActivity(intent)
