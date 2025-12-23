@@ -1,6 +1,8 @@
 package com.wingstars.home.adapter
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -68,10 +70,22 @@ class ProductAdapter(
 
             binding.tvProductName.text = data.name
             binding.tvProductPrice.text = "$" + data.price
-
-            binding.root.setOnClickListener {
-                listener.onItemClick(data, position)
+            val openWebListener = android.view.View.OnClickListener {
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(data.permalink))
+                    // Thêm flag này để tránh crash nếu không tìm thấy trình duyệt
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
+            binding.item.setOnClickListener(openWebListener)
+
+            binding.shadowContainer.setOnClickListener(openWebListener)
+
+            binding.imgProduct.setOnClickListener(openWebListener)
+
         }
     }
 }

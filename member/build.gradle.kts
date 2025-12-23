@@ -62,6 +62,7 @@ dependencies {
     implementation("io.github.scwang90:refresh-layout-kernel:3.0.0-alpha")    //核心必须依赖
     implementation("io.github.scwang90:refresh-header-classics:3.0.0-alpha")    //经典刷新头
     implementation("io.github.scwang90:refresh-footer-classics:3.0.0-alpha")    //经典加载
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     //图片轮播控件
     implementation("io.github.youth5201314:banner:2.2.3")
 

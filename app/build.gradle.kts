@@ -41,7 +41,7 @@ android {
     applicationVariants.configureEach {
         // 配置输出 APK 名称
         outputs.forEach { output ->
-            val outputFileName = "WingStars-${name}-${versionName}.apk"
+            val outputFileName = "Wing Stars-${name}-${versionName}.apk"
             // 对于 APK 输出
             if (output is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                 output.outputFileName = outputFileName

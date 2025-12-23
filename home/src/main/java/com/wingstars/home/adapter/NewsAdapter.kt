@@ -116,11 +116,12 @@ class NewsAdapter(
 
             binding.tvNewsTitle.text = data.titleF
             binding.tvNewsDate.text = data.dateF
-
-            binding.llNewsRoot.setOnClickListener {
-                // 5. Gọi listener của class cha
+            val commonClickListener = android.view.View.OnClickListener {
                 listener.onItemClick(data, position)
             }
+            binding.llNewsRoot.setOnClickListener (commonClickListener)
+            binding.shadowImg.setOnClickListener (commonClickListener)
+            binding.imgNews.setOnClickListener (commonClickListener)
         }
     }
 }

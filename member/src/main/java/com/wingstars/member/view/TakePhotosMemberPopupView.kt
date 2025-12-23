@@ -29,7 +29,8 @@ class TakePhotosMemberPopupView(
     var activity: Activity,
     var navigationBarHeight: Int,
     var takePhotoList: MutableList<TakePhotosMembersListBean>,
-    var listener: OnSelectImageUrl
+    var listener: OnSelectImageUrl,
+    var pos:Int
 ) : TakePhotoMemberListAdapter.OnItemListener {
     private lateinit var popupWindow: PopupWindow
     private lateinit var binding: PopupTakePhotoMemberViewBinding
@@ -58,6 +59,7 @@ class TakePhotosMemberPopupView(
         binding.rankList.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         binding.rankList.adapter = adapter
+        adapter.setPos(pos)
         binding.exit.setOnClickListener {
             popupWindow.dismiss()
         }

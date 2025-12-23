@@ -58,7 +58,8 @@ abstract class BaseActivity : AppCompatActivity() {
         navigationBarColor: Int = R.color.white,
         statusBarColor: Int = R.color.white,
         initialization: OnInitialization? = null,
-        setHeadAndFoot: Boolean = true
+        setHeadAndFoot: Boolean = true,
+        setFoot: Boolean = true
     ) {
         immersionBar {
             statusBarColor(statusBarColor)
@@ -92,13 +93,18 @@ abstract class BaseActivity : AppCompatActivity() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     getWindow().setDecorFitsSystemWindows(false); // 启用无边框模式‌:ml-citation{ref="4" data="citationList"}
                 }
-                binding.footView.setBackgroundColor(getColor(navigationBarColor))
-                var params1 = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    navigationBarHeight
-                )
                 navigationBarHeights = navigationBarHeight
-                binding.footView?.layoutParams = params1
+                if (setFoot){
+                    binding.footView.setBackgroundColor(getColor(navigationBarColor))
+                    var params1 = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        navigationBarHeight
+                    )
+                    binding.footView?.layoutParams = params1
+                }else {
+                    binding.footView.visibility = View.GONE
+                }
+
                 var params2 = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.MATCH_PARENT
@@ -123,10 +129,10 @@ abstract class BaseActivity : AppCompatActivity() {
 
         } else {
             setContentView(view1)
+            navigationBarHeights = ImmersionBar.getNavigationBarHeight(this)
             if (initialization != null) {
                 initialization.onInitializationSuccessful()
             }
-            navigationBarHeights = ImmersionBar.getNavigationBarHeight(this)
         }
     }
 

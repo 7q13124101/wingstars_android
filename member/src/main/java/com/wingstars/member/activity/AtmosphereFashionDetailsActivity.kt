@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.base.net.beans.WSFashionDetailResponse.Acf.Recommend
+import com.wingstars.base.net.beans.WSPhotoFrameResponse
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.base.utils.ScreenUtils
 import com.wingstars.member.R
@@ -78,8 +79,22 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
                     var imagesList = mutableListOf<String>()
 
                     for (i in 1..5) {
-                        val image = gallery.image(i)
-                        imagesList.add(image!!)
+                        try {
+                            val image = gallery.image(i)
+                            if (image==null||image is Boolean){
+                                imagesList.add("")
+                            } else {
+                                val fromJson = Gson().fromJson(
+                                    Gson().toJson(image),
+                                    WSPhotoFrameResponse.ImageBean::class.java
+                                )
+                                imagesList.add("${fromJson.sizes.`1536x1536`}")
+                            }
+
+                        }catch (e: Exception){
+
+                        }
+
                     }
                     Log.e("recommend","${Gson().toJson(recommend)}")
                     binding.productList.adapter  = ProductListAdapter(this, recommend)

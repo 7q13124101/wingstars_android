@@ -14,12 +14,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.wingstars.base.net.beans.WSPostResponse
 import com.wingstars.home.databinding.ItemNewsBinding // Đảm bảo ViewBinding được bật
 import java.nio.charset.StandardCharsets
-
-//data class NewsData(
-//    val title: String,
-//    val date: String,
-//    val imageUrl: Int // Tạm thời dùng Int (Resource ID) để test ảnh local
-//) : Serializable
 class LatestNewsAdapter(
     private val context: Context,
     private var dataList: MutableList<WSPostResponse>?,
@@ -160,10 +154,13 @@ class LatestNewsAdapter(
             }
             binding.tvNewsTitle.text = data.titleF
             binding.tvNewsDate.text = data.dateF
-            binding.llNewsRoot.setOnClickListener {
-//                notifyDataSetChanged()
+            val commonClickListener = android.view.View.OnClickListener {
                 listener.onItemClick(data, position)
             }
+            binding.llNewsRoot.setOnClickListener (commonClickListener)
+
+            binding.shadowImg.setOnClickListener (commonClickListener)
+            binding.imgNews.setOnClickListener (commonClickListener)
         }
 
         fun onBind(position: Int) {
