@@ -43,7 +43,7 @@
     <TextView
         android:id="@+id/btnGoLogin"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="57dp"
         android:layout_marginTop="24dp"
         app:cornerRadius="@dimen/dp_0"
         android:text="前往登入"
