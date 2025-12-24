@@ -348,7 +348,6 @@
                                 android:textColor="@color/color_101828"
                                 android:textColorHint="@color/color_A3A3A3"
                                 android:textSize="@dimen/sp_14" />
-
                             <ImageView
                                 android:id="@+id/iv_id_card"
                                 android:layout_width="@dimen/dp_24"
@@ -389,6 +388,8 @@
                             android:background="@null"
                             android:hint="@string/user_per_d_m_account"
                             android:singleLine="true"
+                            android:paddingStart="0dp"
+                            android:paddingEnd="0dp"
                             android:textColor="@color/color_101828"
                             android:textColorHint="@color/color_99A1AF"
                             android:textSize="@dimen/sp_16" />
@@ -397,7 +398,7 @@
                             android:id="@+id/edt_delete_account"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_100"
+                            android:layout_marginStart="@dimen/dp_158"
                             android:text="@string/user_delete_account"
                             android:textColor="@color/color_E2518D"
                             android:textSize="@dimen/sp_16" />

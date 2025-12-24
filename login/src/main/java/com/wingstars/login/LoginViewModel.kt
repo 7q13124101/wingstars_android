@@ -9,8 +9,12 @@ import com.tencent.mmkv.MMKV
 import com.wingstars.base.net.API
 import com.wingstars.base.net.NetBase
 import com.wingstars.base.net.beans.CRMBaseFailResponse
+import com.wingstars.base.net.beans.CRMMemberContactResponse
+import com.wingstars.base.net.beans.CRMResetPasswordRequest
+import com.wingstars.base.net.beans.CRMSendOtpRequest
 import com.wingstars.base.net.beans.CRMSignInRequest
 import com.wingstars.base.net.beans.NSInfoRequest
+import com.wingstars.base.utils.MMKVManagement
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.HttpException
@@ -78,42 +82,7 @@ class LoginViewModel : ViewModel(){
                     },
                     { error ->
                         isLoading.postValue(false)
-                        var msg = error.message.toString()
-
-                        // Check lỗi HTTP
-                        if (error is HttpException) {
-                            try { // <--- THÊM TRY-CATCH LỚN NÀY
-                                val errorBody = error.response()?.errorBody()?.string()
-
-                                if (!errorBody.isNullOrEmpty()) {
-                                    // Thử parse JSON
-                                    try {
-                                        val gson = Gson()
-                                        val type = object : TypeToken<CRMBaseFailResponse>() {}.type
-                                        val failResponse = gson.fromJson<CRMBaseFailResponse>(errorBody, type)
-
-                                        // Kiểm tra logic nghiệp vụ
-                                        if (failResponse?.message == "尚未註冊") {
-                                            navigator?.showNotRegisteredDialog()
-                                            return@subscribe
-                                        }
-
-                                        // Lấy message từ JSON trả về
-                                        if (!failResponse?.message.isNullOrEmpty()) {
-                                            msg = failResponse.message!!
-                                        }
-                                    } catch (e: Exception) {
-                                        // NẾU PARSE JSON THẤT BẠI (Do lỗi 404 trả về HTML/String)
-                                        // Ta sẽ không làm gì cả, giữ nguyên biến 'msg' mặc định hoặc gán bằng errorBody
-                                        Log.e("LoginDebug", "Lỗi không phải JSON: $errorBody")
-                                        // msg = "Lỗi kết nối: ${error.code()}" // Tùy chọn
-                                    }
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        }
-
+                        handleHttpError(error)
                         // Hiển thị thông báo lỗi (Toast hoặc Dialog)
                         // _loginError.postValue(msg)
                     }
@@ -123,6 +92,32 @@ class LoginViewModel : ViewModel(){
             Log.e("LoginDebug", "LỖI: Code không chạy vào trong .let { } do API null")
         }
     }
+    private fun handleHttpError(error: Throwable) {
+        var msg = error.message.toString()
+        if (error is HttpException) {
+            try {
+                val errorBody = error.response()?.errorBody()?.string()
+                if (!errorBody.isNullOrEmpty()) {
+                    val gson = Gson()
+                    val type = object : TypeToken<CRMBaseFailResponse>() {}.type
+                    val failResponse = gson.fromJson<CRMBaseFailResponse>(errorBody, type)
+
+                    if (failResponse?.message == "尚未註冊") {
+                        navigator?.showNotRegisteredDialog()
+                        return
+                    }
+
+                    if (!failResponse?.message.isNullOrEmpty()) {
+                        msg = failResponse.message!!
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("LoginDebug", "Error parsing HTTP error body: ${e.message}")
+            }
+        }
+        Log.e("LoginDebug", "HTTP Error: $msg")
+    }
+
     fun login(request: CRMSignInRequest, isRememberAccount: Boolean) {
         // LOG 5: Đánh số tiếp theo từ hàm userCheck
         Log.d("LoginDebug", "5. Hàm login() bắt đầu chạy. Account: ${request.account}")
@@ -146,108 +141,184 @@ class LoginViewModel : ViewModel(){
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     { next ->
-                        isLoading.postValue(false)
-                        Log.d("LoginDebug", "7. API Login trả về: Success=${next.success}")
-
                         if (next.success) {
                             val rd = next.data
-                            Log.d("LoginDebug", "8. Login OK. Member ID: ${rd.id}")
-                            Log.d("LoginDebug", "Access Token: ${rd.accessToken}")
+                            // LƯU CÁC THÔNG TIN CƠ BẢN ĐỂ CÓ TOKEN GỌI API TIẾP THEO
+                            MMKVManagement.setCrmMemberId(rd.id)
+                            MMKVManagement.setCrmMemberAccessToken(rd.accessToken)
+                            MMKVManagement.setCrmMemberRefreshToken(rd.refreshToken)
+                            MMKVManagement.setMemberPhone(request.account)
+                            MMKVManagement.setMemberPassword(request.password)
+                            MMKVManagement.setIsRememberAccount(isRememberAccount)
+                            MMKVManagement.setLogin(true)
 
-                            // Lưu MMKV
-                            MMKV.defaultMMKV().encode("crm_member_id", rd.id)
-                            MMKV.defaultMMKV().encode("crm_member_access_token", rd.accessToken)
-                            MMKV.defaultMMKV().encode("crm_member_refresh_token", rd.refreshToken)
-                            MMKV.defaultMMKV().encode("crm_member_user_type", rd.userType)
-                            MMKV.defaultMMKV().encode("crm_member_code", rd.code)
-                            MMKV.defaultMMKV().encode("member_phone", request.account)
-                            MMKV.defaultMMKV().encode("member_account", request.account)
-                            MMKV.defaultMMKV().encode("member_psd", request.password)
+                            Log.d("LoginDebug", "8. Login OK. Bắt đầu lấy thông tin chi tiết...")
 
-                            MMKV.defaultMMKV().encode("isRememberAccount", isRememberAccount)
-                            MMKV.defaultMMKV().encode("isLogin", true)
-
-                            Log.d("LoginDebug", "9. Đã lưu MMKV. Gọi navigator.loginSuccess()")
-
-                            if (navigator != null) {
-                                navigator!!.loginSuccess()
-                            } else {
-                                Log.e("LoginDebug", "LỖI: Navigator bị NULL! Không thể chuyển màn hình.")
-                            }
-
-                            if (MMKV.defaultMMKV().decodeString("crm_client_access_token").isNullOrEmpty() ||
-                                MMKV.defaultMMKV().decodeString("newsoft_access_token").isNullOrEmpty()
-                            ) {
-                                Log.d("LoginDebug", "10. Thiếu QAuthToken -> Gọi lại getCRMQauthToken")
-                                NetBase.getCRMQauthToken()
-                                // BaseApplication.shared()!!.getNSQauthToken()
-                                // BaseApplication.shared()!!.checkNsInfoHandler()
-                            } else {
-                                Log.d("LoginDebug", "10. Đã có Token -> Gọi getMemberInfo")
-                                getMemberInfo()
-                            }
+                            // QUAN TRỌNG: Không gọi loginSuccess() ở đây nữa.
+                            // Gọi hàm lấy thông tin chi tiết và truyền vào hành động kết thúc.
+                            fetchFullMemberData()
                         } else {
-                            Log.e("LoginDebug", "7. Login Thất Bại (Logic): ${next.message}")
-                            // ToastUtil.showLongToast(BaseApplication.shared()!!,next.message)
+                            isLoading.postValue(false)
+                            // ToastUtil.showLongToast(...)
                         }
-
-                        // loginTicket(request)
                     },
                     { error ->
                         isLoading.postValue(false)
-                        val msg = error.message.toString()
-                        Log.e("LoginDebug", "7. Login Exception: $msg")
-                        error.printStackTrace()
+                        handleHttpError(error)
+                    }
+                )
+        }
+    }
+    private fun fetchFullMemberData() {
+        val memberId = MMKVManagement.getCrmMemberId()
+        API.shared?.api?.let { api ->
+            // 1. Lấy thông tin cơ bản (Tên, ngày sinh...)
+            val infoUrl = "${NetBase.HOST_CRM}/api/v1/basic/member/$memberId/contact"
 
-                        if (error is HttpException) {
-                            Log.e("LoginDebug", "HTTP Code: ${error.code()}")
-                            try {
-                                val errorBody = error.response()?.errorBody()?.string()
-                                Log.e("LoginDebug", "HTTP Error Body: $errorBody")
-
-                                // Parse JSON lỗi nếu cần (đã mở comment để debug)
-                                if (!errorBody.isNullOrEmpty()) {
-                                    val gson = Gson()
-                                    val type = object : TypeToken<CRMBaseFailResponse>() {}.type
-                                    val failResponse = gson.fromJson<CRMBaseFailResponse>(errorBody, type)
-                                    if (failResponse?.message != null) {
-                                        Log.e("LoginDebug", "Server Message: ${failResponse.message}")
-                                    }
-                                }
-                            } catch (e: Exception) {
-                                Log.e("LoginDebug", "Lỗi khi parse Error Body: ${e.message}")
-                            }
+            api.crmGetMemberContact(infoUrl)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap { infoResponse ->
+                    if (infoResponse.success && infoResponse.data != null) {
+                        saveMemberToMMKV(infoResponse.data)
+                    }
+                    // 2. Sau khi lấy xong Info, lấy tiếp Extra Info (Ngày hết hạn...)
+                    val extraUrl = "${NetBase.HOST_CRM}/api/v1/basic/member/$memberId"
+                    api.crmGetMemberExpiredDate(extraUrl)
+                        .subscribeOn(Schedulers.io())
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { extraResponse ->
+                        // Lưu nốt ngày hết hạn
+                        if (extraResponse.success && extraResponse.data != null) {
+                            MMKVManagement.setMemberExpiredDate(extraResponse.data.NextTokenExpiredDate)
                         }
+
+                        Log.d("LoginDebug", "9. Tất cả dữ liệu đã lưu. Kết thúc Login.")
+                        isLoading.postValue(false)
+
+                        // CUỐI CÙNG: Mới báo thành công để đóng LoginActivity
+                        navigator?.loginSuccess()
+                    },
+                    { error ->
+                        Log.e("LoginDebug", "Lỗi khi lấy thông tin chi tiết: ${error.message}")
+                        isLoading.postValue(false)
+                        // Dù lỗi lấy info vẫn nên cho họ vào, nhưng báo loginSuccess
+                        navigator?.loginSuccess()
                     }
                 )
         }
     }
     fun getMemberInfo(){
-        val device_id = MMKV.defaultMMKV().decodeString("device_id")
-        val fcm_token = MMKV.defaultMMKV().decodeString("FCM_Token")
-
-        API?.shared?.api?.let {
-            //Member > 查询会员联络资料
-            val id = MMKV.defaultMMKV().decodeString("crm_member_id")
-            val observer =
-                it.crmGetMemberContact("${NetBase.HOST_CRM}/api/v1/basic/member/${id}/contact")
-            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())
-                ?.observeOn(
-                    AndroidSchedulers.mainThread()
-                )?.subscribe(
+        API.shared?.api?.let { api ->
+            val memberId = MMKVManagement.getCrmMemberId()
+            val observer = api.crmGetMemberContact("${NetBase.HOST_CRM}/api/v1/basic/member/$memberId/contact")
+            observer?.subscribeOn(Schedulers.io())
+                ?.unsubscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(
                     { next ->
-                        if (next.success) {
-                            updateMemberInfo(device_id, fcm_token, next.data.Name)
+                        if (next.success && next.data != null) {
+                            saveMemberToMMKV(next.data)
+//                            updateMemberInfo(device_id, fcm_token, next.data.Name)
                         }
                     },
                     { error ->
-                        error.message?.let { it1 ->
-
-                        }
+                        Log.e("LoginDebug", "getMemberInfo error: ${error.message}")
                     }
                 )
         }
     }
+    fun getMemberExtraInfo() {
+        val memberId = MMKVManagement.getCrmMemberId()
+        if (memberId.isEmpty()) return
+        val url = "${NetBase.HOST_CRM}/api/v1/basic/member/$memberId"
+        API.shared?.api?.let { api ->
+            val observer = api.crmGetMemberExpiredDate(url)
+            observer?.subscribeOn(Schedulers.io())
+                ?.unsubscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(
+                    { response ->
+                        if (response.success && response.data != null) {
+                            val nextTokenExpiredDate = response.data.NextTokenExpiredDate
+                            Log.d("LoginDebug", "NextTokenExpiredDate = $nextTokenExpiredDate")
+                            MMKVManagement.setMemberExpiredDate(nextTokenExpiredDate)
+                        }
+                    },
+                    { error ->
+                        Log.e("LoginDebug", "getMemberExtraInfo error: ${error.message}")
+                    }
+                )
+        }
+    }
+
+    private fun saveMemberToMMKV(data: CRMMemberContactResponse) {
+        MMKVManagement.setMemberName(data.Name ?: "")
+        MMKVManagement.setMemberPhone(data.Phone ?: "")
+        MMKVManagement.setCrmMemberCode(data.Code ?: "")
+        MMKVManagement.setMemberBirthday(data.Birthday ?: "")
+        MMKVManagement.setMemberGender(data.Gender ?: "")
+        MMKVManagement.setMemberIdentity(data.Identity ?: "")
+        MMKVManagement.setMemberMail(data.Email ?: "")
+        MMKVManagement.setCrmMemberBarcode(data.CarrierCode ?: "")
+        Log.d("LoginDebug", "✅ Member info saved to MMKV: ${data.Name}, ${data.Email}")
+    }
+    fun sendOtp() {
+        val phone = MMKVManagement.getMemberPhone()
+        if (phone.isBlank()) {
+            Log.e("LoginDebug", "SendOtp failed: phone is empty")
+            return
+        }
+        val request = CRMSendOtpRequest(phone, "resetPassword")
+        val url = "${NetBase.HOST_CRM}/api/v1/client/otp/sms"
+        API.shared?.api?.let { api ->
+            api.crmSendOtp(url, request )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response ->
+                    if (response.success) {
+                        Log.d("LoginDebug", "OTP gửi thành công: ${response.message}")
+                    } else {
+                        Log.e("LoginDebug", "OTP gửi thất bại: ${response.message}")
+                    }
+                }, { error ->
+                    Log.e("LoginDebug", "sendOtp error: ${error.message}")
+                })
+        }
+    }
+    fun resetPassword(otp: String, newPassword: String) {
+        val memberId = MMKVManagement.getCrmMemberId()
+        if (memberId.isBlank()) {
+            Log.e("LoginDebug", "ResetPassword failed: memberId is empty")
+            return
+        }
+        val request = CRMResetPasswordRequest(
+            oldPassword = "",
+            otp = otp,
+            password = newPassword
+        )
+        val url = "${NetBase.HOST_CRM}/api/v1/basic/member/$memberId/reset-password"
+        API.shared?.api?.let { api ->
+            api.crmResetPassword(url, request)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response ->
+                    if (response.success) {
+                        Log.d("LoginDebug", "Reset password thành công: ${response.message}")
+                        // Lưu password mới vào MMKV
+                        MMKVManagement.setMemberPassword(newPassword)
+                    } else {
+                        Log.e("LoginDebug", "Reset password thất bại: ${response.message}")
+                    }
+                }, { error ->
+                    Log.e("LoginDebug", "resetPassword error: ${error.message}")
+                })
+        }
+    }
+
+
     private fun updateMemberInfo(
         device_id: String?,
         fcm_token: String?,
@@ -257,30 +328,24 @@ class LoginViewModel : ViewModel(){
         val request = NSInfoRequest(
             device_id,
             fcm_token,
-            MMKV.defaultMMKV().decodeInt("isPush", 0),
             1,
             1,
-            crmMemberToken = MMKV.defaultMMKV().decodeString("crm_member_access_token")!!,
+            1,
+            crmMemberToken = MMKVManagement.getCrmMemberAccessToken(),
             userName = userName,
             loginTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(Date()),
-            crmMemberId = MMKV.defaultMMKV().decodeString("crm_member_id")!!
+            crmMemberId = MMKVManagement.getCrmMemberId()
         )
 
-        API.shared?.api?.let {
-            //中继 > 记录手机设备信息、CRM会员信息
-            val observer =
-                it.nsInfo("${NetBase.HOST_BASE}/api/v1/app/mobile_crm/info", request)
-            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
-                AndroidSchedulers.mainThread()
-            )?.subscribe(
-                { next ->
-
-                },
-                { error ->
-                    error.message?.let { it1 ->
-                    }
-                }
-            )
+        API.shared?.api?.let { api ->
+            val observer = api.nsInfo("${NetBase.HOST_BASE}/api/v1/app/mobile_crm/info", request)
+            observer?.subscribeOn(Schedulers.io())
+                ?.unsubscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(
+                    { _ -> },
+                    { error -> Log.e("LoginDebug", "updateMemberInfo error: ${error.message}") }
+                )
         }
     }
 }

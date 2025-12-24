@@ -1,14 +1,17 @@
 package com.wingstars.base.net
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tencent.mmkv.MMKV
+import com.wingstars.base.R
 import com.wingstars.base.net.beans.CRMBaseFailResponse
 import com.wingstars.base.net.beans.CRMGenQRCodeRequest
 import com.wingstars.base.net.beans.CRMVerifyRequest
@@ -37,7 +40,6 @@ object NetBase : Application(){
     const val HOST_BASE = "https://61.218.209.209"
     const val HOST_CRM = "https://ws-crm-dev.newretail.tw"
     const val HOST_EVENT = "https://ws-event-dev.newretail.tw/"
-
     const val CRM_HOST = "https://ws-crm-dev.newretail.tw"
     const val API_KEY = "8e2KeU3Bntw43R09tNE1"
     const val TOKEN_TYPE = "Bearer"
@@ -148,29 +150,45 @@ object NetBase : Application(){
     fun setCrmTokenCompleted(value: Boolean) {
         this.isCrmTokenCompleted = value
     }
-    fun getCRMQauthToken() {
-        //Oauth > 客户端验证
-        API?.shared?.api?.let {
-            val observer =
-                it.crmVerify("${NetBase.HOST_CRM}/api/v1/oauth/verify", CRMVerifyRequest())
-            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
-                AndroidSchedulers.mainThread()
-            )?.subscribe(
-                { next ->
-                    if (next.success) {
-                        setCrmTokenCompleted(true)
-                        val rd = next.data
-                        MMKV.defaultMMKV().encode("crm_client_id", rd.id)
-                        MMKV.defaultMMKV().encode("crm_client_access_token", rd.accessToken)
-                        MMKV.defaultMMKV().encode("crm_client_refresh_token", rd.refreshToken)
+        fun getCRMQauthToken() {
+            //Oauth > 客户端验证
+            API?.shared?.api?.let {
+                val observer =
+                    it.crmVerify("${NetBase.HOST_CRM}/api/v1/oauth/verify", CRMVerifyRequest())
+                observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                    AndroidSchedulers.mainThread()
+                )?.subscribe(
+                    { next ->
+                        if (next.success) {
+                            setCrmTokenCompleted(true)
+                            val rd = next.data
+                            MMKV.defaultMMKV().encode("crm_client_id", rd.id)
+                            MMKV.defaultMMKV().encode("crm_client_access_token", rd.accessToken)
+                            MMKV.defaultMMKV().encode("crm_client_refresh_token", rd.refreshToken)
+
+                        }
+
+                    },
+                    { error ->
+                        error.message?.let { it1 ->
+                        }
                     }
-                },
-                { error ->
-                    error.message?.let { it1 ->
-                    }
-                }
-            )
+                )
+            }
         }
+    fun checkNetworkOrToast(context: Context): Boolean {
+        val isConnected =
+            NetworkMonitorNew.getInstance(context).currentNetworkState.isConnected
+
+        if (!isConnected) {
+            Toast.makeText(
+                context.applicationContext,
+                context.getString(R.string.user_error_network),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        return isConnected
     }
     private fun getEvtMemberTasks(encryptedIdentity: String, bRefreshUI: Boolean) {
         //Event > 会员任务状态列表

@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
-import com.wingstars.user.net.BaseApplication
 import com.wingstars.user.R
 import com.wingstars.user.databinding.ActivityUserTermsBinding
 import com.wingstars.user.viewmodel.PolicyTermModel
@@ -55,9 +54,9 @@ class PolicyTermActivity : AppCompatActivity() {
                             val tvPolicyContent: TextView? = inflate.findViewById(R.id.tv_policy_content)
                             tvPolicyContent?.layoutParams?.let { lp ->
                                 if (lp is LinearLayout.LayoutParams) {
-                                    lp.rightMargin = BaseApplication.Companion.shared()?.dp2px(5F)?.toInt() ?: 0
-                                    lp.topMargin = BaseApplication.Companion.shared()?.dp2px(5F)?.toInt() ?: 0
-                                    lp.bottomMargin = BaseApplication.Companion.shared()?.dp2px(5F)?.toInt() ?: 0
+                                    lp.rightMargin = dp2px(5F)?.toInt() ?: 0
+                                    lp.topMargin = dp2px(5F)?.toInt() ?: 0
+                                    lp.bottomMargin = dp2px(5F)?.toInt() ?: 0
                                     tvPolicyContent.layoutParams = lp
                                 }
                             }
@@ -98,9 +97,9 @@ class PolicyTermActivity : AppCompatActivity() {
                             val tvPolicyContent: TextView? = inflate.findViewById(R.id.tv_policy_content)
                             tvPolicyContent?.layoutParams?.let { lp ->
                                 if (lp is LinearLayout.LayoutParams) {
-                                    lp.rightMargin = BaseApplication.Companion.shared()?.dp2px(5F)?.toInt() ?: 0
-                                    lp.topMargin = BaseApplication.Companion.shared()?.dp2px(5F)?.toInt() ?: 0
-                                    lp.bottomMargin = BaseApplication.Companion.shared()?.dp2px(5F)?.toInt() ?: 0
+                                    lp.rightMargin = dp2px(5F)?.toInt() ?: 0
+                                    lp.topMargin = dp2px(5F)?.toInt() ?: 0
+                                    lp.bottomMargin = dp2px(5F)?.toInt() ?: 0
                                     tvPolicyContent.layoutParams = lp
                                 }
                             }
@@ -119,6 +118,9 @@ class PolicyTermActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+    fun dp2px(dp: Float): Float {
+        return resources.displayMetrics.density * dp + 0.5f
     }
     private fun formatNumberedText(raw: String?): CharSequence {
         if (raw.isNullOrEmpty()) return ""

@@ -56,26 +56,20 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
         binding.viewPager.offscreenPageLimit = 3
         val tabLayoutMediator =
             TabLayoutMediator(binding.tabLayout, binding.viewPager, true, true) { tab, position ->
-
                 when (position) {
                     0 -> {
                         tab.customView = getTabView(this, 0)
                         tab.customView?.findViewById<TextView>(R.id.tv_team_tab)
                             ?.setTextColor(getColor(R.color.color_DE9DBA))
                     }
-
                     1 -> {
                         tab.customView = getTabView(this, 1)
                     }
-
                     2 -> {
                         tab.customView = getTabView(this, 2)
                     }
-
                 }
-
             }
-
         recoverItem()
         tabLayoutMediator.attach()
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

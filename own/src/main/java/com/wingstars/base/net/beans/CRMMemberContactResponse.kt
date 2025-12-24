@@ -19,4 +19,5 @@ data class CRMMemberContactResponse(
     val Stores: List<String>,       //商店
     val ExtraData: CRMExtraData,    //額外資料
     val NewsoftExtraData: CRMNewsoftExtraData,  //額外資料
+    val NextTokenExpiredDate: String    // 會員到期
 )
