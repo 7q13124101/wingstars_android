@@ -23,6 +23,8 @@ import java.util.Date
 
 class LoginViewModel : ViewModel(){
     var isLoading = MutableLiveData<Boolean>()
+    val resetPasswordResult = MutableLiveData<Boolean>()
+    val resetPasswordError = MutableLiveData<String>()
 
     init {
 
@@ -210,49 +212,6 @@ class LoginViewModel : ViewModel(){
                 )
         }
     }
-    fun getMemberInfo(){
-        API.shared?.api?.let { api ->
-            val memberId = MMKVManagement.getCrmMemberId()
-            val observer = api.crmGetMemberContact("${NetBase.HOST_CRM}/api/v1/basic/member/$memberId/contact")
-            observer?.subscribeOn(Schedulers.io())
-                ?.unsubscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(
-                    { next ->
-                        if (next.success && next.data != null) {
-                            saveMemberToMMKV(next.data)
-//                            updateMemberInfo(device_id, fcm_token, next.data.Name)
-                        }
-                    },
-                    { error ->
-                        Log.e("LoginDebug", "getMemberInfo error: ${error.message}")
-                    }
-                )
-        }
-    }
-    fun getMemberExtraInfo() {
-        val memberId = MMKVManagement.getCrmMemberId()
-        if (memberId.isEmpty()) return
-        val url = "${NetBase.HOST_CRM}/api/v1/basic/member/$memberId"
-        API.shared?.api?.let { api ->
-            val observer = api.crmGetMemberExpiredDate(url)
-            observer?.subscribeOn(Schedulers.io())
-                ?.unsubscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(
-                    { response ->
-                        if (response.success && response.data != null) {
-                            val nextTokenExpiredDate = response.data.NextTokenExpiredDate
-                            Log.d("LoginDebug", "NextTokenExpiredDate = $nextTokenExpiredDate")
-                            MMKVManagement.setMemberExpiredDate(nextTokenExpiredDate)
-                        }
-                    },
-                    { error ->
-                        Log.e("LoginDebug", "getMemberExtraInfo error: ${error.message}")
-                    }
-                )
-        }
-    }
 
     private fun saveMemberToMMKV(data: CRMMemberContactResponse) {
         MMKVManagement.setMemberName(data.Name ?: "")
@@ -291,32 +250,37 @@ class LoginViewModel : ViewModel(){
     fun resetPassword(otp: String, newPassword: String) {
         val memberId = MMKVManagement.getCrmMemberId()
         if (memberId.isBlank()) {
-            Log.e("LoginDebug", "ResetPassword failed: memberId is empty")
+            resetPasswordError.postValue("會員ID不存在")
             return
         }
+
         val request = CRMResetPasswordRequest(
             oldPassword = "",
             otp = otp,
             password = newPassword
         )
+
         val url = "${NetBase.HOST_CRM}/api/v1/basic/member/$memberId/reset-password"
+
         API.shared?.api?.let { api ->
             api.crmResetPassword(url, request)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
                     if (response.success) {
-                        Log.d("LoginDebug", "Reset password thành công: ${response.message}")
-                        // Lưu password mới vào MMKV
                         MMKVManagement.setMemberPassword(newPassword)
+                        resetPasswordResult.postValue(true)
                     } else {
-                        Log.e("LoginDebug", "Reset password thất bại: ${response.message}")
+                        resetPasswordResult.postValue(false)
+                        resetPasswordError.postValue(response.message ?: "OTP 不正確")
                     }
                 }, { error ->
-                    Log.e("LoginDebug", "resetPassword error: ${error.message}")
+                    resetPasswordResult.postValue(false)
+                    resetPasswordError.postValue(error.message ?: "系統錯誤")
                 })
         }
     }
+
 
 
     private fun updateMemberInfo(

@@ -40,6 +40,17 @@ class ChangeMemberPasswordActivity : BaseActivity() {
             finish()
             return
         }
+        viewModel.resetPasswordResult.observe(this) { success ->
+            if (success) {
+                showSuccessDialog(binding.edtNewCode.text.toString())
+            }
+        }
+
+        viewModel.resetPasswordError.observe(this) { msg ->
+            showToast(msg)
+        }
+
+
         initView()
     }
     override fun initView() {
@@ -156,8 +167,8 @@ class ChangeMemberPasswordActivity : BaseActivity() {
             return
         }
         viewModel.resetPassword(otp, newPassword)
-        showSuccessDialog(newPassword)
     }
+
 
     @SuppressLint("MissingInflatedId")
     private fun showSuccessDialog(newPassword: String) {
