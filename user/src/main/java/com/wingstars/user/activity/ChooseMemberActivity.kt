@@ -34,7 +34,6 @@ class ChooseMemberActivity : BaseActivity() {
         viewModel.fetchCheerLeaderList()
     }
     private fun observeViewModel() {
-
         viewModel.memberListUI.observe(this) { members ->
             if (members.isNullOrEmpty()) {
                 binding.rvMember.adapter = MemberUIAdapter(emptyList(),this)
@@ -49,7 +48,6 @@ class ChooseMemberActivity : BaseActivity() {
             binding.rvMemberSecond.adapter =
                 MemberUIAdapter(members.drop(half), this)
         }
-
         viewModel.errorMessage.observe(this) { msg ->
             msg?.takeIf { it.isNotBlank() }?.let {
                 Toast.makeText(this, it, Toast.LENGTH_LONG).show()
@@ -64,19 +62,23 @@ class ChooseMemberActivity : BaseActivity() {
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvMemberSecond.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-
-
         var currentMemberList: List<MemberUI> = emptyList()
-
         viewModel.memberListUI.observe(this){
                 members -> currentMemberList = members?: emptyList()
         }
         var selectedName: String? = null
         var selectedName1: String? = null
         var selectedName2: String? = null
-
         binding.rlTeamMember.setOnClickListener {
-            ChooseMemberDialog(currentMemberList,{ selected ->
+            if (isMemberAlreadySelected(selectedName, selectedName1, selectedName2)) {
+                Toast.makeText(this, "請選擇其他成員。", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            ChooseMemberDialog(currentMemberList, { selected ->
+                if (selected == selectedName1 || selected == selectedName2) {
+                    Toast.makeText(this, "請選擇其他成員。", Toast.LENGTH_SHORT).show()
+                    return@ChooseMemberDialog
+                }
                 val parts = selected.split("|")
                 val number = parts.getOrNull(0) ?: ""
                 val name = parts.getOrNull(1) ?: ""
@@ -87,7 +89,15 @@ class ChooseMemberActivity : BaseActivity() {
             }, selectedName).show(supportFragmentManager, "choose")
         }
         binding.ivArrowDown1.setOnClickListener {
+            if (isMemberAlreadySelected(selectedName1, selectedName, selectedName2)) {
+                Toast.makeText(this, "請選擇其他成員。", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             ChooseMemberDialog(currentMemberList, { selected ->
+                if (selected == selectedName || selected == selectedName2) {
+                    Toast.makeText(this, "請選擇其他成員。", Toast.LENGTH_SHORT).show()
+                    return@ChooseMemberDialog
+                }
                 val parts = selected.split("|")
                 val number = parts.getOrNull(0) ?: ""
                 val name = parts.getOrNull(1) ?: ""
@@ -98,7 +108,15 @@ class ChooseMemberActivity : BaseActivity() {
             }, selectedName1).show(supportFragmentManager, "choose")
         }
         binding.ivArrowDown2.setOnClickListener {
+            if (isMemberAlreadySelected(selectedName2, selectedName, selectedName1)) {
+                Toast.makeText(this, "請選擇其他成員。", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             ChooseMemberDialog(currentMemberList, { selected ->
+                if (selected == selectedName || selected == selectedName1) {
+                    Toast.makeText(this, "請選擇其他成員。", Toast.LENGTH_SHORT).show()
+                    return@ChooseMemberDialog
+                }
                 val parts = selected.split("|")
                 val number = parts.getOrNull(0) ?: ""
                 val name = parts.getOrNull(1) ?: ""
@@ -108,7 +126,6 @@ class ChooseMemberActivity : BaseActivity() {
                 checkEnableSaveButton()
             }, selectedName2).show(supportFragmentManager, "choose")
         }
-
         binding.btnSave.setOnClickListener {
             val intent = Intent()
             intent.putExtra("name1", selectedName ?: "")
@@ -118,6 +135,13 @@ class ChooseMemberActivity : BaseActivity() {
             finish()
         }
     }
+    private fun isMemberAlreadySelected(
+        currentSelected: String?,
+        vararg others: String?
+    ): Boolean {
+        return currentSelected != null && others.any { it == currentSelected }
+    }
+
     private fun checkEnableSaveButton() {
         val has1 = !binding.edtTeamMember.text.isNullOrEmpty()
         val has2 = !binding.edtTeamMember1.text.isNullOrEmpty()

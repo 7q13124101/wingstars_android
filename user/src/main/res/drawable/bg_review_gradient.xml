@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
-        android:startColor="@color/color_E4B9BF"
-        android:endColor="@color/color_F1D0BE"
-        android:angle="270"
-        android:layout_height="match_parent"
-
-        />
-    <!-- 渐变角度，0度为从左到右，90度为从上到下，180度为从右到左，270度为从下到上 -->
+        android:startColor="@color/color_F1D0BE"
+        android:endColor="#F4DBC1"
+        android:angle="270"/>
 </shape>

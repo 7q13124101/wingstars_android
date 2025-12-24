@@ -2,9 +2,14 @@ package com.wingstars.base.net;
 
 
 import com.wingstars.base.net.beans.CRMBaseResponse;
+import com.wingstars.base.net.beans.CRMDeleteRespone;
 import com.wingstars.base.net.beans.CRMGenQRCodeRequest;
 import com.wingstars.base.net.beans.CRMGenQRCodeResponse;
 import com.wingstars.base.net.beans.CRMMemberContactResponse;
+import com.wingstars.base.net.beans.CRMResetPasswordRequest;
+import com.wingstars.base.net.beans.CRMResetPasswordResponse;
+import com.wingstars.base.net.beans.CRMSendOtpRequest;
+import com.wingstars.base.net.beans.CRMSendOtpResponse;
 import com.wingstars.base.net.beans.CRMSignInRequest;
 import com.wingstars.base.net.beans.CRMSignInResponse;
 import com.wingstars.base.net.beans.CRMVerifyRequest;
@@ -29,6 +34,7 @@ import com.wingstars.base.net.beans.WSPostResponse;
 import com.wingstars.base.net.beans.WSProductResponse;
 import com.wingstars.base.net.beans.WSRankResponse;
 
+import retrofit2.http.DELETE;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 import java.util.HashMap;
@@ -58,6 +64,15 @@ public interface ApiService {
     Observable<CRMBaseResponse<CRMSignInResponse>> crmSignIn(@Url String url, @Body CRMSignInRequest signInRequest);
     @GET()
     Observable<CRMBaseResponse<CRMMemberContactResponse>> crmGetMemberContact(@Url String url);
+    @GET()
+    Observable<CRMBaseResponse<CRMMemberContactResponse>> crmGetMemberExpiredDate(@Url String url);
+    @POST()
+    Observable<CRMBaseResponse<CRMSendOtpResponse>> crmSendOtp(@Url String url, @Body CRMSendOtpRequest genSendOtp);
+    @PUT()
+    Observable<CRMBaseResponse<CRMResetPasswordResponse>> crmResetPassword(@Url String url, @Body CRMResetPasswordRequest genResetPassword);
+    @DELETE()
+    Observable<CRMBaseResponse<CRMDeleteRespone>> crmDeleteAccount(@Url String url, @Body CRMResetPasswordRequest genResetPassword);
+
     @POST()
     Observable<NSInfoResponse> nsInfo(@Url String url, @Body NSInfoRequest infoRequest);
     @POST()

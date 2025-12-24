@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="user_error_network">請檢查您的網路連線，確保裝置已連接至網路後再重試。</string>
+</resources>

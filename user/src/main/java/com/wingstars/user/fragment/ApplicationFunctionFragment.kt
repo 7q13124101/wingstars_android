@@ -5,8 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.wingstars.user.net.BaseApplication
-import com.wingstars.user.net.NetworkMonitorNew
+import com.wingstars.base.net.NetworkMonitorNew
 import com.wingstars.user.databinding.FragmentApplicationFunctionBinding
 
 class ApplicationFunctionFragment : Fragment() {

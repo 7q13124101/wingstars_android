@@ -4,7 +4,7 @@
     android:padding="20dp"
     android:background="@drawable/bg_dialog_round"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_232">
+    android:layout_height="@dimen/dp_239">
 
     <ImageView
         android:id="@+id/modal_dialogs"
@@ -31,7 +31,7 @@
 
         <Button
             android:id="@+id/edt_mobile"
-            android:layout_width="@dimen/dp_136"
+            android:layout_width="@dimen/dp_169"
             android:layout_height="@dimen/dp_47"
             android:background="@drawable/bg_button_off"
             android:padding="12dp"
@@ -47,7 +47,7 @@
 
         <Button
             android:id="@+id/edt_mobile1"
-            android:layout_width="@dimen/dp_136"
+            android:layout_width="@dimen/dp_169"
             android:layout_height="@dimen/dp_47"
             android:background="@drawable/bg_button_on"
             android:padding="12dp"

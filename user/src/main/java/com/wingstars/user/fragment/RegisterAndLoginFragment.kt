@@ -4,11 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ExpandableListView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import com.wingstars.user.net.BaseApplication
-import com.wingstars.user.net.NetworkMonitorNew
+import com.wingstars.base.net.NetworkMonitorNew
 import com.wingstars.user.databinding.FragmentRegisterLoginBinding
 
 class RegisterAndLoginFragment {
