@@ -49,11 +49,14 @@
 
     <string name="theme_clothing">主題服裝</string>
     <string name="related_clothing">相關服飾</string>
-    <string name="image_loading_failed">圖片加載失敗</string>
+    <string name="image_loading_failed">拍照圖框加載失敗</string>
     <string name="loading_success">加載完成</string>
     <string name="loading_failed">加載失敗</string>
     <string name="loading">加載中...</string>
     <string name="release_loading">釋放加載</string>
     <string name="no_record">目前沒有紀錄</string>
     <string name="no_more_data">暫無更多數據</string>
+    <string name="save_successfully">保存成功</string>
+    <string name="share_picture">分享圖片</string>
+    <string name="ple_download_picture">請先下載圖片</string>
 </resources>

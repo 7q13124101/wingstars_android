@@ -34,7 +34,7 @@ class MemberViewModel : ViewModel() {
 
 //        NetBase.ut()
     }
-
+//成员 > 氛围时尚-分类
     public fun wsFashionCategorys() {
         API.shared?.api?.let {
             val observer = it.wsFashionCategorys()
@@ -53,7 +53,7 @@ class MemberViewModel : ViewModel() {
             )
         }
     }
-
+// 氛围时尚
     public fun wsFashions() {
         API.shared?.api?.let {
             val emptyHashMap: java.util.HashMap<String?, Int?>? = HashMap()
@@ -74,7 +74,7 @@ class MemberViewModel : ViewModel() {
         }
     }
 
-
+    //人气排行-名次
     public fun getRenderedList() {
         loading.postValue(true)
         API.shared?.api?.let {
@@ -120,7 +120,7 @@ class MemberViewModel : ViewModel() {
             )
         }
     }
-
+    //人气排行-名次对应成员头贴图片
     private fun wsPhotos(data: MutableList<WSMemberRankBean>) {
         API.shared?.api?.let {
             val observer = it.wsPhotos()
@@ -161,7 +161,7 @@ class MemberViewModel : ViewModel() {
             )
         }
     }
-
+// 成员 > 成员介绍
     fun getWsMembersData() {
         Log.e("getWsMembersData", "getWsMembersData")
         //成员 > 成员介绍

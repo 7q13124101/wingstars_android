@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="count1">點</string>
     <string name="count">點數</string>
     <string name="count_gift_redemption">贈品兌換</string>
     <string name="count_event_redemption">活動兌換</string>

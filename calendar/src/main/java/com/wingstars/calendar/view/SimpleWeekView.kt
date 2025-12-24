@@ -158,7 +158,7 @@ class SimpleWeekView @JvmOverloads constructor(
         val todayMonth = systemCalendar.get(java.util.Calendar.MONTH) + 1 // 1-based
         val todayDay = systemCalendar.get(java.util.Calendar.DAY_OF_MONTH)
 
-        // 2. 手动计算当前显示的“当前周”起止日期
+        // 2. 手动计算当前显示的"当前周"起止日期
         var currentWeekStart: Calendar? = null
         var currentWeekEnd: Calendar? = null
 
@@ -279,10 +279,25 @@ class SimpleWeekView @JvmOverloads constructor(
         }
     }
 
-    private fun drawSchemeDots(canvas: Canvas, calendar: Calendar, x: Int) {
-        if (calendar.schemes.isNullOrEmpty()) return
+    /**
+     * 修复：获取需要显示圆点的scheme列表
+     * 排除生日图标scheme（因为生日图标在右上角显示）
+     */
+    private fun getDotSchemes(calendar: Calendar): List<Calendar.Scheme> {
+        return calendar.schemes?.filter { scheme ->
+            // 只保留有颜色的scheme（活动scheme），排除生日图标scheme
+            scheme.shcemeColor != 0 && scheme.scheme != "icon_birthday"
+        } ?: emptyList()
+    }
 
-        val dotCount = calendar.schemes.size
+    /**
+     * 修复圆点颜色逻辑，只绘制活动scheme的圆点
+     */
+    private fun drawSchemeDots(canvas: Canvas, calendar: Calendar, x: Int) {
+        val dotSchemes = getDotSchemes(calendar)
+        if (dotSchemes.isEmpty()) return
+
+        val dotCount = dotSchemes.size
         val totalWidth = (dotCount * 2 * dotRadius) + (dotCount - 1) * dotMargin
         val startX = x + mItemWidth / 2 - totalWidth / 2
 
@@ -290,7 +305,7 @@ class SimpleWeekView @JvmOverloads constructor(
         // 使圆点位于日期文字正下方，且不重叠
         val dotY = mItemHeight * 3 / 4 + spacing
 
-        calendar.schemes.forEachIndexed { index, scheme ->
+        dotSchemes.forEachIndexed { index, scheme ->
             dotPaint.color = scheme.shcemeColor
             val dotX = startX + index * (2 * dotRadius + dotMargin) + dotRadius
             canvas.drawCircle(dotX.toFloat(), dotY.toFloat(), dotRadius.toFloat(), dotPaint)

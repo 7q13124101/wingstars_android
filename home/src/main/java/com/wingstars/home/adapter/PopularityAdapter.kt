@@ -68,11 +68,6 @@ class PopularityAdapter     // -------------------------------------------
 
         fun binding(position: Int, listeners: onPopularityRankingListener) {
             val params = binding.item.layoutParams as ViewGroup.MarginLayoutParams
-            if (position == 0) {
-                params.leftMargin = DPUtils.Companion.dpToPx(20f, context).toInt()
-            } else {
-                params.leftMargin = 0
-            }
             binding.item.layoutParams = params
 
             binding.tvRankNumber.text = (position + 1).toString()

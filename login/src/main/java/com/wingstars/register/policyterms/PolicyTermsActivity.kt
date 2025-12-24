@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.wingstars.login.databinding.ActivityPolicyTermsBinding
 //import androidx.activity.viewModels
 import com.wingstars.login.R
-import com.wingstars.login.databinding.ActivityRegisterBinding
 import com.wingstars.login.databinding.ActivityRegistrationTermsBinding
 import com.wingstars.net.beans.PrivacyPolicyResponse
 

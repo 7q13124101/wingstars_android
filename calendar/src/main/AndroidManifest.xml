@@ -5,12 +5,6 @@
         <activity
             android:name=".activity.EventDetailsActivity"
             android:exported="false" />
-        <activity
-            android:name=".EventDetailsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
     </application>
 
 </manifest>

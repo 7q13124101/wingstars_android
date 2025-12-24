@@ -37,14 +37,18 @@ class FanInteractionViewModel : ViewModel() {
                             val name = data.titleF
                             val number = data.acf.numberF
                             var full = ""
-                            val photoframeImageUrls = data.acf.photoFrame_image_urls
-                            if (photoframeImageUrls!=null){
-                                val image1 = photoframeImageUrls.image1
+                            val photoFrame = data.acf.photoFrame
+                            if (photoFrame!=null){
+                                val image1 = photoFrame.image1
                                 if (image1!=null){
-                                    full =  image1.full
+                                    val sizes = image1.sizes
+                                    if(sizes!=null){
+                                        full =  sizes.`1536x1536`
+                                        membersList.add(TakePhotosMembersListBean(number = number, name = name,imgae= full))
+                                    }
                                 }
                             }
-                            membersList.add(TakePhotosMembersListBean(number = number, name = name,imgae= full))
+
                         }
                         takePhotosMembersList.postValue(membersList)
                     }

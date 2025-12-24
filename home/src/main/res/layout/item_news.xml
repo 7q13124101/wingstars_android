@@ -8,6 +8,7 @@
     android:orientation="horizontal"
     android:paddingVertical="8dp">
     <com.lihang.ShadowLayout
+        android:id="@+id/shadow_img"
         android:layout_width="114dp"
         android:layout_height="107dp"
         app:hl_cornerRadius="20dp">

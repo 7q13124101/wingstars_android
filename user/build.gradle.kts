@@ -58,6 +58,7 @@ dependencies {
     implementation("io.reactivex.rxjava3:rxjava:3.1.6")
     implementation("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
     implementation("com.tencent:mmkv:1.3.9")
+// nếu dùng Observable
     implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
     implementation("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
     implementation("io.reactivex.rxjava3:rxandroid:3.0.0")

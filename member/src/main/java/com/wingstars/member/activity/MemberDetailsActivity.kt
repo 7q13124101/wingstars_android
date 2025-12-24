@@ -2,16 +2,20 @@ package com.wingstars.member.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
+import androidx.core.widget.NestedScrollView
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -32,6 +36,68 @@ import com.wingstars.member.fragment.BasicInformationFragment
 import com.wingstars.member.fragment.PersonalScheduleFragment
 import com.wingstars.member.viewmodel.MemberDetailsViewModel
 
+
+class InterceptNestedScrollView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : NestedScrollView(context, attrs, defStyleAttr) {
+
+    private var shouldIntercept = false
+
+    private var rcSocial = Rect(0, 0, 0, 0)
+
+    // 设置是否拦截触摸事件
+    fun setShouldIntercept(shouldIntercept: Boolean) {
+        this.shouldIntercept = shouldIntercept
+    }
+
+    fun setSocialAccountRect(rc: Rect) {
+        rcSocial = rc
+    }
+
+    /*override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+
+        when(ev.action){
+            MotionEvent.ACTION_UP->{
+                shouldIntercept =!rcSocial.contains(ev.rawX.toInt(), ev.rawY.toInt())
+            }
+            MotionEvent.ACTION_DOWN->{
+                shouldIntercept =!rcSocial.contains(ev.rawX.toInt(), ev.rawY.toInt())
+            }
+            MotionEvent.ACTION_MOVE->  {
+                shouldIntercept = true}
+        }
+
+         return if (shouldIntercept) {
+            super.onInterceptTouchEvent(ev)
+        } else {
+            false // 不拦截，事件会传递给子View
+        }
+    }*/
+
+    override fun onTouchEvent(ev: MotionEvent): Boolean {
+        when (ev.action) {
+            MotionEvent.ACTION_UP -> {
+                shouldIntercept = !rcSocial.contains(ev.rawX.toInt(), ev.rawY.toInt())
+            }
+
+            MotionEvent.ACTION_DOWN -> {
+                shouldIntercept = !rcSocial.contains(ev.rawX.toInt(), ev.rawY.toInt())
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                shouldIntercept = true
+            }
+        }
+
+        return if (shouldIntercept) {
+            super.onTouchEvent(ev)
+        } else {
+            false // 不拦截，事件会传递给子View
+        }
+    }
+}
 
 class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
 
@@ -96,6 +162,10 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
             params.width = ViewGroup.LayoutParams.MATCH_PARENT
             //布局整体的高度 - 64f标题栏高度 - 状态栏高度
             params.height = binding.main.height - DPUtils.dpToPx(64f, this).toInt() - nStatusHeight
+
+            val outRect = Rect()
+            binding.llSocialAccount.getGlobalVisibleRect(outRect)
+            binding.nsvMemberDetail.setSocialAccountRect(outRect)
         }
     }
 

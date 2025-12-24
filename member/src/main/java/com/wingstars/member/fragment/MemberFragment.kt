@@ -35,6 +35,7 @@ import com.wingstars.member.viewmodel.MemberViewModel
 import com.wingstars.base.inter.IPermissionsCallback
 import com.wingstars.base.net.NetBase
 import com.wingstars.base.net.beans.WSMemberResponse
+import com.wingstars.member.R
 import com.wingstars.member.activity.MemberDetailsActivity
 
 
@@ -69,7 +70,19 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
     }
 
     private fun loadData() {
+        //成员 > 成员介绍
         viewModel.getWsMembersData()
+        //人气排行-名次
+        viewModel.getRenderedList()
+        val value = viewModel.wsFashionCategorysData.value
+        if (value==null){
+            //成员 > 氛围时尚-分类
+            viewModel.wsFashionCategorys()
+        }else{
+            // 氛围时尚
+            viewModel.wsFashions()
+        }
+
     }
 
     private fun initView() {
@@ -77,6 +90,11 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
             maxHight = binding.image.height
             currentHeight = maxHight
         }*/
+        binding.refresh.setColorSchemeResources(R.color.color_E2518D)
+        binding.refresh.setOnRefreshListener {
+            binding.refresh.isRefreshing = false
+            loadData()
+        }
 
         val account = NetBase.decrypt(NetBase.WINGSTARS_ACCOUNT_ENC)
         val password = NetBase.decrypt(NetBase.WINGSTARS_PASSWORD_ENC)
@@ -178,7 +196,7 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
                 girlIntroductionAdapter.setList(it)
         }
 
-        viewModel.getPopularitylist()
+       // viewModel.getPopularitylist()
         binding.popularityRanking.setOnClickListener(this)
         binding.take.setOnClickListener(this)
         binding.llEventHighlights.setOnClickListener(this)
@@ -198,7 +216,7 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
             )
             binding.chartList.adapter = adapter
         }
-        viewModel.getRenderedList()
+
         viewModel.wsFashions.observe(viewLifecycleOwner) {
             it.forEach { data ->
                 val fashionCategoryf = data.fashion_categoryF
@@ -217,7 +235,7 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
             var adapter1 = SupportFashionAdapter(requireActivity(), it, this)
             binding.supportFashionList.adapter = adapter1
         }
-        viewModel.wsFashionCategorys()
+
     }
 
 

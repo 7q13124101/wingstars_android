@@ -6,12 +6,15 @@ import com.wingstars.base.net.beans.CRMDeleteRespone;
 import com.wingstars.base.net.beans.CRMGenQRCodeRequest;
 import com.wingstars.base.net.beans.CRMGenQRCodeResponse;
 import com.wingstars.base.net.beans.CRMMemberContactResponse;
+import com.wingstars.base.net.beans.CRMSMSRequest;
+import com.wingstars.base.net.beans.CRMMemberDetailResponse;
 import com.wingstars.base.net.beans.CRMResetPasswordRequest;
 import com.wingstars.base.net.beans.CRMResetPasswordResponse;
 import com.wingstars.base.net.beans.CRMSendOtpRequest;
 import com.wingstars.base.net.beans.CRMSendOtpResponse;
 import com.wingstars.base.net.beans.CRMSignInRequest;
 import com.wingstars.base.net.beans.CRMSignInResponse;
+import com.wingstars.base.net.beans.CRMSignUpRequest;
 import com.wingstars.base.net.beans.CRMVerifyRequest;
 import com.wingstars.base.net.beans.CRMVerifyResponse;
 import com.wingstars.base.net.beans.EvtCheckinRequest;
@@ -21,7 +24,19 @@ import com.wingstars.base.net.beans.EvtMemberTaskResponse;
 import com.wingstars.base.net.beans.EvtTaskResponse;
 import com.wingstars.base.net.beans.NSInfoRequest;
 import com.wingstars.base.net.beans.NSInfoResponse;
+import com.wingstars.base.net.beans.CRMBaseResponse;
+import com.wingstars.base.net.beans.CRMGenQRCodeRequest;
+import com.wingstars.base.net.beans.CRMGenQRCodeResponse;
+import com.wingstars.base.net.beans.CRMMemberContactResponse;
+import com.wingstars.base.net.beans.CRMSignInRequest;
+import com.wingstars.base.net.beans.CRMSignInResponse;
+import com.wingstars.base.net.beans.CRMVerifyRequest;
+import com.wingstars.base.net.beans.CRMVerifyResponse;
+import com.wingstars.base.net.beans.EvtMemberTaskResponse;
+import com.wingstars.base.net.beans.NSInfoRequest;
+import com.wingstars.base.net.beans.NSInfoResponse;
 import com.wingstars.base.net.beans.WSCalendarCategoryResponse;
+import com.wingstars.base.net.beans.WSCalendarNResponse;
 import com.wingstars.base.net.beans.WSCalendarResponse;
 import com.wingstars.base.net.beans.WSCustomerResponse;
 import com.wingstars.base.net.beans.WSFashionCategoryResponse;
@@ -33,6 +48,8 @@ import com.wingstars.base.net.beans.WSPhotoFrameResponse;
 import com.wingstars.base.net.beans.WSPostResponse;
 import com.wingstars.base.net.beans.WSProductResponse;
 import com.wingstars.base.net.beans.WSRankResponse;
+import com.wingstars.base.net.beans.WSScheduleResponse;
+import com.wingstars.base.net.beans.YoutubeSearchResponse;
 
 import retrofit2.http.DELETE;
 import retrofit2.http.Path;
@@ -62,6 +79,16 @@ public interface ApiService {
     Observable<CRMBaseResponse<Object>> crmSignInCheck(@Url String url, @Query("phone") String phone);
     @POST()
     Observable<CRMBaseResponse<CRMSignInResponse>> crmSignIn(@Url String url, @Body CRMSignInRequest signInRequest);
+
+    ///v1/client/otp/sms 发送短信验证码
+    @POST(NetBase.HOST_CRM+"/api/v1/client/otp/sms")
+    Observable<CRMBaseResponse<Object>> crmSMS( @Body CRMSMSRequest signInRequest);
+
+    @GET(NetBase.HOST_CRM+"/api/v1/client/sign-up/check")
+    Observable<CRMBaseResponse<Object>> crmSignUpCheck( @Query("phone") String phone);
+
+    @POST(NetBase.HOST_CRM+"/api/v1/client/sign-up")
+    Observable<CRMBaseResponse<Object>> crmSignUp(@Body CRMSignUpRequest signUpRequest);
     @GET()
     Observable<CRMBaseResponse<CRMMemberContactResponse>> crmGetMemberContact(@Url String url);
     @GET()
@@ -80,6 +107,21 @@ public interface ApiService {
     @GET()
     Observable<List<EvtMemberTaskResponse>> evtMemberTasks(@Url String url, @Query("encryptedIdentity") String encryptedIdentity);
 
+    //首頁 > Youtube
+// Trong Interface API của bạn
+    @GET(NetBase.HOST_GOOGLE + "/youtube/v3/search")
+    Observable<YoutubeSearchResponse> getYoutubeVideos(
+            @Query("part") String part,       // Truyền "snippet"
+            @Query("channelId") String channelId,
+            @Query("maxResults") int maxResults,
+            @Query("order") String order,     // Truyền "date"
+            @Query("type") String type,       // Truyền "video"
+            @Query("key") String apiKey
+    );
+
+    //Member > 查询会员详细资料. ${BaseApplication.HOST_CRM}/api/v1/basic/member/{id}
+    @GET(NetBase.HOST_CRM + "/api/v1/basic/member/{id}")
+    Observable<CRMBaseResponse<CRMMemberDetailResponse>> crmMemberDetail();
     //今日行程
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/calendar?_fields=id,title.rendered,acf,content.rendered,yoast_head_json.og_image,calendar_category")
     Observable<List<WSCalendarResponse>> wsSchedule(@Query("per_page") int per_page, @Query("page") int page);
@@ -124,9 +166,19 @@ public interface ApiService {
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/calendar?_fields=id,title.rendered,acf,content.rendered,yoast_head_json.og_image,calendar_category")
     Observable<List<WSCalendarResponse>> wsCalendar(@Query("per_page") int per_page, @Query("page") int page);
 
+    //日历2（新版）
+    @GET(NetBase.HOST_BASE + "/wp-json/tsg-schedule/v1/calendar")
+    Observable<List<WSCalendarNResponse>> wsCalendarN(@QueryMap HashMap<String, String> param);
+
+
     //日历-分类
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/calendar_category?_fields=id,name")
     Observable<List<WSCalendarCategoryResponse>> wsCalendarCategory(@Query("per_page") int per_page, @Query("page") int page);
+
+    //班表
+    @GET(NetBase.HOST_BASE + "/wp-json/tsg-schedule/v1/schedules")
+    Observable<List<WSScheduleResponse>> wsSchedules(@QueryMap HashMap<String, String> param);
+
 
     //商城---
     //查询指定客户 customer_id

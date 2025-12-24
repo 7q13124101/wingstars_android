@@ -1,6 +1,8 @@
 package com.wingstars.home.adapter
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -68,10 +70,14 @@ class ProductAdapter(
 
             binding.tvProductName.text = data.name
             binding.tvProductPrice.text = "$" + data.price
-
-            binding.root.setOnClickListener {
+            val clickListener = android.view.View.OnClickListener {
                 listener.onItemClick(data, position)
             }
+
+            binding.item.setOnClickListener(clickListener)
+            binding.shadowContainer.setOnClickListener(clickListener)
+            binding.imgProduct.setOnClickListener(clickListener)
+
         }
     }
 }
