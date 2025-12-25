@@ -1,6 +1,8 @@
 package com.wingstars.base.net;
 
 
+import com.wingstars.base.net.beans.BeaconListResponse;
+import com.wingstars.base.net.beans.BluetoothBeaconRequest;
 import com.wingstars.base.net.beans.CRMBaseResponse;
 import com.wingstars.base.net.beans.CRMGenQRCodeRequest;
 import com.wingstars.base.net.beans.CRMGenQRCodeResponse;
@@ -17,6 +19,8 @@ import com.wingstars.base.net.beans.EvtCheckinResponse;
 import com.wingstars.base.net.beans.EvtMemberBadgeResponse;
 import com.wingstars.base.net.beans.EvtMemberTaskResponse;
 import com.wingstars.base.net.beans.EvtTaskResponse;
+import com.wingstars.base.net.beans.FrequentlyQuestionsResponse;
+import com.wingstars.base.net.beans.NSBaseResponse;
 import com.wingstars.base.net.beans.NSInfoRequest;
 import com.wingstars.base.net.beans.NSInfoResponse;
 import com.wingstars.base.net.beans.CRMBaseResponse;
@@ -30,6 +34,10 @@ import com.wingstars.base.net.beans.CRMVerifyResponse;
 import com.wingstars.base.net.beans.EvtMemberTaskResponse;
 import com.wingstars.base.net.beans.NSInfoRequest;
 import com.wingstars.base.net.beans.NSInfoResponse;
+import com.wingstars.base.net.beans.NSParkingResponse;
+import com.wingstars.base.net.beans.NSTokenNewResponse;
+import com.wingstars.base.net.beans.NSTokenRefreshRequest;
+import com.wingstars.base.net.beans.NSUserErrorInfoRequest;
 import com.wingstars.base.net.beans.WSCalendarCategoryResponse;
 import com.wingstars.base.net.beans.WSCalendarNResponse;
 import com.wingstars.base.net.beans.WSCalendarResponse;
@@ -44,8 +52,10 @@ import com.wingstars.base.net.beans.WSPostResponse;
 import com.wingstars.base.net.beans.WSProductResponse;
 import com.wingstars.base.net.beans.WSRankResponse;
 import com.wingstars.base.net.beans.WSScheduleResponse;
+import com.wingstars.base.net.beans.YoutubeListResponse;
 import com.wingstars.base.net.beans.YoutubeSearchResponse;
 
+import okhttp3.ResponseBody;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 import java.util.HashMap;
@@ -200,6 +210,70 @@ public interface ApiService {
     @GET(NetBase.HOST_EVENT + "/api/v1/public/event-tasks/{taskid}")
     Observable<EvtMemberTaskResponse> evtTaskInfo( @Query("encryptedIdentity") String encryptedIdentity);
 
+
+    //中继
+    //获取token
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/com/token/new/" + NetBase.NEWSOFT_APP_ID)
+    Observable<NSBaseResponse<NSTokenNewResponse>> nsTokenNew();
+
+    //中继
+    //获取token
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/com/token/new/" + NetBase.NEWSOFT_APP_ID)
+    Call<NSBaseResponse<NSTokenNewResponse>> nsTokenNewCall();
+
+    //刷新token
+    @POST(NetBase.HOST_NEWSOFT + "/api/v1/com/token/refresh/" + NetBase.NEWSOFT_APP_ID)
+    Call<NSBaseResponse<NSTokenNewResponse>> nsTokenRefresh(@Body NSTokenRefreshRequest tokenRefreshRequest);
+
+    //记录手机设备信息、CRM会员信息
+    @POST(NetBase.HOST_NEWSOFT + "/api/v1/app/mobile_crm/info")
+    Observable<NSInfoResponse> nsInfo(@Body NSInfoRequest infoRequest);
+
+    //post error
+    @POST()
+    Observable<NSInfoResponse> nsUserErrorInfo(@Url String url, @Body NSUserErrorInfoRequest infoRequest);
+
+    //中继
+    //获取server管理员维护的信标设备列表
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/beacon/list")
+    Observable<BeaconListResponse> getBeaconList(@Query("pageNum") int pageNum, @Query("pageSize") int pageSize);
+
+    //中继
+    //APP侦测到设备列表后请求
+    @POST(NetBase.HOST_NEWSOFT + "/api/v1/app/device-bluetooth/interaction")
+    Observable<NSInfoResponse> bluetoothToBeancon(@Body BluetoothBeaconRequest request);
+
+    //中继
+    //获取Youtube视频
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/youtube/vlist")
+    Observable<YoutubeListResponse> nsYtbList();
+
+    //获取Youtube List
+    //eventType=completed：僅包含已結束的廣播。
+    //eventType=live：只包含進行中的廣播訊息。
+    //eventType=upcoming：只包含即將播送的直播內容。
+    //eventType=shorts： 短片
+    //eventType=vlog：Vlog
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/youtube/vlist")
+    Observable<YoutubeListResponse> nsYtbList(@Query("eventType") String eventType);
+
+    //jsonfile=wingstarsschedule：鹰援班表
+    //jsonfile=catering：餐饮
+    //返回json文件数据
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/jsondata/${jsonfile}")
+    Observable<Object> nsJsonData(@Path("jsonfile") String jsonfile);
+
+    //zipfile=wingstarsschedule：鹰援班表
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/bidata/${zipfile}")
+    Observable<ResponseBody> nsBiData(@Path("zipfile") String zipfile);
+
+    //取动态停车位
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/remotedata/parking")
+    Observable<NSParkingResponse> nsParking();
+
+    //常见问题
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/questions")
+    Observable<FrequentlyQuestionsResponse> nsQuestions();
 
 }
 

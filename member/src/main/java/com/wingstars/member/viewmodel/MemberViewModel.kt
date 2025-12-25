@@ -31,8 +31,6 @@ class MemberViewModel : ViewModel() {
     public fun getPopularitylist() {
         var arrayList = mutableListOf(1, 2, 3)
         popularitylist.postValue(arrayList)
-
-//        NetBase.ut()
     }
 //成员 > 氛围时尚-分类
     public fun wsFashionCategorys() {
@@ -52,6 +50,8 @@ class MemberViewModel : ViewModel() {
                 }
             )
         }
+
+//        NetBase.ut()
     }
 // 氛围时尚
     public fun wsFashions() {

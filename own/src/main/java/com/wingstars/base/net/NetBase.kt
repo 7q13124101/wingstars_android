@@ -13,6 +13,7 @@ import com.wingstars.base.net.beans.CRMBaseFailResponse
 import com.wingstars.base.net.beans.CRMGenQRCodeRequest
 import com.wingstars.base.net.beans.CRMVerifyRequest
 import com.wingstars.base.net.beans.EvtTaskResponse
+import com.wingstars.base.utils.MMKVManagement
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.HttpException
@@ -22,7 +23,7 @@ import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import java.util.Base64
 import javax.crypto.spec.SecretKeySpec
-
+import kotlin.math.min
 
 
 object NetBase : Application(){
@@ -37,35 +38,46 @@ object NetBase : Application(){
     const val HOST_BASE = "https://61.218.209.209"
     const val HOST_CRM = "https://ws-crm-dev.newretail.tw"
     const val HOST_EVENT = "https://ws-event-dev.newretail.tw/"
-
+    const val HOST_HAWK_EVENT = "https://ws-event-dev.newretail.tw"
     const val CRM_HOST = "https://ws-crm-dev.newretail.tw"
-    const val HOST_GOOGLE = "https://www.googleapis.com"
-    const val YOUTUBE_CHANNEL_ID = "UCSEI3nk0QSGcQKR75O6vM6Q"
-    const val YOUTUBE_API_KEY = "AIzaSyAzRyrgUFVXePO4vfx0RuVKqn2W64RlyQk"
-    const val API_KEY = "8e2KeU3Bntw43R09tNE1"
-    const val TOKEN_TYPE = "Bearer"
+    const val HOST_NEWSOFT = "https://ec2-52-193-38-93.ap-northeast-1.compute.amazonaws.com"
     const val WINGSTARS_ACCOUNT_ENC = "OaAJUXD7ZN20fekfVqN3uJzbbqf4LP8vR7AMXPVlFaU="                        //"newsoftapp"
     const val WINGSTARS_PASSWORD_ENC = "gZR514+qAhvFIRr+eRoQ0Qo5/OVEOrnL4OMd/40ACtKzIvdjNnYFq/vNLe5/Uerm"   //"VU4m E5kG Azeu Rryo JmxT BXAj"
     const val CONSUMER_KEY_ENC = "9humcXmIssTG1JdlihQocOdH6D5tNQDImi7CP5cHvyfkq40DcosNRBXIxd9nFlsFX0QNz6v36iY+vjfMaju7tw=="     //"ck_0de8be632e78d179c2ebcd1215c301198a75944a"
     const val CONSUMER_SECRET_ENC = "XV0kwKPmag27wEZM61zHpFQp6Bjgo2rYdNX6HUycvteJxjVZoD9dcvCpsSQTrwNpYqlCX3UPxAU6Gbjm0yM5Jg=="  //"cs_87db163ae5d871a3913ee961261a37152fd14fe1"
+    const val NEWSOFT_APP_ID = "c6714bef6fda4a018bbaec3871e9c7dc"
+    const val NEWSOFT_APP_SECRET_ENC = "LFq4BR72apfaNn87zd9MEGFDlGbkOk9H2YTXZMar3vXNfgLf3VFcxGENPSqcP1uu4U3zx+Q3ZQ/qPDXL40laQQ=="   //"26ce192cbe10413cbf96134835707e81"
+
+    //正式区
+//    const val HOST_BASE = "https://www.tsghawks.com"
+//    const val HOST_CRM = ""
+//    const val HOST_EVENT = ""
+//    const val HOST_HAWK_EVENT = ""
+//    const val CRM_HOST = ""
+//    const val HOST_NEWSOFT = ""
+//    const val WINGSTARS_ACCOUNT_ENC = "OaAJUXD7ZN20fekfVqN3uJzbbqf4LP8vR7AMXPVlFaU="                        //"newsoftapp"
+//    const val WINGSTARS_PASSWORD_ENC = "gZR514+qAhvFIRr+eRoQ0Qo5/OVEOrnL4OMd/40ACtKzIvdjNnYFq/vNLe5/Uerm"   //"VU4m E5kG Azeu Rryo JmxT BXAj"
+//    const val CONSUMER_KEY_ENC = "9humcXmIssTG1JdlihQocOdH6D5tNQDImi7CP5cHvyfkq40DcosNRBXIxd9nFlsFX0QNz6v36iY+vjfMaju7tw=="     //"ck_0de8be632e78d179c2ebcd1215c301198a75944a"
+//    const val CONSUMER_SECRET_ENC = "XV0kwKPmag27wEZM61zHpFQp6Bjgo2rYdNX6HUycvteJxjVZoD9dcvCpsSQTrwNpYqlCX3UPxAU6Gbjm0yM5Jg=="  //"cs_87db163ae5d871a3913ee961261a37152fd14fe1"
+//    const val NEWSOFT_APP_ID = "c6714bef6fda4a018bbaec3871e9c7dc"
+//    const val NEWSOFT_APP_SECRET_ENC = "LFq4BR72apfaNn87zd9MEGFDlGbkOk9H2YTXZMar3vXNfgLf3VFcxGENPSqcP1uu4U3zx+Q3ZQ/qPDXL40laQQ==" //"26ce192cbe10413cbf96134835707e81"
+
+    const val HOST_GOOGLE = "https://www.googleapis.com"
+    const val HOST_YOUTUBE = "https://www.youtube.com"                  //Youtube
+    const val YOUTUBE_CHANNEL_ID = "UCSEI3nk0QSGcQKR75O6vM6Q"
+    const val YOUTUBE_API_KEY = "AIzaSyAzRyrgUFVXePO4vfx0RuVKqn2W64RlyQk"
+    const val API_KEY = "8e2KeU3Bntw43R09tNE1"
+    const val TOKEN_TYPE = "Bearer"
+
     const val BROADCAST_LOGIN_SUCCESS_INTENT = "com.tsg.wingstar.BROADCAST_LOGIN_SUCCESS_INTENT"
     const val BROADCAST_TASK_REFRESH = "com.tsg.wingstar.BROADCAST_TASK_REFRESH"
 
-    const val HOST_HAWK_EVENT = "https://ws-event-dev.newretail.tw"
+
     //用户登入
     const val BROADCAST_USER_LOGIN = "com.tsg.wingstar.BROADCAST_USER_LOGIN"
 
     //用户登出
     const val BROADCAST_USER_LOGOUT = "com.tsg.wingstar.BROADCAST_USER_LOGOUT"
-
-    //正式区
-//    const val HOST_BASE = "https://www.tsghawks.com"
-
-//    const val WINGSTARS_ACCOUNT_ENC = "OaAJUXD7ZN20fekfVqN3uJzbbqf4LP8vR7AMXPVlFaU="                        //"newsoftapp"
-//    const val WINGSTARS_PASSWORD_ENC = "gZR514+qAhvFIRr+eRoQ0Qo5/OVEOrnL4OMd/40ACtKzIvdjNnYFq/vNLe5/Uerm"   //"VU4m E5kG Azeu Rryo JmxT BXAj"
-//    const val CONSUMER_KEY_ENC = "9humcXmIssTG1JdlihQocOdH6D5tNQDImi7CP5cHvyfkq40DcosNRBXIxd9nFlsFX0QNz6v36iY+vjfMaju7tw=="     //"ck_0de8be632e78d179c2ebcd1215c301198a75944a"
-//    const val CONSUMER_SECRET_ENC = "XV0kwKPmag27wEZM61zHpFQp6Bjgo2rYdNX6HUycvteJxjVZoD9dcvCpsSQTrwNpYqlCX3UPxAU6Gbjm0yM5Jg=="  //"cs_87db163ae5d871a3913ee961261a37152fd14fe1"
-
 
     init {
         try {
@@ -286,8 +298,11 @@ object NetBase : Application(){
         //加密 API key
 //        var enc = ""
 //        var dec = ""
-//        enc = encrypt("")
-//        println("WINGSTARS_ACCOUNT_ENC. enc: '$enc'")
+//        enc = encrypt(NEWSOFT_APP_SECRET)
+//        dec = decrypt(enc)
+//        println("NEWSOFT_APP_SECRET. enc: $enc")
+//        println("NEWSOFT_APP_SECRET. dec: $dec")
+//        println("NEWSOFT_APP_SECRET. equal: ${dec.equals(NEWSOFT_APP_SECRET)}")
 
         API.shared?.api?.let {
             //今日行程
@@ -566,6 +581,69 @@ object NetBase : Application(){
 //                    }
 //                }
 //            )
+
+            //中继 > 获取token
+//            val observer = it.nsTokenNew()
+//            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+//                AndroidSchedulers.mainThread())?.subscribe(
+//                { next ->
+//                    Log.d("API", "[nsTokenNew] next: ${next.successed}")
+//
+//                    MMKVManagement.setNsAccessToken(next.data.token)
+//                    MMKVManagement.setNsRefreshToken(next.data.refresh_token)
+//
+//                    val accessToken = MMKVManagement.getNsAccessToken()
+//                    val refreshToken = MMKVManagement.getNsRefreshToken()
+//                    println("accessToken: ${accessToken}, refreshToken: ${refreshToken}")
+//                },
+//                { error ->
+//                    error.message?.let { it1 ->
+//                        Log.e("API", "[nsTokenNew] error.message: ${it1?.toString()}")
+//                    }
+//                }
+//            )
+
+            //中继 > 获取Youtube视频
+//            val observer = it.nsYtbList()
+//            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+//                AndroidSchedulers.mainThread())?.subscribe(
+//                { next ->
+//                    Log.d("API", "[nsYtbList] next.data.size: ${next.items?.count()}")
+//
+//                    var i = 1
+//                    next.items?.forEach { yis ->
+//                        println("[$i] id: ${yis.videoIdF}, title: ${yis.titleF}, date: ${yis.dateF}, image: ${yis.imageF} ")
+//                        i += 1
+//                    }
+//                },
+//                { error ->
+//                    error.message?.let { it1 ->
+//                        Log.e("API", "[nsYtbList] error.message: ${it1?.toString()}")
+//                    }
+//                }
+//            )
+
+            //中继 > 获取Youtube List shorts/vlog
+//            val eventType = "shorts" //shorts, vlog
+//            val observer = it.nsYtbList(eventType)
+//            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+//                AndroidSchedulers.mainThread())?.subscribe(
+//                { next ->
+//                    Log.d("API", "[nsYtbList] eventType: ${eventType}, next.data.size: ${next.items?.count()}")
+//
+//                    var i = 1
+//                    next.items?.forEach { yis ->
+//                        println("[$i] id: ${yis.videoIdF}, title: ${yis.titleF}, date: ${yis.dateF}, image: ${yis.imageF} ")
+//                        i += 1
+//                    }
+//                },
+//                { error ->
+//                    error.message?.let { it1 ->
+//                        Log.e("API", "[nsYtbList] error.message: ${it1?.toString()}")
+//                    }
+//                }
+//            )
+
 
         }
     }
