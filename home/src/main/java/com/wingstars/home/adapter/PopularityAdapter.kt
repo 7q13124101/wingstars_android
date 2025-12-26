@@ -19,24 +19,19 @@ class PopularityAdapter(
     private val listener: onPopularityRankingListener
 ) : RecyclerView.Adapter<PopularityAdapter.NormalItemViewHolder>() {
 
-    // List chi tiết (Member info dùng để click)
     private var memberDetailList: List<WSMemberResponse> = ArrayList()
 
-    // Interface trả về WSMemberResponse
     interface onPopularityRankingListener {
         fun onPopularityRankingClickItem(data: WSMemberResponse)
     }
 
-    // Hàm cập nhật dữ liệu hiển thị (Rank)
     fun setRankList(list: MutableList<WSMemberRankBean>?) {
         this.dataList = list
         notifyDataSetChanged()
     }
 
-    // Hàm cập nhật dữ liệu chi tiết (Member Detail)
     fun setMemberDetailList(list: List<WSMemberResponse>) {
         this.memberDetailList = list
-        // Không cần notifyDataSetChanged vì UI không đổi
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
@@ -64,7 +59,6 @@ class PopularityAdapter(
             val params = binding.item.layoutParams as ViewGroup.MarginLayoutParams
             binding.item.layoutParams = params
 
-            // HIỂN THỊ UI (Dùng dataList - RankBean)
             val bean = dataList!![position]
             binding.tvRankNumber.text = (position + 1).toString()
             binding.tvName.text = "${bean.number} ${bean.name}"
@@ -78,9 +72,7 @@ class PopularityAdapter(
                 )
                 .into(binding.imgPerson)
 
-            // XỬ LÝ CLICK (Dùng memberDetailList - MemberResponse)
             binding.item.setOnClickListener {
-                // Kiểm tra xem đã có dữ liệu chi tiết chưa và vị trí có hợp lệ không
                 if (position < memberDetailList.size) {
                     listeners.onPopularityRankingClickItem(memberDetailList[position])
                 }

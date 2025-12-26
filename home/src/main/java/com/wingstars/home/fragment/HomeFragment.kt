@@ -212,8 +212,6 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
                 Log.w("HomeFragment", "Chưa tải xong Category, hiển thị mặc định.")
             }
 
-            // 4. Cập nhật Adapter (chú ý dùng đúng biến adapter bạn đang muốn hiển thị)
-            // Nếu bạn đang dùng fashionAdapter (StylistOutfitsAdapter):
 //            fashionAdapter.setList(rawList)
             var adapter1 = SupportFashionAdapter(requireActivity(), rawList, this)
             binding.rvStylistVibe.adapter = adapter1
