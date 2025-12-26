@@ -11,45 +11,70 @@ import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.RadioButton
-import androidx.activity.enableEdgeToEdge
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson // Nhớ import Gson
 import com.wingstars.count.R
-import com.wingstars.count.adapter.CountListAdapter
+import com.wingstars.count.adapter.ActivityExchangeAdapter
 import com.wingstars.count.databinding.ActivityExchangeBinding
 import com.wingstars.count.databinding.DialogPublicPopupSortTypeBinding
-import com.wingstars.count.viewmodel.CountListItemViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.wingstars.count.dialog.SortMethod
+import com.wingstars.count.viewmodel.ActivityExchangeViewModel
 
 class ActivityExchangeActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityExchangeBinding
-    private lateinit var adapter: CountListAdapter
+    private lateinit var adapter: ActivityExchangeAdapter
+    private val viewModel: ActivityExchangeViewModel by viewModels()
+    private var currentSortMethod = SortMethod.SORT_DATE_NEW_TO_OLD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityExchangeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initView()
-        loadData()
 
+        initView()
+        setupObservers()
+        initListeners()
+
+        // Gọi load data lần đầu
+        viewModel.activityListData(currentSortMethod)
+        viewModel.getMemberPointFromDetailsData()
+    }
+
+    private fun initView() {
+        adapter = ActivityExchangeAdapter { item ->
+            val intent = Intent(this, ExchangeDetailsActivity::class.java).apply {
+                val jsonStr = Gson().toJson(item)
+                putExtra("EXTRA_COUPON_DATA", jsonStr)
+            }
+            startActivity(intent)
+        }
+
+        binding.rvGoodsList.layoutManager = LinearLayoutManager(this)
+        binding.rvGoodsList.adapter = adapter
+
+        setupSearchInput()
+    }
+
+    private fun initListeners() {
         binding.imgBack.setOnClickListener {
             finish()
         }
-//        binding.llEmpty.visibility = View.VISIBLE
+
         binding.tvList.setOnClickListener {
             showSortDialog()
         }
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -57,30 +82,28 @@ class ActivityExchangeActivity : AppCompatActivity() {
         }
     }
 
-    private fun initView() {
-
-        adapter = CountListAdapter(this, null) { item ->
-            android.util.Log.d("DEBUG_CLICK", "Đã click vào item: ${item.title}")
-            val intent = Intent(this, ExchangeDetailsActivity::class.java)
-            intent.putExtra("EXTRA_GIFT_ITEM", item)
-
-            startActivity(intent)
+    private fun setupObservers() {
+        viewModel.isLoading.observe(this) { isLoading ->
+            if (isLoading) {
+                 binding.srlProductCoupons.autoRefresh()
+            } else {
+                binding.srlProductCoupons.finishRefresh()
+            }
         }
 
-        binding.rvGoodsList.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 1)
-        binding.rvGoodsList.adapter = adapter
+        viewModel.searchActivityData.observe(this) { activities ->
+            adapter.submitList(activities)
+            handleEmptyState(activities.isNullOrEmpty())
+        }
 
-        setupSearchInput()
-    }
+        viewModel.points.observe(this) { points ->
+            binding.tvCountWin.text = points
+        }
 
-    private fun loadData() {
-        lifecycleScope.launch {
-            val fetchedList = withContext(Dispatchers.IO) {
-                fetchListFromRepository()
+        viewModel.errorMessage.observe(this) { message ->
+            if (!message.isNullOrBlank()) {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
-            adapter.setList(fetchedList.toMutableList())
-
-            handleEmptyState(fetchedList.size)
         }
     }
 
@@ -88,81 +111,36 @@ class ActivityExchangeActivity : AppCompatActivity() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         val dialogBinding = DialogPublicPopupSortTypeBinding.inflate(LayoutInflater.from(this))
-
         dialog.setContentView(dialogBinding.root)
 
         dialog.window?.apply {
-            val displayMetrics = resources.displayMetrics
-            val screenHeight = displayMetrics.heightPixels
-            val halfScreenHeight = (screenHeight * 0.5).toInt()
-            setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                halfScreenHeight
-            )
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             setGravity(Gravity.BOTTOM)
         }
 
-        dialogBinding.ivCloseDialog.setOnClickListener {
-            dialog.dismiss()
-        }
-
+        dialogBinding.ivCloseDialog.setOnClickListener { dialog.dismiss() }
         dialogBinding.rgSort.setOnCheckedChangeListener { group, checkedId ->
             val selectedRadioButton = group.findViewById<RadioButton>(checkedId)
-            if (selectedRadioButton != null) {
-                val selectedText = selectedRadioButton.text.toString()
-                binding.tvList.text = selectedText
-            }
+            binding.tvList.text = selectedRadioButton?.text ?: getString(R.string.dialog_sort_type)
 
-            when (checkedId) {
-                R.id.rb_sort_date_new_to_old -> { }
-                R.id.rb_sort_date_old_to_new -> { }
-                R.id.rb_sort_points_high_to_low -> { }
-                R.id.rb_sort_points_low_to_high -> { }
+            currentSortMethod = when (checkedId) {
+                R.id.rb_sort_date_old_to_new -> SortMethod.SORT_DATE_OLD_TO_NEW
+                R.id.rb_sort_points_high_to_low -> SortMethod.SORT_POINTS_HIGH_TO_LOW
+                R.id.rb_sort_points_low_to_high -> SortMethod.SORT_POINTS_LOW_TO_HIGH
+                else -> SortMethod.SORT_DATE_NEW_TO_OLD
             }
+            val keyword = binding.etSearch.text.toString()
+            viewModel.searchData(keyword, currentSortMethod)
 
-            dialogBinding.root.postDelayed({
-                if (!isFinishing && !isDestroyed && dialog.isShowing) {
-                    dialog.dismiss()
-                }
-            }, 500)
+            dialog.dismiss()
         }
         dialog.show()
     }
 
-    private fun handleEmptyState(dataSize: Int) {
-        if (dataSize == 0) {
-            binding.llEmpty.visibility = View.VISIBLE
-            binding.rvGoodsList.visibility = View.GONE
-        } else {
-            binding.llEmpty.visibility = View.GONE
-            binding.rvGoodsList.visibility = View.VISIBLE
-        }
-    }
-
-    private suspend fun fetchListFromRepository(): List<CountListItemViewModel> {
-        return listOf(
-            CountListItemViewModel(1,"有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image,"所有會員皆適用","1次","80","澄清湖棒球場（高雄市烏松區大埤路113號）","部分商品數量有限，換完為止。 \n" +
-                    "兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。 \n" +
-                    "本券僅限於指定兌換地點使用，請於現場出示 APP 票券QRCODE條碼。 \n" +
-                    "兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。 \n" +
-                    "期限內若無完成兌換，本券視同失效，點數不予退回。 ","aa",""),
-            CountListItemViewModel(2,"有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image,"所有會員皆適用","1次","80","澄清湖棒球場（高雄市烏松區大埤路113號）","部分商品數量有限，換完為止。 \n" +
-                    "兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。 \n" +
-                    "本券僅限於指定兌換地點使用，請於現場出示 APP 票券QRCODE條碼。 \n" +
-                    "兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。 \n" +
-                    "期限內若無完成兌換，本券視同失效，點數不予退回。 ","aa",""),
-            CountListItemViewModel(3,"有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）", "2025/11/09 (日)", "100", R.drawable.bg_round_image,"所有會員皆適用","1次","80","澄清湖棒球場（高雄市烏松區大埤路113號）","部分商品數量有限，換完為止。 \n" +
-                    "兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。 \n" +
-                    "本券僅限於指定兌換地點使用，請於現場出示 APP 票券QRCODE條碼。 \n" +
-                    "兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。 \n" +
-                    "期限內若無完成兌換，本券視同失效，點數不予退回。 ","aa",""),
-            CountListItemViewModel(4,"安芝儇 x Mingo 一日店長，專屬福利送不停", "2025/09/20 (六)", "150", R.drawable.bg_round_image,"所有會員皆適用","1次","80","澄清湖棒球場（高雄市烏松區大埤路113號）","部分商品數量有限，換完為止。 \n" +
-                    "兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。 \n" +
-                    "本券僅限於指定兌換地點使用，請於現場出示 APP 票券QRCODE條碼。 \n" +
-                    "兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。 \n" +
-                    "期限內若無完成兌換，本券視同失效，點數不予退回。 ","aa","")
-        )
+    private fun handleEmptyState(isEmpty: Boolean) {
+        binding.llEmpty.isVisible = isEmpty
+        binding.rvGoodsList.isVisible = !isEmpty
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -170,34 +148,22 @@ class ActivityExchangeActivity : AppCompatActivity() {
         val etSearch = binding.etSearch
         val clearDrawable = ContextCompat.getDrawable(this, R.drawable.ic_cancel_search)
 
-        fun updateClearButton(text: String) {
-            if (text.isNotEmpty()) {
-                etSearch.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, clearDrawable, null)
-            } else {
-                etSearch.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null)
-            }
-        }
-
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
+            override fun afterTextChanged(s: Editable?) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = s.toString()
-
-                updateClearButton(query)
-
-                adapter.filter(query)
-
-                handleEmptyState(adapter.itemCount)
+                viewModel.searchData(query, currentSortMethod)
+                val drawable = if (query.isNotEmpty()) clearDrawable else null
+                etSearch.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null)
             }
-
-            override fun afterTextChanged(s: Editable?) {}
         })
-        etSearch.setOnTouchListener { v, event ->
+
+        etSearch.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 val drawableEnd = etSearch.compoundDrawablesRelative[2]
                 if (drawableEnd != null) {
-                    if (event.rawX >= (etSearch.right - drawableEnd.bounds.width() - etSearch.paddingEnd)) {
+                    if (event.rawX >= (etSearch.right - etSearch.paddingRight - drawableEnd.bounds.width())) {
                         etSearch.text.clear()
                         return@setOnTouchListener true
                     }
@@ -206,5 +172,4 @@ class ActivityExchangeActivity : AppCompatActivity() {
             false
         }
     }
-
 }

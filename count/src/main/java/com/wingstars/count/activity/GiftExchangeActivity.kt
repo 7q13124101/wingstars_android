@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -20,35 +21,38 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import com.wingstars.count.R
 import com.wingstars.count.adapter.CountNewDetailAdapter
 import com.wingstars.count.databinding.ActivityGiftExchangeBinding
 import com.wingstars.count.databinding.DialogPublicPopupSortTypeBinding
-import com.wingstars.count.viewmodel.CountNewDetailViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.wingstars.count.dialog.SortMethod
+import com.wingstars.count.viewmodel.GiftExchangeViewModel
 
 class GiftExchangeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGiftExchangeBinding
+    private lateinit var viewModel: GiftExchangeViewModel
     private lateinit var adapter: CountNewDetailAdapter
+    private var currentSortMethod: SortMethod = SortMethod.SORT_DATE_NEW_TO_OLD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityGiftExchangeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        viewModel = ViewModelProvider(this)[GiftExchangeViewModel::class.java]
+
         initView()
-        loadData()
+        initData()
 
         binding.imgBack.setOnClickListener {
             finish()
         }
-//        binding.llEmpty.visibility = View.VISIBLE
+
         binding.tvList.setOnClickListener {
             showSortDialog()
         }
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -57,11 +61,11 @@ class GiftExchangeActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-
-        adapter = CountNewDetailAdapter(this, null) { item ->
+        adapter = CountNewDetailAdapter(this, mutableListOf()) { item ->
             val intent = Intent(this, GiftDetailsActivity::class.java)
-            intent.putExtra("EXTRA_GIFT_ITEM", item)
-
+            intent.putExtra("data", item)
+//            intent.putStringArrayListExtra("memberCards", viewModel.memberCards)
+            intent.putExtra("count", binding.tvCountWin.text.toString())
             startActivity(intent)
         }
 
@@ -71,15 +75,30 @@ class GiftExchangeActivity : AppCompatActivity() {
         setupSearchInput()
     }
 
-    private fun loadData() {
-        lifecycleScope.launch {
-            val fetchedList = withContext(Dispatchers.IO) {
-                fetchDetailFromRepository()
-            }
-            adapter.setList(fetchedList.toMutableList())
-
-            handleEmptyState(fetchedList.size)
+    private fun initData() {
+        val countIntent = intent.getStringExtra("count")
+        val count = countIntent?.toIntOrNull() ?: -1
+        viewModel.setProductCouponsInfo(count, currentSortMethod)
+        viewModel.searchActivityData.observe(this) { list ->
+            adapter.setList(list)
+            handleEmptyState(list.size)
         }
+
+        viewModel.productCouponsData.observe(this) {
+            adapter.setList(it)
+        }
+
+        viewModel.countWS.observe(this) { countVal ->
+            binding.tvCountWin.text = "$countVal"
+        }
+
+//        viewModel.isLoading.observe(this) { isLoading ->
+//            if (isLoading) {
+//                binding.chLoading.visibility = View.VISIBLE
+//            } else {
+//                binding.chLoading.visibility = View.GONE
+//            }
+//        }
     }
 
     private fun showSortDialog() {
@@ -99,6 +118,14 @@ class GiftExchangeActivity : AppCompatActivity() {
             dialog.dismiss()
         }
 
+        when (currentSortMethod) {
+            SortMethod.SORT_DATE_NEW_TO_OLD -> dialogBinding.rbSortDateNewToOld.isChecked = true
+            SortMethod.SORT_DATE_OLD_TO_NEW -> dialogBinding.rbSortDateOldToNew.isChecked = true
+            SortMethod.SORT_POINTS_HIGH_TO_LOW -> dialogBinding.rbSortPointsHighToLow.isChecked = true
+            SortMethod.SORT_POINTS_LOW_TO_HIGH -> dialogBinding.rbSortPointsLowToHigh.isChecked = true
+            else -> dialogBinding.rbSortDateNewToOld.isChecked = true
+        }
+
         dialogBinding.rgSort.setOnCheckedChangeListener { group, checkedId ->
             val selectedRadioButton = group.findViewById<RadioButton>(checkedId)
             if (selectedRadioButton != null) {
@@ -106,11 +133,19 @@ class GiftExchangeActivity : AppCompatActivity() {
                 binding.tvList.text = selectedText
             }
 
+            var newSortMethod = currentSortMethod
             when (checkedId) {
-                R.id.rb_sort_date_new_to_old -> { }
-                R.id.rb_sort_date_old_to_new -> { }
-                R.id.rb_sort_points_high_to_low -> { }
-                R.id.rb_sort_points_low_to_high -> { }
+                R.id.rb_sort_date_new_to_old -> newSortMethod = SortMethod.SORT_DATE_NEW_TO_OLD
+                R.id.rb_sort_date_old_to_new -> newSortMethod = SortMethod.SORT_DATE_OLD_TO_NEW
+                R.id.rb_sort_points_high_to_low -> newSortMethod = SortMethod.SORT_POINTS_HIGH_TO_LOW
+                R.id.rb_sort_points_low_to_high -> newSortMethod = SortMethod.SORT_POINTS_LOW_TO_HIGH
+            }
+
+            if (newSortMethod != currentSortMethod) {
+                currentSortMethod = newSortMethod
+                // Gọi ViewModel để sắp xếp lại list hiện tại
+                val keyword = binding.etSearch.text.toString().trim()
+                viewModel.searchData(keyword, currentSortMethod)
             }
 
             dialogBinding.root.postDelayed({
@@ -132,27 +167,6 @@ class GiftExchangeActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun fetchDetailFromRepository(): List<CountNewDetailViewModel> {
-        val commonRules = "部分商品數量有限，換完為止。 \n" +
-                "兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。 \n" +
-                "本券僅限於指定兌換地點使用，請於現場出示 APP 票券QRCODE條碼。 \n" +
-                "兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。 \n" +
-                "期限內若無完成兌換，本券視同失效，點數不予退回。 "
-        val precautions = "部分商品數量有限，換完為止。 \n" +
-                "兌換成功後無法轉讓、取消或更換其他商品，請確認兌換內容無誤後再行操作。 \n" +
-                "本券僅限於指定兌換地點使用，請於現場出示 APP 票券QRCODE條碼。 \n" +
-                "兌換券使用期限至2026年02月02日止，活動內容如有異動，將依球團公告為準。 \n" +
-                "期限內若無完成兌換，本券視同失效，點數不予退回。 "
-        return listOf(
-            CountNewDetailViewModel(1,R.drawable.ic_count_gift_1,"2025 WS單曲寫真壓克力鑰匙圈","2499","2025/07/01 12:00 ~ 2026/02/02 23:59","所有會員皆適用","1次","2,000","Stars House門市（高雄市左營區崇德路428號）",commonRules,precautions),
-            CountNewDetailViewModel(2,R.drawable.ic_count_gift_2,"2025 WS單曲紀念專輯吊飾","2099","2025/07/01 12:00 ~ 2026/02/02 23:59","所有會員皆適用","1次","2,000","Stars House門市（高雄市左營區崇德路428號）",commonRules,precautions),
-            CountNewDetailViewModel(3,R.drawable.ic_count_gift_3,"2025 WS單曲寫真女孩貼紙包","1699","2025/07/01 12:00 ~ 2026/02/02 23:59","所有會員皆適用","1次","2,000","Stars House門市（高雄市左營區崇德路428號）",commonRules,precautions),
-            CountNewDetailViewModel(4,R.drawable.ic_count_gift_4,"2025 WS LOGO杯墊","799","2025/07/01 12:00 ~ 2026/02/02 23:59","所有會員皆適用","1次","2,000","Stars House門市（高雄市左營區崇德路428號）",commonRules,precautions),
-            CountNewDetailViewModel(5,R.drawable.ic_count_gift_5,"2025 WS LOGO燈箱吊飾","499","2025/07/01 12:00 ~ 2026/02/02 23:59","所有會員皆適用","1次","2,000","Stars House門市（高雄市左營區崇德路428號）",commonRules,precautions),
-            CountNewDetailViewModel(6,R.drawable.ic_count_gift_6,"2024 WS立牌拼圖｜WS款","199","2025/07/01 12:00 ~ 2026/02/02 23:59","所有會員皆適用","1次","2,000","Stars House門市（高雄市左營區崇德路428號）",commonRules,precautions)
-        )
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun setupSearchInput() {
         val etSearch = binding.etSearch
@@ -171,16 +185,13 @@ class GiftExchangeActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = s.toString()
-
                 updateClearButton(query)
-
-                adapter.filter(query)
-
-                handleEmptyState(adapter.itemCount)
+                viewModel.searchData(query, currentSortMethod)
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
+
         etSearch.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 val drawableEnd = etSearch.compoundDrawablesRelative[2]

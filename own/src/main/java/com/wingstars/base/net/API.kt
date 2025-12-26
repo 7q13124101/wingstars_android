@@ -83,6 +83,10 @@ class API() {
         return hostnameVerifier
     }
 
+    val pagingDataApi: DataApi by lazy {
+        retrofit.create(DataApi::class.java)
+    }
+
     private val retrofit: Retrofit
         get() {
             val builder = OkHttpClient.Builder()

@@ -65,5 +65,23 @@
     <string name="refresh_success">重整成功</string>
     <string name="refresh_failed" translatable="false">重整失敗</string>
     <string name="et_otp">輸入手機驗證碼</string>
+    <string name="NoLimit">不限</string>
+    <string name="not_yet_open">尚未開放</string>
+    <string name="finished">已結束</string>
+    <string name="redeemed">已兌換</string>
+    <string name="insufficient_points">點數不足</string>
+    <string name="has_completed">已兌換贈品</string>
+    <string name="limit">未符合兌換條件</string>
+    <string name="goto_connect">前往</string>
+
+    <string name="current_day">今日</string>
+
+    <string name="week_1">一</string>
+    <string name="week_2">二</string>
+    <string name="week_3">三</string>
+    <string name="week_4">四</string>
+    <string name="week_5">五</string>
+    <string name="week_6">六</string>
+    <string name="week_7">日</string>
 
 </resources>

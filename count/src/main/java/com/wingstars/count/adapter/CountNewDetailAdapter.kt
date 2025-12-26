@@ -1,29 +1,23 @@
 package com.wingstars.count.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.wingstars.base.net.beans.CRMCouponsAvailableResponse
 import com.wingstars.count.R
 import com.wingstars.count.databinding.ItemGoodsNewDetailBinding
-import com.wingstars.count.viewmodel.CountNewDetailViewModel
-import java.util.ArrayList
 
 class CountNewDetailAdapter(
     private val context: Context,
-    private var dataList: MutableList<CountNewDetailViewModel>?,
-    private val onItemClick: (CountNewDetailViewModel) -> Unit
+    private var dataList: MutableList<CRMCouponsAvailableResponse> = mutableListOf(),
+    private val onItemClick: (CRMCouponsAvailableResponse) -> Unit
 ) : RecyclerView.Adapter<CountNewDetailAdapter.CountNewDetailViewHolder>() {
 
-    private var originalList: ArrayList<CountNewDetailViewModel> = ArrayList()
-
-    init {
-        if (dataList != null) {
-            originalList.addAll(dataList!!)
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountNewDetailViewHolder {
         val binding =
@@ -31,54 +25,28 @@ class CountNewDetailAdapter(
         return CountNewDetailViewHolder(binding)
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
     override fun onBindViewHolder(holder: CountNewDetailViewHolder, position: Int) {
-        holder.binding(position)
+        holder.bind(dataList[position])
     }
 
     override fun getItemCount(): Int {
-        return dataList?.size ?: 0
+        Log.d("Adapter", "ItemCount = ${dataList.size}")
+        return dataList.size
     }
 
     // -------------------------------------------
-    fun setList(list: MutableList<CountNewDetailViewModel>?) {
-        if (dataList == null) {
-            dataList = ArrayList()
+    fun setList(list: List<CRMCouponsAvailableResponse>?) {
+        dataList = if (dataList == null) {
+            ArrayList()
         } else {
-            dataList!!.clear()
+            dataList == null
+            ArrayList()
         }
-
-        originalList.clear()
-
-        if (list != null) {
-            dataList!!.addAll(list)
-            originalList.addAll(list)
-        }
+        dataList!!.addAll(list!!)
         notifyDataSetChanged()
     }
 
-    fun filter(query: String) {
-        val text = query.trim()
-
-        if (dataList == null) dataList = ArrayList()
-        dataList!!.clear()
-
-        if (text.isEmpty()) {
-            dataList!!.addAll(originalList)
-        } else {
-            for (item in originalList) {
-                if (item.title.contains(text, ignoreCase = true) == true) {
-                    dataList!!.add(item)
-                }
-            }
-        }
-        notifyDataSetChanged()
-    }
-
-    fun getData(): MutableList<CountNewDetailViewModel>? {
+    fun getData(): MutableList<CRMCouponsAvailableResponse> {
         return dataList
     }
 
@@ -86,31 +54,29 @@ class CountNewDetailAdapter(
     inner class CountNewDetailViewHolder(private val binding: ItemGoodsNewDetailBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun binding(position: Int) {
-            val item = dataList?.getOrNull(position) ?: return
+        fun bind(item: CRMCouponsAvailableResponse) {
 
-            binding.tvGoodsName.text = item.title
-            binding.tvCountPrice.text = item.count
 
-            Glide.with(context)
-                .load(item.image)
-                .placeholder(R.drawable.gift_details_image_background)
-                .error(R.drawable.gift_details_image_background)
-                .into(binding.ivGoodsImage)
+            binding.tvGoodsName.text = item.couponName ?: ""
+            binding.tvCountPrice.text = "${item.pointCost}"
+
+
+            binding.ivGoodsImage.setImageDrawable(null)
+
+            if (!item.coverImage.isNullOrEmpty()) {
+                Glide.with(binding.ivGoodsImage)
+                    .load(item.coverImage)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .dontAnimate()
+                    .placeholder(R.drawable.gift_details_image_background)
+                    .error(R.drawable.gift_details_image_background)
+                    .into(binding.ivGoodsImage)
+            } else {
+                binding.ivGoodsImage.setImageResource(R.drawable.gift_details_image_background)
+            }
 
             binding.root.setOnClickListener {
                 onItemClick(item)
-                }
-        }
-        fun setMarginLeft(view: View, left: Int) {
-            val params = view.layoutParams
-            if (params is RecyclerView.LayoutParams) {
-                params.leftMargin = left
-                view.layoutParams = params
-            } else if (params is ViewGroup.MarginLayoutParams) {
-                // Fallback
-                params.leftMargin = left
-                view.layoutParams = params
             }
         }
     }

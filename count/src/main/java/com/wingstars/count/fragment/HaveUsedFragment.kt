@@ -11,7 +11,7 @@ import com.wingstars.count.R
 import com.wingstars.count.activity.ExchangeDetailsActivity
 import com.wingstars.count.adapter.HaveUsedCouponAdapter
 import com.wingstars.count.databinding.FragmentHaveUsedBinding
-import com.wingstars.count.viewmodel.CountListItemViewModel
+import com.wingstars.count.viewmodel.ActivityExchangeViewModel
 
 class HaveUsedFragment : Fragment() {
     private var _binding: FragmentHaveUsedBinding? = null
@@ -31,7 +31,7 @@ class HaveUsedFragment : Fragment() {
 
         usedCouponAdapter = HaveUsedCouponAdapter(listOf()) { item ->
             val intent = Intent(requireContext(), ExchangeDetailsActivity::class.java)
-            intent.putExtra("EXTRA_GIFT_ITEM", item)
+//            intent.putExtra("EXTRA_GIFT_ITEM", item)
             intent.putExtra("checkButton",2)
             startActivity(intent)
         }
@@ -56,41 +56,41 @@ class HaveUsedFragment : Fragment() {
     }
 
     private fun loadData() {
-        val mockData = listOf(
-            CountListItemViewModel(
-                1,
-                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）",
-                "2025/11/09 (日)", // Trường time
-                "100",
-                R.drawable.bg_round_image,
-                "所有會員皆適用",
-                "1次",
-                "80",
-                "澄清湖棒球場",
-                "Description...",
-                "aa",
-                ""
-            ),
-            CountListItemViewModel(
-                2,
-                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）",
-                "2025/10/28 (二)",
-                "100",
-                R.drawable.bg_round_image,
-                "所有會員皆適用",
-                "1次",
-                "80",
-                "澄清湖棒球場",
-                "Description...",
-                "aa",
-                ""
-            )
-        )
+//        val mockData = listOf(
+//            ActivityExchangeViewModel(
+//                1,
+//                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）",
+//                "2025/11/09 (日)", // Trường time
+//                "100",
+//                R.drawable.bg_round_image,
+//                "所有會員皆適用",
+//                "1次",
+//                "80",
+//                "澄清湖棒球場",
+//                "Description...",
+//                "aa",
+//                ""
+//            ),
+//            ActivityExchangeViewModel(
+//                2,
+//                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）",
+//                "2025/10/28 (二)",
+//                "100",
+//                R.drawable.bg_round_image,
+//                "所有會員皆適用",
+//                "1次",
+//                "80",
+//                "澄清湖棒球場",
+//                "Description...",
+//                "aa",
+//                ""
+//            )
+//        )
 
-        updateUI(mockData)
+//        updateUI(mockData)
     }
 
-    private fun updateUI(data: List<CountListItemViewModel>) {
+    private fun updateUI(data: List<ActivityExchangeViewModel>) {
         if (data.isNotEmpty()) {
             usedCouponAdapter.setData(data)
             binding.rvHaveUsed.visibility = View.VISIBLE
