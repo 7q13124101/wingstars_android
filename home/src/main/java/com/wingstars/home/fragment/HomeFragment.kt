@@ -12,6 +12,7 @@ import com.google.gson.Gson
 import com.tencent.mmkv.MMKV
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.base.net.beans.WSFashionResponse
+import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.net.beans.WSPostResponse
 import com.wingstars.base.net.beans.WSProductResponse
 import com.wingstars.home.R
@@ -20,11 +21,16 @@ import com.wingstars.home.adapter.*
 import com.wingstars.home.databinding.FragmentHomeBinding
 import com.wingstars.home.viewmodel.HomeViewModel
 import com.wingstars.home.adapter.PopularityAdapter
+import com.wingstars.member.activity.AtmosphereFashionDetailsActivity
 import com.wingstars.member.activity.PopularityRankingActivity
+import com.wingstars.home.adapter.SupportFashionAdapter
+import com.wingstars.member.activity.MemberDetailsActivity
 import com.youth.banner.listener.OnPageChangeListener
 
-class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onPopularityRankingListener {
-    private lateinit var binding: FragmentHomeBinding
+class HomeFragment : BaseFragment(), View.OnClickListener,
+    SupportFashionAdapter.onSupportFashionListener,
+    PopularityAdapter.onPopularityRankingListener {
+        private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: HomeViewModel
 
     private lateinit var hotProductAdapter: ProductAdapter
@@ -32,7 +38,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onP
 
     private lateinit var indicatorAdapterItinerary: DotIndicatorAdapter
     private lateinit var indicatorAdapterComingSoon: DotIndicatorAdapter
-
+    private lateinit var popularityAdapter: PopularityAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,9 +54,24 @@ class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onP
 
     private fun initView() {
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+
+        popularityAdapter = PopularityAdapter(requireActivity(), mutableListOf(), this)
+        binding.rvPopularityRanking.layoutManager = LinearLayoutManager(
+            requireActivity(),
+            LinearLayoutManager.HORIZONTAL, false
+        )
+        binding.rvPopularityRanking.adapter = popularityAdapter
         setupUI()
         setupComingSoonBanner()
         observeData()
+        viewModel.getRenderedList()
+
+        val value = viewModel.wsFashionCategorysData.value
+        if (value==null){
+            viewModel.wsFashionCategorys()
+        }else{
+            viewModel.wsFashions()
+        }
 
         viewModel.getCalendarData()
         viewModel.getHomeData()
@@ -155,21 +176,47 @@ class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onP
         }
 
         // --- 3. Thời trang (Fashion/Stylist) ---
-        fashionAdapter = StylistOutfitsAdapter(
-            requireActivity(),
-            mutableListOf(),
-            object : StylistOutfitsAdapter.OnItemListener {
-                override fun onItemClick(data: WSFashionResponse, position: Int) {
+//        fashionAdapter = StylistOutfitsAdapter(
+//            requireActivity(),
+//            mutableListOf(),
+//            object : StylistOutfitsAdapter.OnItemListener {
+//                override fun onItemClick(data: WSFashionResponse, position: Int) {
+//
+//                    checkLoginAndAction {
+//                        //
+//                    }
+//                }
+//            }
+//        )
 
-                    checkLoginAndAction {
-                        //
+        viewModel.fashionDataList.observe(viewLifecycleOwner) { rawList ->
+            if (rawList.isNullOrEmpty()) return@observe
+
+            val categoryList = viewModel.wsFashionCategorysData.value
+            Log.d("rawList", "rawList: $categoryList")
+            if (!categoryList.isNullOrEmpty()) {
+                rawList.forEach { data ->
+                    val fashionCategoryf = data.fashion_categoryF
+                    // Dùng find an toàn trên categoryList (đã check null ở trên)
+                    val typeData = categoryList.find { it.id == fashionCategoryf }
+
+                    if (typeData != null) {
+                        data.type = when (typeData.name.trim()) {
+                            "應援服" -> 1
+                            "活動服" -> 2
+                            else -> 0
+                        }
                     }
                 }
+            } else {
+                Log.w("HomeFragment", "Chưa tải xong Category, hiển thị mặc định.")
             }
-        )
-        binding.rvStylistVibe.adapter = fashionAdapter
-        viewModel.fashionDataList.observe(viewLifecycleOwner) {
-            if (!it.isNullOrEmpty()) fashionAdapter.setList(it)
+
+            // 4. Cập nhật Adapter (chú ý dùng đúng biến adapter bạn đang muốn hiển thị)
+            // Nếu bạn đang dùng fashionAdapter (StylistOutfitsAdapter):
+//            fashionAdapter.setList(rawList)
+            var adapter1 = SupportFashionAdapter(requireActivity(), rawList, this)
+            binding.rvStylistVibe.adapter = adapter1
         }
 
         // --- 4. youtube ---
@@ -192,16 +239,21 @@ class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onP
 //            binding.rvPopularityRanking.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
 //            binding.rvPopularityRanking.adapter = memberAdapter
 //        }
-        viewModel.wsRankData.observe(viewLifecycleOwner) {
-//            Log.e("wsRankData", "${Gson().toJson(it)}")
-            var adapter = PopularityAdapter(requireActivity(), it, this)
-            binding.rvPopularityRanking.layoutManager = LinearLayoutManager(
-                requireActivity(),
-                LinearLayoutManager.HORIZONTAL, false
-            )
-            binding.rvPopularityRanking.adapter = adapter
+        viewModel.wsRankData.observe(viewLifecycleOwner) { rankData ->
+            // 1. Cập nhật dữ liệu hiển thị (Rank) vào adapter đã khởi tạo ở initView
+            if (!rankData.isNullOrEmpty()) {
+                popularityAdapter.setRankList(rankData)
+
+                // 2. QUAN TRỌNG: Gọi API lấy chi tiết thành viên dựa trên danh sách rank này
+                // Nếu thiếu dòng này, wsMembersData sẽ không bao giờ có dữ liệu -> Click không được
+                viewModel.getWsMembersData(rankData)
+            }
         }
-        viewModel.getRenderedList()
+        viewModel.wsMembersData.observe(viewLifecycleOwner) { memberDetails ->
+            if (!memberDetails.isNullOrEmpty()) {
+                popularityAdapter.setMemberDetailList(memberDetails)
+            }
+        }
 
         // --- 6. Tin tức (News) ---
         viewModel.newsDataList.observe(viewLifecycleOwner) { dataList ->
@@ -267,14 +319,22 @@ class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onP
         }
     }
 
-    override fun onPopularityRankingClickItem(position: Int) {
+    override fun onPopularityRankingClickItem(data: WSMemberResponse) {
         checkLoginAndAction {
-            startActivity(
-                Intent(
-                    requireActivity(),
-                    PopularityRankingActivity::class.java
-                )
+            val intent = Intent(requireActivity(), MemberDetailsActivity::class.java)
+            intent.putExtra("WSMemberResponse", data)
+            startActivity(intent)
+        }
+    }
+
+    override fun onSupportFashionClickItem(memberId: Int) {
+        checkLoginAndAction {
+            val intent = Intent(
+                requireActivity(),
+                AtmosphereFashionDetailsActivity::class.java
             )
+            intent.putExtra("memberId", memberId)
+            startActivity(intent)
         }
     }
 }

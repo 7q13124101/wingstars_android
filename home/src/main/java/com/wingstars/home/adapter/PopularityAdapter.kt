@@ -2,24 +2,42 @@ package com.wingstars.home.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.home.databinding.ItemRankingCardBinding
-import com.wingstars.member.R
 import com.wingstars.member.bean.WSMemberRankBean
 
-class PopularityAdapter     // -------------------------------------------
-    (
+class PopularityAdapter(
     private val context: Context,
+    // List hiển thị (Rank info)
     private var dataList: MutableList<WSMemberRankBean>?,
     private val listener: onPopularityRankingListener
 ) : RecyclerView.Adapter<PopularityAdapter.NormalItemViewHolder>() {
+
+    // List chi tiết (Member info dùng để click)
+    private var memberDetailList: List<WSMemberResponse> = ArrayList()
+
+    // Interface trả về WSMemberResponse
+    interface onPopularityRankingListener {
+        fun onPopularityRankingClickItem(data: WSMemberResponse)
+    }
+
+    // Hàm cập nhật dữ liệu hiển thị (Rank)
+    fun setRankList(list: MutableList<WSMemberRankBean>?) {
+        this.dataList = list
+        notifyDataSetChanged()
+    }
+
+    // Hàm cập nhật dữ liệu chi tiết (Member Detail)
+    fun setMemberDetailList(list: List<WSMemberResponse>) {
+        this.memberDetailList = list
+        // Không cần notifyDataSetChanged vì UI không đổi
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
         val binding =
@@ -31,38 +49,14 @@ class PopularityAdapter     // -------------------------------------------
         return position.toLong()
     }
 
-    // -------------------------------------------
     override fun onBindViewHolder(holder: NormalItemViewHolder, position: Int) {
         holder.binding(position, listener)
     }
 
-    // -------------------------------------------
     override fun getItemCount(): Int {
         return if (dataList != null) dataList!!.size else 0
     }
 
-    // -------------------------------------------
-    fun setList(list: MutableList<WSMemberRankBean>?) {
-        dataList = if (dataList == null) {
-            ArrayList()
-        } else {
-            dataList == null
-            ArrayList()
-        }
-        dataList!!.addAll(list!!)
-        notifyDataSetChanged()
-    }
-
-
-    fun getData(): MutableList<WSMemberRankBean>? {
-        if (dataList == null) {
-            return null
-        }
-        return dataList
-    }
-
-
-    // -------------------------------------------
     inner class NormalItemViewHolder(private val binding: ItemRankingCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -70,10 +64,9 @@ class PopularityAdapter     // -------------------------------------------
             val params = binding.item.layoutParams as ViewGroup.MarginLayoutParams
             binding.item.layoutParams = params
 
-            binding.tvRankNumber.text = (position + 1).toString()
-
+            // HIỂN THỊ UI (Dùng dataList - RankBean)
             val bean = dataList!![position]
-
+            binding.tvRankNumber.text = (position + 1).toString()
             binding.tvName.text = "${bean.number} ${bean.name}"
             binding.tvVoteCount.text = "${bean.volume}"
 
@@ -85,25 +78,13 @@ class PopularityAdapter     // -------------------------------------------
                 )
                 .into(binding.imgPerson)
 
-            binding.item.setOnClickListener { listeners.onPopularityRankingClickItem(position) }
-        }
-
-
-        fun onBind(position: Int) {
-
-        }
-
-        fun setMarginLeft(view: View, leftMargin: Int) {
-            if (view.layoutParams is ViewGroup.MarginLayoutParams) {
-                val params = view.layoutParams as ViewGroup.MarginLayoutParams
-                params.leftMargin = leftMargin
-                view.layoutParams = params
+            // XỬ LÝ CLICK (Dùng memberDetailList - MemberResponse)
+            binding.item.setOnClickListener {
+                // Kiểm tra xem đã có dữ liệu chi tiết chưa và vị trí có hợp lệ không
+                if (position < memberDetailList.size) {
+                    listeners.onPopularityRankingClickItem(memberDetailList[position])
+                }
             }
         }
-    }
-
-
-    interface onPopularityRankingListener {
-        fun onPopularityRankingClickItem(position: Int)
     }
 }

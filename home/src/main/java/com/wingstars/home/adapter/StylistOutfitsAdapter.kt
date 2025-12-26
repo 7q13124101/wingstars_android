@@ -14,7 +14,7 @@ import com.wingstars.home.databinding.ItemStyleBinding
 class StylistOutfitsAdapter(
     private val context: Context,
     private var dataList: MutableList<WSFashionResponse>,
-    private val listener: OnItemListener
+    private val listener: onSupportFashionListener
 ) : RecyclerView.Adapter<StylistOutfitsAdapter.NormalItemViewHolder>() {
 
    interface OnItemListener{
@@ -33,7 +33,7 @@ class StylistOutfitsAdapter(
         return position.toLong()
     }
     override fun onBindViewHolder(holder: NormalItemViewHolder, position: Int) {
-        holder.binding(position)
+        holder.binding(position, listener)
     }
 
     override fun getItemCount(): Int {
@@ -45,7 +45,7 @@ class StylistOutfitsAdapter(
     }
     inner class NormalItemViewHolder(private val binding: ItemStyleBinding):
             RecyclerView.ViewHolder(binding.root) {
-        fun binding(position: Int) {
+        fun binding(position: Int, listener: onSupportFashionListener ) {
             if (dataList == null || position >= dataList!!.size) return
             val data = dataList!![position]
             Glide.with(binding.imageStylist.context).clear(binding.imageStylist)
@@ -61,10 +61,16 @@ class StylistOutfitsAdapter(
             } else {
                 binding.imageStylist.setImageResource(R.drawable.img_style_01)
             }
+            var imageType =  if (data.type==1){ com.wingstars.member.R.mipmap.ic_member_jersey} else {
+                com.wingstars.member.R.mipmap.ic_member_activity}
+            binding.imageType.setImageResource(imageType)
             binding.tittleStylist.text = data.titleF
-            binding.root.setOnClickListener {
-                listener.onItemClick(data, position)
-            }
+//            binding.root.setOnClickListener {
+//                listener.onItemClick(data, position)
+//            }
         }
             }
+    interface onSupportFashionListener{
+        fun onSupportFashionClickItem(memberId: Int)
+    }
 }
