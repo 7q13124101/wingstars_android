@@ -22,14 +22,14 @@ import com.wingstars.count.R
 import com.wingstars.count.activity.ExchangeDetailsActivity
 import com.wingstars.count.adapter.UnusedCouponAdapter
 import com.wingstars.count.databinding.FragmentNotUsedBinding
-import com.wingstars.count.viewmodel.CountListItemViewModel
+import com.wingstars.count.viewmodel.ActivityExchangeViewModel
 
 
 class NotUsedFragment : Fragment() {
     private var _binding: FragmentNotUsedBinding? = null
     private val binding get() = _binding!!
     private lateinit var unusedCouponAdapter : UnusedCouponAdapter
-    private var currentDataList: List<CountListItemViewModel> = listOf()
+    private var currentDataList: List<ActivityExchangeViewModel> = listOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +45,7 @@ class NotUsedFragment : Fragment() {
         unusedCouponAdapter = UnusedCouponAdapter(listOf()) { item ->
             val intent = Intent(requireContext(), ExchangeDetailsActivity::class.java)
             val listToSend = ArrayList(currentDataList)
-            intent.putParcelableArrayListExtra("EXTRA_LIST_DATA", listToSend)
+//            intent.putParcelableArrayListExtra("EXTRA_LIST_DATA", listToSend)
             val position = currentDataList.indexOf(item)
             intent.putExtra("EXTRA_CURRENT_POSITION", position)
             intent.putExtra("qrCodeButton", 1)
@@ -79,69 +79,69 @@ class NotUsedFragment : Fragment() {
     }
 
     private fun loadData() {
-        val mockData = listOf(
-            CountListItemViewModel(
-                1,
-                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）",
-                "2025/11/09 (日)", // Trường time
-                "100",
-                R.drawable.bg_round_image,
-                "所有會員皆適用",
-                "1次",
-                "80",
-                "澄清湖棒球場",
-                "Description...",
-                "aa",
-                ""
-            ),
-            CountListItemViewModel(
-                2,
-                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）",
-                "2025/10/28 (二)",
-                "100",
-                R.drawable.bg_round_image,
-                "所有會員皆適用",
-                "1次",
-                "80",
-                "澄清湖棒球場",
-                "Description...",
-                "aa",
-                ""
-            ),
-            CountListItemViewModel(
-                3,
-                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）",
-                "2025/10/28 (二)",
-                "100",
-                R.drawable.bg_round_image,
-                "所有會員皆適用",
-                "1次",
-                "80",
-                "澄清湖棒球場",
-                "Description...",
-                "aa",
-                ""
-            ),
-            CountListItemViewModel(
-                4,
-                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）",
-                "2025/10/28 (二)",
-                "100",
-                R.drawable.bg_round_image,
-                "所有會員皆適用",
-                "1次",
-                "80",
-                "澄清湖棒球場",
-                "Description...",
-                "aa",
-                ""
-            )
-        )
+//        val mockData = listOf(
+//            ActivityExchangeViewModel(
+//                1,
+//                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）",
+//                "2025/11/09 (日)", // Trường time
+//                "100",
+//                R.drawable.bg_round_image,
+//                "所有會員皆適用",
+//                "1次",
+//                "80",
+//                "澄清湖棒球場",
+//                "Description...",
+//                "aa",
+//                ""
+//            ),
+//            ActivityExchangeViewModel(
+//                2,
+//                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）",
+//                "2025/10/28 (二)",
+//                "100",
+//                R.drawable.bg_round_image,
+//                "所有會員皆適用",
+//                "1次",
+//                "80",
+//                "澄清湖棒球場",
+//                "Description...",
+//                "aa",
+//                ""
+//            ),
+//            ActivityExchangeViewModel(
+//                3,
+//                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）",
+//                "2025/10/28 (二)",
+//                "100",
+//                R.drawable.bg_round_image,
+//                "所有會員皆適用",
+//                "1次",
+//                "80",
+//                "澄清湖棒球場",
+//                "Description...",
+//                "aa",
+//                ""
+//            ),
+//            ActivityExchangeViewModel(
+//                4,
+//                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）",
+//                "2025/10/28 (二)",
+//                "100",
+//                R.drawable.bg_round_image,
+//                "所有會員皆適用",
+//                "1次",
+//                "80",
+//                "澄清湖棒球場",
+//                "Description...",
+//                "aa",
+//                ""
+//            )
+//        )
 
-        updateUI(mockData)
+//        updateUI(mockData)
     }
 
-    private fun updateUI(data: List<CountListItemViewModel>) {
+    private fun updateUI(data: List<ActivityExchangeViewModel>) {
         currentDataList = data
         if (data.isNotEmpty()) {
             unusedCouponAdapter.setData(data)
@@ -153,7 +153,7 @@ class NotUsedFragment : Fragment() {
         }
     }
 
-    private fun showBarcodeDialog(startPosition: Int, dataList: List<CountListItemViewModel>) {
+    private fun showBarcodeDialog(startPosition: Int, dataList: List<ActivityExchangeViewModel>) {
         if (dataList.isEmpty()) return
 
         val context = requireContext()
@@ -211,9 +211,9 @@ class NotUsedFragment : Fragment() {
         fun updateDialogUI() {
             val item = dataList[currentDialogPosition]
 
-            tvName.text = item.title
-            tvPeriod.text = item.time
-            Glide.with(context).load(item.leftImageRes).into(ivImage)
+//            tvName.text = item.title
+//            tvPeriod.text = item.time
+//            Glide.with(context).load(item.leftImageRes).into(ivImage)
 
             if (currentDialogPosition == 0) {
                 btnPrev.isEnabled = false

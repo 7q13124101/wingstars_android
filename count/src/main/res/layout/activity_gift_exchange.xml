@@ -159,6 +159,7 @@
 
 
                 <com.scwang.smart.refresh.header.ClassicsHeader
+                    android:id="@+id/ch_loading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:srlTextFailed="@string/refresh_failed"
@@ -176,7 +177,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_goods_list"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/pt_10"
                         android:layout_marginRight="@dimen/pt_10"
                         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

@@ -16,6 +16,7 @@ import com.wingstars.base.net.beans.EvtCheckinRequest
 import com.wingstars.base.net.beans.EvtTaskResponse
 import com.wingstars.count.dialog.SortMethod
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class CountViewModel: ViewModel() {
@@ -30,6 +31,7 @@ class CountViewModel: ViewModel() {
     private var currentSortMethod: SortMethod = SortMethod.SORT_DATE_NEW_TO_OLD
     private var taskListIsCompleted = true
     private var checkInListData: ArrayList<EvtTaskResponse> = ArrayList()
+    private val compositeDisposable = CompositeDisposable()
 
     fun setIsLoading(isLoading: Boolean) {
         this.isLoading.postValue(isLoading)
@@ -186,56 +188,42 @@ class CountViewModel: ViewModel() {
     // Member > 查询会员详细资料=>點數
     fun getMemberPointFromDetailsData(showLoading: Boolean = true) {
         if (MMKV.defaultMMKV().decodeBool("isLogin")) {
-            if (showLoading) {
-                setIsLoading(true)
-            }
+            if (showLoading) setIsLoading(true)
+
             API.shared?.api?.let {
                 val id = MMKV.defaultMMKV().decodeString("crm_member_id")
-                val observer =
-                    it.crmMemberDetail()
-                observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
-                    AndroidSchedulers.mainThread()
-                )?.subscribe(
-                    { next ->
-                        if (showLoading) {
-                            setIsLoading(false)
+                if (id.isNullOrEmpty()) {
+                    Log.e("API_ERROR", "Member ID is null or empty!")
+                    if (showLoading) setIsLoading(false)
+                    points.postValue("0")
+                    return@let
+                }
+                val observer = it.crmMemberDetail(id)
+                val disposable = observer?.subscribeOn(Schedulers.io())
+                    ?.unsubscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(
+                        { next ->
+                            if (showLoading) setIsLoading(false)
+                            if (next.success && next.data != null) {
+                                val p = next.data.Points?.toString() ?: "0"
+                                points.postValue(p)
+                            } else {
+                                points.postValue("0")
+                            }
+                        },
+                        { error ->
+                            if (showLoading) setIsLoading(false)
+                            Log.e("API_ERROR", error.message.toString())
+                            points.postValue("0")
                         }
-                        if (next.success) {
-                            points.postValue(next.data.Points.toString())
-                        } else {
-                            // points.postValue("0")
-                            //Toast.makeText(BaseApplication.shared()!!, next.message, Toast.LENGTH_LONG).show()
-                        }
-                    },
-                    { error ->
-                        if (showLoading) {
-                            setIsLoading(false)
-                        }
-                        //  points.postValue("0")
-                        var msg = error.message.toString()
-//                        if (error is HttpException) {
-//                            try {
-//                                val gson = Gson()
-//                                val type = object : TypeToken<CRMBaseFailResponse>() {}.type
-//                                val failResponse = gson.fromJson<CRMBaseFailResponse>(
-//                                    error.response()?.errorBody()?.string(), type
-//                                )
-//                                failResponse?.message?.let {
-//                                    msg = it
-//                                }
-//                            } catch (e: Exception) {
-//
-//                            }
-//                        }
-
-                        msg.let { it1 ->
-                            //Toast.makeText(BaseApplication.shared()!!, "$it1", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                )
+                    )
+                if (disposable != null) {
+                    compositeDisposable.add(disposable)
+                }
             }
         } else {
-            //points.postValue("0")
+            points.postValue("0")
         }
     }
 
@@ -331,5 +319,9 @@ class CountViewModel: ViewModel() {
                 )
             }
         }
+    }
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.clear()
     }
 }
