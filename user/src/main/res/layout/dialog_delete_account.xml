@@ -30,8 +30,8 @@
         android:layout_marginTop="@dimen/dp_20">
 
         <EditText
-            android:id="@+id/edt_mobile"
-            android:layout_width="@dimen/dp_136"
+            android:id="@+id/btnCancel"
+            android:layout_width="@dimen/dp_169"
             android:layout_height="@dimen/dp_47"
             android:background="@drawable/bg_button_off"
             android:padding="12dp"
@@ -46,8 +46,8 @@
             android:layout_height="1dp"/>
 
         <EditText
-            android:id="@+id/edt_mobile1"
-            android:layout_width="@dimen/dp_136"
+            android:id="@+id/btnConfirm"
+            android:layout_width="@dimen/dp_169"
             android:layout_height="@dimen/dp_47"
             android:background="@drawable/bg_button_on"
             android:padding="12dp"

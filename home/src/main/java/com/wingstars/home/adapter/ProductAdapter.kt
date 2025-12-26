@@ -70,21 +70,13 @@ class ProductAdapter(
 
             binding.tvProductName.text = data.name
             binding.tvProductPrice.text = "$" + data.price
-            val openWebListener = android.view.View.OnClickListener {
-                try {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(data.permalink))
-                    // Thêm flag này để tránh crash nếu không tìm thấy trình duyệt
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(intent)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+            val clickListener = android.view.View.OnClickListener {
+                listener.onItemClick(data, position)
             }
-            binding.item.setOnClickListener(openWebListener)
 
-            binding.shadowContainer.setOnClickListener(openWebListener)
-
-            binding.imgProduct.setOnClickListener(openWebListener)
+            binding.item.setOnClickListener(clickListener)
+            binding.shadowContainer.setOnClickListener(clickListener)
+            binding.imgProduct.setOnClickListener(clickListener)
 
         }
     }

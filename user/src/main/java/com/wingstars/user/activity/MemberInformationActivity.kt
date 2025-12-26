@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.view.WindowInsetsControllerCompat
 import com.wingstars.base.base.BaseActivity
+import com.wingstars.base.utils.MMKVManagement
 import com.wingstars.user.utils.KeyboardUtils
 import com.wingstars.user.databinding.ActivityMemberInformationBinding
 import com.wingstars.user.dialog.DeleteAccountDialog
@@ -33,9 +34,7 @@ class MemberInformationActivity : BaseActivity() {
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = true
         initView()
-
     }
-
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (ev.action == MotionEvent.ACTION_DOWN) {
             val view = currentFocus
@@ -57,7 +56,6 @@ class MemberInformationActivity : BaseActivity() {
         }
         binding.fBarcodeCarrier.setOnClickListener {
             barcodeLauncher.launch(Intent(this, MobileBarcodeCarrierActivity::class.java))
-
         }
 
         binding.ivIdCard.setOnClickListener {
@@ -89,16 +87,16 @@ class MemberInformationActivity : BaseActivity() {
         }
     }
     private fun loadMemberInfo() {
-        val pref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-        val isLoggedIn = pref.getBoolean("is_logged_in", false)
-        if (!isLoggedIn) return
-        val password = pref.getString("password", "")
-        val phone = pref.getString("phone", "")
-        val code = pref.getString("code", "")
-        val birthday = pref.getString("birthday", "")
-        val gender = pref.getString("gender", "")
+        if (!MMKVManagement.isLogin()) return
+        val password = MMKVManagement.getMemberPassword()
+        val phone = MMKVManagement.getMemberPhone()
+        val identity = MMKVManagement.getMemberIdentity()
+        val birthday = MMKVManagement.getMemberBirthday()
+        val gender = MMKVManagement.getMemberGender()
+        val name = MMKVManagement.getMemberName()
+        val mail = MMKVManagement.getMemberMail()
         binding.phoneMember.text = phone
-        binding.idCardNumber.text = code
+        binding.idCardNumber.text = identity
         binding.birthday.text = birthday
         binding.edtPassword.setText(password)
         binding.userGender.text = when (gender) {
@@ -106,14 +104,11 @@ class MemberInformationActivity : BaseActivity() {
             "F", "Female", "女" -> "女"
             else -> ""
         }
-        binding.tvUserName.text = pref.getString("name", "")
-        binding.tvUserMail.text = pref.getString("email", "")
+        binding.tvUserName.text = name
+        binding.tvUserMail.text = mail
     }
     override fun onResume() {
         super.onResume()
         loadMemberInfo()
     }
-
-
-
 }

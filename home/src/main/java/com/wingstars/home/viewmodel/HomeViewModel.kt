@@ -7,7 +7,9 @@ import com.google.gson.Gson
 import com.wingstars.base.net.API
 import com.wingstars.base.net.NetBase
 import com.wingstars.base.net.beans.WSCalendarResponse
+import com.wingstars.base.net.beans.WSFashionCategoryResponse
 import com.wingstars.base.net.beans.WSFashionResponse
+import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.net.beans.WSPostResponse
 import com.wingstars.base.net.beans.WSProductResponse
 import com.wingstars.base.net.beans.YoutubeUiData
@@ -27,6 +29,9 @@ class HomeViewModel : ViewModel() {
     val productDataList = MutableLiveData<MutableList<WSProductResponse>>()
     val fashionDataList = MutableLiveData<MutableList<WSFashionResponse>>()
     var wsRankData = MutableLiveData<MutableList<WSMemberRankBean>>()
+    var wsFashions = MutableLiveData<MutableList<WSFashionResponse>>()
+    var wsFashionCategorysData = MutableLiveData<MutableList<WSFashionCategoryResponse>>()
+    var wsMembersData = MutableLiveData<MutableList<WSMemberResponse>>()
 
 
 
@@ -168,8 +173,9 @@ class HomeViewModel : ViewModel() {
                                 }
                             }
                         }
-
+                        getWsMembersData(data)
                         wsPhotos(data)
+
 
 
                     } else {
@@ -282,6 +288,80 @@ class HomeViewModel : ViewModel() {
                         error.printStackTrace() // Log lỗi nếu có
                     }
                 )
+        }
+    }
+    public fun wsFashions() {
+        API.shared?.api?.let {
+            val emptyHashMap: java.util.HashMap<String?, Int?>? = HashMap()
+            val observer = it.wsFashions(emptyHashMap, 3, 1)
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    if (!next.isNullOrEmpty()) {
+                        Log.e("wsFashions", "${next}")
+                        wsFashions.postValue(next)
+                    }
+                },
+                { error ->
+
+                }
+            )
+        }
+    }
+    public fun wsFashionCategorys() {
+        API.shared?.api?.let {
+            val observer = it.wsFashionCategorys()
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    if (!next.isNullOrEmpty()) {
+                        wsFashionCategorysData.postValue(next)
+                        wsFashions()
+                    }
+                },
+                { error ->
+
+                }
+            )
+        }
+    }
+
+    fun getWsMembersData(rankData: MutableList<WSMemberRankBean>) {
+        Log.e("getWsMembersData", "getWsMembersData")
+
+        API.shared?.api?.let {
+            val observer = it.wsMembers(100, 1)
+
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { allMembers ->
+
+                    if (!allMembers.isNullOrEmpty()) {
+                        val filteredList = allMembers.filter { member ->
+                            rankData.any { rankBean ->
+                                rankBean.name?.trim() == member.titleF?.trim()
+                            }
+                        }
+
+                        val sortedList = filteredList.sortedBy { member ->
+                            rankData.indexOfFirst { it.name?.trim() == member.titleF?.trim() }
+                        }
+
+                        Log.e("getWsMembersData", "Filtered & Sorted Size: ${sortedList.size}")
+
+                        wsMembersData.postValue(sortedList as MutableList<WSMemberResponse>?)
+                    } else {
+                        wsMembersData.postValue(mutableListOf())
+                    }
+                },
+                { error ->
+                    Log.e("getWsMembersData", "error=${error.message}")
+                    // Xử lý lỗi
+                }
+            )
         }
     }
 }
