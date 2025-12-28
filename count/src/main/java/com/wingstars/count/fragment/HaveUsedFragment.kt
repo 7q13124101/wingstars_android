@@ -5,18 +5,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.count.R
 import com.wingstars.count.activity.ExchangeDetailsActivity
+import com.wingstars.count.activity.GiftDetailsActivity
 import com.wingstars.count.adapter.HaveUsedCouponAdapter
 import com.wingstars.count.databinding.FragmentHaveUsedBinding
-import com.wingstars.count.viewmodel.ActivityExchangeViewModel
+import com.wingstars.count.viewmodel.HaveUsedViewModel
+import com.wingstars.base.net.NetBase
+import com.wingstars.base.net.NetworkMonitorNew
+import com.wingstars.count.Repository.ActivityStatusEnum
 
 class HaveUsedFragment : Fragment() {
     private var _binding: FragmentHaveUsedBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var viewModel: HaveUsedViewModel
     private lateinit var usedCouponAdapter: HaveUsedCouponAdapter
+
+    private var isDataLoaded = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,75 +40,96 @@ class HaveUsedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        usedCouponAdapter = HaveUsedCouponAdapter(listOf()) { item ->
-            val intent = Intent(requireContext(), ExchangeDetailsActivity::class.java)
-//            intent.putExtra("EXTRA_GIFT_ITEM", item)
-            intent.putExtra("checkButton",2)
-            startActivity(intent)
-        }
+        // Khởi tạo ViewModel
+        viewModel = ViewModelProvider(requireActivity())[HaveUsedViewModel::class.java]
 
         setupRecyclerView()
         setupRefreshLayout()
-        loadData()
+        initScrollListener()
+        setupObservers()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isDataLoaded) {
+            loadData()
+            isDataLoaded = true
+        }
     }
 
     private fun setupRecyclerView() {
+        usedCouponAdapter = HaveUsedCouponAdapter(mutableListOf()) { data ->
+            if (data.coupon?.couponType == 1) {
+                val intent = Intent(requireActivity(), GiftDetailsActivity::class.java)
+                intent.putExtra("status", ActivityStatusEnum.USED_REDEMPTION.name)
+                intent.putExtra("title", getString(R.string.exchange_details))
+                intent.putExtra("coupon_data", data.coupon)
+                startActivity(intent)
+            } else if (data.coupon?.couponType == 2) {
+                val intent = Intent(requireActivity(), ExchangeDetailsActivity::class.java)
+                intent.putExtra("status", ActivityStatusEnum.USED_REDEMPTION.name)
+                intent.putExtra("coupon_data", data.coupon)
+                startActivity(intent)
+            }
+        }
+
         binding.rvHaveUsed.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = usedCouponAdapter
         }
+
+        binding.top.setOnClickListener {
+            binding.scrollView.smoothScrollTo(0, 0)
+        }
     }
 
     private fun setupRefreshLayout() {
-        binding.srlHaveUsed.setOnRefreshListener { refreshLayout ->
+        binding.srlHaveUsed.setOnRefreshListener {
             loadData()
-            refreshLayout.finishRefresh(1000)
+        }
+    }
+
+    private fun initScrollListener() {
+        binding.scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            if (scrollY == 0) {
+                if (binding.top.isVisible) {
+                    binding.top.visibility = View.GONE
+                }
+            } else {
+                if (binding.top.isGone) {
+                    binding.top.visibility = View.VISIBLE
+                }
+            }
         }
     }
 
     private fun loadData() {
-//        val mockData = listOf(
-//            ActivityExchangeViewModel(
-//                1,
-//                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）",
-//                "2025/11/09 (日)", // Trường time
-//                "100",
-//                R.drawable.bg_round_image,
-//                "所有會員皆適用",
-//                "1次",
-//                "80",
-//                "澄清湖棒球場",
-//                "Description...",
-//                "aa",
-//                ""
-//            ),
-//            ActivityExchangeViewModel(
-//                2,
-//                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）",
-//                "2025/10/28 (二)",
-//                "100",
-//                R.drawable.bg_round_image,
-//                "所有會員皆適用",
-//                "1次",
-//                "80",
-//                "澄清湖棒球場",
-//                "Description...",
-//                "aa",
-//                ""
-//            )
-//        )
-
-//        updateUI(mockData)
+        if (NetworkMonitorNew.getInstance(requireActivity()).currentNetworkState.isConnected) {
+            viewModel.getHaveUsedCouponsData()
+        } else {
+            if (binding.srlHaveUsed.state.isOpening) binding.srlHaveUsed.finishRefresh(false)
+            binding.llEmpty.visibility = View.VISIBLE
+            binding.rvHaveUsed.visibility = View.GONE
+//            binding.tvHaveUsedRemind.visibility = View.GONE
+        }
     }
 
-    private fun updateUI(data: List<ActivityExchangeViewModel>) {
-        if (data.isNotEmpty()) {
-            usedCouponAdapter.setData(data)
-            binding.rvHaveUsed.visibility = View.VISIBLE
-            binding.llEmpty.visibility = View.GONE
-        } else {
-            binding.rvHaveUsed.visibility = View.GONE
-            binding.llEmpty.visibility = View.VISIBLE
+    private fun setupObservers() {
+        viewModel.haveUsedCouponsData.observe(viewLifecycleOwner) { list ->
+            binding.srlHaveUsed.finishRefresh(true)
+
+            if (!list.isNullOrEmpty()) {
+                // Có dữ liệu
+                binding.llEmpty.visibility = View.GONE
+                binding.rvHaveUsed.visibility = View.VISIBLE
+//                binding.tvHaveUsedRemind.visibility = View.VISIBLE
+                usedCouponAdapter.setData(list)
+            } else {
+                binding.llEmpty.visibility = View.VISIBLE
+                binding.rvHaveUsed.visibility = View.GONE
+//                binding.tvHaveUsedRemind.visibility = View.GONE
+                usedCouponAdapter.setData(emptyList())
+            }
         }
     }
 

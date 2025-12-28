@@ -3,7 +3,7 @@ package com.wingstars.count.adapter
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
+import android.view.View // Đừng quên import View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -36,13 +36,10 @@ class CountNewDetailAdapter(
 
     // -------------------------------------------
     fun setList(list: List<CRMCouponsAvailableResponse>?) {
-        dataList = if (dataList == null) {
-            ArrayList()
-        } else {
-            dataList == null
-            ArrayList()
+        dataList.clear()
+        if (!list.isNullOrEmpty()) {
+            dataList.addAll(list)
         }
-        dataList!!.addAll(list!!)
         notifyDataSetChanged()
     }
 
@@ -56,13 +53,11 @@ class CountNewDetailAdapter(
 
         fun bind(item: CRMCouponsAvailableResponse) {
 
-
+            // 1. Bind thông tin cơ bản
             binding.tvGoodsName.text = item.couponName ?: ""
             binding.tvCountPrice.text = "${item.pointCost}"
 
-
             binding.ivGoodsImage.setImageDrawable(null)
-
             if (!item.coverImage.isNullOrEmpty()) {
                 Glide.with(binding.ivGoodsImage)
                     .load(item.coverImage)
@@ -75,6 +70,16 @@ class CountNewDetailAdapter(
                 binding.ivGoodsImage.setImageResource(R.drawable.gift_details_image_background)
             }
 
+//            val eligibleMembersStr = item.eligibleMembersStr
+//            if (!eligibleMembersStr.isNullOrEmpty() && eligibleMembersStr != context.getString(R.string.all_members)) {
+//                binding.label.visibility = View.VISIBLE
+//                binding.labelTv.text = eligibleMembersStr
+//            } else {
+//                binding.label.visibility = View.GONE
+//            }
+            // --------------------------------
+
+            // 4. Click Listener
             binding.root.setOnClickListener {
                 onItemClick(item)
             }

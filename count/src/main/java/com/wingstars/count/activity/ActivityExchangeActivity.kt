@@ -24,6 +24,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson // Nhớ import Gson
 import com.wingstars.count.R
+import com.wingstars.count.Repository.ActivityStatusEnum
 import com.wingstars.count.adapter.ActivityExchangeAdapter
 import com.wingstars.count.databinding.ActivityExchangeBinding
 import com.wingstars.count.databinding.DialogPublicPopupSortTypeBinding
@@ -46,16 +47,21 @@ class ActivityExchangeActivity : AppCompatActivity() {
         setupObservers()
         initListeners()
 
-        // Gọi load data lần đầu
         viewModel.activityListData(currentSortMethod)
         viewModel.getMemberPointFromDetailsData()
     }
 
     private fun initView() {
         adapter = ActivityExchangeAdapter { item ->
+            val currentList = viewModel.searchActivityData.value ?: arrayListOf()
+            val index = currentList.indexOf(item)
+
             val intent = Intent(this, ExchangeDetailsActivity::class.java).apply {
-                val jsonStr = Gson().toJson(item)
-                putExtra("EXTRA_COUPON_DATA", jsonStr)
+                putExtra("data", item)
+                putExtra("status", ActivityStatusEnum.GIFT_REDEEMED.name)
+                val listToSend = ArrayList(currentList)
+                putExtra("EXTRA_LIST_DATA", listToSend)
+                putExtra("EXTRA_CURRENT_INDEX", index)
             }
             startActivity(intent)
         }
@@ -117,6 +123,14 @@ class ActivityExchangeActivity : AppCompatActivity() {
             setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             setGravity(Gravity.BOTTOM)
+        }
+
+        when (currentSortMethod) {
+            SortMethod.SORT_DATE_NEW_TO_OLD -> dialogBinding.rbSortDateNewToOld.isChecked = true
+            SortMethod.SORT_DATE_OLD_TO_NEW -> dialogBinding.rbSortDateOldToNew.isChecked = true
+            SortMethod.SORT_POINTS_HIGH_TO_LOW -> dialogBinding.rbSortPointsHighToLow.isChecked = true
+            SortMethod.SORT_POINTS_LOW_TO_HIGH -> dialogBinding.rbSortPointsLowToHigh.isChecked = true
+            else -> dialogBinding.rbSortDateNewToOld.isChecked = true
         }
 
         dialogBinding.ivCloseDialog.setOnClickListener { dialog.dismiss() }

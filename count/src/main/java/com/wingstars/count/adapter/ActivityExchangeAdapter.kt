@@ -2,6 +2,7 @@ package com.wingstars.count.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -97,6 +98,17 @@ class ActivityExchangeAdapter(
             bindCouponName(item)
             bindCouponCost(item)
             bindImage(item)
+            bindLabel(item)
+        }
+
+        private fun bindLabel(item: CRMCouponsAvailableResponse) {
+            val eligibleMembersStr = item.eligibleMembersStr
+            if (!eligibleMembersStr.isNullOrEmpty() && eligibleMembersStr != context.getString(R.string.all_members)){
+                binding.label.visibility = View.VISIBLE
+                binding.labelTv.text = eligibleMembersStr
+            } else {
+                binding.label.visibility = View.GONE
+            }
         }
 
         private fun bindDate(item: CRMCouponsAvailableResponse) {

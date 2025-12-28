@@ -23,11 +23,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.wingstars.count.R
+import com.wingstars.count.Repository.EventState
+import com.wingstars.count.Repository.MessageEvent
 import com.wingstars.count.adapter.CountNewDetailAdapter
 import com.wingstars.count.databinding.ActivityGiftExchangeBinding
 import com.wingstars.count.databinding.DialogPublicPopupSortTypeBinding
 import com.wingstars.count.dialog.SortMethod
 import com.wingstars.count.viewmodel.GiftExchangeViewModel
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class GiftExchangeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGiftExchangeBinding
@@ -40,6 +45,7 @@ class GiftExchangeActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityGiftExchangeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        EventBus.getDefault().register(this)
         viewModel = ViewModelProvider(this)[GiftExchangeViewModel::class.java]
 
         initView()
@@ -64,6 +70,7 @@ class GiftExchangeActivity : AppCompatActivity() {
         adapter = CountNewDetailAdapter(this, mutableListOf()) { item ->
             val intent = Intent(this, GiftDetailsActivity::class.java)
             intent.putExtra("data", item)
+            intent.putExtra("status", "GIFT_REDEEMED")
 //            intent.putStringArrayListExtra("memberCards", viewModel.memberCards)
             intent.putExtra("count", binding.tvCountWin.text.toString())
             startActivity(intent)
@@ -99,6 +106,23 @@ class GiftExchangeActivity : AppCompatActivity() {
 //                binding.chLoading.visibility = View.GONE
 //            }
 //        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: MessageEvent?) {
+        if (event == null) return
+        if (event.event == EventState.GLOBAL_REFRESH.name) {
+            binding.tvCountWin.text = "${event.count}"
+            val currentKeyword = binding.etSearch.text.toString()
+            viewModel.searchData(currentKeyword, currentSortMethod)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
     }
 
     private fun showSortDialog() {

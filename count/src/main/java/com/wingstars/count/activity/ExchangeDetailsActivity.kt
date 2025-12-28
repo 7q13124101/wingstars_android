@@ -1,17 +1,22 @@
 package com.wingstars.count.activity
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -19,10 +24,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.gson.Gson
 import com.wingstars.base.net.beans.CRMCouponsAvailableResponse
 import com.wingstars.count.R
+import com.wingstars.count.Repository.ActivityStatusEnum
 import com.wingstars.count.databinding.ActivityExchangeDetailsBinding
 import com.wingstars.count.databinding.DialogOtpCouponsBinding
 import com.wingstars.count.databinding.DialogPublicPopupBoxBinding
@@ -38,13 +44,15 @@ class ExchangeDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityExchangeDetailsBinding
     private val viewModel: ActivityDetailsExchangeViewModel by viewModels()
 
-    private var currentCoupon: CRMCouponsAvailableResponse? = null
-    // Mặc định là FOR_EXCHANGE nếu không truyền status
-    private var couponStatus: CouponStatus = CouponStatus.FOR_EXCHANGE
-
-    enum class CouponStatus {
-        FOR_EXCHANGE, UNUSED, USED
-    }
+    private lateinit var data: CRMCouponsAvailableResponse
+    private var status: String? = null
+    private var couponCode: String? = null
+    private var fullDataList: ArrayList<CRMCouponsAvailableResponse> = arrayListOf()
+    private var currentIndex: Int = 0
+    private var qrCodeDialog: android.app.Dialog? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private var checkStatusRunnable: Runnable? = null
+    private var currentBannerImages: List<String> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,22 +76,43 @@ class ExchangeDetailsActivity : AppCompatActivity() {
     }
 
     private fun loadDataFromIntent() {
-        val jsonStr = intent.getStringExtra("EXTRA_COUPON_DATA")
-        if (jsonStr != null) {
-            currentCoupon = Gson().fromJson(jsonStr, CRMCouponsAvailableResponse::class.java)
-        }
-        val statusSerializable = intent.getSerializableExtra("EXTRA_COUPON_STATUS")
-        if (statusSerializable != null) {
-            couponStatus = statusSerializable as CouponStatus
+        val serializableData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra("data", CRMCouponsAvailableResponse::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getSerializableExtra("data") as? CRMCouponsAvailableResponse
         }
 
-        if (currentCoupon == null) {
-            Toast.makeText(this, "錯誤：找不到兌換券資料。", Toast.LENGTH_SHORT).show()
+        if (serializableData != null) {
+            data = serializableData
+        } else {
+            Toast.makeText(this, "Data error", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
-        displayCouponDetails(currentCoupon!!)
+        val listExtra = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra("EXTRA_LIST_DATA", ArrayList::class.java) as? ArrayList<CRMCouponsAvailableResponse>
+        } else {
+            intent.getSerializableExtra("EXTRA_LIST_DATA") as? ArrayList<CRMCouponsAvailableResponse>
+        }
+
+        if (listExtra != null && listExtra.isNotEmpty()) {
+            fullDataList = listExtra
+            currentIndex = intent.getIntExtra("EXTRA_CURRENT_INDEX", 0)
+        } else {
+            // Fallback: Tạo list giả nếu không có
+            if (::data.isInitialized) {
+                fullDataList.add(data)
+                currentIndex = 0
+            }
+        }
+
+        status = intent.getStringExtra("status")
+        couponCode = intent.getStringExtra("couponCode")
+
+        displayCouponDetails(data)
+        updateButtonState()
     }
 
     private fun initListeners() {
@@ -100,8 +129,7 @@ class ExchangeDetailsActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.isLoading.observe(this) {
-            binding.srlProductCoupons.isVisible = it
+        viewModel.isLoading.observe(this) { isLoading ->
         }
 
         viewModel.messages.observe(this) { message ->
@@ -111,22 +139,60 @@ class ExchangeDetailsActivity : AppCompatActivity() {
         }
 
         viewModel.otpData.observe(this) { otpData ->
-            val couponId = currentCoupon?.id
-            if (otpData != null && !couponId.isNullOrEmpty()) {
-                val otpCode = otpData.otp?.code ?: "" // Null safety
+            val couponId = data.id
+            if (otpData != null && couponId.isNotEmpty()) {
+                val otpCode = otpData.otp?.code ?: ""
                 showOtpDialog(couponId, otpCode)
             }
         }
 
         viewModel.redeemSuccessfully.observe(this) { successMessage ->
-            if (!successMessage.isNullOrEmpty()) {
-                showSuccessDialog()
+            showSuccessDialog()
+        }
+        viewModel.couponQRCode.observe(this) { qrData ->
+            if (!qrData.isNullOrEmpty()) {
+                if (qrCodeDialog != null && qrCodeDialog!!.isShowing) {
+                    val ivQrCode = qrCodeDialog!!.findViewById<ImageView>(R.id.iv_qr_code)
+                    if (ivQrCode != null) {
+                        if (qrData.startsWith("http")) {
+                            Glide.with(this)
+                                .load(qrData)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .dontAnimate()
+                                .into(ivQrCode)
+                            ivQrCode.tag = qrData
+                        } else {
+                            val bitmap = createQRCodeBitmap(qrData, 1000, 1000)
+                            if (bitmap != null) {
+                                ivQrCode.setImageBitmap(bitmap)
+                            }
+                            ivQrCode.tag = null
+                        }
+                    }
+                } else {
+                    showComplexBarcodeDialog(qrData)
+                }
+                viewModel.setLoop(true)
+                loopCheckCouponStatus()
             }
         }
 
-        viewModel.couponQRCode.observe(this) { qrCode ->
-            if (!qrCode.isNullOrEmpty()) {
-                showBarcodeDialog(qrCode)
+        viewModel.haveUsedCoupon.observe(this) { isUsed ->
+            if (isUsed) {
+                if (qrCodeDialog != null && qrCodeDialog!!.isShowing) {
+                    qrCodeDialog!!.dismiss()
+                }
+                if (checkStatusRunnable != null) handler.removeCallbacks(checkStatusRunnable!!)
+                viewModel.setLoop(false)
+
+                Toast.makeText(this, "使用成功！", Toast.LENGTH_LONG).show()
+                setResult(Activity.RESULT_OK)
+                finish()
+            } else {
+                if (viewModel.getLoop()) {
+                    loopCheckCouponStatus()
+                }
             }
         }
     }
@@ -134,134 +200,264 @@ class ExchangeDetailsActivity : AppCompatActivity() {
     private fun displayCouponDetails(item: CRMCouponsAvailableResponse) {
         binding.couponName.text = item.couponName
         binding.pointCost.text = "${item.pointCost ?: 0} 點"
-        val start = formatDate(item.redeemStartAt)
-        val end = formatDate(item.redeemEndAt)
-        binding.tvCouponTime.text = "$start ~ $end"
+        binding.tvCouponTime.text = "${item.redeemStartAt ?: ""} ~ ${item.redeemEndAt ?: ""}"
+        val eligibleMembersStr = data.eligibleMembersStr
+        if (!eligibleMembersStr.isNullOrEmpty() && eligibleMembersStr != getString(R.string.all_members)) {
+            binding.status.text = eligibleMembersStr
+        } else {
+            binding.status.text = getString(R.string.all_members)
+        }
+        binding.maxPerMember.text = if (data.maxPerMember == -1) getString(R.string.NoLimit) else "${data.maxPerMember} 次"
+        binding.activityTime.text = "${data.totalQuantity ?: 0}"
+        binding.exchangeLocation.text = data.redeemStore?.joinToString(", ") ?: ""
         binding.tvUsageRules.text = item.usageRules
         binding.tvInformation.text = item.description
 
-        val images = item.galleryImages ?: listOf(item.coverImage)
-        initBanner(images.filterNotNull())
-    }
-
-    private fun formatDate(dateStr: String?): String {
-        if (dateStr.isNullOrEmpty()) return ""
-        return try {
-            val input = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val output = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
-            val date = input.parse(dateStr)
-            output.format(date!!)
-        } catch (e: Exception) {
-            dateStr // Trả về gốc nếu lỗi parse
+        val newImages = item.galleryImages ?: listOfNotNull(item.coverImage)
+        if (currentBannerImages != newImages) {
+            currentBannerImages = newImages
+            initBanner(newImages)
         }
     }
 
     private fun handleExchangeButtonClick() {
-        when (couponStatus) {
-            CouponStatus.FOR_EXCHANGE -> {
-                // [SỬA 4] Logic kiểm tra OTP.
-                // Nếu model chưa có field otpRequired, bạn có thể hardcode logic kiểm tra hoặc thêm vào model.
-                // Ví dụ: kiểm tra verificationType == "otp"
-                /* if (currentCoupon?.verificationType == "otp") {
-                     currentCoupon?.id?.let { viewModel.getOTPCoupons(it) }
+        if (status == ActivityStatusEnum.UNUSED_REDEMPTION.name) {
+            val codeToUse = if (!couponCode.isNullOrEmpty()) couponCode!! else data.id
+
+            if (codeToUse.isEmpty()) {
+                Toast.makeText(this, "Coupon Code Error", Toast.LENGTH_SHORT).show()
+                return
+            }
+            viewModel.crmCouponQRCode(codeToUse)
+        } else {
+            if (data.otpRequired) {
+                viewModel.getOTPCoupons(data.id)
+            } else {
+                val randomOtp = (100000..999999).random().toString()
+                showOtpDialog(data.id, randomOtp)
+            }
+        }
+    }
+
+    private fun updateButtonState() {
+        if (status == ActivityStatusEnum.UNUSED_REDEMPTION.name) {
+            binding.btnExchange.text = "開啟條碼"
+            binding.btnExchange.isEnabled = true
+        } else {
+            binding.btnExchange.text = "立即兌換"
+            binding.btnExchange.isEnabled = true
+        }
+    }
+
+    private fun showComplexBarcodeDialog(initialQrUrl: String?) {
+        val dialog = Dialog(this, com.google.android.material.R.style.Theme_MaterialComponents_Light_Dialog)
+        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_exchange_barcode)
+
+        dialog.window?.apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setGravity(Gravity.BOTTOM)
+        }
+
+        val btnNext = dialog.findViewById<View>(R.id.btn_next)
+        val btnPrev = dialog.findViewById<View>(R.id.btn_prev)
+        val tvName = dialog.findViewById<android.widget.TextView>(R.id.tv_exchange_name)
+        val tvPeriod1 = dialog.findViewById<android.widget.TextView>(R.id.tv_exchange_period1)
+        val ivImage = dialog.findViewById<ImageView>(R.id.iv_goods_image)
+        val ivQrCode = dialog.findViewById<ImageView>(R.id.iv_qr_code)
+        val tvQrEnlarge = dialog.findViewById<android.widget.TextView>(R.id.tv_qr_code)
+        val btnClose = dialog.findViewById<ImageView>(R.id.iv_close_dialog)
+        val labelContainer = dialog.findViewById<View>(R.id.label)
+        val labelTv = dialog.findViewById<TextView>(R.id.label_tv)
+
+        fun zoomQrCode() {
+            val currentUrl = ivQrCode.tag as? String
+            val zoomDialog = Dialog(this)
+            zoomDialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+            zoomDialog.setContentView(R.layout.dialog_zoom_qr)
+            zoomDialog.window?.apply {
+                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            }
+            val ivZoomedQr = zoomDialog.findViewById<ImageView>(R.id.iv_zoomed_qr)
+            val ivCloseZoom = zoomDialog.findViewById<ImageView>(R.id.iv_close_zoom)
+
+            if (!currentUrl.isNullOrEmpty() && currentUrl.startsWith("http")) {
+                Glide.with(this).load(currentUrl).into(ivZoomedQr)
+            } else {
+                if (ivQrCode.drawable != null) {
+                    ivZoomedQr.setImageDrawable(ivQrCode.drawable.constantState?.newDrawable())
+                }
+            }
+            ivCloseZoom.setOnClickListener { zoomDialog.dismiss() }
+            zoomDialog.show()
+        }
+        ivQrCode.setOnClickListener { zoomQrCode() }
+        tvQrEnlarge.setOnClickListener { zoomQrCode() }
+
+        fun updateContent(index: Int, qrUrlToLoad: String?, updateBackground: Boolean) {
+            if (index < 0 || index >= fullDataList.size) return
+            val item = fullDataList[index]
+
+            // 1. Cập nhật Dialog UI
+            tvName.text = item.couponName
+            tvPeriod1.text = "兌換期間：${item.redeemStartAt ?: ""} ~ ${item.redeemEndAt ?: ""}"
+            val imgUrl = if (!item.galleryImages.isNullOrEmpty()) item.galleryImages[0] else item.coverImage
+            Glide.with(this).load(imgUrl).placeholder(R.drawable.bg_round_image).into(ivImage)
+
+            val eligibleMembersStr = item.eligibleMembersStr
+            if (!eligibleMembersStr.isNullOrEmpty() && eligibleMembersStr != getString(R.string.all_members)) {
+                labelContainer?.visibility = View.VISIBLE
+                labelTv?.text = eligibleMembersStr
+            } else {
+                labelContainer?.visibility = View.GONE
+            }
+
+            btnPrev.isEnabled = index > 0
+            btnPrev.alpha = if (index > 0) 1.0f else 0.5f
+            btnNext.isEnabled = index < fullDataList.size - 1
+            btnNext.alpha = if (index < fullDataList.size - 1) 1.0f else 0.5f
+
+            if (qrUrlToLoad != null) {
+                if (qrUrlToLoad.startsWith("http")) {
+                    Glide.with(this).load(qrUrlToLoad).dontAnimate().into(ivQrCode)
+                    ivQrCode.tag = qrUrlToLoad
                 } else {
-                     showConfirmExchangeDialog()
+                    val bitmap = createQRCodeBitmap(qrUrlToLoad, 1000, 1000)
+                    if (bitmap != null) ivQrCode.setImageBitmap(bitmap)
+                    ivQrCode.tag = null
                 }
-                */
-
-                // Tạm thời gọi showConfirmExchangeDialog() cho luồng cơ bản
-                showConfirmExchangeDialog()
-            }
-            CouponStatus.UNUSED -> {
-                val userCouponCode = currentCoupon?.id ?: ""
-                if (userCouponCode.isNotEmpty()) {
-                    viewModel.crmCouponQRCode(userCouponCode)
+            } else {
+                val codeString = item.couponCode ?: item.id
+                if (codeString.isNotEmpty()) {
+                    val bitmap = createQRCodeBitmap(codeString, 1000, 1000)
+                    if (bitmap != null) {
+                        ivQrCode.setImageBitmap(bitmap)
+                    } else {
+                        ivQrCode.setImageResource(R.drawable.ic_qr_code_placeholder)
+                    }
                 }
+                ivQrCode.tag = null
             }
-            CouponStatus.USED -> { }
+            updateActivityBackgroundData(item)
         }
-    }
+        updateContent(currentIndex, initialQrUrl, false)
 
-    private fun updateButtonState(userPoints: Int) {
-        val coupon = currentCoupon ?: return
-
-        when (couponStatus) {
-            CouponStatus.FOR_EXCHANGE -> {
-                val (canExchange, reason) = checkExchangeConditions(coupon, userPoints)
-                binding.btnExchange.isEnabled = canExchange
-                binding.btnExchange.text = if (canExchange) "立即兌換" else reason
-
-//                if (!canExchange) {
-//                    binding.btnExchange.setBackgroundResource(R.drawable.bg_button_disable)
-//                }
-            }
-            CouponStatus.UNUSED -> {
-                binding.btnExchange.isEnabled = true
-                binding.btnExchange.text = "開啟條碼"
-            }
-            CouponStatus.USED -> {
-                binding.btnExchange.isEnabled = false
-                binding.btnExchange.text = "已使用"
+        btnNext.setOnClickListener {
+            if (currentIndex < fullDataList.size - 1) {
+                currentIndex++
+                updateContent(currentIndex, null, true)
+                val code = fullDataList[currentIndex].couponCode ?: fullDataList[currentIndex].id
+                viewModel.crmCouponQRCode(code)
             }
         }
-    }
 
-    private fun checkExchangeConditions(coupon: CRMCouponsAvailableResponse, userPoints: Int): Pair<Boolean, String> {
-        val pointCost = coupon.pointCost ?: Int.MAX_VALUE
-        if (userPoints < pointCost) return Pair(false, "點數不足")
-        return Pair(true, "立即兌換")
-    }
-
-    private fun showConfirmExchangeDialog() {
-        val dialogBinding = DialogPublicPopupBoxBinding.inflate(layoutInflater)
-        val dialog = BottomSheetDialog(this)
-        dialog.setContentView(dialogBinding.root)
-        dialog.setOnShowListener {
-            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
+        btnPrev.setOnClickListener {
+            if (currentIndex > 0) {
+                currentIndex--
+                updateContent(currentIndex, null, true)
+                val code = fullDataList[currentIndex].couponCode ?: fullDataList[currentIndex].id
+                viewModel.crmCouponQRCode(code)
+            }
         }
-        dialogBinding.tvDialogTitle.text = "確認兌換"
-        dialogBinding.tvDialogContent.text = "您確定要使用 ${currentCoupon?.pointCost} 點兌換此商品嗎？此操作無法復原。"
-        dialogBinding.ivDialogImage.visibility = View.GONE
 
-        dialogBinding.tvDialogConfirm.text = "確認"
-        dialogBinding.tvDialogConfirm.setOnClickListener {
-            dialog.dismiss()
-            currentCoupon?.id?.let { viewModel.crmRedeemCoupon(it, "") }
-        }
+        btnClose.setOnClickListener { dialog.dismiss() }
+        dialog.setOnDismissListener { viewModel.setLoop(false) }
+
+        qrCodeDialog = dialog
         dialog.show()
+    }
+
+    private fun createQRCodeBitmap(content: String, width: Int, height: Int): android.graphics.Bitmap? {
+        return try {
+            val bitMatrix = com.google.zxing.MultiFormatWriter().encode(
+                content,
+                com.google.zxing.BarcodeFormat.QR_CODE,
+                width,
+                height
+            )
+            val w = bitMatrix.width
+            val h = bitMatrix.height
+            val pixels = IntArray(w * h)
+            for (y in 0 until h) {
+                for (x in 0 until w) {
+                    pixels[y * w + x] = if (bitMatrix[x, y]) android.graphics.Color.BLACK else android.graphics.Color.WHITE
+                }
+            }
+            android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888).apply {
+                setPixels(pixels, 0, w, 0, 0, w, h)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun updateActivityBackgroundData(newData: CRMCouponsAvailableResponse) {
+        data = newData
+        couponCode = newData.couponCode
+        displayCouponDetails(newData)
+    }
+    private fun loopCheckCouponStatus() {
+        if (checkStatusRunnable != null) {
+            handler.removeCallbacks(checkStatusRunnable!!)
+        }
+        checkStatusRunnable = Runnable {
+            if (viewModel.getLoop()) {
+                viewModel.findHaveUsedCouponsData(data.id)
+            }
+        }
+        handler.postDelayed(checkStatusRunnable!!, 3000)
     }
 
     private fun showOtpDialog(couponId: String, otpCode: String) {
         val otpBinding = DialogOtpCouponsBinding.inflate(LayoutInflater.from(this))
-        val dialog = BottomSheetDialog(this)
-        dialog.setContentView(otpBinding.root)
-        dialog.setOnShowListener {
-            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(otpBinding.root)
+        bottomSheetDialog.setOnShowListener { dialog ->
+            val d = dialog as BottomSheetDialog
+            val bottomSheet = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? android.widget.FrameLayout
+            bottomSheet?.let {
+                it.setBackgroundColor(Color.TRANSPARENT)
+                val displayMetrics = resources.displayMetrics
+                val layoutParams = it.layoutParams
+                layoutParams.height = (displayMetrics.heightPixels * 0.7).toInt()
+                it.layoutParams = layoutParams
+                val behavior = com.google.android.material.bottomsheet.BottomSheetBehavior.from(it)
+                behavior.state = com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+                behavior.skipCollapsed = true
+            }
         }
 
-        otpBinding.title.text = "驗證碼確認"
-        otpBinding.content.text = "請輸入驗證碼以完成兌換。"
-        otpBinding.tvOtpCode.text = otpCode
-        otpBinding.ivCloseDialog.setOnClickListener { dialog.dismiss() }
+        otpBinding.etInput.visibility = View.VISIBLE
+        otpBinding.title.visibility = View.VISIBLE
+        otpBinding.content.visibility = View.VISIBLE
 
+        otpBinding.title.text = "驗證碼確認"
+        otpBinding.content.text = "請輸入驗證碼確認身分。兌換後不可取消，是否繼續？"
+        otpBinding.tvOtpCode.text = otpCode
+        otpBinding.ivCloseDialog.setOnClickListener { bottomSheetDialog.dismiss() }
         otpBinding.etInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
             override fun afterTextChanged(s: Editable?) {
-                if (s?.length == 6) {
-                    if (s.toString() == otpCode) {
-                        viewModel.crmRedeemCoupon(couponId, s.toString())
-                        dialog.dismiss()
+                val inputCode = s.toString().trim()
+                val targetCode = otpCode.trim()
+
+                if (inputCode.length >= targetCode.length) {
+                    if (inputCode == targetCode) {
+                        bottomSheetDialog.dismiss()
+                        viewModel.crmRedeemCoupon(couponId, targetCode)
                     } else {
                         Toast.makeText(this@ExchangeDetailsActivity, "驗證碼錯誤！", Toast.LENGTH_SHORT).show()
-                        s?.clear()
+                        otpBinding.etInput.text.clear()
                     }
                 }
             }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
-        dialog.show()
+        bottomSheetDialog.show()
     }
 
     private fun showSuccessDialog() {
@@ -279,32 +475,11 @@ class ExchangeDetailsActivity : AppCompatActivity() {
 
         successBinding.tvDialogConfirm.setOnClickListener {
             dialog.dismiss()
-            // Chuyển hướng
             val intent = Intent(this, ExchangeHistoryActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
             finish()
         }
-        dialog.show()
-    }
-
-    // [SỬA 2] Thực hiện hàm hiển thị QR Code
-    // Cần import com.google.zxing.* và com.journeyapps.barcodescanner.BarcodeEncoder
-    private fun showBarcodeDialog(qrContent: String) {
-        val qrBinding = DialogOtpCouponsBinding.inflate(LayoutInflater.from(this))
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
-        dialog.setContentView(qrBinding.root)
-
-        dialog.window?.apply {
-            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
-
-        qrBinding.ivCloseDialog.setOnClickListener { dialog.dismiss() }
-        qrBinding.title.text = "兌換條碼"
-        qrBinding.tvOtpCode.text = qrContent
-
         dialog.show()
     }
 
@@ -324,7 +499,7 @@ class ExchangeDetailsActivity : AppCompatActivity() {
             }
         }
         binding.bannerUserGuideImage.setAdapter(bannerAdapter)
-        binding.bannerUserGuideImage.setLoopTime(3000) // Auto scroll
+        binding.bannerUserGuideImage.setLoopTime(3000)
 
         binding.bannerUserGuideImage.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageSelected(position: Int) {
@@ -339,5 +514,15 @@ class ExchangeDetailsActivity : AppCompatActivity() {
     private fun toggleSection(content: View, arrow: ImageView) {
         content.isVisible = !content.isVisible
         arrow.animate().rotation(if (content.isVisible) 180f else 0f).setDuration(200).start()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.setLoop(false)
+        if (checkStatusRunnable != null) {
+            handler.removeCallbacks(checkStatusRunnable!!)
+        }
+        if (qrCodeDialog != null && qrCodeDialog!!.isShowing) {
+            qrCodeDialog!!.dismiss()
+        }
     }
 }

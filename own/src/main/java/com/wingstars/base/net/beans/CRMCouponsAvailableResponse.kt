@@ -35,6 +35,7 @@ data class CRMCouponsAvailableResponse(
     val claimEndAt: String,                  //结束核销时间期间（二维码）
     val couponAudit: Any,
     val otpRequired: Boolean,
+    var couponCode: String? = null
 ): Serializable {
     val claimStartAtF: String
         get() {
@@ -56,121 +57,121 @@ data class CRMCouponsAvailableResponse(
                 claimEndAt
             }
         }
-//    val eligibleMembersSplicing: String
-//        get(){
-//            return if(eligibleMembers == null) {
-//                "所有會員皆適用"
-//            }else if (eligibleMembers.size==0){
-//                "所有會員皆適用"
-//            } else{
-//                var data =""
-//                for (i in 0..eligibleMembers.size-1){
-//                    var  name = eligibleMembers[i]
-//                    var newName= when(name.trim()){
-//                        "366a8eb1-ff7a-45ac-9a69-50321dfcd84f"->{
-//                            "半糖區"
-//                        }
-//                        "A003"->{
-//                            "半糖區"
-//                        }
-//                        "A002"->{
-//                            "加料區"
-//                        }
-//                        "7a3b2511-3f7a-4607-9c7b-32257becf20e"->{
-//                            "加料區"
-//                        }
-//                        "A001"->{
-//                            "少糖區"
-//                        }
-//                        "e412da17-7ad2-4049-a54d-3b09d6d3d215"->{
-//                            "少糖區"
-//                        }
-//                        "A004"->{
-//                            "人氣特調"
-//                        }
-//                        "ceccde97-fa1e-4d96-bf74-9f6ad148751a"->{
-//                            "人氣特調"
-//                        }
-//                        "43e223a4-18e0-4ad4-baa9-f4a4dcd97e83"->{
-//                            "黃金比例"
-//                        }
-//                        "c566304d-06d1-4872-8b03-74cc788b3539"->{
-//                            "全糖區"
-//                        }
-//                        else -> ""
-//                    }
-//                    if (i!=eligibleMembers.size-1){
-//                        data = data+newName+"、"
-//                    }else{
-//                        data = data+newName
-//                    }
-//
-//                }
-//                data
-//            }
-//        }
-//    val eligibleMembersStr: String
-//        get() {
-//            return if(eligibleMembers.isNullOrEmpty()) {
-//                ""
-//            }else if (eligibleMembers.size==1){
-//                when(eligibleMembers[eligibleMembers.size-1].trim()){
-//                    "366a8eb1-ff7a-45ac-9a69-50321dfcd84f"->{
-//                        "半糖區"
-//                    }
-//                    "A003"->{
-//                        "半糖區"
-//                    }
-//                    "A002"->{
-//                        "加料區"
-//                    }
-//                    "7a3b2511-3f7a-4607-9c7b-32257becf20e"->{
-//                        "加料區"
-//                    }
-//                    "A001"->{
-//                        "少糖區"
-//                    }
-//                    "e412da17-7ad2-4049-a54d-3b09d6d3d215"->{
-//                        "少糖區"
-//                    }
-//                    "A004"->{
-//                        "人氣特調"
-//                    }
-//                    "ceccde97-fa1e-4d96-bf74-9f6ad148751a"->{
-//                        "人氣特調"
-//                    }
-//                    "43e223a4-18e0-4ad4-baa9-f4a4dcd97e83"->{
-//                        "黃金比例"
-//                    }
-//                    "c566304d-06d1-4872-8b03-74cc788b3539"->{
-//                        "全糖區"
-//                    }
-//                    else -> ""
-//                 }
-//            }else{
-//                "獵鷹會員"
-//            }
-//        }
-//    val eligibleMembersF: MutableList<String>
-//        get(){
-//            return if(eligibleMembers == null) {
-//                 mutableListOf()
-//            } else {
-//                for (i in eligibleMembers.indices) {
-//
-//                    if (eligibleMembers[i].trim() == "A001") {
-//                        eligibleMembers[i] = "鷹國皇家會員"
-//                    }else if (eligibleMembers[i].trim() == "A002"){
-//                        eligibleMembers[i] = "鷹國尊爵會員"
-//                    }else if (eligibleMembers[i].trim() == "A003"){
-//                        eligibleMembers[i] = "Takao 親子卡"
-//                    }else if (eligibleMembers[i].trim() == "A004"){
-//                        eligibleMembers[i] = "鷹國人會員"
-//                    }
-//                }
-//                eligibleMembers
-//            }
-//        }
+    val eligibleMembersSplicing: String
+        get(){
+            return if(eligibleMembers == null) {
+                "所有會員皆適用"
+            }else if (eligibleMembers.size==0){
+                "所有會員皆適用"
+            } else{
+                var data =""
+                for (i in 0..eligibleMembers.size-1){
+                    var  name = eligibleMembers[i]
+                    var newName= when(name.trim()){
+                        "366a8eb1-ff7a-45ac-9a69-50321dfcd84f"->{
+                            "半糖區"
+                        }
+                        "A003"->{
+                            "半糖區"
+                        }
+                        "A002"->{
+                            "加料區"
+                        }
+                        "7a3b2511-3f7a-4607-9c7b-32257becf20e"->{
+                            "加料區"
+                        }
+                        "A001"->{
+                            "少糖區"
+                        }
+                        "e412da17-7ad2-4049-a54d-3b09d6d3d215"->{
+                            "少糖區"
+                        }
+                        "A004"->{
+                            "人氣特調"
+                        }
+                        "ceccde97-fa1e-4d96-bf74-9f6ad148751a"->{
+                            "人氣特調"
+                        }
+                        "43e223a4-18e0-4ad4-baa9-f4a4dcd97e83"->{
+                            "黃金比例"
+                        }
+                        "c566304d-06d1-4872-8b03-74cc788b3539"->{
+                            "全糖區"
+                        }
+                        else -> ""
+                    }
+                    if (i!=eligibleMembers.size-1){
+                        data = data+newName+"、"
+                    }else{
+                        data = data+newName
+                    }
+
+                }
+                data
+            }
+        }
+    val eligibleMembersStr: String
+        get() {
+            return if(eligibleMembers.isNullOrEmpty()) {
+                ""
+            }else if (eligibleMembers.size==1){
+                when(eligibleMembers[eligibleMembers.size-1].trim()){
+                    "366a8eb1-ff7a-45ac-9a69-50321dfcd84f"->{
+                        "半糖區"
+                    }
+                    "A003"->{
+                        "半糖區"
+                    }
+                    "A002"->{
+                        "加料區"
+                    }
+                    "7a3b2511-3f7a-4607-9c7b-32257becf20e"->{
+                        "加料區"
+                    }
+                    "A001"->{
+                        "少糖區"
+                    }
+                    "e412da17-7ad2-4049-a54d-3b09d6d3d215"->{
+                        "少糖區"
+                    }
+                    "A004"->{
+                        "人氣特調"
+                    }
+                    "ceccde97-fa1e-4d96-bf74-9f6ad148751a"->{
+                        "人氣特調"
+                    }
+                    "43e223a4-18e0-4ad4-baa9-f4a4dcd97e83"->{
+                        "黃金比例"
+                    }
+                    "c566304d-06d1-4872-8b03-74cc788b3539"->{
+                        "全糖區"
+                    }
+                    else -> ""
+                 }
+            }else{
+                "獵鷹會員"
+            }
+        }
+    val eligibleMembersF: MutableList<String>
+        get(){
+            return if(eligibleMembers == null) {
+                 mutableListOf()
+            } else {
+                for (i in eligibleMembers.indices) {
+
+                    if (eligibleMembers[i].trim() == "A001") {
+                        eligibleMembers[i] = "鷹國皇家會員"
+                    }else if (eligibleMembers[i].trim() == "A002"){
+                        eligibleMembers[i] = "鷹國尊爵會員"
+                    }else if (eligibleMembers[i].trim() == "A003"){
+                        eligibleMembers[i] = "Takao 親子卡"
+                    }else if (eligibleMembers[i].trim() == "A004"){
+                        eligibleMembers[i] = "鷹國人會員"
+                    }
+                }
+                eligibleMembers
+            }
+        }
     val redeemStartAtF: String
         get() {
             return try {

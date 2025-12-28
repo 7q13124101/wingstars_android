@@ -83,31 +83,31 @@
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>
 
-<!--                <FrameLayout-->
-<!--                    android:id="@+id/top"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="bottom|end"-->
-<!--                    android:layout_marginBottom="@dimen/pt_30"-->
-<!--                    android:visibility="gone">-->
+                <FrameLayout
+                    android:id="@+id/top"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginBottom="@dimen/pt_30"
+                    android:visibility="gone">
 
-<!--                    <ImageView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:clickable="false"-->
-<!--                        android:focusable="false"-->
-<!--                        android:focusableInTouchMode="false"-->
-<!--                        android:src="@drawable/count_01" />-->
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:src="@drawable/count_01" />
 
-<!--                    <ImageView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="center"-->
-<!--                        android:clickable="false"-->
-<!--                        android:focusable="false"-->
-<!--                        android:focusableInTouchMode="false"-->
-<!--                        android:src="@drawable/count_02" />-->
-<!--                </FrameLayout>-->
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:src="@drawable/count_02" />
+                </FrameLayout>
             </FrameLayout>
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

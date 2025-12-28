@@ -4,10 +4,19 @@ package com.wingstars.base.net;
 import com.wingstars.base.net.beans.BeaconListResponse;
 import com.wingstars.base.net.beans.BluetoothBeaconRequest;
 import com.wingstars.base.net.beans.CRMBaseResponse;
+import com.wingstars.base.net.beans.CRMCouponQRCodeRequest;
+import com.wingstars.base.net.beans.CRMCouponQRCodeResponse;
+import com.wingstars.base.net.beans.CRMCouponsAvailableResponse;
+import com.wingstars.base.net.beans.CRMCouponsResponse;
 import com.wingstars.base.net.beans.CRMDeleteRespone;
 import com.wingstars.base.net.beans.CRMGenQRCodeRequest;
 import com.wingstars.base.net.beans.CRMGenQRCodeResponse;
+import com.wingstars.base.net.beans.CRMJournalHistoryResponse;
 import com.wingstars.base.net.beans.CRMMemberContactResponse;
+import com.wingstars.base.net.beans.CRMOTPCoupons;
+import com.wingstars.base.net.beans.CRMRedeemCouponRequest;
+import com.wingstars.base.net.beans.CRMRedeemCouponResponse;
+import com.wingstars.base.net.beans.CRMRedeemStoresSearchResponse;
 import com.wingstars.base.net.beans.CRMSMSRequest;
 import com.wingstars.base.net.beans.CRMMemberDetailResponse;
 import com.wingstars.base.net.beans.CRMResetPasswordRequest;
@@ -131,7 +140,7 @@ public interface ApiService {
 
     //Member > 查询会员详细资料. ${BaseApplication.HOST_CRM}/api/v1/basic/member/{id}
     @GET(NetBase.HOST_CRM + "/api/v1/basic/member/{id}")
-    Observable<CRMBaseResponse<CRMMemberDetailResponse>> crmMemberDetail();
+    Observable<CRMBaseResponse<CRMMemberDetailResponse>> crmMemberDetail(@Path("id") String id);
     //今日行程
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/calendar?_fields=id,title.rendered,acf,content.rendered,yoast_head_json.og_image,calendar_category")
     Observable<List<WSCalendarResponse>> wsSchedule(@Query("per_page") int per_page, @Query("page") int page);
@@ -224,6 +233,33 @@ public interface ApiService {
     //Event > 取得任务详情.   ${BaseApplication.HOST_EVENT}/api/v1/public/event-tasks/{taskid}?encryptedIdentity=...
     @GET(NetBase.HOST_EVENT + "/api/v1/public/event-tasks/{taskid}")
     Observable<EvtMemberTaskResponse> evtTaskInfo( @Query("encryptedIdentity") String encryptedIdentity);
+
+    @GET(NetBase.HOST_CRM + "/api/v1/basic/member/{id}/coupons/available")
+    Observable<CRMBaseResponse<List<CRMCouponsAvailableResponse>>> crmCouponsAvailable(
+            @Path("id") String id,
+            @Query("coupon_type") Integer couponType,
+            @Query("page") Integer page,
+            @Query("size") Integer size
+    );
+
+    @GET()
+    Observable<CRMBaseResponse<List<CRMCouponsResponse>>> crmCoupons(@Url String url);
+
+    @GET()
+    Observable<CRMBaseResponse<CRMOTPCoupons>> crmOTPCoupons(@Url String url);
+
+    //Coupon > Coupon核销QR Code.
+    @POST()
+    Observable<CRMBaseResponse<CRMCouponQRCodeResponse>> crmCouponQRCode(@Url String url, @Body CRMCouponQRCodeRequest couponQRCodeRequest);
+
+    //Coupon > 查询兑换通路.
+    @GET()
+    Observable<CRMBaseResponse<List<CRMRedeemStoresSearchResponse>>> crmRedeemStoresSearch(@Url String url);
+
+
+    //Coupon > 扣除红利兑换Coupon. ${BaseApplication.HOST_CRM}/api/v1/basic/member/{id}/points/redeem-coupon
+    @POST()
+    Observable<CRMBaseResponse<CRMRedeemCouponResponse>> crmRedeemCoupon(@Url String url, @Body CRMRedeemCouponRequest redeemCouponRequest);
 
 
     //中继

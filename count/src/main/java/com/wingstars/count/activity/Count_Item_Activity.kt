@@ -8,16 +8,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.wingstars.base.net.beans.EvtTaskResponse
-import com.wingstars.count.R
 import com.wingstars.count.databinding.ActivityCountItemBinding
 import com.wingstars.count.databinding.DialogPublicPopupBoxBinding
+import com.wingstars.count.viewmodel.CountItemViewModel
 
 enum class GetPointType {
     BEACON,
@@ -31,6 +33,7 @@ class Count_Item_Activity : AppCompatActivity() {
     private lateinit var binding: ActivityCountItemBinding
     private var currentItemData: EvtTaskResponse? = null
     private var currentPointType: GetPointType = GetPointType.AIRDROP
+    private lateinit var viewModel: CountItemViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,24 +47,55 @@ class Count_Item_Activity : AppCompatActivity() {
             insets
         }
 
+        viewModel = ViewModelProvider(this)[CountItemViewModel::class.java]
         initView()
         loadData()
+        setupObservers()
     }
+
+    private fun setupObservers() {
+        viewModel.claimSuccess.observe(this) { isSuccess ->
+            if (isSuccess) {
+                showSuccessDialog()
+            }
+        }
+
+        viewModel.errorMessage.observe(this) { msg ->
+            if (!msg.isNullOrEmpty()) {
+                showFailureDialog(msg)
+                binding.btnConfirm.isEnabled = true
+                binding.btnConfirm.text = if (currentPointType == GetPointType.IMMEDIATELY) "前往連結" else "領取點數"
+            }
+        }
+
+        viewModel.isLoading.observe(this) { isLoading ->
+            binding.btnConfirm.isEnabled = !isLoading
+            binding.btnConfirm.text = if (isLoading) "處理中..." else "確認"
+        }
+    }
+
+
 
     private fun initView() {
         binding.imgBack.setOnClickListener {
             finish()
         }
 
-        // Nút xác nhận/thực hiện nhiệm vụ
         binding.btnConfirm.setOnClickListener {
             currentItemData?.let { data ->
                 if (currentPointType == GetPointType.IMMEDIATELY) {
                     handleImmediatelyAction(data)
                 } else {
-                    showSuccessDialog()
+                    requestClaimPoint(data)
                 }
             }
+        }
+    }
+
+    private fun requestClaimPoint(data: EvtTaskResponse) {
+        if (!data.isSendApiF) {
+            data.isSendApiF = true
+            viewModel.claimPoint(data)
         }
     }
 
@@ -185,6 +219,7 @@ class Count_Item_Activity : AppCompatActivity() {
     }
 
     private fun handleImmediatelyAction(data: EvtTaskResponse) {
+        requestClaimPoint(data)
         var url = ""
         when (data.triggerTag) {
             "fb" -> url = "https://www.facebook.com/tsgwingstars/"
@@ -217,11 +252,35 @@ class Count_Item_Activity : AppCompatActivity() {
         }
 
         dialogBinding.tvDialogTitle.text = "獲得點數"
+        val points = currentItemData?.point ?: "0"
         dialogBinding.tvDialogContent.text = "恭喜！你獲得 1 點！"
 
         dialogBinding.tvDialogConfirm.setOnClickListener {
             bottomSheetDialog.dismiss()
             updateButtonToCompleted()
+            setResult(RESULT_OK)
+            finish()
+        }
+
+        bottomSheetDialog.show()
+    }
+
+    private fun showFailureDialog(errorMessage: String) {
+        val dialogBinding = DialogPublicPopupBoxBinding.inflate(LayoutInflater.from(this))
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(dialogBinding.root)
+
+        bottomSheetDialog.setOnShowListener { dialog ->
+            val d = dialog as BottomSheetDialog
+            val bottomSheet = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
+            bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
+        }
+        dialogBinding.tvDialogTitle.text = "領取失敗"
+        dialogBinding.tvDialogTitle.setTextColor(Color.RED)
+        dialogBinding.tvDialogContent.text = errorMessage
+        dialogBinding.tvDialogConfirm.text = "關閉"
+        dialogBinding.tvDialogConfirm.setOnClickListener {
+            bottomSheetDialog.dismiss()
         }
 
         bottomSheetDialog.show()

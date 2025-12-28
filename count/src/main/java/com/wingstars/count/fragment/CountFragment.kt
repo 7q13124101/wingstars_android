@@ -253,6 +253,20 @@ class CountFragment : BaseFragment() {
             }
         }
 
+        binding.scrollView.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+                val headerHeight = binding.ivHeaderBg.height.toFloat()
+                val ratio = (scrollY / headerHeight).coerceIn(0f, 1f)
+                binding.ivHeaderBg.apply {
+                    alpha = 1f - ratio
+                    scaleX = 1f + ratio * 0.1f
+                    scaleY = 1f + ratio * 0.1f
+                }
+            }
+        )
+
+
+
         binding.srlCountsRecord.setOnRefreshListener {
             viewModel.getEvtTasks()
             if (MMKV.defaultMMKV().decodeBool("isLogin")) {

@@ -110,6 +110,7 @@ class ActivityDetailsExchangeViewModel : ViewModel() {
                         if (next.success && next.data != null) {
                             couponQRCode.postValue(next.data.qrcode)
                         }
+                        Log.e("logcheckdata", "crmCouponQRCode ${next.data}")
                     },
                     { error -> handleError(error) }
                 )
