@@ -56,6 +56,9 @@ class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
             Toast.makeText(this,"$it", Toast.LENGTH_SHORT).show()
         }
         viewModel.wsRankData.observe(this) {
+            if (wsNewRankData.size!=0){
+                wsNewRankData.clear()
+            }
             wsNewRankData.addAll(it)
             setScreening(type)
         }

@@ -8,4 +8,5 @@ package com.wingstars.login
 interface LoginNavigator {
     fun loginSuccess()
     fun showNotRegisteredDialog()
+    fun showLoginFailDialog(message: String)
 }

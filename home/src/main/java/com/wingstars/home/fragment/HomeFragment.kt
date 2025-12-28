@@ -15,6 +15,7 @@ import com.wingstars.base.net.beans.WSFashionResponse
 import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.net.beans.WSPostResponse
 import com.wingstars.base.net.beans.WSProductResponse
+import com.wingstars.base.utils.MMKVManagement
 import com.wingstars.home.R
 import com.wingstars.home.activity.TodayItineraryDetailsActivity
 import com.wingstars.home.adapter.*
@@ -308,7 +309,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         }
     }
     private fun checkLoginAndAction(action: () -> Unit) {
-        val isLogin = MMKV.defaultMMKV().decodeBool("isLogin", false)
+        val isLogin = MMKVManagement.isLogin()
         if (isLogin) {
             action()
         } else {

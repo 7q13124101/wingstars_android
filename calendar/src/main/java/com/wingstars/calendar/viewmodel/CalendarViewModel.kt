@@ -44,46 +44,66 @@ class CalendarViewModel : ViewModel() {
         const val MAX_DISPLAY_COUNT = 3 // 单日最大显示类型数
     }
 
-    fun getWsCalendar(year: Int = Calendar.getInstance().get(Calendar.YEAR)) {
+    fun getWsCalendar(year: Int) {
         setIsLoading(true)
-        val allMonthData = ArrayList<WSCalendarNResponse>()
-        var completedCount = 0 // 已完成的月份请求数
+        val monthParam = HashMap<String, String>().apply {
+            put("year", year.toString())
+        }
 
-        // 遍历1-12月，逐个构建参数并请求
-        for (month in 1..12) {
-            val monthParam = HashMap<String, String>().apply {
-                put("ym", year.toString() + "-" + String.format("%02d", month))
-            }
-
-            API.shared?.api?.let { api ->
-                val observer = api.wsCalendarN(monthParam)
-                observer.subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe({ monthData ->
-                        completedCount++
-                        allMonthData.addAll(monthData) // 累加当月数据
-                        // 所有月份请求完成
-                        if (completedCount == 12) {
-                            setIsLoading(false)
-                            wSCalendarData.postValue(allMonthData)
-                        }
-                    }, { error ->
-                        completedCount++
-                        // 个别月份失败，仍等待全部请求完成
-                        if (completedCount == 12) {
-                            setIsLoading(false)
-                            wSCalendarData.postValue(allMonthData) // 返回已获取的部分数据
-                        }
-                    }).let {
-                        compositeDisposable.add(it)
-                    }
-            } ?: run {
-                completedCount++
-                if (completedCount == 12) {
-                    setIsLoading(false)
+        API.shared?.api?.let {
+            val observer = it.wsCalendarN(monthParam)
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe({ next ->
+                wSCalendarData.postValue(next)
+            }, { error ->
+                var msg = error.message.toString()
+                msg.let { it1 ->
+                    //Toast.makeText(BaseApplication.shared()!!, "$it1", Toast.LENGTH_LONG).show()
                 }
-            }
+            })
         }
     }
+//    fun getWsCalendar(year: Int = Calendar.getInstance().get(Calendar.YEAR)) {
+//        setIsLoading(true)
+//        val allMonthData = ArrayList<WSCalendarNResponse>()
+//        var completedCount = 0 // 已完成的月份请求数
+//
+//        // 遍历1-12月，逐个构建参数并请求
+//        for (month in 1..12) {
+//            val monthParam = HashMap<String, String>().apply {
+//                put("ym", year.toString() + "-" + String.format("%02d", month))
+//            }
+//
+//            API.shared?.api?.let { api ->
+//                val observer = api.wsCalendarN(monthParam)
+//                observer.subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread()).subscribe({ monthData ->
+//                        completedCount++
+//                        allMonthData.addAll(monthData) // 累加当月数据
+//                        // 所有月份请求完成
+//                        if (completedCount == 12) {
+//                            setIsLoading(false)
+//                            wSCalendarData.postValue(allMonthData)
+//                        }
+//                    }, { error ->
+//                        completedCount++
+//                        // 个别月份失败，仍等待全部请求完成
+//                        if (completedCount == 12) {
+//                            setIsLoading(false)
+//                            wSCalendarData.postValue(allMonthData) // 返回已获取的部分数据
+//                        }
+//                    }).let {
+//                        compositeDisposable.add(it)
+//                    }
+//            } ?: run {
+//                completedCount++
+//                if (completedCount == 12) {
+//                    setIsLoading(false)
+//                }
+//            }
+//        }
+//    }
 
     //获取全部成员
     fun getWsMembersBirthdayData() {

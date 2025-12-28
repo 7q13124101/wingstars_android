@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.gson.Gson
+import com.wingstars.base.net.beans.WSFashionDetailResponse
 import com.wingstars.base.net.beans.WSFashionDetailResponse.Acf.Recommend
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
@@ -82,19 +84,42 @@ class ProductListAdapter     // -------------------------------------------
         RecyclerView.ViewHolder(binding.root) {
 
         fun binding(position: Int) {
-            if (position==0){
-                setMarginLeft(binding.item, DPUtils.dpToPx(20f,context).toInt())
-            }else{
+            if (position == 0) {
+                setMarginLeft(binding.item, DPUtils.dpToPx(20f, context).toInt())
+            } else {
                 setMarginLeft(binding.item, 0)
             }
             val recommend = dataList!![position]
 
             binding.productTitle.text = recommend.product_titleF
+            var product_image_url_fullF = ""
+            val productImage = recommend.product_image
+            if (productImage is String) {
+                Log.e("productImage", "productImage is String productImage=$productImage")
+                product_image_url_fullF = "$productImage"
+            } else if (productImage is Boolean) {
+                product_image_url_fullF = ""
+            } else {
+                try {
+                    val fromJson = Gson().fromJson(
+                        Gson().toJson(productImage),
+                        WSFashionDetailResponse.ProductImage::class.java
+                    )
+                    val sizes = fromJson.sizes
+                    if (sizes != null) {
+                        product_image_url_fullF = "${sizes.`1536x1536`}"
+                    }
+
+                } catch (e: Exception) {
+
+                }
+            }
             Glide.with(context)
-                .load(recommend.product_image_url_fullF)  //R.mipmap.ic_demo5
-                .transform(RoundedCorners(DPUtils.dpToPx(20f,context).toInt()))
+                .load(product_image_url_fullF)  //R.mipmap.ic_demo5
+                .transform(RoundedCorners(DPUtils.dpToPx(20f, context).toInt()))
                 .into(binding.image)
-                 binding.item.visibility = if (recommend.isTitleAndImageEmpty) View.GONE else View.VISIBLE
+            binding.item.visibility =
+                if (recommend.isTitleAndImageEmpty) View.GONE else View.VISIBLE
 
 
         }

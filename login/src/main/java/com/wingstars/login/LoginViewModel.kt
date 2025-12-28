@@ -107,11 +107,13 @@ class LoginViewModel : ViewModel(){
                     if (failResponse?.message == "尚未註冊") {
                         navigator?.showNotRegisteredDialog()
                         return
+                    } else {
+                        val errorMsg = failResponse?.message ?: "登入失敗"
+                        navigator?.showLoginFailDialog(errorMsg)
+                        return
                     }
 
-                    if (!failResponse?.message.isNullOrEmpty()) {
-                        msg = failResponse.message!!
-                    }
+
                 }
             } catch (e: Exception) {
                 Log.e("LoginDebug", "Error parsing HTTP error body: ${e.message}")
@@ -223,6 +225,8 @@ class LoginViewModel : ViewModel(){
         MMKVManagement.setMemberMail(data.Email ?: "")
         MMKVManagement.setCrmMemberBarcode(data.CarrierCode ?: "")
         Log.d("LoginDebug", "✅ Member info saved to MMKV: ${data.Name}, ${data.Email}")
+        Log.d("LoginMemberCode", "✅ Member info saved to MMKV: ${data.CarrierCode}")
+
     }
     fun sendOtp() {
         val phone = MMKVManagement.getMemberPhone()

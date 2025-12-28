@@ -53,6 +53,7 @@ data class WSFashionDetailResponse(
             val product_image_url_large: String,        //
             val product_image_url_medium: String,       //
             val product_image_url_thumbnail: String,    //
+            var product_image: Any
         ) : java.io.Serializable {
 
             val product_titleF: String
@@ -129,6 +130,14 @@ data class WSFashionDetailResponse(
             val url: String,            //圖片地址
             val type: String,
         ) : java.io.Serializable
+    }
+
+    data class ProductImage(
+        var sizes:SizesBean
+    ){
+        data class SizesBean(
+            val `1536x1536`: String
+        )
     }
 
 }

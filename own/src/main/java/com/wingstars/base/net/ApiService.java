@@ -1,21 +1,19 @@
 package com.wingstars.base.net;
 
 
+import com.wingstars.base.net.beans.BeaconListResponse;
+import com.wingstars.base.net.beans.BluetoothBeaconRequest;
 import com.wingstars.base.net.beans.CRMBaseResponse;
-import com.wingstars.base.net.beans.CRMCouponQRCodeRequest;
-import com.wingstars.base.net.beans.CRMCouponQRCodeResponse;
-import com.wingstars.base.net.beans.CRMCouponsAvailableResponse;
-import com.wingstars.base.net.beans.CRMCouponsResponse;
+import com.wingstars.base.net.beans.CRMDeleteRespone;
 import com.wingstars.base.net.beans.CRMGenQRCodeRequest;
 import com.wingstars.base.net.beans.CRMGenQRCodeResponse;
-import com.wingstars.base.net.beans.CRMJournalHistoryResponse;
 import com.wingstars.base.net.beans.CRMMemberContactResponse;
-import com.wingstars.base.net.beans.CRMOTPCoupons;
-import com.wingstars.base.net.beans.CRMRedeemCouponRequest;
-import com.wingstars.base.net.beans.CRMRedeemCouponResponse;
-import com.wingstars.base.net.beans.CRMRedeemStoresSearchResponse;
 import com.wingstars.base.net.beans.CRMSMSRequest;
 import com.wingstars.base.net.beans.CRMMemberDetailResponse;
+import com.wingstars.base.net.beans.CRMResetPasswordRequest;
+import com.wingstars.base.net.beans.CRMResetPasswordResponse;
+import com.wingstars.base.net.beans.CRMSendOtpRequest;
+import com.wingstars.base.net.beans.CRMSendOtpResponse;
 import com.wingstars.base.net.beans.CRMSignInRequest;
 import com.wingstars.base.net.beans.CRMSignInResponse;
 import com.wingstars.base.net.beans.CRMSignUpRequest;
@@ -26,6 +24,8 @@ import com.wingstars.base.net.beans.EvtCheckinResponse;
 import com.wingstars.base.net.beans.EvtMemberBadgeResponse;
 import com.wingstars.base.net.beans.EvtMemberTaskResponse;
 import com.wingstars.base.net.beans.EvtTaskResponse;
+import com.wingstars.base.net.beans.FrequentlyQuestionsResponse;
+import com.wingstars.base.net.beans.NSBaseResponse;
 import com.wingstars.base.net.beans.NSInfoRequest;
 import com.wingstars.base.net.beans.NSInfoResponse;
 import com.wingstars.base.net.beans.CRMBaseResponse;
@@ -39,6 +39,10 @@ import com.wingstars.base.net.beans.CRMVerifyResponse;
 import com.wingstars.base.net.beans.EvtMemberTaskResponse;
 import com.wingstars.base.net.beans.NSInfoRequest;
 import com.wingstars.base.net.beans.NSInfoResponse;
+import com.wingstars.base.net.beans.NSParkingResponse;
+import com.wingstars.base.net.beans.NSTokenNewResponse;
+import com.wingstars.base.net.beans.NSTokenRefreshRequest;
+import com.wingstars.base.net.beans.NSUserErrorInfoRequest;
 import com.wingstars.base.net.beans.WSCalendarCategoryResponse;
 import com.wingstars.base.net.beans.WSCalendarNResponse;
 import com.wingstars.base.net.beans.WSCalendarResponse;
@@ -53,8 +57,11 @@ import com.wingstars.base.net.beans.WSPostResponse;
 import com.wingstars.base.net.beans.WSProductResponse;
 import com.wingstars.base.net.beans.WSRankResponse;
 import com.wingstars.base.net.beans.WSScheduleResponse;
+import com.wingstars.base.net.beans.YoutubeListResponse;
 import com.wingstars.base.net.beans.YoutubeSearchResponse;
 
+import okhttp3.ResponseBody;
+import retrofit2.http.DELETE;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 import java.util.HashMap;
@@ -94,6 +101,15 @@ public interface ApiService {
     Observable<CRMBaseResponse<Object>> crmSignUp(@Body CRMSignUpRequest signUpRequest);
     @GET()
     Observable<CRMBaseResponse<CRMMemberContactResponse>> crmGetMemberContact(@Url String url);
+    @GET()
+    Observable<CRMBaseResponse<CRMMemberContactResponse>> crmGetMemberExpiredDate(@Url String url);
+    @POST()
+    Observable<CRMBaseResponse<CRMSendOtpResponse>> crmSendOtp(@Url String url, @Body CRMSendOtpRequest genSendOtp);
+    @PUT()
+    Observable<CRMBaseResponse<CRMResetPasswordResponse>> crmResetPassword(@Url String url, @Body CRMResetPasswordRequest genResetPassword);
+    @DELETE()
+    Observable<CRMBaseResponse<CRMDeleteRespone>> crmDeleteAccount(@Url String url, @Body CRMResetPasswordRequest genResetPassword);
+
     @POST()
     Observable<NSInfoResponse> nsInfo(@Url String url, @Body NSInfoRequest infoRequest);
     @POST()
@@ -115,7 +131,7 @@ public interface ApiService {
 
     //Member > 查询会员详细资料. ${BaseApplication.HOST_CRM}/api/v1/basic/member/{id}
     @GET(NetBase.HOST_CRM + "/api/v1/basic/member/{id}")
-    Observable<CRMBaseResponse<CRMMemberDetailResponse>> crmMemberDetail(@Path("id") String id);
+    Observable<CRMBaseResponse<CRMMemberDetailResponse>> crmMemberDetail();
     //今日行程
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/calendar?_fields=id,title.rendered,acf,content.rendered,yoast_head_json.og_image,calendar_category")
     Observable<List<WSCalendarResponse>> wsSchedule(@Query("per_page") int per_page, @Query("page") int page);
@@ -142,7 +158,7 @@ public interface ApiService {
 
     //人气排行-名次对应成员头贴图片
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/member_list?_fields=id,title,yoast_head_json.og_image,acf")
-    Observable<List<WSMemberResponse>> wsPhotos();
+    Observable<List<WSMemberResponse>> wsPhotos(@Query("per_page") int per_page,@Query("page") int page);
 
     //成员 > 拍照图框
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/member_list?_fields=id,title,acf.number,acf.photoFrame,acf.photoFrame_image_urls")
@@ -209,33 +225,70 @@ public interface ApiService {
     @GET(NetBase.HOST_EVENT + "/api/v1/public/event-tasks/{taskid}")
     Observable<EvtMemberTaskResponse> evtTaskInfo( @Query("encryptedIdentity") String encryptedIdentity);
 
-    @GET(NetBase.HOST_CRM + "/api/v1/basic/member/{id}/coupons/available")
-    Observable<CRMBaseResponse<List<CRMCouponsAvailableResponse>>> crmCouponsAvailable(
-            @Path("id") String id,
-            @Query("coupon_type") Integer couponType,
-            @Query("page") Integer page,
-            @Query("size") Integer size
-    );
 
-    @GET()
-    Observable<CRMBaseResponse<List<CRMCouponsResponse>>> crmCoupons(@Url String url);
+    //中继
+    //获取token
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/com/token/new/" + NetBase.NEWSOFT_APP_ID)
+    Observable<NSBaseResponse<NSTokenNewResponse>> nsTokenNew();
 
-    @GET()
-    Observable<CRMBaseResponse<CRMOTPCoupons>> crmOTPCoupons(@Url String url);
+    //中继
+    //获取token
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/com/token/new/" + NetBase.NEWSOFT_APP_ID)
+    Call<NSBaseResponse<NSTokenNewResponse>> nsTokenNewCall();
 
-    //Coupon > Coupon核销QR Code.
+    //刷新token
+    @POST(NetBase.HOST_NEWSOFT + "/api/v1/com/token/refresh/" + NetBase.NEWSOFT_APP_ID)
+    Call<NSBaseResponse<NSTokenNewResponse>> nsTokenRefresh(@Body NSTokenRefreshRequest tokenRefreshRequest);
+
+    //记录手机设备信息、CRM会员信息
+    @POST(NetBase.HOST_NEWSOFT + "/api/v1/app/mobile_crm/info")
+    Observable<NSInfoResponse> nsInfo(@Body NSInfoRequest infoRequest);
+
+    //post error
     @POST()
-    Observable<CRMBaseResponse<CRMCouponQRCodeResponse>> crmCouponQRCode(@Url String url, @Body CRMCouponQRCodeRequest couponQRCodeRequest);
+    Observable<NSInfoResponse> nsUserErrorInfo(@Url String url, @Body NSUserErrorInfoRequest infoRequest);
 
-    //Coupon > 查询兑换通路.
-    @GET()
-    Observable<CRMBaseResponse<List<CRMRedeemStoresSearchResponse>>> crmRedeemStoresSearch(@Url String url);
+    //中继
+    //获取server管理员维护的信标设备列表
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/beacon/list")
+    Observable<BeaconListResponse> getBeaconList(@Query("pageNum") int pageNum, @Query("pageSize") int pageSize);
 
+    //中继
+    //APP侦测到设备列表后请求
+    @POST(NetBase.HOST_NEWSOFT + "/api/v1/app/device-bluetooth/interaction")
+    Observable<NSInfoResponse> bluetoothToBeancon(@Body BluetoothBeaconRequest request);
 
-    //Coupon > 扣除红利兑换Coupon. ${BaseApplication.HOST_CRM}/api/v1/basic/member/{id}/points/redeem-coupon
-    @POST()
-    Observable<CRMBaseResponse<CRMRedeemCouponResponse>> crmRedeemCoupon(@Url String url, @Body CRMRedeemCouponRequest redeemCouponRequest);
+    //中继
+    //获取Youtube视频
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/youtube/vlist")
+    Observable<YoutubeListResponse> nsYtbList();
 
+    //获取Youtube List
+    //eventType=completed：僅包含已結束的廣播。
+    //eventType=live：只包含進行中的廣播訊息。
+    //eventType=upcoming：只包含即將播送的直播內容。
+    //eventType=shorts： 短片
+    //eventType=vlog：Vlog
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/youtube/vlist")
+    Observable<YoutubeListResponse> nsYtbList(@Query("eventType") String eventType);
+
+    //jsonfile=wingstarsschedule：鹰援班表
+    //jsonfile=catering：餐饮
+    //返回json文件数据
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/jsondata/${jsonfile}")
+    Observable<Object> nsJsonData(@Path("jsonfile") String jsonfile);
+
+    //zipfile=wingstarsschedule：鹰援班表
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/bidata/${zipfile}")
+    Observable<ResponseBody> nsBiData(@Path("zipfile") String zipfile);
+
+    //取动态停车位
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/remotedata/parking")
+    Observable<NSParkingResponse> nsParking();
+
+    //常见问题
+    @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/questions")
+    Observable<FrequentlyQuestionsResponse> nsQuestions();
 
 }
 

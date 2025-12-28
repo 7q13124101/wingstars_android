@@ -2,9 +2,9 @@ package com.wingstars.calendar.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.fragment.app.viewModels
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +36,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
     private lateinit var binding: FragmentCalendarBinding
     private lateinit var schemeMap: MutableMap<String, Calendar>
 
-    // 缓存重组后的每日日历数据
+    // 缓存重组后的每日日历数据，按年份分组
     private var allDailyCalendarList = mutableListOf<DailyCalendarData>()
     // 缓存生日用户数据（独立API返回）
     private val birthdayUserList = mutableListOf<WSMemberResponse>()
@@ -62,16 +62,22 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
     // 用于防止重复加载的标志
     private var isFromDetailsReturn = false
 
+    // 当前显示的年份和月份
+    private var currentDisplayYear: Int = getCurrentYear()
+    private var currentDisplayMonth: Int = getCurrentMonth()
+
+    // 记录哪些年份的数据已经加载过，避免重复加载
+    private val loadedYears = mutableSetOf<Int>()
+
     override fun onResume() {
         super.onResume()
 
         if (MMKV.defaultMMKV().decodeBool("isLogin")) {
-            binding.llLoginState.visibility=View.VISIBLE
-            binding.llNoLogin.visibility=View.GONE
-        }
-        else{
-            binding.llLoginState.visibility=View.GONE
-            binding.llNoLogin.visibility=View.VISIBLE
+            binding.llLoginState.visibility = View.VISIBLE
+            binding.llNoLogin.visibility = View.GONE
+        } else {
+            binding.llLoginState.visibility = View.GONE
+            binding.llNoLogin.visibility = View.VISIBLE
         }
 
         // 如果不是从详情页返回，才重新加载数据
@@ -89,10 +95,13 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
     private fun loadData() {
         // 1. 独立调用生日API
         viewModel.getWsMembersBirthdayData()
-        // 2. 调用日历主数据API
-        viewModel.getWsCalendar()
+        // 2. 调用当前显示年份的日历主数据API
+        viewModel.getWsCalendar(currentDisplayYear)
         // 3. 观察生日数据
         observeBirthdayData()
+
+        // 标记当前年份已加载
+        loadedYears.add(currentDisplayYear)
     }
 
     /**
@@ -157,6 +166,22 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
         binding.rvBirthdayList.visibility = View.GONE
     }
 
+    fun getCurrentYear(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDate.now().year
+        } else {
+            java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
+        }
+    }
+
+    fun getCurrentMonth(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDate.now().monthValue
+        } else {
+            java.util.Calendar.getInstance().get(java.util.Calendar.MONTH) + 1
+        }
+    }
+
     private fun initCalendar() {
         binding.ivPrev.setOnClickListener {
             binding.calendarView.scrollToPre(true)
@@ -172,80 +197,117 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
         binding.calendarView.setWeekViewScrollable(true)
         binding.calendarView.setOnCalendarSelectListener(this)
 
-        // 月份切换仅更新标题，不刷新scheme 避免滑动被打断
+        // 月份切换监听器
         binding.calendarView.setOnMonthChangeListener { year, month ->
+            // 记录旧的显示年份
+            val oldYear = currentDisplayYear
+            // 更新当前显示的年份和月份
+            currentDisplayYear = year
+            currentDisplayMonth = month
+
+            // 更新标题
             binding.tvTitleDate.text = "${year}年${month}月"
-            resetSelectionOnViewChange() // 月份滑动切换时重置
+
+            // 检查年份是否发生变化
+            if (year != oldYear) {
+                // 年份发生变化，需要检查是否需要加载新年份的数据
+                if (!loadedYears.contains(year)) {
+                    // 新年份未加载过，加载数据
+                    viewModel.getWsCalendar(year)
+                    loadedYears.add(year)
+                } else {
+                    // 新年份已加载过，直接刷新日历标记
+                    refreshCalendarScheme(false)
+                }
+            }
+
+            // 月份滑动切换时重置选中状态
+            resetSelectionOnViewChange()
         }
+
+        // 初始化时设置标题
+        binding.tvTitleDate.text = "${currentDisplayYear}年${currentDisplayMonth}月"
     }
 
     private fun initData() {
         // 观察日历主数据
         viewModel.wSCalendarData.observe(viewLifecycleOwner) { data ->
             if (data != null && data.isNotEmpty()) {
-                allDailyCalendarList.clear()
-                val dailyCalendarList = mutableListOf<DailyCalendarData>()
-
-                data.forEach { item ->
-                    val startDateStr = item.st_dateF
-                    val endDateStr = item.ed_dateF
-
-                    if (startDateStr.isEmpty() && endDateStr.isEmpty()) {
-                        return@forEach
-                    } else if (startDateStr.isEmpty()) {
-                        val endDate = apiDateFormat.parse(endDateStr) ?: return@forEach
-                        val endCalendar = java.util.Calendar.getInstance().apply {
-                            time = endDate
-                            set(java.util.Calendar.HOUR_OF_DAY, 0)
-                            set(java.util.Calendar.MINUTE, 0)
-                            set(java.util.Calendar.SECOND, 0)
-                            set(java.util.Calendar.MILLISECOND, 0)
-                        }
-                        addDailyCalendarItem(endCalendar, item, dailyCalendarList)
-                    } else if (endDateStr.isEmpty()) {
-                        val startDate = apiDateFormat.parse(startDateStr) ?: return@forEach
-                        val startCalendar = java.util.Calendar.getInstance().apply {
-                            time = startDate
-                            set(java.util.Calendar.HOUR_OF_DAY, 0)
-                            set(java.util.Calendar.MINUTE, 0)
-                            set(java.util.Calendar.SECOND, 0)
-                            set(java.util.Calendar.MILLISECOND, 0)
-                        }
-                        addDailyCalendarItem(startCalendar, item, dailyCalendarList)
-                    } else {
-                        try {
-                            val startDate = apiDateFormat.parse(startDateStr) ?: return@forEach
-                            val endDate = apiDateFormat.parse(endDateStr) ?: return@forEach
-
-                            val startCalendar = java.util.Calendar.getInstance().apply {
-                                time = startDate
-                                set(java.util.Calendar.HOUR_OF_DAY, 0)
-                                set(java.util.Calendar.MINUTE, 0)
-                                set(java.util.Calendar.SECOND, 0)
-                                set(java.util.Calendar.MILLISECOND, 0)
-                            }
-                            val endCalendar = java.util.Calendar.getInstance().apply {
-                                time = endDate
-                                set(java.util.Calendar.HOUR_OF_DAY, 0)
-                                set(java.util.Calendar.MINUTE, 0)
-                                set(java.util.Calendar.SECOND, 0)
-                                set(java.util.Calendar.MILLISECOND, 0)
-                            }
-
-                            while (!startCalendar.after(endCalendar)) {
-                                addDailyCalendarItem(startCalendar, item, dailyCalendarList)
-                                startCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1)
-                            }
-                        } catch (e: ParseException) {
-//                            Log.e("CalendarFragment", "时间解析异常", e)
-                        }
-                    }
-                }
-                allDailyCalendarList.addAll(dailyCalendarList)
-                // 初始化时刷新日历标记（带滚动到当前月）
-                refreshCalendarScheme(true)
+                // 处理新加载的数据
+                processCalendarData(data)
+                // 刷新日历标记，但不滚动到当前月
+                refreshCalendarScheme(false)
+                // 恢复显示当前月份
+                scrollToCurrentDisplayMonth()
             }
         }
+    }
+
+    /**
+     * 处理日历数据
+     */
+    private fun processCalendarData(data: List<WSCalendarNResponse>) {
+        val newDailyCalendarList = mutableListOf<DailyCalendarData>()
+
+        data.forEach { item ->
+            val startDateStr = item.st_dateF
+            val endDateStr = item.ed_dateF
+
+            if (startDateStr.isEmpty() && endDateStr.isEmpty()) {
+                return@forEach
+            } else if (startDateStr.isEmpty()) {
+                val endDate = apiDateFormat.parse(endDateStr) ?: return@forEach
+                val endCalendar = java.util.Calendar.getInstance().apply {
+                    time = endDate
+                    set(java.util.Calendar.HOUR_OF_DAY, 0)
+                    set(java.util.Calendar.MINUTE, 0)
+                    set(java.util.Calendar.SECOND, 0)
+                    set(java.util.Calendar.MILLISECOND, 0)
+                }
+                addDailyCalendarItem(endCalendar, item, newDailyCalendarList)
+            } else if (endDateStr.isEmpty()) {
+                val startDate = apiDateFormat.parse(startDateStr) ?: return@forEach
+                val startCalendar = java.util.Calendar.getInstance().apply {
+                    time = startDate
+                    set(java.util.Calendar.HOUR_OF_DAY, 0)
+                    set(java.util.Calendar.MINUTE, 0)
+                    set(java.util.Calendar.SECOND, 0)
+                    set(java.util.Calendar.MILLISECOND, 0)
+                }
+                addDailyCalendarItem(startCalendar, item, newDailyCalendarList)
+            } else {
+                try {
+                    val startDate = apiDateFormat.parse(startDateStr) ?: return@forEach
+                    val endDate = apiDateFormat.parse(endDateStr) ?: return@forEach
+
+                    val startCalendar = java.util.Calendar.getInstance().apply {
+                        time = startDate
+                        set(java.util.Calendar.HOUR_OF_DAY, 0)
+                        set(java.util.Calendar.MINUTE, 0)
+                        set(java.util.Calendar.SECOND, 0)
+                        set(java.util.Calendar.MILLISECOND, 0)
+                    }
+                    val endCalendar = java.util.Calendar.getInstance().apply {
+                        time = endDate
+                        set(java.util.Calendar.HOUR_OF_DAY, 0)
+                        set(java.util.Calendar.MINUTE, 0)
+                        set(java.util.Calendar.SECOND, 0)
+                        set(java.util.Calendar.MILLISECOND, 0)
+                    }
+
+                    while (!startCalendar.after(endCalendar)) {
+                        addDailyCalendarItem(startCalendar, item, newDailyCalendarList)
+                        startCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1)
+                    }
+                } catch (e: ParseException) {
+                    // Log.e("CalendarFragment", "时间解析异常", e)
+                }
+            }
+        }
+
+        // 移除旧年份的数据，添加新年份的数据
+        allDailyCalendarList.removeAll { it.year == currentDisplayYear }
+        allDailyCalendarList.addAll(newDailyCalendarList)
     }
 
     private fun addDailyCalendarItem(
@@ -265,6 +327,21 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
                 originalItem = item
             )
         )
+    }
+
+    /**
+     * 滚动到当前显示的月份
+     */
+    private fun scrollToCurrentDisplayMonth() {
+        // 使用post确保在UI更新后执行滚动
+        binding.calendarView.post {
+            binding.calendarView.scrollToCalendar(
+                currentDisplayYear,
+                currentDisplayMonth,
+                binding.calendarView.curDay,
+                true
+            )
+        }
     }
 
     /**
@@ -297,14 +374,13 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
         viewModel.setIsLoading(false)
         binding.calendarView.setSchemeDate(schemeMap)
 
-        // 仅初始化时滚动到当前月，后续刷新不滚动
         if (scrollToCurrent) {
+            // 仅在初始化时滚动到当前月
             binding.calendarView.scrollToCurrent()
-            // 初始化时更新标题和行程文本
             updateTitle(binding.calendarView.curYear, binding.calendarView.curMonth)
             binding.tvDateItinerary.text =
                 "${binding.calendarView.curMonth}/${binding.calendarView.curDay} ${getString(R.string.calendar_itinerary)}"
-            // 如果有保存的选中日期，恢复选中状态
+
             if (currentSelectedCalendar != null) {
                 restoreSelection()
             } else {
@@ -314,6 +390,9 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
                     binding.calendarView.curDay
                 )
             }
+        } else {
+            // 非初始化刷新，保持当前位置
+            binding.calendarView.invalidate()
         }
     }
 
@@ -322,13 +401,11 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
      */
     private fun restoreSelection() {
         currentSelectedCalendar?.let { calendar ->
-            // 设置日历选中状态
             binding.calendarView.isSelected = true
             binding.tvDateItinerary.text =
                 "${calendar.month}/${calendar.day} ${getString(R.string.calendar_itinerary)}"
             binding.calendarView.invalidate()
 
-            // 筛选数据
             filterDataByDate(calendar.year, calendar.month, calendar.day)
             filterBirthdayUsersByDate(calendar.month, calendar.day)
         }
@@ -353,7 +430,6 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
             }
 
             if (birthdayMonthDaySet.contains("$month-$day")) {
-                // 检查是否已经添加了生日图标
                 val hasBirthdayIcon = schemes?.any { it.scheme == "icon_birthday" } ?: false
                 if (!hasBirthdayIcon) {
                     addBirthdayScheme(requireContext())
@@ -366,9 +442,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
      * 为所有生日日期添加纯生日图标标记
      */
     private fun addBirthdaySchemeToAllBirthdayDates() {
-        // 获取当前日历显示的年份（支持多年份）
-        val currentYear = binding.calendarView.curYear
-        // 额外处理前后各1年的生日
+        val currentYear = currentDisplayYear
         val years = listOf(currentYear - 1, currentYear, currentYear + 1)
 
         years.forEach { year ->
@@ -376,22 +450,18 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
                 val (month, day) = monthDay.split("-").map { it.toInt() }
                 val calendarKey = "$year-$month-$day"
 
-                // 如果该日期已有标记，检查并补充生日图标
                 if (schemeMap.containsKey(calendarKey)) {
                     val existingCalendar = schemeMap[calendarKey]
                     if (existingCalendar != null) {
-                        // 检查是否已经添加了生日图标
                         val hasBirthdayIcon = existingCalendar.schemes?.any {
                             it.scheme == "icon_birthday"
                         } ?: false
 
-                        // 如果没有生日图标，添加
                         if (!hasBirthdayIcon) {
                             existingCalendar.addBirthdayScheme(requireContext())
                         }
                     }
                 } else {
-                    // 为无活动的生日日期创建Calendar并添加生日图标
                     val birthdayCalendar = Calendar().apply {
                         this.year = year
                         this.month = month
@@ -454,18 +524,15 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
             if (selectedList != null) {
                 selectedCalendarActivities.addAll(selectedList)
             }
-            // 更新活动列表UI
             val adapter = binding.rvCardClassificationList.adapter as CalendarAdapter
             adapter.updateData(selectedCalendarActivities)
 
-            // 控制活动列表显示/隐藏
             binding.rvCardClassificationList.visibility = if (selectedCalendarActivities.isNotEmpty()) {
                 View.VISIBLE
             } else {
                 View.GONE
             }
 
-            // 检查空视图显示状态
             checkEmptyViewVisibility()
         }
     }
@@ -477,7 +544,6 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
             mutableListOf(),
             object : CalendarAdapter.onItemClickListener {
                 override fun onItemClick(data: WSCalendarNResponse, position: Int) {
-                    // 设置标志，表示即将跳转到详情页
                     isFromDetailsReturn = true
 
                     val intent = Intent(requireActivity(), EventDetailsActivity::class.java)
@@ -498,18 +564,14 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
         binding.calendarView.setSchemeDate(schemeMap)
         binding.calendarView.invalidate()
 
-        // 清空选中数据
         selectedCalendarActivities.clear()
         selectedBirthdayUsers.clear()
 
-        // 隐藏列表
         binding.rvBirthdayList.visibility = View.GONE
         binding.rvCardClassificationList.visibility = View.GONE
 
-        // 显示空视图
         binding.llEvemtEmpty.visibility = View.VISIBLE
 
-        // 清除保存的选中日期
         currentSelectedCalendar = null
     }
 
@@ -533,7 +595,6 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
 
     override fun onPause() {
         super.onPause()
-        // 只在离开fragment时才重置选中状态
         if (!isFromDetailsReturn) {
             resetSelectionOnViewChange()
         }
@@ -541,7 +602,6 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // 只在销毁视图时重置，跳转详情页不重置
         resetSelectionOnViewChange()
         binding.calendarView.setOnCalendarSelectListener(null)
         binding.calendarView.setOnMonthChangeListener(null)
@@ -554,7 +614,6 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
      */
     override fun onCalendarSelect(calendar: Calendar?, isClick: Boolean) {
         if (isClick && calendar != null) {
-            // 保存当前选中的日期
             currentSelectedCalendar = calendar
 
             binding.calendarView.isSelected = true
@@ -562,10 +621,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
                 "${calendar.month}/${calendar.day} ${getString(R.string.calendar_itinerary)}"
             binding.calendarView.invalidate()
 
-            // 筛选选中日期的日历数据
             filterDataByDate(calendar.year, calendar.month, calendar.day)
-
-            // 筛选选中日期的生日用户
             filterBirthdayUsersByDate(calendar.month, calendar.day)
         }
     }
@@ -575,25 +631,21 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
      */
     private fun filterBirthdayUsersByDate(month: Int, day: Int) {
         selectedBirthdayUsers.clear()
-        // 匹配月日相同的生日用户
         selectedBirthdayUsers.addAll(
             birthdayUserList.filter {
                 CalendarDateUtils.isSameMonthAndDay(it.acf.birthdate, month, day)
             }
         )
-        // 更新生日用户列表
         try {
             birthdayUserAdapter.setList(selectedBirthdayUsers)
         } catch (e: Exception) {
             birthdayUserAdapter.updateData(selectedBirthdayUsers)
         }
-        // 显示/隐藏生日列表
         binding.rvBirthdayList.visibility = if (selectedBirthdayUsers.isNotEmpty()) {
             View.VISIBLE
         } else {
             View.GONE
         }
-        // 检查空视图
         checkEmptyViewVisibility()
     }
 
@@ -613,11 +665,9 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
             .sortedBy { categoryPriority[it.categoryF] ?: 6 }
             .toMutableList()
 
-        // 更新选中的活动列表
         selectedCalendarActivities.clear()
         selectedCalendarActivities.addAll(sortedList)
 
-        // 通知ViewModel更新数据
         viewModel.selectedData.postValue(sortedList)
     }
 }

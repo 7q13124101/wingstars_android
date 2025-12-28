@@ -9,6 +9,8 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.google.gson.Gson
+import com.wingstars.base.net.beans.WSFashionDetailResponse
 import com.wingstars.base.net.beans.WSFashionDetailResponse.Acf.Recommend
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
@@ -78,11 +80,33 @@ class SmallCommodityAdapter     // -------------------------------------------
 
         fun binding(position: Int) {
             val recommend = dataList!![position]
-            Glide.with(context).load(recommend.product_image_url_thumbnailF)  //R.mipmap.ic_demo3
+            var product_image_url_fullF = ""
+            val productImage = recommend.product_image
+            if (productImage is String) {
+                product_image_url_fullF = "$productImage"
+            } else if (productImage is Boolean) {
+                product_image_url_fullF = ""
+            } else {
+                try {
+                    val fromJson = Gson().fromJson(
+                        Gson().toJson(productImage),
+                        WSFashionDetailResponse.ProductImage::class.java
+                    )
+                    val sizes = fromJson.sizes
+                    if (sizes != null) {
+                        product_image_url_fullF = "${sizes.`1536x1536`}"
+                    }
+
+                } catch (e: Exception) {
+
+                }
+            }
+            Glide.with(context).load(product_image_url_fullF)  //R.mipmap.ic_demo3
                 .transform(CircleCrop())
                 .into(binding.image)
-            binding.title.text  = recommend.product_titleF
-            binding.item.visibility = if (recommend.isTitleAndImageThumbnailEmpty) View.GONE else View.VISIBLE
+            binding.title.text = recommend.product_titleF
+            binding.item.visibility =
+                if (recommend.isTitleAndImageThumbnailEmpty) View.GONE else View.VISIBLE
         }
 
 

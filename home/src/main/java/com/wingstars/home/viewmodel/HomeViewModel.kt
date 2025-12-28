@@ -190,7 +190,7 @@ class HomeViewModel : ViewModel() {
     }
     private fun wsPhotos(data: MutableList<WSMemberRankBean>) {
         API.shared?.api?.let {
-            val observer = it.wsPhotos()
+            val observer = it.wsPhotos(100,1)
             observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
                 AndroidSchedulers.mainThread()
             )?.subscribe(

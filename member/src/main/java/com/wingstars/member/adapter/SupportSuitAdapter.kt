@@ -78,7 +78,6 @@ class SupportSuitAdapter     // -------------------------------------------
             binding.image.setPadding(DPUtils.dpToPx(1f,context).toInt())
             Glide.with(context)
                 .load(data.urlF) //R.mipmap.ic_demo1
-                .transform(TopRoundedCornersTransformation(DPUtils.dpToPx(20f, context))) // 核心：应用自定义变换
                 .into(binding.image)
             var imageType =  if (data.type==1){ R.mipmap.ic_member_jersey} else {R.mipmap.ic_member_activity}
             binding.imageType.setImageResource(imageType)

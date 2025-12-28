@@ -15,6 +15,7 @@ import com.tencent.mmkv.MMKV
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.base.net.NetBase
 import com.wingstars.base.net.beans.CRMSignInRequest
+import com.wingstars.base.utils.MMKVManagement
 import com.wingstars.login.databinding.ActivityLoginBinding
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -59,9 +60,9 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         }
 
         // --- MMKV: Ghi nhớ tài khoản ---
-        if (MMKV.defaultMMKV().decodeBool("isRememberAccount")) {
-            val account = MMKV.defaultMMKV().decodeString("member_account")
-            val psd = MMKV.defaultMMKV().decodeString("member_psd")
+        if (MMKVManagement.getIsRememberAccount()) {
+            val account = MMKVManagement.getMemberPhone()
+            val psd = MMKVManagement.getMemberPassword()
             if (!account.isNullOrEmpty() && !psd.isNullOrEmpty()) {
                 binding.edtPhone.setText(account)
                 binding.edtPsd.setText(psd)
@@ -85,6 +86,8 @@ class LoginActivity : BaseActivity(), LoginNavigator {
 
         setupLiveValidation()
 
+        checkLoginButtonState()
+
         binding.edtPhone.setOnFocusChangeListener { _, hasFocus ->
             binding.rlPhone.isActivated = hasFocus
         }
@@ -100,29 +103,9 @@ class LoginActivity : BaseActivity(), LoginNavigator {
             binding.edtPsd.text?.let { binding.edtPsd.setSelection(it.length) }
         }
 
-        // --- Nút Login ---
         binding.btnLogin.setOnClickListener {
             val phoneStr = binding.edtPhone.text.toString().trim()
             val psdStr = binding.edtPsd.text.toString().trim()
-
-            if (phoneStr.isEmpty()) {
-                showPhoneError(getString(R.string.hint_phone))
-                return@setOnClickListener
-            }
-            if (!isTaiwanPhone(phoneStr)) {
-                showDialog(getString(R.string.account), getString(R.string.error_phone_format))
-                return@setOnClickListener
-            }
-            if (psdStr.isEmpty()) {
-                showPsdError(getString(R.string.error_psd_empty))
-                return@setOnClickListener
-            }
-            // Check mật khẩu mạnh (từ code bạn của bạn)
-            if (!isPasswordStrong(psdStr)) {
-                showPsdError(getString(R.string.note_register_psd))
-                return@setOnClickListener
-            }
-
             viewModel.userCheck(CRMSignInRequest(phoneStr, psdStr), binding.cbPsd.isChecked)
         }
 
@@ -148,27 +131,45 @@ class LoginActivity : BaseActivity(), LoginNavigator {
 
     // --- Validation Logic ---
     private fun setupLiveValidation() {
-        binding.edtPhone.addTextChangedListener(object : SimpleTW() {
+        val watcher = object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val phone = s?.toString()?.trim().orEmpty()
-                when {
-                    phone.isEmpty() -> showPhoneError(getString(R.string.hint_phone))
-                    !isTaiwanPhone(phone) -> showPhoneError(getString(R.string.error_phone_format))
-                    else -> showPhoneNormal()
-                }
+                validateInputsForUI()
+                checkLoginButtonState()
             }
-        })
+        }
 
-        binding.edtPsd.addTextChangedListener(object : SimpleTW() {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val pwd = s?.toString().orEmpty()
-                when {
-                    pwd.isEmpty() -> showPsdError(getString(R.string.error_psd_empty))
-                    !isPasswordStrong(pwd) -> showPsdError(getString(R.string.note_register_psd))
-                    else -> showPsdNormal()
-                }
-            }
-        })
+        binding.edtPhone.addTextChangedListener(watcher)
+        binding.edtPsd.addTextChangedListener(watcher)
+    }
+
+    private fun validateInputsForUI() {
+        val phone = binding.edtPhone.text.toString().trim()
+        val pwd = binding.edtPsd.text.toString().trim()
+
+        // Phone UI logic
+        if (phone.isNotEmpty() && !isTaiwanPhone(phone)) {
+            showPhoneError(getString(R.string.error_phone_format))
+        } else {
+            showPhoneNormal()
+        }
+
+        // Password UI logic
+        if (pwd.isNotEmpty() && !isPasswordStrong(pwd)) {
+            showPsdError(getString(R.string.note_register_psd))
+        } else {
+            showPsdNormal()
+        }
+    }
+
+    private fun checkLoginButtonState() {
+        val phone = binding.edtPhone.text.toString().trim()
+        val pwd = binding.edtPsd.text.toString().trim()
+
+        val isPhoneValid = phone.isNotEmpty() && isTaiwanPhone(phone)
+        val isPwdValid = pwd.isNotEmpty() && isPasswordStrong(pwd)
+
+        binding.btnLogin.isEnabled = isPhoneValid && isPwdValid
+//        binding.btnLogin.alpha = if (binding.btnLogin.isEnabled) 1.0f else 0.5f
     }
 
     private fun showPhoneError(msg: String) {
@@ -216,7 +217,7 @@ class LoginActivity : BaseActivity(), LoginNavigator {
     }
 
     private fun setUserName(userName: String){
-        MMKV.defaultMMKV().encode("user_name", userName)
+        MMKVManagement.setMemberName(userName)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -227,9 +228,17 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         NetBase.refreshEvtTasks(true)
         val phoneStr = binding.edtPhone.text.toString().trim()
         val psdStr = binding.edtPsd.text.toString().trim()
+        val isRemember = binding.cbPsd.isChecked
 
-        setUserName(phoneStr)
+//        setUserName(phoneStr)
+        MMKVManagement.setIsRememberAccount(isRemember)
 
+        if (isRemember) {
+            MMKVManagement.setMemberPhone(phoneStr)
+            MMKVManagement.setMemberPassword(psdStr)
+        } else {
+            MMKVManagement.setMemberPassword(psdStr)
+        }
         val sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         sharedPref.edit().apply {
             putBoolean("is_logged_in", true)
@@ -253,7 +262,10 @@ class LoginActivity : BaseActivity(), LoginNavigator {
     }
 
     override fun showNotRegisteredDialog() {
-        showCustomWarningDialog()
+        showCustomDialog(
+            message = getString(R.string.error_phone_login),
+            isRegisterAction = true
+        )
     }
 
     private fun showCustomWarningDialog() {
@@ -268,6 +280,34 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         btnConfirm.setOnClickListener {
             dialog.dismiss()
             startActivity(Intent(this, com.wingstars.register.RegisterActivity::class.java))
+        }
+        dialog.show()
+    }
+    override fun showLoginFailDialog(message: String) {
+        showCustomDialog(
+            message = message,
+            isRegisterAction = false
+        )
+    }
+
+    private fun showCustomDialog(message: String, isRegisterAction: Boolean) {
+        if (isFinishing) return
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_warning_custom, null)
+        builder.setView(dialogView)
+        builder.setCancelable(false)
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val tvContent = dialogView.findViewById<android.widget.TextView>(R.id.tvMessage)
+        tvContent?.text = message
+
+        val btnConfirm = dialogView.findViewById<android.view.View>(R.id.btnConfirm)
+        btnConfirm.setOnClickListener {
+            dialog.dismiss()
+            if (isRegisterAction) {
+                startActivity(Intent(this, com.wingstars.register.RegisterActivity::class.java))
+            }
         }
         dialog.show()
     }
