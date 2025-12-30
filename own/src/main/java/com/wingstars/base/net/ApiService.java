@@ -95,8 +95,8 @@ public interface ApiService {
     Call<CRMBaseResponse<CRMVerifyResponse>> crmVerifyCall(@Url String url, @Body CRMVerifyRequest verifyRequest);
     @POST()
     Call<CRMBaseResponse<CRMSignInResponse>> crmSignInCall(@Url String url, @Body CRMSignInRequest signInRequest);
-    @GET()
-    Observable<CRMBaseResponse<Object>> crmSignInCheck(@Url String url, @Query("phone") String phone);
+    @GET(NetBase.HOST_CRM+"/api/v1/client/sign-in/check")
+    Observable<CRMBaseResponse<Object>> crmSignInCheck(@Query("phone") String phone);
     @POST()
     Observable<CRMBaseResponse<CRMSignInResponse>> crmSignIn(@Url String url, @Body CRMSignInRequest signInRequest);
 

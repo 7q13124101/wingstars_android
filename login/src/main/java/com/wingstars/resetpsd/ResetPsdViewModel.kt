@@ -35,27 +35,27 @@ class ResetPsdViewModel : ViewModel() {
 
         API?.shared?.api?.let { api ->
             // Bước 1: Kiểm tra đăng ký (crmSignUpCheck)
-            val observer = api.crmSignUpCheck(phone)
+            val observer = api.crmSignInCheck(phone)
             observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
                 AndroidSchedulers.mainThread()
             )?.subscribe(
                 { next ->
                     // Log kết quả check
-                    android.util.Log.e("API_DEBUG", "signUpCheck Success: ${Gson().toJson(next)}")
+                    android.util.Log.e("API_DEBUG", "signIpCheck Success: ${Gson().toJson(next)}")
 
                     if (next.success) {
                         // Bước 2: Nếu Check thành công -> Gọi API gửi OTP
                         sendOtpInternal(phone)
                     } else {
                         isLoading.postValue(false)
-                        android.util.Log.e("API_DEBUG", "signUpCheck Failed: ${next.message}")
+                        android.util.Log.e("API_DEBUG", "signIpCheck Failed: ${next.message}")
 
                         navigator?.showToast(next.message ?: "尚未註冊")
                     }
                 },
                 { error ->
                     isLoading.postValue(false)
-                    handleError(error, "signUpCheck")
+                    handleError(error, "signInCheck")
                 }
             )
         }

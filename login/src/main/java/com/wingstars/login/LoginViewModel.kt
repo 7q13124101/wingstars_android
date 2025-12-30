@@ -61,7 +61,6 @@ class LoginViewModel : ViewModel(){
             // Nếu Interface đã có @POST("...") thì KHÔNG cần truyền URL ở đây.
             // Giả sử Interface của bạn CHẤP NHẬN @Url, code dưới giữ nguyên:
             val observer = api.crmSignInCheck(
-                "${NetBase.HOST_CRM}/api/v1/client/sign-in/check",
                 request.account
             )
 
