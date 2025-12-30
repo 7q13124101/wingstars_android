@@ -196,7 +196,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         Log.e("saveFile", "saveFile 开始保存")
         try {
            // val frameBitmap = BitmapFactory.decodeResource(resources, int)  //R.drawable.fans1
-
+            var width = ScreenUtils.getWidth(this@FanInteractionActivity)
             Log.e(
                 "originalBitmap",
                 "frameBitmap.width = ${frameBitmap.width},frameBitmap.height=${frameBitmap.height}"
@@ -213,7 +213,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
                 50,
                 framePadding,
                 frameBitmap.width - 50,
-                frameBitmap.height - framePadding
+                frameBitmap.height - 50
             )
 
 
@@ -237,7 +237,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
             )*/
             val fusionFile = File(
                 tempDir,
-                "${DateUtils.getTimeStr(System.currentTimeMillis())}.jpg"
+                "${DateUtils.getTimeStr(System.currentTimeMillis())}.png"
             )
             var out = FileOutputStream(fusionFile);
             // 压缩Bitmap到PNG格式并写入文件

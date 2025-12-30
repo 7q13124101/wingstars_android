@@ -54,7 +54,7 @@ data class WSPhotoFrameResponse(
         }
     }
     data class PhotoFrameBean(
-        val image1:ImageBean
+        val image1: Any
     )
     data class ImageBean(
         val sizes:SizeBean
