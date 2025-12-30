@@ -14,16 +14,11 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.base.net.beans.CRMSignUpRequest
-import com.wingstars.base.utils.DPUtils
-import com.wingstars.base.utils.ScreenUtils
 import com.wingstars.login.R
 import com.wingstars.login.databinding.ActivityRegistersBinding
 import com.wingstars.register.registrationterms.RegistrationTermsActivity

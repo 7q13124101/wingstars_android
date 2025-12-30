@@ -9,6 +9,7 @@ import com.wingstars.base.net.beans.CRMCouponQRCodeResponse;
 import com.wingstars.base.net.beans.CRMCouponsAvailableResponse;
 import com.wingstars.base.net.beans.CRMCouponsResponse;
 import com.wingstars.base.net.beans.CRMDeleteRespone;
+import com.wingstars.base.net.beans.CRMForgotPasswordRequest;
 import com.wingstars.base.net.beans.CRMGenQRCodeRequest;
 import com.wingstars.base.net.beans.CRMGenQRCodeResponse;
 import com.wingstars.base.net.beans.CRMJournalHistoryResponse;
@@ -116,6 +117,9 @@ public interface ApiService {
     Observable<CRMBaseResponse<CRMSendOtpResponse>> crmSendOtp(@Url String url, @Body CRMSendOtpRequest genSendOtp);
     @PUT()
     Observable<CRMBaseResponse<CRMResetPasswordResponse>> crmResetPassword(@Url String url, @Body CRMResetPasswordRequest genResetPassword);
+
+    @POST(NetBase.HOST_CRM+"/api/v1/client/forgot-password")
+    Observable<CRMBaseResponse<CRMResetPasswordResponse>> crmForgotPassword(@Body CRMForgotPasswordRequest genResetPassword);
     @DELETE()
     Observable<CRMBaseResponse<CRMDeleteRespone>> crmDeleteAccount(@Url String url, @Body CRMResetPasswordRequest genResetPassword);
 
@@ -127,14 +131,13 @@ public interface ApiService {
     Observable<List<EvtMemberTaskResponse>> evtMemberTasks(@Url String url, @Query("encryptedIdentity") String encryptedIdentity);
 
     //首頁 > Youtube
-// Trong Interface API của bạn
     @GET(NetBase.HOST_GOOGLE + "/youtube/v3/search")
     Observable<YoutubeSearchResponse> getYoutubeVideos(
-            @Query("part") String part,       // Truyền "snippet"
+            @Query("part") String part,
             @Query("channelId") String channelId,
             @Query("maxResults") int maxResults,
-            @Query("order") String order,     // Truyền "date"
-            @Query("type") String type,       // Truyền "video"
+            @Query("order") String order,
+            @Query("type") String type,
             @Query("key") String apiKey
     );
 

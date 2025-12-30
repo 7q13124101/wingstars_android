@@ -36,6 +36,8 @@
     <string name="error_psd_not_match">兩次輸入的密碼不相符，請重新確認</string>
 
 
+
+
     <string name="error_psd_empty">請輸入密碼</string>
     <string name="note_phone_code">輸入您的手機號碼，驗證碼將會傳送到您的手機。</string>
     <string name="send_phone_code">發送驗證碼</string>
