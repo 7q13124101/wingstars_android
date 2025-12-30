@@ -50,7 +50,7 @@ class StoreLocationActivity : AppCompatActivity() {
     private fun updateDate() {
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH) + 1
-        binding.txtDate.text = String.format("%02d/%d", month, year)
+        binding.txtDate.text = String.format("%02d/%d", year, month)
         if (month == 9) {
             binding.imgStore.visibility = View.VISIBLE
             binding.layoutEmpty.visibility = View.GONE

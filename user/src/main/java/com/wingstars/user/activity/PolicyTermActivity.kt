@@ -68,7 +68,7 @@ class PolicyTermActivity : AppCompatActivity() {
                                 tvPolicyTitle?.setTextColor(getColor(R.color.color_101828))
                             }
                             val safeContent = dataDTO.content ?: ""
-                            tvPolicyContent?.text = formatNumberedText(safeContent)
+                            tvPolicyContent?.text = formatPolicyText(safeContent)
                             tvPolicyContent?.setTextColor(getColor(R.color.color_4A5565))
                             binding.llPolicyContent.addView(inflate)
                         }
@@ -110,7 +110,7 @@ class PolicyTermActivity : AppCompatActivity() {
                                 tvPolicyTitle?.text = dataDTO.title
                             }
                             val safeContent = dataDTO.content ?: ""
-                            tvPolicyContent?.text = formatNumberedText(safeContent)
+                            tvPolicyContent?.text = formatPolicyText(safeContent)
                             tvPolicyContent?.setTextColor(getColor(R.color.color_101828))
                             binding.llPolicyContent.addView(inflate)
                         }
@@ -122,18 +122,32 @@ class PolicyTermActivity : AppCompatActivity() {
     fun dp2px(dp: Float): Float {
         return resources.displayMetrics.density * dp + 0.5f
     }
-    private fun formatNumberedText(raw: String?): CharSequence {
+    private fun formatPolicyText(raw: String?): CharSequence {
         if (raw.isNullOrEmpty()) return ""
-
         val ssb = SpannableStringBuilder(raw)
-        val regex = Regex("(?m)^\\d+\\.\\s")
-        regex.findAll(raw).forEach { m ->
-            ssb.setSpan(
-                LeadingMarginSpan.Standard(0, dp(24)),
-                m.range.first,
-                raw.indexOf('\n', m.range.first).takeIf { it >= 0 } ?: raw.length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+        val lines = raw.split("\n")
+        var currentPos = 0
+        for (line in lines) {
+            val lineEnd = currentPos + line.length
+            val numberMatch = Regex("^\\s*\\d+\\.\\s").find(line)
+            val bulletMatch = Regex("^\\s*•\\s*").find(line)
+            if (numberMatch != null) {
+                ssb.setSpan(
+                    LeadingMarginSpan.Standard(0, dp(24)),
+                    currentPos,
+                    lineEnd,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            } else if (bulletMatch != null) {
+                ssb.setSpan(
+                    LeadingMarginSpan.Standard(0, dp(14)),
+                    currentPos,
+                    lineEnd,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            currentPos = lineEnd + 1
+            if (currentPos > ssb.length) break
         }
         return ssb
     }

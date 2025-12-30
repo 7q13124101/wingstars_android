@@ -148,15 +148,11 @@
 
                         <ImageView
                             android:id="@+id/qr"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_66"
+                            android:layout_width="@dimen/dp_255"
+                            android:layout_height="@dimen/dp_255"
+                            app:layout_constraintTop_toBottomOf="@id/tv_member_code"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:layout_marginStart="78dp"
-                            android:layout_marginEnd="78dp"
-                            android:contentDescription="QR Code"/>
+                            app:layout_constraintEnd_toEndOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -221,8 +217,8 @@
 
                         <ImageView
                             android:id="@+id/barcode"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
+                            android:layout_width="322dp"
+                            android:layout_height="77dp"
                             android:layout_marginStart="@dimen/dp_20"
                             android:layout_marginTop="@dimen/dp_16"
                             android:layout_marginEnd="@dimen/dp_20"
@@ -815,7 +811,7 @@
                         android:layout_height="@dimen/dp_54"
                         android:layout_marginLeft="@dimen/dp_20"
                         android:layout_marginRight="@dimen/dp_20"
-                        android:layout_marginTop="@dimen/dp_20"
+                        android:layout_marginTop="@dimen/dp_12"
                         android:background="@drawable/bg_user_form">
 
                         <ImageView
