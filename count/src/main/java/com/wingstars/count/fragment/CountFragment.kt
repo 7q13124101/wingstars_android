@@ -321,6 +321,9 @@ class CountFragment : BaseFragment() {
     }
 
     private fun updateListDisplay() {
+        if (!MMKV.defaultMMKV().decodeBool("isLogin")) {
+            return
+        }
         val filteredList = fullDataList.filter { it.eventType == eventType }
         if (filteredList.isEmpty()) {
             binding.llEmpty.visibility = View.VISIBLE
@@ -349,9 +352,12 @@ class CountFragment : BaseFragment() {
         if (isLogin) {
             binding.clCheckLogin.visibility = View.GONE
             binding.rlCount.visibility = View.VISIBLE
+            binding.girlsList.visibility = View.VISIBLE
         } else {
             binding.clCheckLogin.visibility = View.VISIBLE
             binding.rlCount.visibility = View.GONE
+            binding.girlsList.visibility = View.GONE
+            binding.llEmpty.visibility = View.VISIBLE
         }
     }
 

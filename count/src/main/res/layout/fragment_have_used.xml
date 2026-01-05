@@ -11,12 +11,10 @@
             android:id="@+id/srl_have_used"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/pt_50"
             android:layout_weight="1"
             android:background="@color/color_F5F5F5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
             tools:ignore="MissingConstraints">
 
             <com.scwang.smart.refresh.header.ClassicsHeader
@@ -39,8 +37,9 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/pt_10"
                     android:layout_marginEnd="@dimen/pt_10"
+                    android:layout_marginBottom="@dimen/pt_15"
                     android:fillViewport="true"
-                    app:layout_constraintBottom_toTopOf="@+id/tv_have_used_remind"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
