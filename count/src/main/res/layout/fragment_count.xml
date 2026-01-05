@@ -161,89 +161,89 @@
              app:cardCornerRadius="16dp"
              app:cardElevation="@dimen/dp_6">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="16dp">-->
 
-               <LinearLayout
-                   android:id="@+id/layoutTitleAndButton"
-                   android:layout_width="0dp"
-                   android:layout_height="wrap_content"
-                   android:layout_marginBottom="@dimen/pt_7"
-                   android:gravity="center_vertical"
-                   android:orientation="horizontal"
-                   app:layout_constraintBottom_toTopOf="@id/llDaysContainer"
-                   app:layout_constraintEnd_toEndOf="parent"
-                   app:layout_constraintStart_toStartOf="parent"
-                   app:layout_constraintTop_toTopOf="parent">
+<!--               <LinearLayout-->
+<!--                   android:id="@+id/layoutTitleAndButton"-->
+<!--                   android:layout_width="0dp"-->
+<!--                   android:layout_height="wrap_content"-->
+<!--                   android:layout_marginBottom="@dimen/pt_7"-->
+<!--                   android:gravity="center_vertical"-->
+<!--                   android:orientation="horizontal"-->
+<!--                   app:layout_constraintBottom_toTopOf="@id/llDaysContainer"-->
+<!--                   app:layout_constraintEnd_toEndOf="parent"-->
+<!--                   app:layout_constraintStart_toStartOf="parent"-->
+<!--                   app:layout_constraintTop_toTopOf="parent">-->
 
-                  <TextView
-                      android:id="@+id/tvTitleCal"
-                      android:layout_width="0dp"
-                      android:layout_height="wrap_content"
-                      android:layout_weight="1"
-                      android:text="@string/count_title_cal"
-                      android:textColor="@color/black"
-                      android:textSize="@dimen/sp_16"
-                      android:textStyle="bold" />
+<!--                  <TextView-->
+<!--                      android:id="@+id/tvTitleCal"-->
+<!--                      android:layout_width="0dp"-->
+<!--                      android:layout_height="wrap_content"-->
+<!--                      android:layout_weight="1"-->
+<!--                      android:text="@string/count_title_cal"-->
+<!--                      android:textColor="@color/black"-->
+<!--                      android:textSize="@dimen/sp_16"-->
+<!--                      android:textStyle="bold" />-->
 
-                  <androidx.appcompat.widget.AppCompatButton
-                      android:id="@+id/btnCheckIn"
-                      android:layout_width="@dimen/pt_70"
-                      android:layout_height="wrap_content"
-                      android:layout_marginStart="12dp"
-                      android:background="@drawable/bg_checkin_button"
-                      android:gravity="center"
-                      android:text="@string/count_btn_Check_In"
-                      android:textColor="@color/white"
-                      android:textSize="@dimen/sp_16"
-                      android:textStyle="bold" />
-               </LinearLayout>
+<!--                  <androidx.appcompat.widget.AppCompatButton-->
+<!--                      android:id="@+id/btnCheckIn"-->
+<!--                      android:layout_width="@dimen/pt_70"-->
+<!--                      android:layout_height="wrap_content"-->
+<!--                      android:layout_marginStart="12dp"-->
+<!--                      android:background="@drawable/bg_checkin_button"-->
+<!--                      android:gravity="center"-->
+<!--                      android:text="@string/count_btn_Check_In"-->
+<!--                      android:textColor="@color/white"-->
+<!--                      android:textSize="@dimen/sp_16"-->
+<!--                      android:textStyle="bold" />-->
+<!--               </LinearLayout>-->
 
-               <LinearLayout
-                   android:id="@+id/llDaysContainer"
-                   android:layout_width="0dp"
-                   android:layout_height="wrap_content"
-                   android:layout_marginTop="16dp"
-                   android:baselineAligned="false"
-                   android:orientation="horizontal"
-                   android:weightSum="7"
-                   app:layout_constraintBottom_toBottomOf="parent"
-                   app:layout_constraintEnd_toEndOf="parent"
-                   app:layout_constraintStart_toStartOf="parent">
+<!--               <LinearLayout-->
+<!--                   android:id="@+id/llDaysContainer"-->
+<!--                   android:layout_width="0dp"-->
+<!--                   android:layout_height="wrap_content"-->
+<!--                   android:layout_marginTop="16dp"-->
+<!--                   android:baselineAligned="false"-->
+<!--                   android:orientation="horizontal"-->
+<!--                   android:weightSum="7"-->
+<!--                   app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                   app:layout_constraintEnd_toEndOf="parent"-->
+<!--                   app:layout_constraintStart_toStartOf="parent">-->
 
-                  <include
-                      android:id="@+id/day1"
-                      layout="@layout/item_checkin_day" />
+<!--                  <include-->
+<!--                      android:id="@+id/day1"-->
+<!--                      layout="@layout/item_checkin_day" />-->
 
-                  <include
-                      android:id="@+id/day2"
-                      layout="@layout/item_checkin_day" />
+<!--                  <include-->
+<!--                      android:id="@+id/day2"-->
+<!--                      layout="@layout/item_checkin_day" />-->
 
-                  <include
-                      android:id="@+id/day3"
-                      layout="@layout/item_checkin_day" />
+<!--                  <include-->
+<!--                      android:id="@+id/day3"-->
+<!--                      layout="@layout/item_checkin_day" />-->
 
-                  <include
-                      android:id="@+id/day4"
-                      layout="@layout/item_checkin_day" />
+<!--                  <include-->
+<!--                      android:id="@+id/day4"-->
+<!--                      layout="@layout/item_checkin_day" />-->
 
-                  <include
-                      android:id="@+id/day5"
-                      layout="@layout/item_checkin_day" />
+<!--                  <include-->
+<!--                      android:id="@+id/day5"-->
+<!--                      layout="@layout/item_checkin_day" />-->
 
-                  <include
-                      android:id="@+id/day6"
-                      layout="@layout/item_checkin_day" />
+<!--                  <include-->
+<!--                      android:id="@+id/day6"-->
+<!--                      layout="@layout/item_checkin_day" />-->
 
-                  <include
-                      android:id="@+id/day7"
-                      layout="@layout/item_checkin_day" />
+<!--                  <include-->
+<!--                      android:id="@+id/day7"-->
+<!--                      layout="@layout/item_checkin_day" />-->
 
-               </LinearLayout>
+<!--               </LinearLayout>-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
          </androidx.cardview.widget.CardView>
 

@@ -37,6 +37,7 @@ import com.youth.banner.adapter.BannerImageAdapter
 import com.youth.banner.holder.BannerImageHolder
 import com.youth.banner.listener.OnPageChangeListener
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class ExchangeDetailsActivity : AppCompatActivity() {
@@ -53,6 +54,7 @@ class ExchangeDetailsActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var checkStatusRunnable: Runnable? = null
     private var currentBannerImages: List<String> = emptyList()
+    private var memberCards: ArrayList<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,7 +103,6 @@ class ExchangeDetailsActivity : AppCompatActivity() {
             fullDataList = listExtra
             currentIndex = intent.getIntExtra("EXTRA_CURRENT_INDEX", 0)
         } else {
-            // Fallback: Tạo list giả nếu không có
             if (::data.isInitialized) {
                 fullDataList.add(data)
                 currentIndex = 0
@@ -110,9 +111,122 @@ class ExchangeDetailsActivity : AppCompatActivity() {
 
         status = intent.getStringExtra("status")
         couponCode = intent.getStringExtra("couponCode")
+        val countStr = intent.getStringExtra("count") ?: "0"
+        memberCards = intent.getStringArrayListExtra("memberCards")
 
         displayCouponDetails(data)
-        updateButtonState()
+        val currentPoints = countStr.toIntOrNull() ?: 0
+        val claimedCount = data.claimedCount?.toInt() ?: 0
+        setButtonBackground(data.pointCost ?: 0, currentPoints, claimedCount, data.maxPerMember)
+    }
+
+
+    private fun setButtonBackground(pointCost: Int, point: Int, claimedCount: Int, maxPerMember: Int) {
+        if (status == ActivityStatusEnum.UNUSED_REDEMPTION.name) {
+            binding.button.visibility = View.VISIBLE
+            binding.btnExchange.text = "開啟條碼"
+            enableButton()
+            return
+        }
+
+        if (point < pointCost) {
+            binding.button.visibility = View.GONE
+            return
+        }
+        binding.btnExchange.visibility = View.VISIBLE
+
+        val redeemStartAt = data.redeemStartAt
+        if (redeemStartAt != null) {
+            val startDate = parseDate(redeemStartAt)
+            if (startDate != null && startDate.after(Date())) {
+                binding.btnExchange.text = getString(R.string.not_yet_open)
+                disableButton()
+                return
+            }
+        }
+
+        val redeemEndAt = data.redeemEndAt
+        if (redeemEndAt != null) {
+            val endDate = parseDate(redeemEndAt)
+            if (endDate != null && Date().after(endDate)) {
+                binding.btnExchange.text = getString(R.string.finished)
+                disableButton()
+                return
+            }
+        }
+
+        try {
+            val eligibleMembers = data.eligibleMembers ?: emptyList<String>()
+            val criteria = data.eligibilityCriteria
+
+            if (!criteria.isNullOrEmpty() && eligibleMembers.isNotEmpty()) {
+                if (memberCards.isNullOrEmpty()) {
+                    setLimitedButtonText(eligibleMembers, data.eligibleMembersStr.orEmpty())
+                    disableButton()
+                    return
+                }
+                val hasOverlap = eligibleMembers.any { it in memberCards!! }
+                if (!hasOverlap) {
+                    setLimitedButtonText(eligibleMembers, data.eligibleMembersStr.orEmpty())
+                    disableButton()
+                    return
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        if (maxPerMember != -1) {
+            if (claimedCount >= maxPerMember) {
+                binding.btnExchange.text = getString(R.string.has_completed)
+                disableButton()
+                return
+            }
+        }
+
+        val totalIssued = data.totalIssued ?: 0
+        val totalQuantity = data.totalQuantity
+        if (totalQuantity != -1 && totalIssued >= totalQuantity) {
+            binding.btnExchange.text = getString(R.string.has_completed)
+            disableButton()
+            return
+        }
+
+
+
+        binding.btnExchange.text = "立即兌換"
+        enableButton()
+    }
+
+    // Các hàm helper
+    private fun disableButton() {
+        binding.btnExchange.setTextColor(getColor(R.color.color_101828))
+        binding.btnExchange.setBackgroundResource(R.drawable.activity_error_button_background)
+        binding.btnExchange.isEnabled = false
+    }
+
+    private fun enableButton() {
+        binding.btnExchange.setTextColor(getColor(R.color.white))
+        binding.btnExchange.setBackgroundResource(R.drawable.bg_login_btn_able)
+        binding.btnExchange.isEnabled = true
+    }
+
+    private fun setLimitedButtonText(eligibleMembers: List<String>, eligibleMembersStr: String) {
+        if (eligibleMembers.size == 1) {
+            val onlyName = if (eligibleMembersStr.isNotEmpty()) eligibleMembersStr else "指定會員"
+            binding.btnExchange.text = "限${onlyName}會員兌換"
+        } else {
+            binding.btnExchange.text = getString(R.string.limit)
+        }
+    }
+
+    private fun parseDate(dateStr: String): Date? {
+        return try {
+            val format = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+            format.parse(dateStr)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun initListeners() {
@@ -236,16 +350,6 @@ class ExchangeDetailsActivity : AppCompatActivity() {
                 val randomOtp = (100000..999999).random().toString()
                 showOtpDialog(data.id, randomOtp)
             }
-        }
-    }
-
-    private fun updateButtonState() {
-        if (status == ActivityStatusEnum.UNUSED_REDEMPTION.name) {
-            binding.btnExchange.text = "開啟條碼"
-            binding.btnExchange.isEnabled = true
-        } else {
-            binding.btnExchange.text = "立即兌換"
-            binding.btnExchange.isEnabled = true
         }
     }
 
