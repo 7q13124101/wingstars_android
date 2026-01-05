@@ -163,6 +163,7 @@ class GiftDetailsActivity : AppCompatActivity() {
                 binding.status.text = getString(R.string.count_not_used)
             }
             ActivityStatusEnum.GIFT_REDEEMED.name -> {
+                binding.btnExchange.visibility = View.VISIBLE
                 val currentPoints = countStr.toIntOrNull() ?: 0
                 claimedCount = data.claimedCount?.toInt() ?: 0
                 setButtonBackground(data.pointCost ?: 0, currentPoints, claimedCount, data.maxPerMember)
@@ -171,6 +172,12 @@ class GiftDetailsActivity : AppCompatActivity() {
     }
 
     private fun setButtonBackground(pointCost: Int, point: Int, claimedCount: Int, maxPerMember: Int) {
+        if (point < pointCost) {
+            binding.button.visibility = View.GONE
+            return
+        }
+        binding.button.visibility = View.VISIBLE
+        binding.btnExchange.isEnabled = true
         val redeemStartAt = data.redeemStartAt
         if (redeemStartAt != null) {
             val startDate = parseDate(redeemStartAt)
@@ -179,29 +186,6 @@ class GiftDetailsActivity : AppCompatActivity() {
                 disableButton()
                 return
             }
-        }
-
-        try {
-            val eligibleMembers = data.eligibleMembers ?: emptyList<String>()
-            val criteria = data.eligibilityCriteria
-
-            if (!criteria.isNullOrEmpty() && eligibleMembers.isNotEmpty()) {
-
-                if (memberCards.isNullOrEmpty()) {
-                    setLimitedButtonText(eligibleMembers, data.eligibleMembersStr.orEmpty())
-                    disableButton()
-                    return
-                }
-
-                val hasOverlap = eligibleMembers.any { it in memberCards!! }
-                if (!hasOverlap) {
-                    setLimitedButtonText(eligibleMembers, data.eligibleMembersStr.orEmpty())
-                    disableButton()
-                    return
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
 
         val redeemEndAt = data.redeemEndAt
@@ -214,18 +198,33 @@ class GiftDetailsActivity : AppCompatActivity() {
             }
         }
 
-//        if (maxPerMember != -1) {
-//            if (maxPerMember <= claimedCount) {
-//                binding.btnExchange.text = getString(R.string.redeemed)
-//                disableButton()
-//                return
-//            }
-//        }
+        try {
+            val eligibleMembers = data.eligibleMembers ?: emptyList<String>()
+            val criteria = data.eligibilityCriteria
 
-        if (point < pointCost) {
-            binding.btnExchange.text = getString(R.string.insufficient_points)
-            disableButton()
-            return
+            if (!criteria.isNullOrEmpty() && eligibleMembers.isNotEmpty()) {
+                if (memberCards.isNullOrEmpty()) {
+                    setLimitedButtonText(eligibleMembers, data.eligibleMembersStr.orEmpty())
+                    disableButton()
+                    return
+                }
+                val hasOverlap = eligibleMembers.any { it in memberCards!! }
+                if (!hasOverlap) {
+                    setLimitedButtonText(eligibleMembers, data.eligibleMembersStr.orEmpty())
+                    disableButton()
+                    return
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        if (maxPerMember != -1) {
+            if (claimedCount >= maxPerMember) {
+                binding.btnExchange.text = getString(R.string.has_completed)
+                disableButton()
+                return
+            }
         }
 
         val totalIssued = data.totalIssued ?: 0
@@ -236,6 +235,10 @@ class GiftDetailsActivity : AppCompatActivity() {
             return
         }
 
+        if (point < pointCost) {
+            binding.button.visibility = View.GONE
+            return
+        }
         setButtonRestore()
     }
 
