@@ -187,17 +187,17 @@ class CountFragment : BaseFragment() {
 
         viewModel.getEvtTasks()
         setupObservers()
-        setupCheckInUI()
+//        setupCheckInUI()
 
-        binding.btnCheckIn.setOnClickListener {
-            checkLoginAndAction {
-                if (!hasCheckedInToday) {
-                    hasCheckedInToday = true
-                    setupCheckInUI()
-                    showCheckInSuccessDialog()
-                }
-            }
-        }
+//        binding.btnCheckIn.setOnClickListener {
+//            checkLoginAndAction {
+//                if (!hasCheckedInToday) {
+//                    hasCheckedInToday = true
+//                    setupCheckInUI()
+//                    showCheckInSuccessDialog()
+//                }
+//            }
+//        }
 
         binding.btnCheckLogin.setOnClickListener { openLoginActivity() }
         binding.tvCountWinstar.setOnClickListener { openCountHistoryActivity() }
@@ -321,6 +321,9 @@ class CountFragment : BaseFragment() {
     }
 
     private fun updateListDisplay() {
+        if (!MMKV.defaultMMKV().decodeBool("isLogin")) {
+            return
+        }
         val filteredList = fullDataList.filter { it.eventType == eventType }
         if (filteredList.isEmpty()) {
             binding.llEmpty.visibility = View.VISIBLE
@@ -349,9 +352,12 @@ class CountFragment : BaseFragment() {
         if (isLogin) {
             binding.clCheckLogin.visibility = View.GONE
             binding.rlCount.visibility = View.VISIBLE
+            binding.girlsList.visibility = View.VISIBLE
         } else {
             binding.clCheckLogin.visibility = View.VISIBLE
             binding.rlCount.visibility = View.GONE
+            binding.girlsList.visibility = View.GONE
+            binding.llEmpty.visibility = View.VISIBLE
         }
     }
 
@@ -380,60 +386,58 @@ class CountFragment : BaseFragment() {
         startActivity(intent)
     }
 
-    // (Giữ nguyên các hàm setupCheckInUI, showCheckInSuccessDialog, showSortDialog, closeCountItemDialog như cũ)
-    private fun setupCheckInUI() {
-        // ... code cũ ...
-        val dayBindings = listOf(
-            binding.day1, binding.day2, binding.day3,
-            binding.day4, binding.day5, binding.day6, binding.day7
-        )
-        val colorPink = ContextCompat.getColor(requireContext(), R.color.color_EE97BB)
-        val colorGray = ContextCompat.getColor(requireContext(), R.color.color_4A5565)
-
-        daysData.forEachIndexed { index, data ->
-            val dayBinding = dayBindings[index]
-            val tvReward = dayBinding.tvReward
-            val ivStar = dayBinding.ivStar
-            val tvDayLabel = dayBinding.tvDayLabel
-            val contentBox = dayBinding.llContentBox
-            tvReward.text = data.reward
-            tvDayLabel.text = if (index == currentDayIndex) "今天" else data.dayLabel
-
-            when {
-                index < currentDayIndex -> {
-                    contentBox.setBackgroundResource(R.drawable.bg_checkin_item_future)
-                    tvReward.setTextColor(colorGray)
-                    tvDayLabel.setTextColor(colorGray)
-                    ivStar.setImageResource(R.drawable.ic_star_outline)
-                }
-                index == currentDayIndex -> {
-                    contentBox.setBackgroundResource(R.drawable.bg_checkin_item_today)
-                    tvReward.setTextColor(colorPink)
-                    tvDayLabel.setTextColor(colorPink)
-                    if (hasCheckedInToday) {
-                        ivStar.setImageResource(R.drawable.ic_star_filled)
-                    } else {
-                        ivStar.setImageResource(R.drawable.ic_star_filled)
-                    }
-                }
-                else -> {
-                    contentBox.setBackgroundResource(R.drawable.bg_checkin_item_future)
-                    tvReward.setTextColor(colorGray)
-                    tvDayLabel.setTextColor(colorGray)
-                    ivStar.setImageResource(R.drawable.ic_star_outline)
-                }
-            }
-        }
-        if (hasCheckedInToday) {
-            binding.btnCheckIn.text = "已簽到"
-            binding.btnCheckIn.isEnabled = false
-            binding.btnCheckIn.alpha = 0.5f
-        } else {
-            binding.btnCheckIn.text = "點擊簽到"
-            binding.btnCheckIn.isEnabled = true
-            binding.btnCheckIn.alpha = 1.0f
-        }
-    }
+//    private fun setupCheckInUI() {
+//        val dayBindings = listOf(
+//            binding.day1, binding.day2, binding.day3,
+//            binding.day4, binding.day5, binding.day6, binding.day7
+//        )
+//        val colorPink = ContextCompat.getColor(requireContext(), R.color.color_EE97BB)
+//        val colorGray = ContextCompat.getColor(requireContext(), R.color.color_4A5565)
+//
+//        daysData.forEachIndexed { index, data ->
+//            val dayBinding = dayBindings[index]
+//            val tvReward = dayBinding.tvReward
+//            val ivStar = dayBinding.ivStar
+//            val tvDayLabel = dayBinding.tvDayLabel
+//            val contentBox = dayBinding.llContentBox
+//            tvReward.text = data.reward
+//            tvDayLabel.text = if (index == currentDayIndex) "今天" else data.dayLabel
+//
+//            when {
+//                index < currentDayIndex -> {
+//                    contentBox.setBackgroundResource(R.drawable.bg_checkin_item_future)
+//                    tvReward.setTextColor(colorGray)
+//                    tvDayLabel.setTextColor(colorGray)
+//                    ivStar.setImageResource(R.drawable.ic_star_outline)
+//                }
+//                index == currentDayIndex -> {
+//                    contentBox.setBackgroundResource(R.drawable.bg_checkin_item_today)
+//                    tvReward.setTextColor(colorPink)
+//                    tvDayLabel.setTextColor(colorPink)
+//                    if (hasCheckedInToday) {
+//                        ivStar.setImageResource(R.drawable.ic_star_filled)
+//                    } else {
+//                        ivStar.setImageResource(R.drawable.ic_star_filled)
+//                    }
+//                }
+//                else -> {
+//                    contentBox.setBackgroundResource(R.drawable.bg_checkin_item_future)
+//                    tvReward.setTextColor(colorGray)
+//                    tvDayLabel.setTextColor(colorGray)
+//                    ivStar.setImageResource(R.drawable.ic_star_outline)
+//                }
+//            }
+//        }
+//        if (hasCheckedInToday) {
+//            binding.btnCheckIn.text = "已簽到"
+//            binding.btnCheckIn.isEnabled = false
+//            binding.btnCheckIn.alpha = 0.5f
+//        } else {
+//            binding.btnCheckIn.text = "點擊簽到"
+//            binding.btnCheckIn.isEnabled = true
+//            binding.btnCheckIn.alpha = 1.0f
+//        }
+//    }
 
     private fun showCheckInSuccessDialog() {
         val dialog = Dialog(requireContext())
