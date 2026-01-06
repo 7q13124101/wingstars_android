@@ -95,7 +95,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/pt_5"
                 android:layout_toEndOf="@id/rl_icon"
-                android:text="1100"
+                android:text="0"
                 android:textColor="@color/color_101828"
                 android:textSize="@dimen/sp_24"
                 android:textStyle="bold" />

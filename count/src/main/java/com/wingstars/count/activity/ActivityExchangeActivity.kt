@@ -62,6 +62,7 @@ class ActivityExchangeActivity : AppCompatActivity() {
                 val listToSend = ArrayList(currentList)
                 putExtra("EXTRA_LIST_DATA", listToSend)
                 putExtra("EXTRA_CURRENT_INDEX", index)
+                intent.putExtra("count", binding.tvCountWin.text.toString())
             }
             startActivity(intent)
         }
