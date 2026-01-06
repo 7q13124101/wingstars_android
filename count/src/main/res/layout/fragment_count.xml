@@ -110,8 +110,11 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/pt_10"
+                android:layout_height="@dimen/pt_50"
+                android:layout_marginTop="@dimen/pt_5"
+                android:layout_marginEnd="@dimen/pt_10"
+                android:layout_marginStart="@dimen/pt_10"
+                android:layout_marginBottom="@dimen/pt_5"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/pt_10"
                 app:cardElevation="6dp"
@@ -130,7 +133,7 @@
                   <TextView
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:layout_marginBottom="20dp"
+                      android:layout_marginBottom="@dimen/pt_7"
                       android:text="加入 Wing Stars，別錯過每一次應援時刻"
                       android:textAlignment="center"
                       android:textColor="@color/color_101828"
@@ -139,7 +142,7 @@
                   <androidx.appcompat.widget.AppCompatButton
                       android:id="@+id/btnCheckLogin"
                       android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
+                      android:layout_height="@dimen/pt_14"
                       android:background="@drawable/bg_checkin_button"
                       android:stateListAnimator="@null"
                       android:text="@string/login_required"
@@ -251,7 +254,6 @@
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:layout_marginLeft="@dimen/pt_10"
-             android:layout_marginTop="@dimen/dp_10"
              android:layout_marginRight="@dimen/pt_10"
              android:orientation="horizontal"
              android:background="@drawable/bg_item_hot_count"
@@ -374,7 +376,7 @@
                 android:drawableStart="@drawable/ic_count_back"
                 android:drawablePadding="8dp"
                 android:text="@string/count_newest_to_oldest_date"
-                android:textColor="@color/color_101828"
+                android:textColor="@color/color_6A7282"
                 android:textSize="16sp" />
          </RelativeLayout>
 
@@ -404,8 +406,8 @@
              android:visibility="gone">
 
             <ImageView
-                android:layout_width="@dimen/pt_42"
-                android:layout_height="@dimen/pt_54"
+                android:layout_width="@dimen/pt_35"
+                android:layout_height="@dimen/pt_35"
                 android:src="@drawable/ic_none_records" />
 
             <View
@@ -417,7 +419,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/count_none_tasks"
-                android:textColor="@color/color_A3A3A3"
+                android:textColor="@color/color_6A7282"
                 android:textSize="@dimen/sp_14" />
          </LinearLayout>
 

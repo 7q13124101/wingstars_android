@@ -7,5 +7,5 @@
     <!-- 边框 -->
     <stroke
         android:color="@color/color_D4D4D4"
-        android:width="@dimen/pt_1"/>
+        android:width="1dp"/>
 </shape>
