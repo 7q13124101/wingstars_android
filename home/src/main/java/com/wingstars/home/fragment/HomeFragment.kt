@@ -40,6 +40,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
     private lateinit var indicatorAdapterItinerary: DotIndicatorAdapter
     private lateinit var indicatorAdapterComingSoon: DotIndicatorAdapter
     private lateinit var popularityAdapter: PopularityAdapter
+    private var type = ""
     private var isDataLoaded = false // 标记数据是否加载过
     override fun onResume() {
         super.onResume()
@@ -74,6 +75,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
 
     private fun initView() {
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        type = getString(R.string.support_popularity_list)
         binding.refresh.setColorSchemeResources(R.color.color_E2518D)
 
         binding.refresh.setOnRefreshListener {
@@ -205,19 +207,6 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
             if (!it.isNullOrEmpty()) hotProductAdapter.setList(it)
         }
 
-        // --- 3. Thời trang (Fashion/Stylist) ---
-//        fashionAdapter = StylistOutfitsAdapter(
-//            requireActivity(),
-//            mutableListOf(),
-//            object : StylistOutfitsAdapter.OnItemListener {
-//                override fun onItemClick(data: WSFashionResponse, position: Int) {
-//
-//                    checkLoginAndAction {
-//                        //
-//                    }
-//                }
-//            }
-//        )
 
         viewModel.fashionDataList.observe(viewLifecycleOwner) { rawList ->
             if (rawList.isNullOrEmpty()) return@observe
@@ -242,17 +231,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
                 Log.w("HomeFragment", "Chưa tải xong Category, hiển thị mặc định.")
             }
 
-//            fashionAdapter.setList(rawList)
             var adapter1 = SupportFashionAdapter(requireActivity(), rawList, this)
             binding.rvStylistVibe.adapter = adapter1
         }
 
-        // --- 4. youtube ---
-//        viewModel.homeDataList.observe(viewLifecycleOwner) { dataList ->
-//            val articleAdapter = YoutubeAdapter(requireActivity(), dataList)
-//            binding.rvArticles.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-//            binding.rvArticles.adapter = articleAdapter
-//        }
         val youtubeAdapter = YoutubeAdapter(requireContext())
         binding.rvArticles.adapter = youtubeAdapter // Gán vào RecyclerView
 
@@ -261,20 +243,13 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
             youtubeAdapter.setList(list)
         }
 
-        // --- 5. Bảng xếp hạng (Ranking) ---
-//        viewModel.memberDataList.observe(viewLifecycleOwner) { dataList ->
-//            val memberAdapter = PopularityRankingAdapter(requireActivity(), dataList)
-//            binding.rvPopularityRanking.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-//            binding.rvPopularityRanking.adapter = memberAdapter
-//        }
         viewModel.wsRankData.observe(viewLifecycleOwner) { rankData ->
-            // 1. Cập nhật dữ liệu hiển thị (Rank) vào adapter đã khởi tạo ở initView
             if (!rankData.isNullOrEmpty()) {
-                popularityAdapter.setRankList(rankData)
-
-                // 2. QUAN TRỌNG: Gọi API lấy chi tiết thành viên dựa trên danh sách rank này
-                // Nếu thiếu dòng này, wsMembersData sẽ không bao giờ có dữ liệu -> Click không được
-                viewModel.getWsMembersData(rankData)
+                val filteredList = rankData.filter { it.title == type }.toMutableList()
+                if (filteredList.isNotEmpty()) {
+                    popularityAdapter.setRankList(filteredList)
+                    viewModel.getWsMembersData(filteredList)
+                }
             }
         }
         viewModel.wsMembersData.observe(viewLifecycleOwner) { memberDetails ->

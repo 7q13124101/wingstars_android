@@ -155,21 +155,21 @@ class HomeViewModel : ViewModel() {
                     if (!next.isNullOrEmpty()) {
                         var data = mutableListOf<WSMemberRankBean>()
 
-                        val latestBoard = next[0]
+                        next.forEach { board ->
+                            val title = board.title?.rendered ?: ""
+                            val acf = board.acf
 
-                        val title = latestBoard.title?.rendered ?: ""
-                        val acf = latestBoard.acf
-
-                        if (acf != null) {
-                            for (i in 1..5) {
-                                val rankBean = acf.rankBean(i)
-                                if (rankBean != null && !rankBean.name.isNullOrEmpty()) {
-                                    var bean = WSMemberRankBean(
-                                        title = title,
-                                        name = rankBean.name,
-                                        volume = rankBean.volume
-                                    )
-                                    data.add(bean)
+                            if (acf != null) {
+                                for (i in 1..5) {
+                                    val rankBean = acf.rankBean(i)
+                                    if (rankBean != null && !rankBean.name.isNullOrEmpty()) {
+                                        var bean = WSMemberRankBean(
+                                            title = title,
+                                            name = rankBean.name,
+                                            volume = rankBean.volume
+                                        )
+                                        data.add(bean)
+                                    }
                                 }
                             }
                         }
