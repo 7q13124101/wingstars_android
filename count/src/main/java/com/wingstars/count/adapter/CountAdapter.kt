@@ -2,7 +2,9 @@ package com.wingstars.count.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -59,12 +61,14 @@ class CountAdapter(
         return listData.size
     }
 
-    inner class CountViewHolder(private val binding: ItemCountSingleBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class CountViewHolder(private val binding: ItemCountSingleBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(item: EvtTaskResponse, position: Int) {
 
             binding.tvTitle.text = item.topic
             binding.tvInfo.text = item.content
-            binding.tvTime.text = if (item.endDate.isNullOrEmpty()) "" else item.endDate.split("T")[0]
+            binding.tvTime.text =
+                if (item.endDate.isNullOrEmpty()) "" else item.endDate.split("T")[0]
             binding.tvCount.text = "${item.point} 點"
 
 //            Glide.with(context)
@@ -76,10 +80,70 @@ class CountAdapter(
             binding.root.setOnClickListener {
                 if (listener != null) {
                     listener.onItemClick(item, position)
-                }
-                else {
+                } else {
                     onItemClick?.invoke(item)
                 }
+            }
+
+            // Trạng thái nhiệm vụ
+            binding.tvCountStatus.apply {
+                if (item.status != null) {
+                    visibility = View.GONE
+                } else {
+                    visibility = View.VISIBLE
+                    background = null
+                    setTextColor(ContextCompat.getColor(context, R.color.color_A3A3A3))
+//                    when (item.status) {
+//                        "unlock" -> {
+//                            text = context.getString(R.string.count_unlock)
+//                            background = ContextCompat.getDrawable(
+//                                context,
+//                                R.drawable.bg_rounded_rectangle_gray
+//                            )
+//                        }
+//
+//                        "unlockNot" -> {
+//                            text = context.getString(R.string.count_unlockNot)
+//                            background = ContextCompat.getDrawable(
+//                                context,
+//                                R.drawable.bg_rounded_rectangle_gray
+//                            )
+//
+//                        }
+//
+//                        "pending" -> {
+//                            text = context.getString(R.string.count_pending)
+//                            background = ContextCompat.getDrawable(
+//                                context,
+//                                R.drawable.bg_rounded_rectangle_gray
+//                            )
+//
+//                        }
+//
+//                        "expired" -> {
+//                            text = context.getString(R.string.count_expired)
+//                            background = ContextCompat.getDrawable(
+//                                context,
+//                                R.drawable.bg_rounded_rectangle_gray
+//                            )
+//                        }
+//
+//                        "completed", "reward" -> {
+//                            text = context.getString(R.string.count_completed)
+//                            background = ContextCompat.getDrawable(
+//                                context,
+//                                R.drawable.bg_rounded_rectangle_completed
+//                            )
+//                            setTextColor(ContextCompat.getColor(context, R.color.color_F5F5F5))
+//                        }
+//                    }
+                }
+
+//            if (item.status != "unlock") {
+//                binding.llRoot.setOnClickListener { listener.onItemClick(item, position) }
+//            } else {
+//                binding.llRoot.setOnClickListener(null)
+//            }
             }
         }
     }
