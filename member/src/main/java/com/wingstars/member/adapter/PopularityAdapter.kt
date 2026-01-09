@@ -1,6 +1,7 @@
 package com.wingstars.member.adapter
 
 import android.content.Context
+import android.renderscript.Type
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -83,7 +84,7 @@ class PopularityAdapter     // -------------------------------------------
                         .transform(RoundedCorners(DPUtils.dpToPx(20f, context).toInt()))
                 )
                 .into(binding.image)
-            binding.item.setOnClickListener { listeners.onPopularityRankingClickItem(position) }
+            binding.item.setOnClickListener { listeners.onPopularityRankingClickItem(bean.title) }
         }
 
 
@@ -100,6 +101,6 @@ class PopularityAdapter     // -------------------------------------------
 
 
     interface onPopularityRankingListener {
-        fun onPopularityRankingClickItem(position: Int)
+        fun onPopularityRankingClickItem(type: String)
     }
 }

@@ -341,13 +341,13 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
         startActivity(Intent(requireActivity(), FanInteractionActivity::class.java))
     }
 
-    override fun onPopularityRankingClickItem(position: Int) {
-        startActivity(
-            Intent(
-                requireActivity(),
-                PopularityRankingActivity::class.java
-            )
+    override fun onPopularityRankingClickItem(type: String) {
+        val intent = Intent(
+            requireActivity(),
+            PopularityRankingActivity::class.java
         )
+        intent.putExtra("type",type)
+        startActivity(intent)
     }
 
     override fun onSupportFashionClickItem(memberId: Int) {
