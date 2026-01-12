@@ -254,11 +254,15 @@
                                 android:background="@null"
                                 android:hint="@string/user_n_entered_yet"
                                 android:singleLine="true"
+                                android:focusable="false"
+                                android:cursorVisible="false"
+                                android:clickable="true"
                                 android:textColor="@color/color_101828"
                                 android:textColorHint="@color/color_99A1AF"
                                 android:textSize="@dimen/sp_16" />
 
                             <ImageView
+                                android:id="@id/ic_arrow"
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
                                 android:src="@drawable/ic_arrow_right" />
@@ -269,8 +273,6 @@
                             android:layout_height="1dp"
                             android:background="@color/color_D1D5DC" />
                     </LinearLayout>
-                    <!--                    android:nextFocusForward="@id/edt_phone_code"-->
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -287,6 +289,7 @@
                         android:orientation="vertical">
 
                         <LinearLayout
+
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
@@ -298,11 +301,15 @@
                                 android:background="@null"
                                 android:hint="@string/user_n_entered_yet"
                                 android:singleLine="true"
+                                android:focusable="false"
+                                android:cursorVisible="false"
+                                android:clickable="true"
                                 android:textColor="@color/color_101828"
                                 android:textColorHint="@color/color_99A1AF"
                                 android:textSize="@dimen/sp_16" />
 
                             <ImageView
+                                android:id="@+id/iv_arrow_right"
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
                                 android:src="@drawable/ic_arrow_right" />
@@ -388,6 +395,9 @@
                             android:background="@null"
                             android:hint="@string/user_per_d_m_account"
                             android:singleLine="true"
+                            android:focusable="false"
+                            android:cursorVisible="false"
+                            android:clickable="true"
                             android:paddingStart="0dp"
                             android:paddingEnd="0dp"
                             android:textColor="@color/color_101828"

@@ -144,6 +144,9 @@ public interface ApiService {
     //Member > 查询会员详细资料. ${BaseApplication.HOST_CRM}/api/v1/basic/member/{id}
     @GET(NetBase.HOST_CRM + "/api/v1/basic/member/{id}")
     Observable<CRMBaseResponse<CRMMemberDetailResponse>> crmMemberDetail(@Path("id") String id);
+    //delete 会员
+    @DELETE(NetBase.HOST_CRM + "/api/v1/basic/member/{id}")
+    Observable<CRMBaseResponse<CRMDeleteRespone>> crmMemberDelete(@Path("id") String id);
     //今日行程
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/calendar?_fields=id,title.rendered,acf,content.rendered,yoast_head_json.og_image,calendar_category")
     Observable<List<WSCalendarResponse>> wsSchedule(@Query("per_page") int per_page, @Query("page") int page);

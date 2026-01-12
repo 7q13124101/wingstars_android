@@ -69,9 +69,19 @@ class UserFragment : BaseFragment(){
         val packageManager: PackageManager =  requireActivity().packageManager
         val packageInfo: PackageInfo = packageManager.getPackageInfo(requireActivity().packageName, 0)
         binding.tvVersion.text = "版本 "+packageInfo.versionName
-        binding.srlUserRecord.setOnRefreshListener {
-            if (!NetBase.checkNetworkOrToast(requireContext())) return@setOnRefreshListener
-            binding.srlUserRecord.finishRefresh()
+        binding.srlUserRecord.setOnRefreshListener {refreshLayout ->
+            if (!NetBase.checkNetworkOrToast(requireContext())) {
+                refreshLayout.finishRefresh(false)
+                return@setOnRefreshListener
+            }
+
+            // Đọc lại từ MMKV và vẽ lại UI
+            updateLoginUI()
+            updateBarcodeUI()
+            showMemberQRCode()
+
+            refreshLayout.finishRefresh(1000)
+            Toast.makeText(requireContext(), "資料已更新", Toast.LENGTH_SHORT).show()
         }
         binding.layoutMain.containerForRectangleAndText.setOnClickListener {
             if (!MMKVManagement.isLogin()) {
@@ -280,7 +290,7 @@ class UserFragment : BaseFragment(){
         val isLoggedIn = MMKVManagement.isLogin()
         val name = MMKVManagement.getMemberName()
 //        Log.d("UserFragment", "Update UI: Login=$isLoggedIn, Name=$name")
-        binding.cardGeneralMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+        binding.cardGeneralMember.visibility = if (isLoggedIn) View.VISIBLE else View.VISIBLE
         binding.cardFriendshipMember.visibility = if (isLoggedIn) View.GONE else View.GONE
         binding.qrMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
         binding.barcodeMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
@@ -338,14 +348,20 @@ class UserFragment : BaseFragment(){
         }
         if (hasBarcode) {
             val bitmap = generateBarcode(barcodeNumber!!)
-            bitmap?.let {
-                binding.barcode.setImageBitmap(it)
+            binding.barcode.setImageBitmap(bitmap)
+            binding.tvBarcodeDesc.text = barcodeNumber // ID từ XML của bạn
+
+            // Nếu người dùng đang mở vùng Barcode (isBarcodeContentVisible == true)
+            if (isBarcodeContentVisible) {
+                binding.barcode.visibility = View.VISIBLE
+                binding.tvBarcodeDesc.visibility = View.VISIBLE
+                binding.barcodeNull.visibility = View.GONE
+            } else {
+                // Nếu đang thu nhỏ thì ẩn đi để đúng UI thu nhỏ
+                binding.barcode.visibility = View.GONE
+                binding.tvBarcodeDesc.visibility = View.GONE
+                binding.barcodeNull.visibility = View.GONE
             }
-            binding.barcode.visibility = View.VISIBLE
-            binding.tvBarcodeDesc.visibility = View.VISIBLE
-            binding.tvBarcodeDesc.text = barcodeNumber
-            binding.barcodeNull.visibility = View.GONE
-            binding.icArrowDown.visibility = View.VISIBLE
         } else {
             binding.barcode.visibility = View.GONE
             binding.tvBarcodeDesc.visibility = View.GONE
