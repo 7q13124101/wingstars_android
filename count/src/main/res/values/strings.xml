@@ -47,8 +47,6 @@
     <string name="count_completed">已完成</string>
     <string name="click_to_enlarge">點擊放大</string>
     <string name="barcode_redemption">條碼兌換</string>
-    <string name="all_location">不限定兌換地點</string>
-
 
     <string name="exchange_points">兌換點數</string>
     <string name="time_points">兌換期間</string>

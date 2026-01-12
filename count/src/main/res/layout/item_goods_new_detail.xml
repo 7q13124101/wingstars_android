@@ -15,81 +15,47 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/pt_15"
             android:background="@drawable/bg_item_hot_count"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/pt_10">
 
-            <androidx.cardview.widget.CardView
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@android:color/transparent">
+                android:layout_height="@dimen/pt_68"
+                android:layout_gravity="start">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_goods_image"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_count_gift_4"
+                    app:shapeAppearanceOverlay="@style/TopCornersRounded" />
 
-                    <ImageView
-                        android:id="@+id/iv_goods_image"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_count_gift_4"
-                        app:layout_constraintDimensionRatio="1:1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-                    <FrameLayout
-                        android:id="@+id/fl_sold_out_overlay"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:background="@color/half_black"
-                        android:visibility="gone"
-                        app:layout_constraintTop_toTopOf="@id/iv_goods_image"
-                        app:layout_constraintBottom_toBottomOf="@id/iv_goods_image"
-                        app:layout_constraintStart_toStartOf="@id/iv_goods_image"
-                        app:layout_constraintEnd_toEndOf="@id/iv_goods_image">
+                <LinearLayout
+                    android:id="@+id/ll_limited_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="@dimen/pt_10"
+                    android:layout_marginEnd="@dimen/pt_10"
+                    android:visibility="gone">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="兌換完畢"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-                    </FrameLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_limited_user"
+                    <TextView
+                        android:id="@+id/tv_limited_user"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:minWidth="@dimen/pt_58"
                         android:background="@drawable/bg_upper_right_corner"
-                        android:visibility="gone"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginTop="@dimen/pt_10"
-                        android:layout_marginEnd="@dimen/pt_10">
-
-                        <TextView
-                            android:id="@+id/tv_limited_user"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:minWidth="@dimen/pt_58"
-                            android:background="@drawable/bg_upper_right_corner"
-                            android:gravity="center"
-                            android:paddingTop="@dimen/pt_2"
-                            android:paddingBottom="@dimen/pt_2"
-                            android:paddingStart="@dimen/pt_5"
-                            android:paddingEnd="@dimen/pt_5"
-                            android:text=""
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/sp_12" />
-                    </LinearLayout>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
+                        android:gravity="center"
+                        android:paddingTop="@dimen/pt_2"
+                        android:paddingBottom="@dimen/pt_2"
+                        android:paddingStart="@dimen/pt_5"
+                        android:paddingEnd="@dimen/pt_5"
+                        android:text=""
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_12" />
+                </LinearLayout>
+            </FrameLayout>
 
 
         </LinearLayout>
@@ -105,7 +71,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:minLines="2"
                 android:maxLines="2"
                 android:paddingLeft="@dimen/pt_10"
                 android:textColor="@color/color_101828"

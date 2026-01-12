@@ -222,11 +222,11 @@ class ActivityExchangeViewModel : ViewModel() {
         method: SortMethod
     ): List<CRMCouponsAvailableResponse> {
         return when (method) {
-            SortMethod.SORT_DATE_NEW_TO_OLD -> list.sortedByDescending { it.couponStartDate ?: "" }
-            SortMethod.SORT_DATE_OLD_TO_NEW -> list.sortedBy { it.couponStartDate ?: "" }
+            SortMethod.SORT_DATE_NEW_TO_OLD -> list.sortedByDescending { it.redeemStartAt ?: "" }
+            SortMethod.SORT_DATE_OLD_TO_NEW -> list.sortedBy { it.redeemStartAt ?: "" }
             SortMethod.SORT_POINTS_HIGH_TO_LOW -> list.sortedByDescending { it.pointCost ?: 0 }
             SortMethod.SORT_POINTS_LOW_TO_HIGH -> list.sortedBy { it.pointCost ?: 0 }
-            SortMethod.SORT_BY_BEEN_COMPLETED -> list.sortedByDescending { it.couponStartDate ?: "" }
+            SortMethod.SORT_BY_BEEN_COMPLETED -> list.sortedByDescending { it.redeemStartAt ?: "" }
         }
     }
 

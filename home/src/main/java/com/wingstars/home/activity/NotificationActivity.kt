@@ -1,5 +1,7 @@
 package com.wingstars.home.activity
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -9,10 +11,17 @@ import com.wingstars.home.R
 import com.wingstars.home.adapter.NotificationAdapter
 import com.wingstars.home.adapter.NotificationData
 import com.wingstars.home.databinding.ActivityNotificationBinding
+import com.wingstars.home.viewmodel.NotificationViewModel
+import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.wingstars.base.net.beans.CRMInAppMessageResponse
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class NotificationActivity : BaseActivity() {
 
     private lateinit var binding: ActivityNotificationBinding
+    private val viewModel: NotificationViewModel by viewModels()
     private lateinit var adapter: NotificationAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,31 +36,88 @@ class NotificationActivity : BaseActivity() {
     }
 
     override fun initView() {
-        // Nút Back
         binding.btnBack.setOnClickListener { finish() }
 
-        // Nút "Đọc tất cả"
         binding.tvMarkAllRead.setOnClickListener {
-            Toast.makeText(this, "已標記為全部已讀", Toast.LENGTH_SHORT).show()
-            // Thêm logic đánh dấu đã đọc ở đây (ví dụ gọi API)
+            viewModel.doNotifyAllRead()
+            adapter.refresh() // Reload lại list để mất chấm đỏ
+            Toast.makeText(this, "已全部標示為已讀", Toast.LENGTH_SHORT).show()
+        }
+        adapter = NotificationAdapter { data ->
+            // Khi click vào item
+            if (data.status == 0) {
+                data.status = 1 // Update UI tạm thời
+                adapter.notifyDataSetChanged() // Hoặc notifyItemChanged nếu tính được pos
+                viewModel.doSingleRead(data.id) // Gọi API báo đã đọc
+            }
+            // Gọi hàm điều hướng
+            switchView(data)
         }
 
-        // Setup RecyclerView
         binding.rvNotification.layoutManager = LinearLayoutManager(this)
-        adapter = NotificationAdapter(this, listOf())
         binding.rvNotification.adapter = adapter
     }
 
     private fun loadData() {
-        // Giả lập dữ liệu theo yêu cầu của bạn
-        val list = listOf(
-            NotificationData("2025/10/17", "APP 分享，任務達成！", "獲得星幣 1 點"),
-            NotificationData("2025/10/17", "最喜歡哪位女孩唱《𝘾𝙝𝙚𝙚𝙧 𝙞𝙩 𝙪𝙥 加大》 ？，任務達成！", "獲得星幣 10 點"),
-            NotificationData("2025/10/17", "星粉登入，任務達成！", "獲得星幣 1 點，勳章 1 枚"),
-            NotificationData("2025/10/17", "WS 中階會員，任務達成！", "獲得星幣 1 點"),
-            NotificationData("2025/10/17", "2025 WS LOGO卡冊 Get!，任務達成！", "獲得星幣 1 點")
-        )
+        // Lắng nghe Flow data từ ViewModel và đẩy vào Adapter
+        lifecycleScope.launch {
+            viewModel.getNotificationList().collectLatest { pagingData ->
+                adapter.submitData(pagingData)
+            }
+        }
+    }
+    private fun switchView(data: CRMInAppMessageResponse) {
+        val route = data.targetUrl ?: ""
 
-        adapter.updateData(list)
+        // Regex patterns (Giữ nguyên từ dự án cũ)
+        val taskPattern     = "^task\\.([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$".toRegex()
+        val couponPattern   = "^coupon\\.([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$".toRegex()
+        val activityPattern = "^activity\\.([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$".toRegex()
+
+        when {
+            route.isEmpty() -> {
+                // Không có link -> Mở màn hình chi tiết tin nhắn (nếu có)
+                // Hoặc chỉ show nội dung
+            }
+            route == "home" -> {
+                // Về trang chủ (Dùng EventBus hoặc Intent về MainActivity clear top)
+                navigateToMain(0)
+            }
+            route == "point" || route == "task" -> {
+                // Mở tab Điểm/Nhiệm vụ
+                navigateToMain(2) // Giả sử tab 2 là Point
+            }
+            route == "ticket" -> {
+                navigateToMain(3) // Giả sử tab 3 là Ticket
+            }
+            // ... Copy các case khác tương tự ...
+
+            // Ví dụ mở link ngoài (Product URL như HomeFragment)
+            route.startsWith("http") -> {
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(route))
+                    startActivity(intent)
+                } catch (e: Exception) { e.printStackTrace() }
+            }
+
+            // Xử lý Task/Coupon specific UUID
+            route.matches(taskPattern) -> {
+                val uuid = taskPattern.find(route)?.groupValues?.get(1)
+                // Gọi API lấy chi tiết task rồi hiện Dialog (như trong EventNotifyFragment cũ)
+                // viewModel.getTaskInfo(uuid)
+            }
+
+            else -> {
+                // Mặc định
+            }
+        }
+    }
+
+    private fun navigateToMain(tabIndex: Int) {
+        // Code chuyển tab MainActivity (thay cho EventBus nếu muốn đơn giản)
+        // val intent = Intent(this, MainActivity::class.java)
+        // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        // intent.putExtra("TAB_INDEX", tabIndex)
+        // startActivity(intent)
     }
 }

@@ -12,8 +12,10 @@ import com.wingstars.base.net.beans.CRMDeleteRespone;
 import com.wingstars.base.net.beans.CRMForgotPasswordRequest;
 import com.wingstars.base.net.beans.CRMGenQRCodeRequest;
 import com.wingstars.base.net.beans.CRMGenQRCodeResponse;
+import com.wingstars.base.net.beans.CRMInAppMessageResponse;
 import com.wingstars.base.net.beans.CRMJournalHistoryResponse;
 import com.wingstars.base.net.beans.CRMMemberContactResponse;
+import com.wingstars.base.net.beans.CRMMessageReadRequest;
 import com.wingstars.base.net.beans.CRMOTPCoupons;
 import com.wingstars.base.net.beans.CRMRedeemCouponRequest;
 import com.wingstars.base.net.beans.CRMRedeemCouponResponse;
@@ -140,6 +142,24 @@ public interface ApiService {
             @Query("type") String type,
             @Query("key") String apiKey
     );
+    @GET(NetBase.HOST_CRM +"api/v1/basic/member/{id}/message/inapp/list")
+    Observable<List<CRMInAppMessageResponse>>getInAppMessages(
+            @Path("id") String memberId,
+            @Query("category") String category,
+            @Query("page") Integer page,
+            @Query("limit") Integer limit
+    );
+
+    @POST(NetBase.HOST_CRM +"api/v1/basic/member/{id}/message/inapp/list")
+    Observable<CRMBaseResponse<Object>>crmInAppMessageRead(
+            @Path("id") String memberId,
+            @Body CRMMessageReadRequest request
+    );
+
+    @POST(NetBase.HOST_CRM +"api/v1/basic/member/{id}/message/inapp/read-all")
+    Observable<CRMBaseResponse<Object>> crmInAppMessageReadAll(@Path("id") String memberId, @Query("category") String category);
+
+
 
     //Member > 查询会员详细资料. ${BaseApplication.HOST_CRM}/api/v1/basic/member/{id}
     @GET(NetBase.HOST_CRM + "/api/v1/basic/member/{id}")

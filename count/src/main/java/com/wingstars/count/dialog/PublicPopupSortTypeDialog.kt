@@ -11,7 +11,6 @@ import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatRadioButton
 import android.widget.LinearLayout
-import android.widget.RadioGroup
 import com.wingstars.count.R
 
 enum class SortMethod {
@@ -83,17 +82,17 @@ class PublicPopupSortTypeDialog : Dialog {
                 }
             }
 
-            layout.findViewById<RadioGroup>(R.id.rg_sort).setOnCheckedChangeListener { radioGroup, i ->
-                if (i == R.id.rb_sort_date_new_to_old) {
-                    popupSortMethod = SortMethod.SORT_DATE_NEW_TO_OLD
-                } else if (i == R.id.rb_sort_date_old_to_new) {
-                    popupSortMethod = SortMethod.SORT_DATE_OLD_TO_NEW
-                } else if (i == R.id.rb_sort_points_high_to_low) {
-                    popupSortMethod = SortMethod.SORT_POINTS_HIGH_TO_LOW
-                } else if (i == R.id.rb_sort_points_low_to_high) {
-                    popupSortMethod = SortMethod.SORT_POINTS_LOW_TO_HIGH
-                }
-            }
+//            layout.findViewById<RadioGroup>(R.id.rg_sort).setOnCheckedChangeListener { radioGroup, i ->
+//                if (i == R.id.rb_sort_date_new_to_old) {
+//                    popupSortMethod = SortMethod.SORT_DATE_NEW_TO_OLD
+//                } else if (i == R.id.rb_sort_date_old_to_new) {
+//                    popupSortMethod = SortMethod.SORT_DATE_OLD_TO_NEW
+//                } else if (i == R.id.rb_sort_points_high_to_low) {
+//                    popupSortMethod = SortMethod.SORT_POINTS_HIGH_TO_LOW
+//                } else if (i == R.id.rb_sort_points_low_to_high) {
+//                    popupSortMethod = SortMethod.SORT_POINTS_LOW_TO_HIGH
+//                }
+//            }
 
             dialog.setContentView(layout)
             dialog.setCancelable(false) //用户可以点击手机Back键取消对话框显示

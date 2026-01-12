@@ -1,5 +1,6 @@
 package com.wingstars.home.fragment
 
+import SectionTitleAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.tencent.mmkv.MMKV
@@ -33,13 +35,23 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
     PopularityAdapter.onPopularityRankingListener {
         private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: HomeViewModel
+    private lateinit var topBannerAdapter: TopBannerAdapter
+    // Itinerary & ComingSoon phức tạp, tốt nhất nên tách Adapter riêng,
+    // nhưng ở đây tôi gộp vào logic HomeViewModel để update
+    private lateinit var itineraryAdapter: ItineraryBannerAdapter // (Bạn cần tạo class này tương tự HorizontalWrapper)
 
+    private lateinit var productTitleAdapter: SectionTitleAdapter
+    private lateinit var productAdapter: ProductAdapter
+
+    private lateinit var popularityTitleAdapter: SectionTitleAdapter
+    private lateinit var popularityWrapperAdapter: HorizontalWrapperAdapter
     private lateinit var hotProductAdapter: ProductAdapter
     private lateinit var fashionAdapter: StylistOutfitsAdapter
 
     private lateinit var indicatorAdapterItinerary: DotIndicatorAdapter
     private lateinit var indicatorAdapterComingSoon: DotIndicatorAdapter
     private lateinit var popularityAdapter: PopularityAdapter
+    private lateinit var concatAdapter: ConcatAdapter
     private var type = ""
     private var isDataLoaded = false // 标记数据是否加载过
     override fun onResume() {
@@ -74,6 +86,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
     }
 
     private fun initView() {
+        
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         type = getString(R.string.support_popularity_list)
         binding.refresh.setColorSchemeResources(R.color.color_E2518D)

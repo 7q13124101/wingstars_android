@@ -342,7 +342,7 @@
                        android:layout_height="wrap_content">
 
                        <RelativeLayout
-                           android:id="@+id/rl_description"
+                           android:id="@+id/rl_rule_header"
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"
                            android:background="?attr/selectableItemBackground"
@@ -371,7 +371,7 @@
                        </RelativeLayout>
 
                        <TextView
-                           android:id="@+id/tv_description"
+                           android:id="@+id/tv_usage_rules"
                            android:visibility="gone"
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"
@@ -399,7 +399,7 @@
                        android:layout_height="wrap_content">
 
                        <RelativeLayout
-                           android:id="@+id/rl_rule_header"
+                           android:id="@+id/rl_precautions"
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"
                            android:background="?attr/selectableItemBackground"
@@ -429,7 +429,7 @@
                        </RelativeLayout>
 
                        <TextView
-                           android:id="@+id/tv_usage_rules"
+                           android:id="@+id/tv_precautions"
                            android:visibility="gone"
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"

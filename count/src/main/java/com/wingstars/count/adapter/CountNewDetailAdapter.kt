@@ -70,31 +70,6 @@ class CountNewDetailAdapter(
                 binding.ivGoodsImage.setImageResource(R.drawable.gift_details_image_background)
             }
 
-            val claimedCount = item.claimedCount?.toInt() ?: 0
-            val maxPerMember = item.maxPerMember
-            val totalIssued = item.totalIssued ?: 0
-            val totalQuantity = item.totalQuantity
-            var isSoldOut = false
-
-            if (maxPerMember != -1) {
-                if (claimedCount >= maxPerMember) {
-                    isSoldOut = true
-                }
-            }
-
-            if (totalQuantity != -1 && totalIssued >= totalQuantity) {
-                isSoldOut = true
-            }
-            if (isSoldOut) {
-                binding.flSoldOutOverlay.visibility = View.VISIBLE
-                binding.root.setOnClickListener { onItemClick(item) }
-            } else {
-                binding.flSoldOutOverlay.visibility = View.GONE
-                binding.root.setOnClickListener {
-                    onItemClick(item)
-                }
-            }
-
 //            val eligibleMembersStr = item.eligibleMembersStr
 //            if (!eligibleMembersStr.isNullOrEmpty() && eligibleMembersStr != context.getString(R.string.all_members)) {
 //                binding.label.visibility = View.VISIBLE
