@@ -46,35 +46,43 @@ class ItineraryBannerAdapter(datas: List<WSCalendarResponse>) :
 
         fun bind(data: WSCalendarResponse, adapter: ItineraryBannerAdapter) {
             val rawUrl = data.urlF
-
-            // Xóa ảnh cũ để tránh lỗi hiển thị
+            val categories = data.calendar_category ?: emptyList()
+            tvTitle.text = data.titleF
+            tvTime.text = data.st_dateFF
+            tvPlace.text = data.mapF
             Glide.with(itemView.context).clear(imgPoster)
 
-            if (rawUrl.isNotEmpty()) {
-                // --- SỬ DỤNG HÀM ENCODE TỪ ADAPTER ---
-                val encodedUrl = adapter.encodeBlobLikeUrl(rawUrl)
+            when {
+                categories.contains(363) -> {
+                    imgPoster.setImageResource(R.drawable.card_xiongying_takamei)
+                }
+                categories.contains(365) -> {
+                    imgPoster.setImageResource(R.drawable.card_tianying)
+                }
+                categories.contains(364) -> {
+                    imgPoster.setImageResource(R.drawable.card_lieying)
+                }
+                // Nếu không phải các đội trên, kiểm tra URL ảnh từ API
+                rawUrl.isNotEmpty() -> {
+                    // --- SỬ DỤNG HÀM ENCODE TỪ ADAPTER ---
+                    val encodedUrl = adapter.encodeBlobLikeUrl(rawUrl)
 
-                Glide.with(itemView.context)
-                    .load(encodedUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL) // Cache để load nhanh hơn
-                    .skipMemoryCache(false)
-                    .dontAnimate()
-                    .format(DecodeFormat.PREFER_RGB_565) // Giảm bộ nhớ
-                    .apply(RequestOptions().disallowHardwareConfig())
-//                    .placeholder(R.drawable.placeholder_person) // Ảnh chờ
-                    .into(imgPoster)
-            } else {
-                imgPoster.setImageResource(R.drawable.placeholder_person)
+                    Glide.with(itemView.context)
+                        .load(encodedUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .skipMemoryCache(false)
+                        .dontAnimate()
+                        .format(DecodeFormat.PREFER_RGB_565)
+                        .apply(RequestOptions().disallowHardwareConfig())
+                         .placeholder(R.drawable.placeholder_person) // Có thể bỏ nếu đã xử lý ở else
+                        .into(imgPoster)
+                }
+                else -> {
+                    imgPoster.setImageResource(R.drawable.placeholder_person)
+                }
             }
-
-            // Gán Text
-            tvTitle.text = data.titleF
-            tvTime.text = data.st_dateF
-            tvPlace.text = data.mapF
         }
     }
-
-    // --- CÁC HÀM XỬ LÝ URL (Copy từ LatestNewsAdapter) ---
 
     fun encodeBlobLikeUrl(url: String): String {
         return try {

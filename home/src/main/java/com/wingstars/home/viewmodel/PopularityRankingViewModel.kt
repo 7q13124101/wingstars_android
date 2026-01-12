@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.wingstars.base.net.API
-import com.wingstars.member.adapter.HighlightsData
 import com.wingstars.member.bean.WSRankBean
 import com.wingstars.member.bean.WSRankBean.ACFBean
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers

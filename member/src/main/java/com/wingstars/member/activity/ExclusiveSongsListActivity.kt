@@ -7,9 +7,9 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.wingstars.base.base.BaseActivity
+import com.wingstars.base.net.beans.YoutubeListResponse
 import com.wingstars.base.utils.RecyclerViewScrollHelper
 import com.wingstars.member.adapter.HighlightsAdapter
-import com.wingstars.member.adapter.HighlightsData
 import com.wingstars.member.databinding.ActivityExclusiveSongsListBinding
 import com.wingstars.member.viewmodel.ExclusiveSongsListViewModel
 
@@ -44,7 +44,7 @@ class ExclusiveSongsListActivity : BaseActivity(), RecyclerViewScrollHelper.onSc
         exclusiveSongsAdapter = HighlightsAdapter(
             this,
             mutableListOf(), object : HighlightsAdapter.OnItemListener {
-                override fun onItemClick(data: HighlightsData, position: Int) {
+                override fun onItemClick(data: YoutubeListResponse.Item, position: Int) {
                     val intent = Intent(this@ExclusiveSongsListActivity, ExclusiveSongsDetailActivity::class.java)
                     startActivity(intent)
                 }
@@ -64,9 +64,13 @@ class ExclusiveSongsListActivity : BaseActivity(), RecyclerViewScrollHelper.onSc
         binding.top.setOnClickListener {
             binding.rvExclusiveSongs.smoothScrollToPosition(0)
         }
+
+        viewModel.isLoading.observe(this) {
+            showLoadingUI(it, this)
+        }
     }
 
-    private fun setData(it: MutableList<HighlightsData>?) {
+    private fun setData(it: MutableList<YoutubeListResponse.Item>?) {
         if (it == null || it.isEmpty()) {
             binding.llEmpty.visibility = View.VISIBLE
             binding.rvExclusiveSongs.visibility = View.GONE

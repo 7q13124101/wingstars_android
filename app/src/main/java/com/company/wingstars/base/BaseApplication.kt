@@ -18,6 +18,7 @@ class BaseApplication : Application() {
         MMKVManagement.init(this)
         GlideSSLUtils.init(this)
         getCRMQauthToken()
+        getNSQauthToken()
 
     }
     private var isCrmTokenCompleted = false
@@ -44,6 +45,29 @@ class BaseApplication : Application() {
                         MMKV.defaultMMKV().encode("crm_client_access_token", rd.accessToken)
                         MMKV.defaultMMKV().encode("crm_client_refresh_token", rd.refreshToken)
                         Log.d("crm_client_access_token", rd.accessToken)
+                    }
+                },
+                { error ->
+                    error.message?.let { it1 ->
+                    }
+                }
+            )
+        }
+    }
+
+    fun getNSQauthToken() {
+        API?.shared?.api?.let {
+            //中继 > 获取token
+            val observer = it.nsTokenNew()
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    if (next.successed) {
+                        next.data?.let { data ->
+                            MMKVManagement.setNsAccessToken(data.token)
+                            MMKVManagement.setNsRefreshToken(data.refresh_token)
+                        }
                     }
                 },
                 { error ->
