@@ -30,7 +30,7 @@
         android:layout_marginTop="@dimen/dp_20">
 
         <Button
-            android:id="@+id/btnCancel"
+            android:id="@+id/btnConfirm"
             android:layout_width="@dimen/dp_169"
             android:layout_height="@dimen/dp_47"
             android:background="@drawable/bg_button_off"
@@ -45,7 +45,7 @@
             android:layout_height="1dp"/>
 
         <Button
-            android:id="@+id/btnConfirm"
+            android:id="@+id/btnCancel"
             android:layout_width="@dimen/dp_169"
             android:layout_height="@dimen/dp_47"
             android:background="@drawable/bg_button_on"

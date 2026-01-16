@@ -12,7 +12,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pt_14"
+            android:layout_marginTop="@dimen/pt_10"
             android:layout_marginBottom="@dimen/pt_14"
             android:paddingLeft="@dimen/pt_12"
             android:paddingRight="@dimen/pt_12">
@@ -29,8 +29,8 @@
 
             <ImageView
                 android:id="@+id/iv_close_dialog"
-                android:layout_width="@dimen/pt_24"
-                android:layout_height="@dimen/pt_24"
+                android:layout_width="@dimen/pt_20"
+                android:layout_height="@dimen/pt_20"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_cancel"

@@ -20,11 +20,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.RadioButton
-import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import com.tencent.mmkv.MMKV
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.base.net.NetBase

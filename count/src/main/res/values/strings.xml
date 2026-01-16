@@ -79,6 +79,12 @@
     <string name="limit">未符合兌換條件</string>
     <string name="goto_connect">前往</string>
     <string name="all_members">所有會員皆適用</string>
+    <string name="count_unlock">即將開放</string>
+    <string name="count_unlockNot">尚未解鎖</string>
+    <string name="count_pending">未完成</string>
+    <string name="count_reward">已領取</string>
+    <string name="count_expired">已過期</string>
+    <string name="count_obtained">完成</string>
 
     <string name="current_day">今日</string>
 

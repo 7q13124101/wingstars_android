@@ -1,8 +1,11 @@
 package com.wingstars.member.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.gson.Gson
 import com.wingstars.base.net.API
+import com.wingstars.base.net.beans.WSPhotoFrameResponse
 import com.wingstars.member.bean.TakePhotosMembersListBean
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -31,6 +34,7 @@ class FanInteractionViewModel : ViewModel() {
                 AndroidSchedulers.mainThread()
             )?.subscribe(
                 { next ->
+                    Log.e("wsPhotoFrames","next=${Gson().toJson(next)}")
                     loading.postValue(false)
                     if (!next.isNullOrEmpty()) {
                         next.forEach { data->
@@ -40,11 +44,19 @@ class FanInteractionViewModel : ViewModel() {
                             val photoFrame = data.acf.photoFrame
                             if (photoFrame!=null){
                                 val image1 = photoFrame.image1
-                                if (image1!=null){
-                                    val sizes = image1.sizes
-                                    if(sizes!=null){
-                                        full =  sizes.`1536x1536`
-                                        membersList.add(TakePhotosMembersListBean(number = number, name = name,imgae= full))
+                                if (image1 !is Boolean){
+                                    try {
+                                        val fromJson = Gson().fromJson(
+                                            Gson().toJson(image1),
+                                            WSPhotoFrameResponse.ImageBean::class.java
+                                        )
+                                        val sizes = fromJson.sizes
+                                        if(sizes!=null){
+                                            full =  sizes.`1536x1536`
+                                            membersList.add(TakePhotosMembersListBean(number = number, name = name,imgae= full))
+                                        }
+                                    }catch (e: Exception){
+
                                     }
                                 }
                             }
@@ -54,6 +66,7 @@ class FanInteractionViewModel : ViewModel() {
                     }
                 },
                 { error ->
+                    Log.e("wsPhotoFrames","error=${error.message}")
                     loading.postValue(false)
                 }
             )

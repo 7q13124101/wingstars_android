@@ -51,8 +51,15 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
         }
         binding.btnSave.setOnClickListener {
             val mobile = binding.edtMobile.text.toString().trim()
+
+            // 1. Lưu vào MMKV (Sử dụng đúng Key mà MMKVManagement đang dùng để đọc)
+            // Giả sử MMKVManagement dùng key "barcode_number"
+            com.tencent.mmkv.MMKV.defaultMMKV().encode("crm_member_code", mobile)
+
+            // 2. (Tùy chọn) Vẫn giữ lại SharedPreferences nếu các phần khác của App cần
             val pref = getSharedPreferences("user_prefs", MODE_PRIVATE)
             pref.edit().putString("barcode_number", mobile).apply()
+
             val intent = Intent()
             intent.putExtra("mobile_number", mobile)
             setResult(RESULT_OK, intent)

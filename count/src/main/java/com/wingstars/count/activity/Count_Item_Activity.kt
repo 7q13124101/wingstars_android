@@ -41,6 +41,7 @@ class Count_Item_Activity : AppCompatActivity() {
 
         binding = ActivityCountItemBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -48,8 +49,9 @@ class Count_Item_Activity : AppCompatActivity() {
         }
 
         viewModel = ViewModelProvider(this)[CountItemViewModel::class.java]
-        initView()
+
         loadData()
+        initView()
         setupObservers()
     }
 
@@ -62,19 +64,17 @@ class Count_Item_Activity : AppCompatActivity() {
 
         viewModel.errorMessage.observe(this) { msg ->
             if (!msg.isNullOrEmpty()) {
+                currentItemData?.isSendApiF = false
                 showFailureDialog(msg)
-                binding.btnConfirm.isEnabled = true
-                binding.btnConfirm.text = if (currentPointType == GetPointType.IMMEDIATELY) "前往連結" else "領取點數"
             }
         }
 
+        // 3. Xử lý trạng thái Loading
         viewModel.isLoading.observe(this) { isLoading ->
             binding.btnConfirm.isEnabled = !isLoading
-            binding.btnConfirm.text = if (isLoading) "處理中..." else "確認"
+            binding.btnConfirm.text = if (isLoading) "處理中..." else getButtonTextForType(currentPointType)
         }
     }
-
-
 
     private fun initView() {
         binding.imgBack.setOnClickListener {
@@ -83,10 +83,16 @@ class Count_Item_Activity : AppCompatActivity() {
 
         binding.btnConfirm.setOnClickListener {
             currentItemData?.let { data ->
-                if (currentPointType == GetPointType.IMMEDIATELY) {
-                    handleImmediatelyAction(data)
-                } else {
-                    requestClaimPoint(data)
+                when (currentPointType) {
+                    GetPointType.IMMEDIATELY -> {
+                        handleImmediatelyAction(data)
+                    }
+                    GetPointType.SCANCODE -> {
+                        Toast.makeText(this, "請掃描 QR Code", Toast.LENGTH_SHORT).show()
+                    }
+                    GetPointType.AIRDROP, GetPointType.BEACON -> {
+                        requestClaimPoint(data)
+                    }
                 }
             }
         }
@@ -99,26 +105,63 @@ class Count_Item_Activity : AppCompatActivity() {
         }
     }
 
+    private fun handleImmediatelyAction(data: EvtTaskResponse) {
+        if ((data.statusInfo == "pending" || data.statusInfo == null) && !data.isSendApiF) {
+            requestClaimPoint(data)
+        }
+
+        var url = ""
+        when (data.triggerTag) {
+            "fb" -> url = "https://www.facebook.com/tsgwingstars/"
+            "instagram" -> url = "https://www.instagram.com/wing_stars_official/"
+            "yt" -> url = "https://www.youtube.com/@WingStars-TSG/"
+//            "survey" -> url = "https://www.surveycake.com/s/LnnMR"
+        }
+
+        if (url.isNotEmpty()) {
+            try {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse(url)
+                startActivity(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(this, "無法開啟連結", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun getButtonTextForType(type: GetPointType): String {
+        return when (type) {
+            GetPointType.IMMEDIATELY -> "前往連結"
+            GetPointType.SCANCODE -> "掃描 QR Code"
+            else -> "領取點數"
+        }
+    }
+
     private fun loadData() {
         val jsonString = intent.getStringExtra("EXTRA_ITEM_JSON")
 
         if (jsonString != null) {
-            val data = Gson().fromJson(jsonString, EvtTaskResponse::class.java)
-            currentItemData = data
-            binding.tvTitle.text = data.topic
-            binding.tvCount.text = "${data.point} 點"
-            determinePointType(data)
-            setupTypeView()
-
-            binding.tvTimeItem.text = "${data.startDate} ~ ${data.endDate}"
-            binding.tvDetail.text = data.content
-            binding.tvDescription.text = data.pointProcess
-            updateButtonState(data)
+            try {
+                val data = Gson().fromJson(jsonString, EvtTaskResponse::class.java)
+                currentItemData = data
+                binding.tvTitle.text = data.topic
+                binding.tvCount.text = "${data.point} 點"
+                binding.tvTimeItem.text = "${data.startDate.formatDate()} ~ ${data.endDate.formatDate()}"
+                binding.tvDetail.text = data.content
+                binding.tvDescription.text = data.pointProcess
+                determinePointType(data)
+                updateButtonState(data)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(this, "Data Error", Toast.LENGTH_SHORT).show()
+                finish()
+            }
         }
     }
 
     private fun determinePointType(itemData: EvtTaskResponse) {
-        currentPointType = GetPointType.AIRDROP
+        currentPointType = GetPointType.AIRDROP // Default
 
         when (itemData.eventType) {
             "limited" -> {
@@ -136,8 +179,6 @@ class Count_Item_Activity : AppCompatActivity() {
                     ) {
                         currentPointType = GetPointType.SCANCODE
                     }
-                } ?: run {
-                    currentPointType = GetPointType.AIRDROP
                 }
             }
             "exclusive" -> {
@@ -162,89 +203,39 @@ class Count_Item_Activity : AppCompatActivity() {
                     ) {
                         currentPointType = GetPointType.SCANCODE
                     }
-                } ?: run {
-                    currentPointType = GetPointType.AIRDROP
                 }
             }
         }
-    }
-
-    private fun setupTypeView() {
-
-        // Ví dụ binding:
-        /*
-        when (currentPointType) {
-            GetPointType.BEACON -> {
-                binding.ivType.setImageResource(R.drawable.ic_beacon) // Đảm bảo có ảnh này
-                binding.tvType.text = "Beacon"
-            }
-            GetPointType.AIRDROP -> {
-                binding.ivType.setImageResource(R.drawable.ic_airdrop)
-                binding.tvType.text = "AirDrop"
-            }
-            GetPointType.IMMEDIATELY -> {
-                binding.ivType.setImageResource(R.drawable.ic_immediately)
-                binding.tvType.text = "Immediate"
-            }
-            GetPointType.SCANCODE -> {
-                binding.ivType.setImageResource(R.drawable.ic_scan_code_green)
-                binding.tvType.text = "Scan Code"
-            }
-        }
-        */
     }
 
     private fun updateButtonState(itemData: EvtTaskResponse) {
-        if (currentPointType == GetPointType.IMMEDIATELY) {
-            if (itemData.triggerTag.equals("survey", ignoreCase = true) ||
-                (!itemData.isSendAPI && itemData.statusInfo.equals("pending", ignoreCase = true))
-            ) {
+        if (itemData.statusInfo == "completed" || itemData.statusInfo == "reward") {
+            updateButtonToCompleted()
+            return
+        }
+        when (currentPointType) {
+            GetPointType.SCANCODE,
+            GetPointType.AIRDROP,
+            GetPointType.BEACON -> {
+                binding.btnConfirm.visibility = View.GONE
+            }
+
+            else -> {
                 binding.btnConfirm.visibility = View.VISIBLE
                 binding.btnConfirm.isEnabled = true
-                binding.btnConfirm.text = "前往連結"
-            }
-        } else {
-            binding.btnConfirm.visibility = View.VISIBLE
-            when (itemData.statusInfo?: "") {
-                "completed", "reward" -> updateButtonToCompleted()
-                "pending" -> {
-                    binding.btnConfirm.isEnabled = true
-                    binding.btnConfirm.text = "領取點數"
-                }
-                else -> {
-                    binding.btnConfirm.text = "前往"
-                }
-            }
-        }
-    }
-
-    private fun handleImmediatelyAction(data: EvtTaskResponse) {
-        requestClaimPoint(data)
-        var url = ""
-        when (data.triggerTag) {
-            "fb" -> url = "https://www.facebook.com/tsgwingstars/"
-            "instagram" -> url = "https://www.instagram.com/wing_stars_official/"
-            "yt" -> url = "https://www.youtube.com/@WingStars-TSG/"
-            "survey" -> url = ""
-        }
-
-        if (url.isNotEmpty()) {
-            try {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(url)
-                startActivity(intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-
+                binding.btnConfirm.text = getButtonTextForType(currentPointType)
             }
         }
     }
 
     private fun showSuccessDialog() {
+        if (isFinishing) return
+
         val dialogBinding = DialogPublicPopupBoxBinding.inflate(LayoutInflater.from(this))
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(dialogBinding.root)
 
+        // Set background trong suốt
         bottomSheetDialog.setOnShowListener { dialog ->
             val d = dialog as BottomSheetDialog
             val bottomSheet = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
@@ -253,7 +244,7 @@ class Count_Item_Activity : AppCompatActivity() {
 
         dialogBinding.tvDialogTitle.text = "獲得點數"
         val points = currentItemData?.point ?: "0"
-        dialogBinding.tvDialogContent.text = "恭喜！你獲得 1 點！"
+        dialogBinding.tvDialogContent.text = "恭喜！你獲得 $points 點！"
 
         dialogBinding.tvDialogConfirm.setOnClickListener {
             bottomSheetDialog.dismiss()
@@ -265,16 +256,18 @@ class Count_Item_Activity : AppCompatActivity() {
         bottomSheetDialog.show()
     }
 
+    // Dialog thất bại
     private fun showFailureDialog(errorMessage: String) {
+        if (isFinishing) return
         val dialogBinding = DialogPublicPopupBoxBinding.inflate(LayoutInflater.from(this))
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(dialogBinding.root)
-
         bottomSheetDialog.setOnShowListener { dialog ->
             val d = dialog as BottomSheetDialog
             val bottomSheet = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
         }
+
         dialogBinding.tvDialogTitle.text = "領取失敗"
         dialogBinding.tvDialogTitle.setTextColor(Color.RED)
         dialogBinding.tvDialogContent.text = errorMessage
@@ -287,11 +280,21 @@ class Count_Item_Activity : AppCompatActivity() {
     }
 
     private fun updateButtonToCompleted() {
-        binding.btnConfirm.apply {
-            text = "已完成"
-            isEnabled = false
-            backgroundTintList = ColorStateList.valueOf(Color.parseColor("#E5E7EB"))
-            setTextColor(Color.parseColor("#737373"))
+        binding.btnConfirm.visibility = View.VISIBLE
+        binding.btnConfirm.text = "已完成"
+        binding.btnConfirm.isEnabled = false
+        binding.btnConfirm.backgroundTintList = ColorStateList.valueOf(Color.GRAY)
+    }
+
+    fun String?.formatDate(): String {
+        if (this.isNullOrEmpty()) return ""
+        return try {
+            val inputFormat = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault())
+            val outputFormat = java.text.SimpleDateFormat("yyyy/MM/dd HH:mm", java.util.Locale.getDefault())
+            val date = inputFormat.parse(this)
+            outputFormat.format(date!!)
+        } catch (e: Exception) {
+            this
         }
     }
 }

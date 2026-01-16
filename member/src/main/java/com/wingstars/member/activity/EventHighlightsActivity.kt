@@ -42,6 +42,7 @@ class EventHighlightsActivity : BaseActivity() {
         initView()
     }
 
+
     private fun initData() {
     }
 
@@ -49,7 +50,6 @@ class EventHighlightsActivity : BaseActivity() {
         initTabLayout(this)
         binding.title.setBackClickListener { finish() }
     }
-
 
     private fun initTabLayout(context: Context) {
         tabTitleList.clear()

@@ -40,9 +40,7 @@ object NetBase : Application(){
     //测试区
     const val HOST_BASE = "https://61.218.209.209"
     const val HOST_CRM = "https://ws-crm-dev.newretail.tw"
-    const val HOST_EVENT = "https://ws-event-dev.newretail.tw/"
-    const val HOST_HAWK_EVENT = "https://ws-event-dev.newretail.tw"
-    const val CRM_HOST = "https://ws-crm-dev.newretail.tw"
+    const val HOST_EVENT = "https://ws-event-dev.newretail.tw"
     const val HOST_NEWSOFT = "https://ec2-52-193-38-93.ap-northeast-1.compute.amazonaws.com"
     const val WINGSTARS_ACCOUNT_ENC = "OaAJUXD7ZN20fekfVqN3uJzbbqf4LP8vR7AMXPVlFaU="                        //"newsoftapp"
     const val WINGSTARS_PASSWORD_ENC = "gZR514+qAhvFIRr+eRoQ0Qo5/OVEOrnL4OMd/40ACtKzIvdjNnYFq/vNLe5/Uerm"   //"VU4m E5kG Azeu Rryo JmxT BXAj"
@@ -213,7 +211,7 @@ object NetBase : Application(){
             // encryptedIdentity 的值通过 api crmGenQRCode 取得
             //val encryptedIdentity = "RMafhFbPQedleQ0E6fk9P8gNEoXdwAjZTULb1bLk73Ute9axTtxxSAonuM2jJ3WaXsN4zlpq3SkFZUB8NlNVtNAmX1myKBeOBerbk56Uu+YTKlHNB+/0iCh9R+5wEV+HvRNU7/RU/DKZZf+jU2L88w=="
             val observer = it.evtMemberTasks(
-                "${HOST_HAWK_EVENT}/api/v1/public/members/tasks",
+                "${HOST_EVENT}/api/v1/public/members/tasks",
                 encryptedIdentity
             )
             observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
@@ -238,7 +236,7 @@ object NetBase : Application(){
                         }
 
                         if (bRefreshUI)
-                            sendBroadcast(Intent(NetBase.BROADCAST_TASK_REFRESH))
+                            sendBroadcast(Intent(BROADCAST_TASK_REFRESH))
                     }
                     taskListIsCompleted = true
                 },
@@ -258,13 +256,12 @@ object NetBase : Application(){
                 API?.shared?.api?.let {
                     //Member > 会员QRCode
                     val observer =
-                        it.crmGenQRCode("${NetBase.HOST_CRM}/api/v1/basic/member/${id}/gen-qrcode",
+                        it.crmGenQRCode("${HOST_CRM}/api/v1/basic/member/${id}/gen-qrcode",
                             phone?.let { it1 -> CRMGenQRCodeRequest(it1) })
                     observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
                         AndroidSchedulers.mainThread()
                     )?.subscribe(
                         { next ->
-
                             if (next.success && next.data != null) {
                                 getEvtMemberTasks(next.data.MEMQRCODE, bRefreshUI)
                             } else {

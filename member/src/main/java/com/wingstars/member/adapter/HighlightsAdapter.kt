@@ -1,21 +1,20 @@
 package com.wingstars.member.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.wingstars.base.net.beans.YoutubeListResponse
 import com.wingstars.member.databinding.ItemHighlightsListBinding
 
-data class HighlightsData(
-    val title: String,
-    val date: String,
-    val isPlayNow: Boolean,
-) : java.io.Serializable
 
 class HighlightsAdapter(
     private val context: Context,
-    private var dataList: MutableList<HighlightsData>?,
+    private var dataList: MutableList<YoutubeListResponse.Item>?,
     private val listener: OnItemListener
 ) : RecyclerView.Adapter<HighlightsAdapter.NormalItemViewHolder>() {
 
@@ -33,7 +32,7 @@ class HighlightsAdapter(
         return if (dataList != null) dataList!!.size else 0
     }
 
-    fun setList(list: MutableList<HighlightsData>?) {
+    fun setList(list: MutableList<YoutubeListResponse.Item>?) {
         dataList = if (dataList == null) {
             ArrayList()
         } else {
@@ -44,7 +43,7 @@ class HighlightsAdapter(
         notifyDataSetChanged()
     }
 
-    fun getData(): MutableList<HighlightsData>? {
+    fun getData(): MutableList<YoutubeListResponse.Item>? {
         if (dataList == null) {
             return null
         }
@@ -56,9 +55,23 @@ class HighlightsAdapter(
         fun binding(position: Int) {
             var data = dataList!![position]
 
-            binding.tvHighlightsContent.text = data.title
-            binding.tvDate.text = data.date
-            binding.llPlayNow.visibility = if (data.isPlayNow) View.VISIBLE else View.GONE
+            Glide.with(binding.ivVideoImage).clear(binding.ivVideoImage)
+            if (data.imageF.isNotEmpty()) {
+                Glide.with(context)
+                    .load(data.imageF)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
+                    .dontAnimate()
+                    .into(binding.ivVideoImage)
+            }
+
+            binding.tvHighlightsContent.text = data.titleF
+            binding.tvDate.text = data.dateF
+            if (context is Activity) {
+                if (context::class.java.simpleName.equals("ExclusiveSongsListActivity") && position == 0)
+                    binding.llPlayNow.visibility = View.VISIBLE
+            }
+
 
             binding.root.setOnClickListener {
                 listener.onItemClick(data, position)
@@ -70,6 +83,6 @@ class HighlightsAdapter(
     }
 
     interface OnItemListener {
-        fun onItemClick(data: HighlightsData, position: Int)
+        fun onItemClick(data: YoutubeListResponse.Item, position: Int)
     }
 }
