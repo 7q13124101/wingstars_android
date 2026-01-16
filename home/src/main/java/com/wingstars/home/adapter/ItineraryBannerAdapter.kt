@@ -20,7 +20,15 @@ import java.nio.charset.StandardCharsets
 class ItineraryBannerAdapter(datas: List<WSCalendarResponse>) :
     BannerAdapter<WSCalendarResponse, ItineraryBannerAdapter.BannerViewHolder>(datas) {
 
-    var onItemClickListener: ((WSCalendarResponse) -> Unit)? = null
+    interface OnItemListener {
+        fun onItemClick(data: WSCalendarResponse)
+    }
+
+    private var listener: OnItemListener? = null
+
+    fun setOnItemListener(l: OnItemListener?) {
+        listener = l
+    }
 
     // Regex để kiểm tra ký tự đã encode
     private val pctEncoded = Regex("%[0-9a-fA-F]{2}")
@@ -34,7 +42,7 @@ class ItineraryBannerAdapter(datas: List<WSCalendarResponse>) :
     override fun onBindView(holder: BannerViewHolder, data: WSCalendarResponse, position: Int, size: Int) {
         holder.bind(data, this)
         holder.itemView.setOnClickListener {
-            onItemClickListener?.invoke(data)
+            holder.itemView.setOnClickListener { listener?.onItemClick(data) }
         }
     }
     fun setList(list: MutableList<WSCalendarResponse>?) {

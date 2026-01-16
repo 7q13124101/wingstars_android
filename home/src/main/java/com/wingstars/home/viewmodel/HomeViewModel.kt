@@ -90,23 +90,26 @@ class HomeViewModel : ViewModel() {
     }
     fun getCalendarData() {
         API.shared?.api?.let { api ->
-            val observer = api.wsSchedule(3,1)
-            observer
+            api.wsSchedule(3, 1)
                 .subscribeOn(Schedulers.io())
+                .map { list ->
+//                    list.filter { item -> isToday(item.st_dateF) }
+                    list.filter { overlapsToday(it.st_dateF, it.ed_dateF) }
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    { next ->
-                        Log.d("getWsCalendarsData", next.toString())
-                        calendarDataList.postValue(next)
+                    { todayList ->
+                        Log.d("getWsCalendarsData", "today size=${todayList.size}")
+                        calendarDataList.postValue(todayList as MutableList<WSCalendarResponse>?)
                     },
                     { error ->
                         Log.e("getWsCalendarsData", error.toString())
-
                         error.printStackTrace()
                     }
                 )
         }
     }
+
     fun getProductsData(){
         API.shared?.api?.let { api ->
             val observer = api.wsProducts()
@@ -365,3 +368,53 @@ class HomeViewModel : ViewModel() {
         }
     }
 }
+
+private fun isToday(raw: String?): Boolean {
+    if (raw.isNullOrBlank()) return false
+
+    return try {
+        val input = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).apply {
+            isLenient = false
+        }
+        val date = input.parse(raw) ?: return false
+
+        val cal = java.util.Calendar.getInstance()
+        cal.time = date
+
+        val now = java.util.Calendar.getInstance()
+
+        cal.get(java.util.Calendar.YEAR) == now.get(java.util.Calendar.YEAR) &&
+                cal.get(java.util.Calendar.DAY_OF_YEAR) == now.get(java.util.Calendar.DAY_OF_YEAR)
+    } catch (e: Exception) {
+        false
+    }
+}
+
+private fun overlapsToday(st: String?, ed: String?): Boolean {
+    val fmt = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).apply {
+        isLenient = false
+    }
+
+    fun parse(s: String?): java.util.Date? = try { if (s.isNullOrBlank()) null else fmt.parse(s) } catch (_: Exception) { null }
+
+    val start = parse(st) ?: return false
+    val end = parse(ed) ?: start // nếu không có end thì coi như event tức thời
+
+    val todayStart = java.util.Calendar.getInstance().apply {
+        set(java.util.Calendar.HOUR_OF_DAY, 0)
+        set(java.util.Calendar.MINUTE, 0)
+        set(java.util.Calendar.SECOND, 0)
+        set(java.util.Calendar.MILLISECOND, 0)
+    }.time
+
+    val todayEnd = java.util.Calendar.getInstance().apply {
+        set(java.util.Calendar.HOUR_OF_DAY, 23)
+        set(java.util.Calendar.MINUTE, 59)
+        set(java.util.Calendar.SECOND, 59)
+        set(java.util.Calendar.MILLISECOND, 999)
+    }.time
+
+    // overlap condition: start <= todayEnd && end >= todayStart
+    return !start.after(todayEnd) && !end.before(todayStart)
+}
+

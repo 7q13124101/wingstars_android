@@ -4,14 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/dp_12">
     <com.lihang.ShadowLayout
         app:hl_strokeWith="1dp"
         app:hl_strokeColor="@color/color_F3F4F6"
         app:hl_cornerRadius="@dimen/dp_20"
         app:hl_shadowHidden="false"
         android:id="@+id/item"
-        android:layout_marginRight="@dimen/dp_10"
         android:layout_width="176dp"
         android:layout_height="279dp">
         <LinearLayout

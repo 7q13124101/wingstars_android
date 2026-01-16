@@ -2,19 +2,26 @@ package com.wingstars.home.fragment
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.wingstars.base.base.BaseFragment
+import com.wingstars.base.net.beans.WSCalendarResponse
 import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.net.beans.WSProductResponse
+import com.wingstars.base.utils.DPUtils
 import com.wingstars.base.utils.MMKVManagement
 import com.wingstars.home.R
+import com.wingstars.home.activity.TodayItineraryDetailsActivity
 import com.wingstars.home.adapter.*
 import com.wingstars.home.databinding.FragmentHomeBinding
 import com.wingstars.home.viewmodel.HomeViewModel
@@ -24,22 +31,45 @@ import com.wingstars.member.activity.PopularityRankingActivity
 
 class HomeFragment : BaseFragment(), View.OnClickListener,
     SupportFashionAdapter.onSupportFashionListener,
-    PopularityAdapter.onPopularityRankingListener {
+    PopularityAdapter.onPopularityRankingListener,
+    StylistOutfitsAdapter.onSupportFashionListener{
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: HomeViewModel
+    private var minHight = 0
 
     // Các Adapter con
     private lateinit var topBannerAdapter: TopBannerAdapter
-    private lateinit var itineraryAdapter: ItineraryBannerAdapter // Thêm adapter cho Today Itinerary
-    private lateinit var comingSoonAdapter: ComingSoonAdapter    // Dữ liệu cứng
+    private lateinit var itineraryAdapter: ItineraryBannerAdapter
+    private lateinit var itinerarySection: SectionWrapperAdapter
+
+    private lateinit var comingSoonAdapter: ComingSoonAdapter
     private lateinit var productAdapter: ProductAdapter
     private lateinit var popularityAdapter: PopularityAdapter
-    private lateinit var highlightsAdapter: YoutubeAdapter       // Thêm adapter cho Youtube/Highlights
+    private lateinit var stylistOutfitsAdapter: StylistOutfitsAdapter
+    private lateinit var supportFashionAdapter: SupportFashionAdapter
+    private lateinit var highlightsAdapter: YoutubeAdapter
     private lateinit var newsAdapter: NewsAdapter
+    private var type = ""
 
     private lateinit var mainConcatAdapter: ConcatAdapter
+    private var loadedHome = false
+    private var loadedNews = false
     private var isDataLoaded = false
+    private fun stopLoadingIfReady() {
+        if (loadedHome) {
+            binding.refresh.isRefreshing = false
+        }
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (!isDataLoaded) {
+            binding.refresh.isRefreshing = true
+            loadData()
+            isDataLoaded = true
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +77,19 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            binding.root.setOnApplyWindowInsetsListener { v, insets ->
+                val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
+                minHight = statusBarHeight + DPUtils.dpToPx(64f, requireActivity()).toInt()
+                Log.e("statusBarHeight", "statusBarHeight=$statusBarHeight")
+                setViewTop(binding.rlTopBar, statusBarHeight)
+                binding.root.setOnApplyWindowInsetsListener(null)
+                insets
+            }
+        } else {
+            minHight = getStatusBarHeight() + DPUtils.dpToPx(64f, requireActivity()).toInt()
+            setViewTop(binding.rlTopBar, getStatusBarHeight())
+        }
 
         initView()
         observeData()
@@ -75,20 +118,36 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
     }
 
     private fun initView() {
-        // 1. Banner & Bo góc
         val localImages = listOf(R.drawable.placeholder_banner)
         topBannerAdapter = TopBannerAdapter(localImages)
+        binding.refresh.setColorSchemeResources(com.wingstars.member.R.color.color_E2518D)
+        binding.refresh.setOnRefreshListener {
+            binding.refresh.isRefreshing = false
+            loadData()
+        }
+        setupTopBarClicks()
         val roundingOffsetAdapter = SingleViewAdapter(R.layout.item_home_rounding_offset)
 
-        // 2. 今日行程 (Today Itinerary) - Lấy dữ liệu từ API
-        itineraryAdapter = ItineraryBannerAdapter(mutableListOf())
+        // 2. 今日行程
+        itineraryAdapter = ItineraryBannerAdapter(mutableListOf()).apply {
+            setOnItemListener(object : ItineraryBannerAdapter.OnItemListener {
+                override fun onItemClick(data: WSCalendarResponse) {
+                    checkLoginAndAction {
+                        startActivity(Intent(requireActivity(), TodayItineraryDetailsActivity::class.java).apply {
+                            putExtra("DATA_ITINERARY", data)
+                        })
+                    }
+                }
+            })
+        }
+
         val itinerarySection = SectionWrapperAdapter(
             title = "今日行程",
             innerAdapter = itineraryAdapter,
-            onMoreClick = { /* Điều hướng */ }
+            onMoreClick = null,
+            showIndicator = true
         )
 
-        // 3. 即將販售 (Coming Soon) - Set dữ liệu cứng
         val comingSoonList = mutableListOf(
             ComingSoonData(R.drawable.placeholder_calendar, "25-26 WS女孩應援毛巾｜天鷹款\n", "2025/09/20 (六) 10:00"),
             ComingSoonData(R.drawable.placeholder_calendar, "Event 2 Title", "2025/10/01")
@@ -97,10 +156,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         val comingSoonSection = SectionWrapperAdapter(
             title = "即將販售",
             innerAdapter = comingSoonAdapter,
-            onMoreClick = { /* Điều hướng */ }
+            onMoreClick = null
         )
 
-        // 4. 熱銷商品 (Hot Products) - Hiển thị Grid 2 cột, 4 sản phẩm
         productAdapter = ProductAdapter(requireActivity(), mutableListOf(), object : ProductAdapter.OnItemListener {
             override fun onItemClick(data: WSProductResponse, position: Int) {
                 checkLoginAndAction {
@@ -111,24 +169,79 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         val productsSection = SectionWrapperAdapter(
             title = getString(R.string.products_title),
             innerAdapter = productAdapter,
-            isGrid = true, // Cần thêm tham số này vào constructor của SectionWrapperAdapter
-            onMoreClick = { openWebUrl("https://61.218.209.209/product/") }
+            isGrid = true,
+            onMoreClick = { checkLoginAndAction {
+                openWebUrl("https://61.218.209.209/product/")
+            } },
+            contentPadding = SectionWrapperAdapter.SectionPadding(
+                startDp = 20,
+                topDp = 20,
+                endDp = 20,
+                bottomDp = 0
+            )
+
         )
 
         // 5. 人氣排行
-        popularityAdapter = PopularityAdapter(requireActivity(), mutableListOf(), this)
+        popularityAdapter = PopularityAdapter(requireActivity(), mutableListOf(), object : PopularityAdapter.onPopularityRankingListener {
+            override fun onPopularityRankingClickItem(data: WSMemberResponse) {
+                checkLoginAndAction {
+                    val intent = Intent(requireActivity(), MemberDetailsActivity::class.java)
+                    intent.putExtra("WSMemberResponse", data)
+                    startActivity(intent)
+                }
+
+            }
+        })
         val popularitySection = SectionWrapperAdapter(
             title = getString(R.string.popularity_ranking_title),
             innerAdapter = popularityAdapter,
-            onMoreClick = { startActivity(Intent(requireActivity(), PopularityRankingActivity::class.java)) }
+            onMoreClick = {
+                checkLoginAndAction {  startActivity(Intent(requireActivity(), PopularityRankingActivity::class.java))} },
+            contentPadding = SectionWrapperAdapter.SectionPadding(
+                startDp = 20,
+                topDp = 20,
+                endDp = 20,
+                bottomDp = 0
+            ),
         )
-
-        // 6. 活動花絮 (Event Highlights)
+        // 6. 人氣排行
+        stylistOutfitsAdapter = StylistOutfitsAdapter(requireActivity(), mutableListOf(), object : StylistOutfitsAdapter.onSupportFashionListener {
+            override fun onSupportFashionClickItem(memberId: Int) {
+                checkLoginAndAction {
+                    val intent = Intent(
+                        requireActivity(),
+                        AtmosphereFashionDetailsActivity::class.java
+                    )
+                    intent.putExtra("memberId", memberId)
+                    startActivity(intent)
+                }
+            }
+        })
+        val stylistsSection = SectionWrapperAdapter(
+            title = getString(R.string.stylist_vibe_title),
+            innerAdapter = stylistOutfitsAdapter,
+            onMoreClick = {
+                checkLoginAndAction { startActivity(Intent(requireActivity(), com.wingstars.member.activity.FashionableAtmosphereActivity::class.java)) }},
+            contentPadding = SectionWrapperAdapter.SectionPadding(
+                startDp = 20,
+                topDp = 20,
+                endDp = 20,
+                bottomDp = 0
+            )
+        )
+        // 7. 活動花絮 (Event Highlights)
         highlightsAdapter = YoutubeAdapter(requireContext())
         val highlightsSection = SectionWrapperAdapter(
-            title = "活動花絮",
+            title = getString(R.string.event_highlights),
             innerAdapter = highlightsAdapter,
-            onMoreClick = { /* Điều hướng */ }
+            onMoreClick = { startActivity(Intent(requireActivity(), com.wingstars.member.activity.EventHighlightsActivity::class.java)) },
+            contentPadding = SectionWrapperAdapter.SectionPadding(
+                startDp = 20,
+                topDp = 20,
+                endDp = 20,
+                bottomDp = 0
+            )
         )
 
         // 7. 最新消息
@@ -140,10 +253,16 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         val newsSection = SectionWrapperAdapter(
             title = getString(R.string.news_title),
             innerAdapter = newsAdapter,
-            onMoreClick = { startActivity(Intent(requireActivity(), com.wingstars.home.activity.LatestNewsActivity::class.java)) }
+            onMoreClick = { startActivity(Intent(requireActivity(), com.wingstars.home.activity.LatestNewsActivity::class.java)) },
+            contentPadding = SectionWrapperAdapter.SectionPadding(
+                startDp = 20,
+                topDp = 20,
+                endDp = 20,
+                bottomDp = 0
+            ),
+            orientation = RecyclerView.VERTICAL
         )
 
-        // Thiết lập ConcatAdapter theo thứ tự mockup
         mainConcatAdapter = ConcatAdapter(
             topBannerAdapter,
             roundingOffsetAdapter,
@@ -151,6 +270,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
             comingSoonSection,
             productsSection,
             popularitySection,
+            stylistsSection,
             highlightsSection,
             newsSection
         )
@@ -168,12 +288,13 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
 
     private fun observeData() {
         viewModel.calendarDataList.observe(viewLifecycleOwner) { list ->
-            if (!list.isNullOrEmpty()) {
-                itineraryAdapter.setList(list)
-            }
+            val todayList = (list ?: emptyList()).toMutableList()
+            itineraryAdapter.setList(todayList)
+//            itinerarySection.setVisible(todayList.isNotEmpty())
+            loadedHome = true
+            stopLoadingIfReady()
         }
 
-        // Cập nhật Sản phẩm (Lấy 4 cái đầu tiên)
         viewModel.productDataList.observe(viewLifecycleOwner) { list ->
             if (!list.isNullOrEmpty()) {
                 productAdapter.setList(list.take(4).toMutableList())
@@ -183,8 +304,44 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         // Cập nhật Rank
         viewModel.wsRankData.observe(viewLifecycleOwner) { list ->
             if (!list.isNullOrEmpty()) {
-                popularityAdapter.setRankList(list)
+                type = getString(R.string.support_popularity_list)
+                val filteredList = list.filter { it.title == type }.toMutableList()
+                if (filteredList.isNotEmpty()) {
+                    popularityAdapter.setRankList(filteredList)
+                    viewModel.getWsMembersData(filteredList)
+                }
             }
+
+        }
+        viewModel.wsMembersData.observe(viewLifecycleOwner) { memberDetails ->
+            if (!memberDetails.isNullOrEmpty()) {
+                popularityAdapter.setMemberDetailList(memberDetails)
+            }
+        }
+
+        viewModel.fashionDataList.observe(viewLifecycleOwner){rawList ->
+            if (rawList.isNullOrEmpty()) return@observe
+
+            val categoryList = viewModel.wsFashionCategorysData.value
+            Log.d("rawList", "rawList: $categoryList")
+            if (!categoryList.isNullOrEmpty()) {
+                rawList.forEach { data ->
+                    val fashionCategoryf = data.fashion_categoryF
+                    val typeData = categoryList.find { it.id == fashionCategoryf }
+                    if (typeData != null) {
+                        data.type = when (typeData.name.trim()) {
+                            "應援服" -> 1
+                            "活動服" -> 2
+                            else -> 0
+                        }
+                    }
+                }
+            } else {
+                Log.w("HomeFragment", "Chưa tải xong Category, hiển thị mặc định.")
+            }
+            stylistOutfitsAdapter.setList(rawList)
+            supportFashionAdapter = SupportFashionAdapter(requireActivity(), rawList, this)
+
         }
 
         // Cập nhật Youtube Highlights
@@ -199,8 +356,25 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
             if (!list.isNullOrEmpty()) {
                 newsAdapter.setList(list.take(3))
             }
+//            loadedNews = true
+            stopLoadingIfReady()
         }
     }
+    public fun setViewTop(view: View, top: Int) {
+        val lp = view.layoutParams as ViewGroup.MarginLayoutParams
+        lp.topMargin = top
+        view.layoutParams = lp
+    }
+    private fun setupTopBarClicks() {
+        binding.icNotification.setOnClickListener {
+            checkLoginAndAction {
+                startActivity(
+                    Intent(requireActivity(), com.wingstars.home.activity.NotificationActivity::class.java)
+                )
+            }
+        }
+    }
+
 
     private fun openWebUrl(url: String) {
         try {
@@ -210,9 +384,15 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
     }
 
     private fun checkLoginAndAction(action: () -> Unit) {
-        if (MMKVManagement.isLogin()) action()
-        else startActivity(Intent(requireActivity(), com.wingstars.login.LoginActivity::class.java))
+        val isLogin = MMKVManagement.isLogin()
+        if (isLogin) {
+            action()
+        } else {
+            val intent = Intent(requireActivity(), com.wingstars.login.LoginActivity::class.java)
+            startActivity(intent)
+        }
     }
+
 
     override fun onClick(v: View?) {}
 
