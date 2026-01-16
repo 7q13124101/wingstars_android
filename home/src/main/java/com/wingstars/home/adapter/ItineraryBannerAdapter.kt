@@ -11,17 +11,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.wingstars.base.net.beans.WSCalendarResponse
-import com.wingstars.base.net.beans.WSProductResponse
+import com.wingstars.base.net.beans.WSCalendarNResponse
 import com.wingstars.home.R
 import com.youth.banner.adapter.BannerAdapter
 import java.nio.charset.StandardCharsets
 
-class ItineraryBannerAdapter(datas: List<WSCalendarResponse>) :
-    BannerAdapter<WSCalendarResponse, ItineraryBannerAdapter.BannerViewHolder>(datas) {
+class ItineraryBannerAdapter(datas: List<WSCalendarNResponse>) :
+    BannerAdapter<WSCalendarNResponse, ItineraryBannerAdapter.BannerViewHolder>(datas) {
 
     interface OnItemListener {
-        fun onItemClick(data: WSCalendarResponse)
+        fun onItemClick(data: WSCalendarNResponse)
     }
 
     private var listener: OnItemListener? = null
@@ -39,15 +38,19 @@ class ItineraryBannerAdapter(datas: List<WSCalendarResponse>) :
         return BannerViewHolder(view)
     }
 
-    override fun onBindView(holder: BannerViewHolder, data: WSCalendarResponse, position: Int, size: Int) {
+    override fun onBindView(holder: BannerViewHolder, data: WSCalendarNResponse, position: Int, size: Int) {
         holder.bind(data, this)
         holder.itemView.setOnClickListener {
             holder.itemView.setOnClickListener { listener?.onItemClick(data) }
         }
     }
-    fun setList(list: MutableList<WSCalendarResponse>?) {
+    fun setList(list: MutableList<WSCalendarNResponse>?) {
         setDatas(list)
         notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int {
+        return getRealCount()
     }
     class BannerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         // ID lấy từ item_today_itinerary.xml
@@ -56,22 +59,22 @@ class ItineraryBannerAdapter(datas: List<WSCalendarResponse>) :
         private val tvTime: TextView = view.findViewById(R.id.tvTime)
         private val tvPlace: TextView = view.findViewById(R.id.tvPlace)
 
-        fun bind(data: WSCalendarResponse, adapter: ItineraryBannerAdapter) {
+        fun bind(data: WSCalendarNResponse, adapter: ItineraryBannerAdapter) {
             val rawUrl = data.urlF
-            val categories = data.calendar_category ?: emptyList()
+            val categories = data.categoryF
             tvTitle.text = data.titleF
-            tvTime.text = data.st_dateFF
-            tvPlace.text = data.mapF
+            tvTime.text = data.st_dateF
+            tvPlace.text = data.locationF
             Glide.with(itemView.context).clear(imgPoster)
 
             when {
-                categories.contains(363) -> {
+                categories==363 -> {
                     imgPoster.setImageResource(R.drawable.card_xiongying_takamei)
                 }
-                categories.contains(365) -> {
+                categories==365 -> {
                     imgPoster.setImageResource(R.drawable.card_tianying)
                 }
-                categories.contains(364) -> {
+                categories==364 -> {
                     imgPoster.setImageResource(R.drawable.card_lieying)
                 }
                 // Nếu không phải các đội trên, kiểm tra URL ảnh từ API

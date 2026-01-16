@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wingstars.base.base.BaseFragment
+import com.wingstars.base.net.beans.WSCalendarNResponse
 import com.wingstars.base.net.beans.WSCalendarResponse
 import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.net.beans.WSProductResponse
@@ -112,7 +113,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         } else {
             viewModel.wsFashions()
         }
-        viewModel.getCalendarData()
+//        viewModel.getCalendarData()
+//        viewModel.getNewCalendarData()
         viewModel.getHomeData()
         viewModel.getLatestNewsData()
     }
@@ -131,7 +133,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         // 2. 今日行程
         itineraryAdapter = ItineraryBannerAdapter(mutableListOf()).apply {
             setOnItemListener(object : ItineraryBannerAdapter.OnItemListener {
-                override fun onItemClick(data: WSCalendarResponse) {
+                override fun onItemClick(data: WSCalendarNResponse) {
                     checkLoginAndAction {
                         startActivity(Intent(requireActivity(), TodayItineraryDetailsActivity::class.java).apply {
                             putExtra("DATA_ITINERARY", data)
