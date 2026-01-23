@@ -16,7 +16,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.core.widget.NestedScrollView
-
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -35,6 +34,8 @@ import com.wingstars.member.databinding.ActivityMemberDetailsBinding
 import com.wingstars.member.fragment.BasicInformationFragment
 import com.wingstars.member.fragment.PersonalScheduleFragment
 import com.wingstars.member.viewmodel.MemberDetailsViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
 
 
 class InterceptNestedScrollView @JvmOverloads constructor(
@@ -226,7 +227,7 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
     private fun initTabLayout(context: Context, wsMemberAcf: WSMemberResponse.Acf?) {
         tabTitleList.clear()
         tabTitleList.add(getString(R.string.basic_information))
-        //tabTitleList.add(getString(R.string.personal_schedule))
+        tabTitleList.add(getString(R.string.personal_schedule))
         fragmentAdapter = OuterPagerAdapter(supportFragmentManager, lifecycle)
 
 
@@ -239,7 +240,7 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
         fragmentAdapter.add(basicInformationFragment)
 
 
-        /*val personalScheduleFragment = PersonalScheduleFragment()
+        val personalScheduleFragment = PersonalScheduleFragment()
         val personalBundle = Bundle().apply {
             putString(
                 "wing_stars_month",
@@ -249,11 +250,11 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
         intent.putExtras(personalBundle)
         personalScheduleFragment.arguments = personalBundle
         fragmentAdapter.add(personalScheduleFragment)
-         */
+
 
         binding.viewPager.adapter = fragmentAdapter
         binding.viewPager.isUserInputEnabled = true
-        binding.viewPager.offscreenPageLimit = 1
+        binding.viewPager.offscreenPageLimit = 2
 
         tabLayout = binding.tabLayout
         indicatorDrawable = DynamicWidthIndicatorDrawable(
@@ -277,9 +278,9 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
                                 ?.setTextColor(getColor(R.color.color_E2518D))
                         }
 
-                        /*1 -> {
+                        1 -> {
                             tab.customView = getTabView(context, 1)
-                        }*/
+                        }
                     }
 
                 }
@@ -317,7 +318,7 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
     }
 
     private fun recoverItem() {
-        for (i in 0..0) {
+        for (i in 0..1) {
             binding.tabLayout.getTabAt(i)?.view?.findViewById<TextView>(R.id.tv_team_tab)
                 ?.setTextColor(getColor(R.color.color_4A5565))
         }
