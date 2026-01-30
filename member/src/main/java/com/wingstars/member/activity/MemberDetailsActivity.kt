@@ -246,6 +246,10 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
                 "wing_stars_month",
                 SimpleDateFormat("yyyy/MM").format(Date())
             )
+            putString(
+                "wing_stars_number",
+                wsMemberAcf?.number
+            )
         }
         intent.putExtras(personalBundle)
         personalScheduleFragment.arguments = personalBundle

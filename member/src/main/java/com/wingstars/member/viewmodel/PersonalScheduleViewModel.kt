@@ -2,19 +2,25 @@ package com.wingstars.member.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.wingstars.base.net.API
+import com.wingstars.base.net.beans.WSScheduleResponse
 import com.wingstars.member.R
-import com.wingstars.member.adapter.ScheduleFunBean
 import com.wingstars.member.adapter.SelectTeamFunBean
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 enum class TeamType { TEAM_ALL, TEAM_BASEBALL, TEAM_BASKETBALL, TEAM_VOLLEYBALL }
 class PersonalScheduleViewModel : ViewModel() {
     // TODO: Implement the ViewModel
     var teamCategoryList = MutableLiveData<MutableList<SelectTeamFunBean>>()
 
-    var personalScheduleListOnMonth: MutableList<ScheduleFunBean> = mutableListOf()
-    var personalScheduleList = MutableLiveData<MutableList<ScheduleFunBean>>()
+    var personalScheduleList = MutableLiveData<MutableList<WSScheduleResponse>>()
 
-    val dataDTOArrayList = MutableLiveData<MutableList<String>>()
+
+    var isLoading = MutableLiveData<Boolean>()
+    fun setIsLoading(isLoading: Boolean) {
+        this.isLoading.postValue(isLoading)
+    }
 
     public fun getTeamCategoryList() {
         val itemList: MutableList<SelectTeamFunBean> = mutableListOf()
@@ -46,7 +52,7 @@ class PersonalScheduleViewModel : ViewModel() {
         teamCategoryList.postValue(itemList)
     }
 
-    public fun getPersonalScheduleList() {
+    /*public fun getPersonalScheduleList() {
         val itemList: MutableList<ScheduleFunBean> = mutableListOf()
         var bean = ScheduleFunBean("12/1 (一)", "Stars House 一日店長")
         itemList.add(bean)
@@ -114,9 +120,9 @@ class PersonalScheduleViewModel : ViewModel() {
         itemList.add(bean)
 
         personalScheduleListOnMonth.addAll(itemList)
-    }
+    }*/
 
-    fun setScheduleListByTeam(data: SelectTeamFunBean) {
+    /*fun setScheduleListByTeam(data: SelectTeamFunBean) {
         if (personalScheduleListOnMonth.isNotEmpty()) {
             if (data.teamType != TeamType.TEAM_ALL) {
                 val scheduleListByTeam =
@@ -126,15 +132,47 @@ class PersonalScheduleViewModel : ViewModel() {
                 personalScheduleList.postValue(personalScheduleListOnMonth)
             }
         }
-    }
+    }*/
 
-    fun getOtherMonthData(selectMonth: String) {
+    fun getWingStarsSchedule(wingStarsNumber: String,selectMonth: String) {
+        setIsLoading(true)
+        API.shared?.api?.let {
+            val params = HashMap<String, String>()
+            params["member_number"] = wingStarsNumber
+            params["ym"] = selectMonth.replace("/", "-")
+            val observer = it.wsSchedules(params)
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    setIsLoading(false)
+                    personalScheduleList.postValue(next.toMutableList())
+                },
+                { error ->
+                    setIsLoading(false)
+                    val msg = error.message.toString()
+                    /*if (error is HttpException) {
+                        try {
+                            val gson = Gson()
+                            val type = object : TypeToken<CRMBaseFailResponse>() {}.type
+                            val failResponse = gson.fromJson<CRMBaseFailResponse>(
+                                error.response()?.errorBody()?.string(), type
+                            )
+                            if (failResponse != null) {
+                                failResponse.message?.let {
+                                    msg = it
+                                }
+                            }
+                        } catch (e: Exception) {
 
-    }
+                        }
+                    }*/
 
-    fun getWingStarsScheduleJson(selectMonth: String) {
-        val tempList = mutableListOf<String>(selectMonth)
-
-        dataDTOArrayList.postValue(tempList)
+                    msg.let { it1 ->
+                        //Toast.makeText(BaseApplication.shared()!!, "$it1", Toast.LENGTH_LONG).show()
+                    }
+                }
+            )
+        }
     }
 }
