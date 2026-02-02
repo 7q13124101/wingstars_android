@@ -8,24 +8,18 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.wingstars.base.net.beans.WSFashionDetailResponse
 import com.wingstars.base.net.beans.WSFashionDetailResponse.Acf.Recommend
 import com.wingstars.base.utils.DPUtils
-import com.wingstars.member.R
-import com.wingstars.member.databinding.ItemCategoryListBinding
-import com.wingstars.member.databinding.ItemGirlIntoductionListBinding
 import com.wingstars.member.databinding.ItemProductsListBinding
-import com.wingstars.member.view.CircleWithBorderTransformation
-import com.wingstars.member.view.TopRoundedCornersTransformation
-
 
 class ProductListAdapter     // -------------------------------------------
     (
     private val context: Context,
-    private var dataList: MutableList<Recommend>?
+    private var dataList: MutableList<Recommend>?,
+    private val listener: OnItemListener
 ) : RecyclerView.Adapter<ProductListAdapter.NormalItemViewHolder>() {
     private var pos = 0
 
@@ -121,7 +115,9 @@ class ProductListAdapter     // -------------------------------------------
             binding.item.visibility =
                 if (recommend.isTitleAndImageEmpty) View.GONE else View.VISIBLE
 
-
+            binding.root.setOnClickListener {
+                listener.onItemClick(recommend, position)
+            }
         }
 
 
@@ -136,5 +132,7 @@ class ProductListAdapter     // -------------------------------------------
         }
     }
 
-
+    interface OnItemListener {
+        fun onItemClick(data: Recommend, position: Int)
+    }
 }

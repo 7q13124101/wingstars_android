@@ -60,6 +60,11 @@ data class WSFashionDetailResponse(
                 get() {
                     return if (product_title == null) "" else product_title
                 }
+
+            val product_urlF: String
+                get() {
+                    return if (product_url == null) "" else product_url
+                }
             val product_image_url_thumbnailF: String
                 get() {
                     return if (product_image_url_thumbnail == null) "" else product_image_url_thumbnail
