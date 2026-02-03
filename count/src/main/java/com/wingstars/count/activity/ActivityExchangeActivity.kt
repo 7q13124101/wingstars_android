@@ -59,6 +59,7 @@ class ActivityExchangeActivity : AppCompatActivity() {
             val intent = Intent(this, ExchangeDetailsActivity::class.java).apply {
                 putExtra("data", item)
                 putExtra("status", ActivityStatusEnum.GIFT_REDEEMED.name)
+                putExtra("count",binding.tvCountWin.text)
                 val listToSend = ArrayList(currentList)
                 putExtra("EXTRA_LIST_DATA", listToSend)
                 putExtra("EXTRA_CURRENT_INDEX", index)

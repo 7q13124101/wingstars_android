@@ -15,22 +15,40 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/pt_15"
             android:background="@drawable/bg_item_hot_count"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/pt_10">
+            android:orientation="vertical">
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/pt_68"
+               android:layout_height="match_parent"
                 android:layout_gravity="start">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_goods_image"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/pt_68"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_count_gift_4"
-                    app:shapeAppearanceOverlay="@style/TopCornersRounded" />
+                    app:shapeAppearanceOverlay="@style/CornersRounded_20" />
 
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_mask_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    android:src="@color/color_40000000"
+                    app:shapeAppearanceOverlay="@style/CornersRounded_20"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_exchange_completed"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/count_exchange_completed"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
                 <LinearLayout
                     android:id="@+id/ll_limited_user"
                     android:layout_width="wrap_content"
@@ -56,8 +74,6 @@
                         android:textSize="@dimen/sp_12" />
                 </LinearLayout>
             </FrameLayout>
-
-
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

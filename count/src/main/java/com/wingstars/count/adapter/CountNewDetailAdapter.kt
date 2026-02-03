@@ -53,6 +53,16 @@ class CountNewDetailAdapter(
 
         fun bind(item: CRMCouponsAvailableResponse) {
 
+            val totalIssued = item.totalIssued
+            val totalQuantity = item.totalQuantity
+            if (totalQuantity != -1 && totalIssued >= totalQuantity) {
+                binding.ivMaskImage.visibility = View.VISIBLE
+                binding.tvExchangeCompleted.visibility = View.VISIBLE
+            } else {
+                binding.ivMaskImage.visibility = View.GONE
+                binding.tvExchangeCompleted.visibility = View.GONE
+            }
+
             // 1. Bind thông tin cơ bản
             binding.tvGoodsName.text = item.couponName ?: ""
             binding.tvCountPrice.text = "${item.pointCost}"

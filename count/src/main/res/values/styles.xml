@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="TopCornersRounded">
+    <style name="CornersRounded_20">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">11dp</item>
-        <item name="cornerSizeTopRight">11dp</item>
-        <item name="cornerSizeBottomLeft">0dp</item>
-        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeTopLeft">20dp</item>
+        <item name="cornerSizeTopRight">20dp</item>
+        <item name="cornerSizeBottomLeft">20dp</item>
+        <item name="cornerSizeBottomRight">20dp</item>
     </style>
 
     <style name="CornersRounded">

@@ -85,6 +85,7 @@
     <string name="count_reward">已領取</string>
     <string name="count_expired">已過期</string>
     <string name="count_obtained">完成</string>
+    <string name="count_exchange_completed">兌換完畢</string>
 
     <string name="current_day">今日</string>
 

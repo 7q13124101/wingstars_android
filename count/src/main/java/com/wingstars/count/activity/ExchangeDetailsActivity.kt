@@ -130,7 +130,8 @@ class ExchangeDetailsActivity : AppCompatActivity() {
         }
 
         if (point < pointCost) {
-            binding.button.visibility = View.GONE
+            binding.btnExchange.text = getString(R.string.insufficient_points)
+            disableButton()
             return
         }
         binding.btnExchange.visibility = View.VISIBLE
