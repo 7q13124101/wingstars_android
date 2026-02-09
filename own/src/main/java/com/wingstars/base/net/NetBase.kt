@@ -358,7 +358,7 @@ object NetBase : Application(){
 //                }
 //            )
 
-            //即将售饭商品
+            //即将贩售商品
 //            val status = "future"
 //            val observer = it.wsProducts(status, 10, 1)
 //            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
