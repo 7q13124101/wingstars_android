@@ -64,7 +64,7 @@ class ComingSoonAdapter(dataList: MutableList<WSProductResponse>) :
                 comingSoonImage.setImageResource(R.drawable.img_product_01)
             }
             comingSoonTitle.text = data.name
-            comingSoonTime.text = "${itemView.context.getString(R.string.pre_order_time)}${data.date_on_sale_fromF} ~ ${data.date_on_sale_toF}"
+            comingSoonTime.text = data.dateF //"${itemView.context.getString(R.string.pre_order_time)}${data.dateF}"
         }
     }
 }
