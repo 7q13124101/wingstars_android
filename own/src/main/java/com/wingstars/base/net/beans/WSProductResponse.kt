@@ -1,13 +1,15 @@
 package com.wingstars.base.net.beans
 
+import com.google.gson.annotations.SerializedName
+
 
 data class WSProductResponse(
     val id: Int,
     val name: String,                   //產品名稱
     val permalink: String,              //產品網址
     val price: String,                  //當前產品價格
-    val date_on_sale_from: String?,     //上市时间开始
-    val date_on_sale_to: String?,       //上市时间结束
+    val date_on_sale_from: String?,     //
+    val date_on_sale_to: String?,       //
     val images: List<Image>,            //圖片
     val yoast_head_json: YoastHeadJson, //圖片
 ) {
@@ -30,14 +32,20 @@ data class WSProductResponse(
             }
         }
 
-    val date_on_sale_fromF: String                    //date_on_sale_from format
+    val dateF: String                    //贩售时间 format
         get() {
-            return date_on_sale_from?.replace("-", "/")?.replace("T", " ") ?: ""
-        }
+            var dateT = ""
+            yoast_head_json.schema?.graph?.forEach { ph ->
+                if (ph.datePublished != null) {
+                    dateT = ph.datePublished
+                }
+            }
 
-    val date_on_sale_toF: String                    //date_on_sale_to format
-        get() {
-            return date_on_sale_to?.replace("-", "/")?.replace("T", " ") ?: ""
+            if(dateT.length > 16) {
+                dateT = dateT.substring(0, 16)
+            }
+
+            return dateT.replace("-", "/").replace("T", " ")
         }
 
     data class Image(
@@ -46,6 +54,7 @@ data class WSProductResponse(
 
     data class YoastHeadJson(
         val og_image: List<OGImage>,    //圖片
+        val schema: Schema?,
     ) : java.io.Serializable {
         data class OGImage(
             val width: Int,
@@ -53,5 +62,14 @@ data class WSProductResponse(
             val url: String,            //圖片地址
             val type: String,
         ) : java.io.Serializable
+
+        
+        data class Schema(
+            @SerializedName("@graph") val graph: List<Graph>,
+        ) : java.io.Serializable {
+            data class Graph(
+                val datePublished: String?,
+            ) : java.io.Serializable
+        }
     }
 }

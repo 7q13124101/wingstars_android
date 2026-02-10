@@ -367,7 +367,7 @@ object NetBase : Application(){
 //                    Log.d("API", "[wsProducts] next.data.size: ${next.size}")
 //
 //                    for (rd in next) {
-//                        println("id: ${rd.id}, name: ${rd.name}, date_on_sale: ${rd.date_on_sale_fromF} ~ ${rd.date_on_sale_toF}, url: ${rd.urlF}, permalink: ${rd.permalink}")
+//                        println("id: ${rd.id}, name: ${rd.name}, date_on_sale: ${rd.dateF}, url: ${rd.urlF}, permalink: ${rd.permalink}")
 //                        println("  image: ${rd.imageF}")
 //                    }
 //                },
