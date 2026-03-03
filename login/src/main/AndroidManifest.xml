@@ -15,7 +15,7 @@
             android:name="com.wingstars.resetpsd.ResetPsdActivity"
             android:exported="false"
             android:theme="@style/Theme.WingStars.Register"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name="com.wingstars.register.registrationterms.RegistrationTermsActivity"
             android:exported="false"

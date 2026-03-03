@@ -9,16 +9,28 @@ import com.wingstars.home.R
 import com.wingstars.home.adapter.DotIndicatorAdapter.NormalItemViewHolder
 import com.wingstars.home.databinding.ItemGuideListBinding
 
-class DotIndicatorAdapter(private val count: Int) : RecyclerView.Adapter<DotIndicatorAdapter.NormalItemViewHolder>() {
+class DotIndicatorAdapter(count: Int = 0) : RecyclerView.Adapter<DotIndicatorAdapter.NormalItemViewHolder>() {
 
-    private var selectedPos = 0
-
+    private var count: Int = count
+    private var selectedPos: Int = 0
+    fun submitCount(newCount: Int) {
+        count = newCount.coerceAtLeast(0)
+        if (count <= 1) selectedPos = 0
+        if (selectedPos >= count) selectedPos = 0
+        notifyDataSetChanged()
+    }
     fun setPosition(pos: Int) {
+        if (count <= 0) return
+        val newPos = pos.coerceIn(0, count - 1)
+        if (newPos == selectedPos) return
         val prevPos = selectedPos
-        selectedPos = pos
+        selectedPos = newPos
         notifyItemChanged(prevPos)
         notifyItemChanged(selectedPos)
     }
+
+    override fun getItemCount(): Int = count
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
         val binding =
@@ -30,8 +42,6 @@ class DotIndicatorAdapter(private val count: Int) : RecyclerView.Adapter<DotIndi
         holder.binding(position)
 
     }
-
-    override fun getItemCount(): Int = count
 
     inner class NormalItemViewHolder(private val binding: ItemGuideListBinding) :
         RecyclerView.ViewHolder(binding.root) {

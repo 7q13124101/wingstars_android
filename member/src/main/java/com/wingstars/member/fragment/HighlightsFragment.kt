@@ -1,5 +1,7 @@
 package com.wingstars.member.fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,16 +10,16 @@ import android.view.View.OnScrollChangeListener
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.wingstars.base.base.BaseFragment
+import com.wingstars.base.net.beans.YoutubeListResponse
 import com.wingstars.member.adapter.HighlightsAdapter
-import com.wingstars.member.adapter.HighlightsData
 import com.wingstars.member.databinding.FragmentHighlightsBinding
 import com.wingstars.member.viewmodel.HighlightsType
 import com.wingstars.member.viewmodel.HighlightsViewModel
 
 
-class HighlightsFragment(var highlightsType: HighlightsType) : Fragment() {
+class HighlightsFragment(var highlightsType: HighlightsType) : BaseFragment() {
     private lateinit var binding: FragmentHighlightsBinding
     private lateinit var viewModel: HighlightsViewModel
     private lateinit var highlightsAdapter: HighlightsAdapter
@@ -58,10 +60,18 @@ class HighlightsFragment(var highlightsType: HighlightsType) : Fragment() {
     }
 
     private fun initView() {
-        highlightsAdapter = HighlightsAdapter(requireActivity(), mutableListOf(), object : HighlightsAdapter.OnItemListener {
-            override fun onItemClick(data: HighlightsData,position: Int) {
-            }
-        })
+        highlightsAdapter = HighlightsAdapter(
+            requireActivity(),
+            mutableListOf(),
+            object : HighlightsAdapter.OnItemListener {
+                override fun onItemClick(data: YoutubeListResponse.Item, position: Int) {
+                    if (data.linkF.isNotEmpty()) {
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse(data.linkF)
+                        startActivity(intent)
+                    }
+                }
+            })
         binding.rvHighlights.adapter = highlightsAdapter
         viewModel.highlightsList.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
@@ -72,6 +82,10 @@ class HighlightsFragment(var highlightsType: HighlightsType) : Fragment() {
                 binding.llEmpty.visibility = View.VISIBLE
                 binding.rvHighlights.visibility = View.GONE
             }
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            showLoadingUI(it, requireActivity())
         }
 
 
@@ -103,9 +117,10 @@ class HighlightsFragment(var highlightsType: HighlightsType) : Fragment() {
 
         binding.srlNotUsed.setOnRefreshListener {
             loadData()
-            Log.e("viewModel", "srlNotUsed=$highlightsType")
+            //Log.e("viewModel", "srlNotUsed=$highlightsType")
             binding.srlNotUsed.finishRefresh()
         }
+
     }
 
     override fun onDestroy() {

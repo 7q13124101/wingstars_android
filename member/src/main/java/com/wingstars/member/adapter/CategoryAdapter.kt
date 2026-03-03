@@ -85,7 +85,7 @@ class CategoryAdapter     // -------------------------------------------
                }
            }
             binding.item.setOnClickListener {
-                Log.e("binding.item","pos=$pos  position=$position")
+                //Log.e("binding.item","pos=$pos  position=$position")
                 if (pos!=position){
                     pos = position
                     notifyDataSetChanged()

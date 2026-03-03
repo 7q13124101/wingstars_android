@@ -34,6 +34,31 @@ data class WSCalendarResponse(
         get() {
             return acf.Activity_time.st_date?: ""
         }
+    val st_dateFF: String
+        get() {
+            val rawDate = acf.Activity_time.st_date
+            if (rawDate.isNullOrEmpty()) return ""
+
+            return try {
+                val inputFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault())
+                val date = inputFormat.parse(rawDate) ?: return ""
+
+                val dateFormat = java.text.SimpleDateFormat("yyyy/MM/dd", java.util.Locale.getDefault())
+                val timeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+
+                val calendar = java.util.Calendar.getInstance()
+                calendar.time = date
+                val dayIndex = calendar.get(java.util.Calendar.DAY_OF_WEEK) - 1 // Chuyển về index 0-6
+                val weekDays = arrayOf("日", "一", "二", "三", "四", "五", "六") // Index 0 là Chủ nhật (日)
+                val dayStr = weekDays[dayIndex]
+
+                "${dateFormat.format(date)} ($dayStr) ${timeFormat.format(date)}"
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                rawDate
+            }
+        }
 
     val ed_dateF: String                   //acf.Activity_time.ed_date format
         get() {

@@ -1,25 +1,18 @@
 package com.wingstars.member.adapter
-
 import android.content.Context
 import android.view.LayoutInflater
-
 import android.view.ViewGroup
-
 import androidx.recyclerview.widget.RecyclerView
+import com.wingstars.base.net.beans.WSScheduleResponse
 import com.wingstars.member.R
 import com.wingstars.member.databinding.ItemMonthPersonalScheduleBinding
-
-
-data class ScheduleFunBean(
-    var date: String,
-    var teamName: String
-)
+import java.text.SimpleDateFormat
 
 
 class PersonalScheduleItemAdapter
     (
     private val context: Context,
-    private var dataList: MutableList<ScheduleFunBean>?
+    private var dataList: MutableList<WSScheduleResponse>?
 
 ) : RecyclerView.Adapter<PersonalScheduleItemAdapter.NormalItemViewHolder>() {
 
@@ -48,7 +41,7 @@ class PersonalScheduleItemAdapter
     }
 
     // -------------------------------------------
-    fun setList(list: MutableList<ScheduleFunBean>?) {
+    fun setList(list: MutableList<WSScheduleResponse>?) {
         dataList = if (dataList == null) {
             ArrayList()
         } else {
@@ -62,7 +55,7 @@ class PersonalScheduleItemAdapter
     }
 
 
-    fun getData(): MutableList<ScheduleFunBean>? {
+    fun getData(): MutableList<WSScheduleResponse>? {
         if (dataList == null) {
             return null
         }
@@ -74,18 +67,21 @@ class PersonalScheduleItemAdapter
     inner class NormalItemViewHolder(private val binding: ItemMonthPersonalScheduleBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun binding(position: Int) {
-            var data = dataList!![position]
+            val data = dataList!![position]
 
             if (position % 2 != 0) {
                 binding.tvMonthWeekly.setBackgroundColor(context.getColor(R.color.color_F9FAFB))
-                binding.tvTeamName.setBackgroundColor(context.getColor(R.color.color_F9FAFB))
+                binding.llTeamName.setBackgroundColor(context.getColor(R.color.color_F9FAFB))
             } else {
                 binding.tvMonthWeekly.setBackgroundColor(context.getColor(R.color.white))
-                binding.tvTeamName.setBackgroundColor(context.getColor(R.color.white))
+                binding.llTeamName.setBackgroundColor(context.getColor(R.color.white))
             }
 
-            binding.tvMonthWeekly.text = data.date
-            binding.tvTeamName.text = data.teamName
+            var dateFormatWeek = SimpleDateFormat("M/d(E)")
+            var dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            val dateUtil = dateFormat.parse(data.work_date)
+            binding.tvMonthWeekly.text = dateFormatWeek.format(dateUtil)
+            binding.tvTeamName.text = data.location
         }
 
         fun onBind(position: Int) {

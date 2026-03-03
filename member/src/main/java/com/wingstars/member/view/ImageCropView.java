@@ -166,7 +166,7 @@ public class ImageCropView extends View {
 
         float cropLeft = imageRect.centerX() - cropWidth / 2;
         float cropTop = imageRect.centerY() - cropHeight / 2;
-        Log.e("resetCropRect","left ="+cropLeft+",top="+cropTop+",right="+cropLeft + cropWidth+",bottom="+cropTop + cropHeight);
+        //Log.e("resetCropRect","left ="+cropLeft+",top="+cropTop+",right="+cropLeft + cropWidth+",bottom="+cropTop + cropHeight);
         cropRect.set(cropLeft, cropTop, cropLeft + cropWidth, cropTop + cropHeight);
     }
 

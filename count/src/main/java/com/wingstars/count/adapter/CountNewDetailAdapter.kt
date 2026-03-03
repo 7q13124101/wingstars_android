@@ -1,29 +1,23 @@
 package com.wingstars.count.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
+import android.view.View // Đừng quên import View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.wingstars.base.net.beans.CRMCouponsAvailableResponse
 import com.wingstars.count.R
 import com.wingstars.count.databinding.ItemGoodsNewDetailBinding
-import com.wingstars.count.viewmodel.CountNewDetailViewModel
-import java.util.ArrayList
 
 class CountNewDetailAdapter(
     private val context: Context,
-    private var dataList: MutableList<CountNewDetailViewModel>?,
-    private val onItemClick: (CountNewDetailViewModel) -> Unit
+    private var dataList: MutableList<CRMCouponsAvailableResponse> = mutableListOf(),
+    private val onItemClick: (CRMCouponsAvailableResponse) -> Unit
 ) : RecyclerView.Adapter<CountNewDetailAdapter.CountNewDetailViewHolder>() {
 
-    private var originalList: ArrayList<CountNewDetailViewModel> = ArrayList()
-
-    init {
-        if (dataList != null) {
-            originalList.addAll(dataList!!)
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountNewDetailViewHolder {
         val binding =
@@ -31,54 +25,25 @@ class CountNewDetailAdapter(
         return CountNewDetailViewHolder(binding)
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
     override fun onBindViewHolder(holder: CountNewDetailViewHolder, position: Int) {
-        holder.binding(position)
+        holder.bind(dataList[position])
     }
 
     override fun getItemCount(): Int {
-        return dataList?.size ?: 0
+        Log.d("Adapter", "ItemCount = ${dataList.size}")
+        return dataList.size
     }
 
     // -------------------------------------------
-    fun setList(list: MutableList<CountNewDetailViewModel>?) {
-        if (dataList == null) {
-            dataList = ArrayList()
-        } else {
-            dataList!!.clear()
-        }
-
-        originalList.clear()
-
-        if (list != null) {
-            dataList!!.addAll(list)
-            originalList.addAll(list)
+    fun setList(list: List<CRMCouponsAvailableResponse>?) {
+        dataList.clear()
+        if (!list.isNullOrEmpty()) {
+            dataList.addAll(list)
         }
         notifyDataSetChanged()
     }
 
-    fun filter(query: String) {
-        val text = query.trim()
-
-        if (dataList == null) dataList = ArrayList()
-        dataList!!.clear()
-
-        if (text.isEmpty()) {
-            dataList!!.addAll(originalList)
-        } else {
-            for (item in originalList) {
-                if (item.title.contains(text, ignoreCase = true) == true) {
-                    dataList!!.add(item)
-                }
-            }
-        }
-        notifyDataSetChanged()
-    }
-
-    fun getData(): MutableList<CountNewDetailViewModel>? {
+    fun getData(): MutableList<CRMCouponsAvailableResponse> {
         return dataList
     }
 
@@ -86,31 +51,47 @@ class CountNewDetailAdapter(
     inner class CountNewDetailViewHolder(private val binding: ItemGoodsNewDetailBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun binding(position: Int) {
-            val item = dataList?.getOrNull(position) ?: return
+        fun bind(item: CRMCouponsAvailableResponse) {
 
-            binding.tvGoodsName.text = item.title
-            binding.tvCountPrice.text = item.count
+            val totalIssued = item.totalIssued
+            val totalQuantity = item.totalQuantity
+            if (totalQuantity != -1 && totalIssued >= totalQuantity) {
+                binding.ivMaskImage.visibility = View.VISIBLE
+                binding.tvExchangeCompleted.visibility = View.VISIBLE
+            } else {
+                binding.ivMaskImage.visibility = View.GONE
+                binding.tvExchangeCompleted.visibility = View.GONE
+            }
 
-            Glide.with(context)
-                .load(item.image)
-                .placeholder(R.drawable.gift_details_image_background)
-                .error(R.drawable.gift_details_image_background)
-                .into(binding.ivGoodsImage)
+            // 1. Bind thông tin cơ bản
+            binding.tvGoodsName.text = item.couponName ?: ""
+            binding.tvCountPrice.text = "${item.pointCost}"
 
+            binding.ivGoodsImage.setImageDrawable(null)
+            if (!item.coverImage.isNullOrEmpty()) {
+                Glide.with(binding.ivGoodsImage)
+                    .load(item.coverImage)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .dontAnimate()
+                    .placeholder(R.drawable.gift_details_image_background)
+                    .error(R.drawable.gift_details_image_background)
+                    .into(binding.ivGoodsImage)
+            } else {
+                binding.ivGoodsImage.setImageResource(R.drawable.gift_details_image_background)
+            }
+
+//            val eligibleMembersStr = item.eligibleMembersStr
+//            if (!eligibleMembersStr.isNullOrEmpty() && eligibleMembersStr != context.getString(R.string.all_members)) {
+//                binding.label.visibility = View.VISIBLE
+//                binding.labelTv.text = eligibleMembersStr
+//            } else {
+//                binding.label.visibility = View.GONE
+//            }
+            // --------------------------------
+
+            // 4. Click Listener
             binding.root.setOnClickListener {
                 onItemClick(item)
-                }
-        }
-        fun setMarginLeft(view: View, left: Int) {
-            val params = view.layoutParams
-            if (params is RecyclerView.LayoutParams) {
-                params.leftMargin = left
-                view.layoutParams = params
-            } else if (params is ViewGroup.MarginLayoutParams) {
-                // Fallback
-                params.leftMargin = left
-                view.layoutParams = params
             }
         }
     }

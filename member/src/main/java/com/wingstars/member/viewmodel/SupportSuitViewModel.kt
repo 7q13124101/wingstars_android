@@ -34,7 +34,7 @@ class SupportSuitViewModel : ViewModel() {
     /**
      * @param type  1 應援服  2 活動服
      */
-    public fun wsFashionCategorys(type: Int=1) {
+    public fun wsFashionCategorys(type: Int=1,isShowLoading: Boolean = false) {
         loading.postValue(true)
         API.shared?.api?.let {
             val observer = it.wsFashionCategorys()
@@ -47,7 +47,7 @@ class SupportSuitViewModel : ViewModel() {
                         val typeData = next!!.find { it.name ==  if (type==1) "應援服" else "活動服" }
                         if (typeData!=null){
                             fashionIds = typeData.id
-                            wsFashions(typeData.id)
+                            wsFashions(typeData.id,isShowLoading)
                         }else{
                             loading.postValue(false)
                         }
@@ -80,7 +80,7 @@ class SupportSuitViewModel : ViewModel() {
                 { next ->
                     loading.postValue(false)
                     if (!next.isNullOrEmpty()) {
-                        Log.e("wsFashions", "${next}")
+                        //Log.e("wsFashions", "${next}")
                         if (!isLoadMore){
                             wsFashions.postValue(next)
                         }else{

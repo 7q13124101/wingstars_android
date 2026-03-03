@@ -74,7 +74,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
 
     override fun initView() {
         viewModel.takePhotosMembersList.observe(this) {
-            Log.e("takePhotosMembersList", "${Gson().toJson(it)}")
+            //Log.e("takePhotosMembersList", "${Gson().toJson(it)}")
             takePhotosMembersList.addAll(it)
             if (it.size > 0) {
                 onSelectImageUrl(0)
@@ -193,14 +193,11 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
     }
     private fun saveFile1(originalBitmap: Bitmap, frameBitmap: Bitmap, types: Int) {
 
-        Log.e("saveFile", "saveFile 开始保存")
+        //Log.e("saveFile", "saveFile 开始保存")
         try {
            // val frameBitmap = BitmapFactory.decodeResource(resources, int)  //R.drawable.fans1
-
-            Log.e(
-                "originalBitmap",
-                "frameBitmap.width = ${frameBitmap.width},frameBitmap.height=${frameBitmap.height}"
-            )
+            var width = ScreenUtils.getWidth(this@FanInteractionActivity)
+            //Log.e("originalBitmap", "frameBitmap.width = ${frameBitmap.width},frameBitmap.height=${frameBitmap.height}")
 // 2. 创建与边框图片同大小的Bitmap
             val result =
                 Bitmap.createBitmap(frameBitmap.width, frameBitmap.height, Bitmap.Config.ARGB_8888)
@@ -213,7 +210,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
                 50,
                 framePadding,
                 frameBitmap.width - 50,
-                frameBitmap.height - framePadding
+                frameBitmap.height - 50
             )
 
 
@@ -227,7 +224,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
             val tempDir = File(getExternalFilesDir(null), "temporary")
             if (!tempDir.exists()) {
                 if (!tempDir.mkdirs()) {
-                    Log.e("originalBitmap", "创建临时文件夹失败")
+                    //Log.e("originalBitmap", "创建临时文件夹失败")
                     return
                 }
             }
@@ -237,7 +234,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
             )*/
             val fusionFile = File(
                 tempDir,
-                "${DateUtils.getTimeStr(System.currentTimeMillis())}.jpg"
+                "${DateUtils.getTimeStr(System.currentTimeMillis())}.png"
             )
             var out = FileOutputStream(fusionFile);
             // 压缩Bitmap到PNG格式并写入文件
@@ -245,7 +242,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
             // 关闭输出流
             out.flush();
             out.close();
-            Log.e("saveFile", "saveFile 保存完成 fusionFile=" + fusionFile.path)
+            //Log.e("saveFile", "saveFile 保存完成 fusionFile=" + fusionFile.path)
             runOnUiThread {
                 //  binding.images.setImageBitmap(rotate)
                 closeLoadingDialog()
@@ -272,7 +269,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
                      saveImage(fusionFile.name,BitmapFactory.decodeFile(fusionFile.absolutePath))
                  }*/
         } catch (e: Exception) {
-            Log.e("saveFile", "saveFile 保存失败 e=" + e.message)
+            //Log.e("saveFile", "saveFile 保存失败 e=" + e.message)
         }
         // 1. 加载原始图片和边框图片
         /*  val originalBitmap = BitmapFactory.decodeResource(
@@ -342,9 +339,9 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
             val localUri = Uri.fromFile(file)
             val localIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri)
             sendBroadcast(localIntent)
-            Log.e("saveImage", "saveFile 保存成功")
+            //Log.e("saveImage", "saveFile 保存成功")
         } catch (e: IOException) {
-            Log.e("saveImage", "saveFile 保存失败 e=" + e.message)
+            //Log.e("saveImage", "saveFile 保存失败 e=" + e.message)
             e.printStackTrace()
         }
     }
@@ -368,7 +365,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
                     success: Boolean,
                     camera: Camera?
                 ) {
-                    Log.e("autoFocus", "success=$success")
+                    //Log.e("autoFocus", "success=$success")
                 }
 
             })
@@ -433,7 +430,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
 
     private fun setImage(width: Int, height: Int) {
 
-        Log.e("width", "width=" + width)
+        //Log.e("width", "width=" + width)
         val params = binding.frameLayout.layoutParams
         params.width = width
         params.height = height
@@ -476,7 +473,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
                     success: Boolean,
                     camera: Camera?
                 ) {
-                    Log.e("autoFocus", "success=$success")
+                    //Log.e("autoFocus", "success=$success")
                 }
 
             })
@@ -504,7 +501,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         } else {  // back-facing
             result = (mBackCameraInfo!!.orientation - degrees + 360) % 360;
         }
-        Log.e("result", "result=$result")
+        //Log.e("result", "result=$result")
         mCamera!!.setDisplayOrientation(result);
     }
 
@@ -523,23 +520,20 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         for (i in supportedSizes!!.indices) {
             val size = supportedSizes[i]
             if (size.width == size.height) {
-                Log.e("CameraSizes", "size Width: " + size.width + "size Height: " + size.height)
+                //Log.e("CameraSizes", "size Width: " + size.width + "size Height: " + size.height)
                 select = true
                 try {
                     parameters.setPreviewSize(size.width, size.height)
 
                     for (size1 in sizes) {
                         if (size1.width == size1.height) {
-                            Log.e(
-                                "CameraSizes",
-                                "size1 Width: " + size1.width + " size1 Height: " + size1.height
-                            )
+                            //Log.e("CameraSizes", "size1 Width: " + size1.width + " size1 Height: " + size1.height)
                             parameters.setPictureSize(size1.width, size1.height)
                             break
                         }
                     }
                     //   parameters.setPictureSize(size.width, size.height)
-                    Log.e("size.width", "${size.width}")
+                    //Log.e("size.width", "${size.width}")
                     if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
                         parameters.focusMode = Camera.Parameters.FOCUS_MODE_AUTO;
                     }
@@ -547,7 +541,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
                     mCamera.parameters = parameters
 
                 } catch (e: Exception) {
-                    Log.e("getSupportList", "e=${e.message}")
+                    //Log.e("getSupportList", "e=${e.message}")
                     val defaultParams: Camera.Parameters? = mCamera.getParameters()
                     mCamera.setParameters(defaultParams)
                 }
@@ -559,19 +553,13 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
             for (i in supportedSizes.indices) {
                 val size = supportedSizes[i]
                 if (size.width <= width && size.height <= width) {
-                    Log.e(
-                        "CameraSizes",
-                        "size Width: " + size.width + "size Height: " + size.height
-                    )
+                    //Log.e("CameraSizes", "size Width: " + size.width + "size Height: " + size.height)
                     try {
                         parameters.setPreviewSize(size.width, size.height)
                         // parameters.setPictureSize(size.width, size.height)
                         for (size1 in sizes) {
                             if (size1.width <= width && size1.height <= width) {
-                                Log.e(
-                                    "CameraSizes",
-                                    "size1 Width: " + size1.width + "size1 Height: " + size1.height
-                                )
+                                //Log.e("CameraSizes", "size1 Width: " + size1.width + "size1 Height: " + size1.height)
                                 parameters.setPictureSize(size1.width, size1.height)
                                 break
                             }

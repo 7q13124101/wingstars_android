@@ -133,7 +133,7 @@
                 android:text="@string/related_clothing"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list"
+                android:id="@+id/rv_related_clothing"
                 android:layout_marginBottom="@dimen/dp_20"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:layout_marginRight="@dimen/dp_20"

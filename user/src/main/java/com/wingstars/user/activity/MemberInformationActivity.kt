@@ -7,13 +7,26 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.view.WindowInsetsControllerCompat
 import com.wingstars.base.base.BaseActivity
+import com.wingstars.base.net.API
+import com.wingstars.base.net.ApiService
+import com.wingstars.base.net.NetBase
+import com.wingstars.base.net.beans.CRMBaseResponse
+import com.wingstars.base.net.beans.CRMDeleteRespone
+import com.wingstars.base.utils.MMKVManagement
+import com.wingstars.base.view.UpLoadingDialog
+import com.wingstars.login.LoginActivity
 import com.wingstars.user.utils.KeyboardUtils
 import com.wingstars.user.databinding.ActivityMemberInformationBinding
 import com.wingstars.user.dialog.DeleteAccountDialog
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class MemberInformationActivity : BaseActivity() {
     private lateinit var binding: ActivityMemberInformationBinding
@@ -33,9 +46,7 @@ class MemberInformationActivity : BaseActivity() {
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = true
         initView()
-
     }
-
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (ev.action == MotionEvent.ACTION_DOWN) {
             val view = currentFocus
@@ -52,12 +63,17 @@ class MemberInformationActivity : BaseActivity() {
     }
     override fun initView(){
         binding.ivBack.setOnClickListener { finish() }
-        binding.fFavMember.setOnClickListener {
+        binding.edtFavMember.setOnClickListener {
             chooseMemberLauncher.launch(Intent(this, ChooseMemberActivity::class.java))
         }
-        binding.fBarcodeCarrier.setOnClickListener {
+        binding.icArrow.setOnClickListener {
+            chooseMemberLauncher.launch(Intent(this, ChooseMemberActivity::class.java))
+        }
+        binding.edtBarcodeCarrier.setOnClickListener {
             barcodeLauncher.launch(Intent(this, MobileBarcodeCarrierActivity::class.java))
-
+        }
+        binding.ivArrowRight.setOnClickListener {
+            barcodeLauncher.launch(Intent(this, MobileBarcodeCarrierActivity::class.java))
         }
 
         binding.ivIdCard.setOnClickListener {
@@ -66,6 +82,8 @@ class MemberInformationActivity : BaseActivity() {
         }
         binding.edtDeleteAccount.setOnClickListener {
             DeleteAccountDialog(this) {
+                // Khi người dùng nhấn "Xác nhận" trên Dialog
+                deleteAccountApi()
             }.show()
         }
     }
@@ -89,16 +107,17 @@ class MemberInformationActivity : BaseActivity() {
         }
     }
     private fun loadMemberInfo() {
-        val pref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-        val isLoggedIn = pref.getBoolean("is_logged_in", false)
-        if (!isLoggedIn) return
-        val password = pref.getString("password", "")
-        val phone = pref.getString("phone", "")
-        val code = pref.getString("code", "")
-        val birthday = pref.getString("birthday", "")
-        val gender = pref.getString("gender", "")
+        if (!MMKVManagement.isLogin()) return
+        val password = MMKVManagement.getMemberPassword()
+        val phone = MMKVManagement.getMemberPhone()
+        val identity = MMKVManagement.getMemberIdentity()
+        val birthday = MMKVManagement.getMemberBirthday()
+        val gender = MMKVManagement.getMemberGender()
+        val name = MMKVManagement.getMemberName()
+        val mail = MMKVManagement.getMemberMail()
+        val barcodeNumber = MMKVManagement.getCrmMemberBarcode()
         binding.phoneMember.text = phone
-        binding.idCardNumber.text = code
+        binding.idCardNumber.text = identity
         binding.birthday.text = birthday
         binding.edtPassword.setText(password)
         binding.userGender.text = when (gender) {
@@ -106,14 +125,60 @@ class MemberInformationActivity : BaseActivity() {
             "F", "Female", "女" -> "女"
             else -> ""
         }
-        binding.tvUserName.text = pref.getString("name", "")
-        binding.tvUserMail.text = pref.getString("email", "")
+        binding.tvUserName.text = name
+        binding.tvUserMail.text = mail
+        binding.edtBarcodeCarrier.setText(barcodeNumber)
+    }
+    private fun deleteAccountApi() {
+        val userId = MMKVManagement.getCrmMemberCode()
+        if (userId.isEmpty()) {
+            Toast.makeText(this, "無法取得會員ID", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val loadingDialog = UpLoadingDialog.Builder(this).createDialog(this)
+        loadingDialog.show()
+
+        API.shared?.api?.let { apiService ->
+            val url = "${NetBase.HOST_CRM}/api/v1/basic/member/$userId"
+
+            apiService.crmMemberDelete(url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<CRMBaseResponse<CRMDeleteRespone>> {
+                    override fun onSubscribe(d: Disposable) {}
+                    override fun onNext(response: CRMBaseResponse<CRMDeleteRespone>) {
+                        loadingDialog.dismiss()
+                        if (response.success) {
+                            Toast.makeText(this@MemberInformationActivity, "帳號已成功刪除", Toast.LENGTH_SHORT).show()
+                            performLogoutAfterDelete()
+                        } else {
+                            Toast.makeText(this@MemberInformationActivity, response.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onError(e: Throwable) {
+                        loadingDialog.dismiss()
+                        Toast.makeText(this@MemberInformationActivity, "網路錯誤: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onComplete() {
+                        loadingDialog.dismiss()
+                    }
+                })
+        }
+    }
+
+    private fun performLogoutAfterDelete() {
+        val mmkv = com.tencent.mmkv.MMKV.defaultMMKV()
+        mmkv.clearAll()
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
     override fun onResume() {
         super.onResume()
         loadMemberInfo()
     }
-
-
-
 }

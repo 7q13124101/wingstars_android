@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.addTextChangedListener
 import com.wingstars.base.base.BaseActivity
+import com.wingstars.base.utils.MMKVManagement
 import com.wingstars.user.utils.KeyboardUtils
 import com.wingstars.user.R
 import com.wingstars.user.databinding.ActivityMobileBarcodeCarrierBinding
@@ -21,6 +22,10 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
         initView()
     }
     override fun initView() {
+        val barcodeNumber = MMKVManagement.getCrmMemberBarcode()
+        if(barcodeNumber.isNotEmpty())
+        binding.edtMobile.setText(barcodeNumber)
+
         binding.ivBack.setOnClickListener { finish() }
         binding.rlMobile.setOnClickListener {
             binding.edtMobile.requestFocus()
@@ -51,8 +56,15 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
         }
         binding.btnSave.setOnClickListener {
             val mobile = binding.edtMobile.text.toString().trim()
+
+            // 1. Lưu vào MMKV (Sử dụng đúng Key mà MMKVManagement đang dùng để đọc)
+            // Giả sử MMKVManagement dùng key "barcode_number"
+            com.tencent.mmkv.MMKV.defaultMMKV().encode("crm_member_code", mobile)
+
+            // 2. (Tùy chọn) Vẫn giữ lại SharedPreferences nếu các phần khác của App cần
             val pref = getSharedPreferences("user_prefs", MODE_PRIVATE)
             pref.edit().putString("barcode_number", mobile).apply()
+
             val intent = Intent()
             intent.putExtra("mobile_number", mobile)
             setResult(RESULT_OK, intent)

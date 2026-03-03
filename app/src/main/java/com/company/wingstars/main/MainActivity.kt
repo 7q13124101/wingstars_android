@@ -19,7 +19,6 @@ import com.wingstars.count.fragment.CountFragment
 import com.wingstars.home.fragment.HomeFragment
 import com.wingstars.member.activity.FanInteractionActivity
 import com.wingstars.member.fragment.MemberFragment
-import com.wingstars.net.beans.request_respone.RetrofitClient
 import com.wingstars.user.fragment.UserFragment
 
 class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClickListener,
@@ -31,7 +30,6 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        RetrofitClient.appContext = this
         binding = ActivityMainBinding.inflate(layoutInflater)
 
 
@@ -47,27 +45,14 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
     override fun initView() {
         binding.member.setOnClickListener(this)
         binding.tabGroup.setClickIntercepter { positions ->
-            Log.e("positions","positions=$positions")
+            //Log.e("positions","positions=$positions")
             if (position==4){
                 binding.icnoMember.setImageResource(R.mipmap.icon_main_member_not_select)
             }
             changeTab(positions)
             false
         }
-        val isLogin = MMKV.defaultMMKV().decodeBool("isLogin", false)
 
-        if (isLogin) {
-            // === TRƯỜNG HỢP ĐÃ ĐĂNG NHẬP ===
-            Log.d("MainActivity", "Người dùng ĐÃ đăng nhập")
-
-            // 1. Lấy Token đã lưu
-            val token = MMKV.defaultMMKV().decodeString("crm_member_access_token")
-
-        } else {
-            // === TRƯỜNG HỢP CHƯA ĐĂNG NHẬP (KHÁCH) ===
-            Log.d("MainActivity", "Người dùng là KHÁCH (Chưa đăng nhập)")
-
-        }
         initFragment()
         defaultFragment()
     }
@@ -141,7 +126,7 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //  runOnUiThread { startActivity(Intent(this@MainActivity, FanInteractionActivity::class.java)) }
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                    Log.e("permissions","onRequestPermissionsResult permissions=$permissions")
+                    //Log.e("permissions","onRequestPermissionsResult permissions=$permissions")
                     if (permission==1){
                         runOnUiThread { startActivity(Intent(this@MainActivity, FanInteractionActivity::class.java)) }
                     }
@@ -175,7 +160,7 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
 
     override fun setPermissions(permissions: Int) {
         permission = permissions
-        Log.e("setPermissions","setPermissions=$permissions")
+        //Log.e("setPermissions","setPermissions=$permissions")
     }
 
 

@@ -176,7 +176,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_goods_list"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         app:spanCount="1"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:listitem="@layout/item_goods_list"/>
@@ -209,7 +209,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/count_none_gift"
+                    android:text="@string/count_none_exchange"
                     android:textColor="@color/color_A3A3A3"
                     android:textSize="@dimen/sp_14" />
             </LinearLayout>

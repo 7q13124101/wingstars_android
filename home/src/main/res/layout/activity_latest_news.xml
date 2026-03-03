@@ -11,7 +11,7 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/latest_news"
+        app:title="@string/news_title"
         tools:context=".activity.StyleOutfitsActivity"/>
 
     <androidx.viewpager2.widget.ViewPager2

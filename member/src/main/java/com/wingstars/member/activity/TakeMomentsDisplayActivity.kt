@@ -318,9 +318,9 @@ class TakeMomentsDisplayActivity : BaseActivity(),OnClickListener {
             val localUri = Uri.fromFile(file)
             val localIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri)
             sendBroadcast(localIntent)
-            Log.e("saveImage", "saveFile 保存成功" )
+            //Log.e("saveImage", "saveFile 保存成功" )
         } catch (e: IOException) {
-            Log.e("saveImage", "saveFile 保存失败 e=" + e.message)
+            //Log.e("saveImage", "saveFile 保存失败 e=" + e.message)
             e.printStackTrace()
         }
         runOnUiThread {

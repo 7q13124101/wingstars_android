@@ -36,7 +36,7 @@ class RankExplanationActivity : BaseActivity() {
 
         // 2. 安全强转并判空（避免 ClassCastException/NullPointerException）
         val productList: List<WSRankBean> = serializableList as? ArrayList<WSRankBean> ?: emptyList()
-        Log.e("productList","${Gson().toJson(productList)}")
+        //Log.e("productList","${Gson().toJson(productList)}")
         viewModel = ViewModelProvider(this)[RankExplanationViewModel::class.java]
         var adapter = RankExplanationListAdapter(this, productList.toMutableList())
         binding.explanationList.adapter = adapter

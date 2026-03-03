@@ -14,9 +14,8 @@
     <ImageView
         android:id="@+id/img_member"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="170dp"
         android:src="@drawable/ic_02"
-        android:padding="10dp"
         android:scaleType="centerInside" />
 
 </FrameLayout>

@@ -24,7 +24,7 @@
             android:id="@+id/tvMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="您尚未註冊，請先註冊會員"
+            android:text="@string/error_phone_login"
             android:textSize="16sp"
             android:textColor="@color/text_tittle"
             android:gravity="center"

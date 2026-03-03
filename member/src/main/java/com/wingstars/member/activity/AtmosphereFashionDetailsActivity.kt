@@ -1,13 +1,10 @@
 package com.wingstars.member.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.view.View
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -24,9 +21,8 @@ import com.wingstars.member.adapter.SmallCommodityAdapter
 import com.wingstars.member.adapter.SupportSuitAdapter
 import com.wingstars.member.databinding.ActivityAtmosphereFashionDetailsBinding
 import com.wingstars.member.viewmodel.AtmosphereFashionDetailsViewModel
-import com.wingstars.member.viewmodel.MemberViewModel
+import com.wingstars.member.viewmodel.SupportSuitViewModel
 import com.youth.banner.listener.OnPageChangeListener
-import kotlin.math.PI
 
 class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnItemListener {
     private lateinit var binding: ActivityAtmosphereFashionDetailsBinding
@@ -34,6 +30,7 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
     private var recommend: MutableList<Recommend>?=null
     private var smallCommodityAdapter:SmallCommodityAdapter?=null
     private lateinit var viewModel: AtmosphereFashionDetailsViewModel
+    private lateinit var viewModelSuit: SupportSuitViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAtmosphereFashionDetailsBinding.inflate(layoutInflater)
@@ -57,7 +54,7 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
                  recommend = mutableListOf<Recommend>()
                  for (j in 1..5){
                      val recommend1 = acf.recommend(j)
-                     Log.e("recommend1","$recommend1")
+                     //Log.e("recommend1","$recommend1")
                      if (recommend1!=null){
                          recommend!!.add(recommend1)
                      }
@@ -66,11 +63,11 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
                     if (smallCommodityAdapter==null){
                         smallCommodityAdapter = SmallCommodityAdapter(
                             this@AtmosphereFashionDetailsActivity,
-                            mutableListOf(recommend!![0])
+                            recommend!!.toMutableList()
                         )
                         binding.smallCommodityList.adapter  = smallCommodityAdapter
                     }else{
-                        smallCommodityAdapter!!.setList(mutableListOf(recommend!![0]))
+                        smallCommodityAdapter!!.setList(recommend!!)
                     }
                 }
 
@@ -96,8 +93,15 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
                         }
 
                     }
-                    Log.e("recommend","${Gson().toJson(recommend)}")
-                    binding.productList.adapter  = ProductListAdapter(this, recommend)
+                    //Log.e("recommend","${Gson().toJson(recommend)}")
+                    binding.productList.adapter  = ProductListAdapter(this, recommend,object : ProductListAdapter.OnItemListener{
+                        override fun onItemClick(data: Recommend, position: Int) {
+                                val intent = Intent(this@AtmosphereFashionDetailsActivity, WebActivity::class.java)
+                                intent.putExtra("title",data.product_titleF)
+                                intent.putExtra("webUrl",data.product_urlF)
+                                startActivity(intent)
+                            }
+                        })
                     binding.banner.addBannerLifecycleObserver(this)
                         .setAdapter(ActivityImagesAdapter(imagesList, this@AtmosphereFashionDetailsActivity))
 
@@ -128,7 +132,7 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
             override fun onPageSelected(position: Int) {
                 adapter!!.setPos(position)
                 if (position<=recommend!!.size-1){
-                    if (smallCommodityAdapter==null){
+                    /*if (smallCommodityAdapter==null){
                         smallCommodityAdapter = SmallCommodityAdapter(
                             this@AtmosphereFashionDetailsActivity,
                             mutableListOf(recommend!![position])
@@ -136,7 +140,7 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
                         binding.smallCommodityList.adapter  = smallCommodityAdapter
                     }else{
                         smallCommodityAdapter!!.setList(mutableListOf(recommend!![position]))
-                    }
+                    }*/
 
                 }
 
@@ -147,19 +151,41 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
             }
 
         })
-      //  var image = mutableListOf(R.mipmap.ic_demo2,R.mipmap.ic_demo2)
-
-       // var image1 = mutableListOf(R.mipmap.ic_demo2,R.mipmap.ic_demo2,R.mipmap.ic_demo2)
 
 
 
-        val list = mutableListOf("1","2")
-        var width = ScreenUtils.getWidth(this)
-        var smallwidth  = width - DPUtils.dpToPx(50f,this).toInt()
-        var smallwidths = smallwidth/2
-        var smallhight = smallwidths.toInt()*1.585
-     /*   binding.list.adapter = SupportSuitAdapter(this, list,smallwidths.toInt()
-            ,smallhight.toInt(),this)*/
+        //init 相關服飾 Adapter
+        viewModelSuit =ViewModelProvider(this)[SupportSuitViewModel::class.java]
+        viewModelSuit.PER_PAGE=4 //最多取4个2x2显示，不用左右滑动
+        viewModelSuit.loading.observe(this) {
+            showLoadingUI(it, this)
+        }
+        val fashionType = intent.getIntExtra("fashionType", 1)  //1 應援服  2 活動服
+        viewModelSuit.wsFashionCategorys(fashionType,true)
+
+        viewModelSuit.wsFashions.observe(this) {
+            it.forEach { data ->
+                val fashionCategoryF = data.fashion_categoryF
+                val wsRankDataList = viewModelSuit.wsFashionCategorysData.value
+                val typeData = wsRankDataList!!.find { it.id == fashionCategoryF }
+                if (typeData != null) {
+                    data.type = when (typeData.name.trim()) {
+                        "應援服" -> 1
+                        "活動服" -> 2
+                        else -> 0
+                    }
+
+                }
+            }
+
+            val width = ScreenUtils.getWidth(this)
+            val smallWidth = width - DPUtils.dpToPx(50f, this).toInt()
+            val smallWidths = smallWidth / 2
+            val smallHeight = smallWidths.toInt() * 1.585
+            binding.rvRelatedClothing.adapter = SupportSuitAdapter(
+                this, it, smallWidths.toInt(), smallHeight.toInt(), this
+            )
+        }
     }
 
 
@@ -172,7 +198,7 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
         v?.layoutParams = params
     }
 
-    override fun onItemClick(position: Int) {
+    override fun onItemClick(memberId: Int,fashionType: Int) {
 
     }
 

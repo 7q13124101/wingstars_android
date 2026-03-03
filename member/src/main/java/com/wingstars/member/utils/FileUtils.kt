@@ -14,7 +14,7 @@ class FileUtils {
                 if (children != null) {
                     for (child in children) {
                         val path = child.path
-                        Log.e("deleteAllFiles","path=${path}")
+                        //Log.e("deleteAllFiles","path=${path}")
                         if (child.isDirectory()) {
                             clearDirectory(child)
                         } else {
@@ -32,7 +32,7 @@ class FileUtils {
             val tempDir = File(file, folderName)
             if (!tempDir.exists()) {
                 if (!tempDir.mkdirs()) {
-                    Log.e("originalBitmap", "创建临时文件夹失败")
+                    //Log.e("originalBitmap", "创建临时文件夹失败")
                     return null
                 }
             }
@@ -45,13 +45,13 @@ class FileUtils {
             if (directory.exists() && directory.isDirectory()) {
                 val files = directory.listFiles()
                 for (file in files!!) {
-                    Log.e("getFileList", "file=${file.path}")
+                    //Log.e("getFileList", "file=${file.path}")
                     imageData.add(file.path)
                 }
             }else{
-                Log.e("getFileList", "path=$path 不存在")
+                //Log.e("getFileList", "path=$path 不存在")
             }
-            Log.e("getFileList", "imageData=${Gson().toJson(imageData)}")
+            //Log.e("getFileList", "imageData=${Gson().toJson(imageData)}")
             return imageData
         }
 

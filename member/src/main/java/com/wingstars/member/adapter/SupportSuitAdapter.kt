@@ -82,7 +82,7 @@ class SupportSuitAdapter     // -------------------------------------------
             var imageType =  if (data.type==1){ R.mipmap.ic_member_jersey} else {R.mipmap.ic_member_activity}
             binding.imageType.setImageResource(imageType)
             binding.title.text = "${data.titleF}"
-            binding.item.setOnClickListener { listener.onItemClick(data.id) }
+            binding.item.setOnClickListener { listener.onItemClick(data.id,data.type) }
 
         }
 
@@ -108,7 +108,7 @@ class SupportSuitAdapter     // -------------------------------------------
 
 
     interface OnItemListener {
-        fun onItemClick(memberId: Int)
+        fun onItemClick(memberId: Int,fashionType: Int)
     }
 
 

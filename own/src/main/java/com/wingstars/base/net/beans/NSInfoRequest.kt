@@ -24,7 +24,7 @@ data class NSInfoRequest(
 
 //            Log.d("NSInfoRequest", "loginTime: ${loginTime}")
         } catch (ex: Exception) {
-            Log.e("NSInfoRequest", "Exception msg:${ex.message}")
+            //Log.e("NSInfoRequest", "Exception msg:${ex.message}")
         }
     }
 }

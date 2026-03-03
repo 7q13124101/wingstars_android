@@ -7,8 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.wingstars.base.base.BaseFragment
+import com.wingstars.base.net.beans.WSScheduleResponse
 import com.wingstars.member.adapter.PersonalScheduleItemAdapter
-import com.wingstars.member.adapter.ScheduleFunBean
 import com.wingstars.member.adapter.SelectTeamAdapter
 import com.wingstars.member.adapter.SelectTeamFunBean
 import com.wingstars.member.databinding.FragmentPersonalScheduleBinding
@@ -17,9 +18,10 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
-class PersonalScheduleFragment : Fragment() {
+class PersonalScheduleFragment : BaseFragment() {
 
     private var wingStarsMonth = SimpleDateFormat("yyyy/MM").format(Date())
+    private lateinit var wingStarsNumber: String
     private lateinit var binding: FragmentPersonalScheduleBinding
     private lateinit var viewModel: PersonalScheduleViewModel
 
@@ -39,7 +41,6 @@ class PersonalScheduleFragment : Fragment() {
 
     private fun loadData() {
         viewModel.getTeamCategoryList()
-        viewModel.getPersonalScheduleList()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,8 +54,9 @@ class PersonalScheduleFragment : Fragment() {
 
         viewModel = ViewModelProvider(this)[PersonalScheduleViewModel::class.java]
 
+        wingStarsNumber = arguments?.getString("wing_stars_number").toString()
         wingStarsMonth = arguments?.getString("wing_stars_month").toString()
-        viewModel.getWingStarsScheduleJson(wingStarsMonth)
+        viewModel.getWingStarsSchedule(wingStarsNumber, wingStarsMonth)
 
         initView()
     }
@@ -89,22 +91,12 @@ class PersonalScheduleFragment : Fragment() {
         binding.ivPrev.setOnClickListener {
             wingStarsMonth = changeMonth(wingStarsMonth, -1)
             binding.tvDate.text = wingStarsMonth
-
-            if (viewModel.dataDTOArrayList.value.isNullOrEmpty()) {
-                viewModel.getWingStarsScheduleJson(wingStarsMonth)
-            } else {
-                viewModel.getOtherMonthData(wingStarsMonth)
-            }
+            viewModel.getWingStarsSchedule(wingStarsNumber, wingStarsMonth)
         }
         binding.ivNext.setOnClickListener {
             wingStarsMonth = changeMonth(wingStarsMonth, 1)
             binding.tvDate.text = wingStarsMonth
-
-            if (viewModel.dataDTOArrayList.value.isNullOrEmpty()) {
-                viewModel.getWingStarsScheduleJson(wingStarsMonth)
-            } else {
-                viewModel.getOtherMonthData(wingStarsMonth)
-            }
+            viewModel.getWingStarsSchedule(wingStarsNumber, wingStarsMonth)
         }
     }
 
@@ -119,7 +111,7 @@ class PersonalScheduleFragment : Fragment() {
             mutableListOf(),
             object : SelectTeamAdapter.OnItemListener {
                 override fun onItemClick(data: SelectTeamFunBean, position: Int) {
-                    viewModel.setScheduleListByTeam(data)
+                    //viewModel.setScheduleListByTeam(data)
                 }
             })
         binding.rvTeamList.layoutManager =
@@ -129,7 +121,7 @@ class PersonalScheduleFragment : Fragment() {
         //set team category adapter data.
         viewModel.teamCategoryList.observe(viewLifecycleOwner) {
             teamCategoryAdapter.setList(it)
-            viewModel.setScheduleListByTeam(it[0])
+            //viewModel.setScheduleListByTeam(it[0])
         }
 
         //create personal Schedule adapter.
@@ -147,9 +139,12 @@ class PersonalScheduleFragment : Fragment() {
             binding.srlPersonalScheduleRecord.finishRefresh()
         }
 
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            showLoadingUI(it, requireActivity())
+        }
     }
 
-    private fun setScheduleListData(it: MutableList<ScheduleFunBean>?) {
+    private fun setScheduleListData(it: MutableList<WSScheduleResponse>?) {
         if (it.isNullOrEmpty()) {
             binding.slWsSchedule.visibility = View.GONE
             binding.llWsWeeklyEmpty.visibility = View.VISIBLE

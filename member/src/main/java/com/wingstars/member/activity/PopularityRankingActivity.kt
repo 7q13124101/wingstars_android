@@ -56,6 +56,9 @@ class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
             Toast.makeText(this,"$it", Toast.LENGTH_SHORT).show()
         }
         viewModel.wsRankData.observe(this) {
+            if (wsNewRankData.size!=0){
+                wsNewRankData.clear()
+            }
             wsNewRankData.addAll(it)
             setScreening(type)
         }
@@ -71,7 +74,7 @@ class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
     private fun setScreening(name: String) {
         if (!wsNewRankData.isNullOrEmpty()) {
             val filter = wsNewRankData.filter { it.title == name }
-            Log.e("setScreening", "${Gson().toJson(filter)}")
+            //Log.e("setScreening", "${Gson().toJson(filter)}")
             if (!filter.isNullOrEmpty()) {
                 binding.rankList.visibility = View.VISIBLE
                 binding.notData.visibility = View.GONE
@@ -179,7 +182,14 @@ class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
         borderColor2 = getColor(R.color.transparent)
         toInt = DPUtils.dpToPx(4f, this)
         toInt1 = DPUtils.dpToPx(3f, this)
-        type = getString(R.string.support_popularity_list)
+        val stringExtra = intent.getStringExtra("type")
+        if (stringExtra==null){
+            type = getString(R.string.support_popularity_list)
+        }else{
+            type = stringExtra
+            binding.type.text = "$type"
+        }
+
         binding.title.setBackClickListener { finish() }
         binding.title.setRightIconClickListener {
            var intent =  Intent(this, RankExplanationActivity::class.java)

@@ -153,4 +153,5 @@
     <dimen name="dp_45">45dp</dimen>
     <dimen name="pt_270">270pt</dimen>
     <dimen name="dp_68">68dp</dimen>
+    <dimen name="dp_64">64dp</dimen>
 </resources>

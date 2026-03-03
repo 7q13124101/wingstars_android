@@ -17,7 +17,7 @@
         app:hl_strokeWith="@dimen/dp_1">
 
         <ImageView
-            android:id="@+id/images"
+            android:id="@+id/iv_video_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"

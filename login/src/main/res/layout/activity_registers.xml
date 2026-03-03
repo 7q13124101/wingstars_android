@@ -3,18 +3,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:fitsSystemWindows="true"
         tools:context="com.wingstars.register.RegisterActivity">
 
-
         <RelativeLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_64"
-            android:background="@color/white">
+            android:background="@color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -35,23 +38,21 @@
                     android:layout_height="@dimen/dp_30"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dp_20"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
                     android:src="@drawable/ic_arrow_left"
                     android:visibility="visible" />
             </RelativeLayout>
-
         </RelativeLayout>
-
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/ns_register"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:background="@color/white"
-            android:scrollbars="none">
+            android:scrollbars="none"
+            app:layout_constraintTop_toBottomOf="@id/header"
+            app:layout_constraintBottom_toTopOf="@id/btn_confirm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -119,6 +120,8 @@
                                 android:id="@+id/tv_resend"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="4dp"
                                 android:layout_toEndOf="@id/tv_code_timer"
                                 android:text=" 重新傳送"
                                 android:textColor="@color/text_subtitle"
@@ -126,9 +129,6 @@
                         </RelativeLayout>
 
                     </FrameLayout>
-
-
-
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:layout_marginRight="@dimen/dp_20"
@@ -193,17 +193,6 @@
                         android:textColorHint="@color/gray_400"
                         android:textSize="@dimen/sp_14" />
                 </RelativeLayout>
-                <!--                    android:id="@+id/tv_error_name"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginTop="4dp"-->
-                <!--                    android:text=""-->
-                <!--                    android:textColor="@android:color/holo_red_light"-->
-                <!--                    android:textSize="12sp"-->
-                <!--                    android:visibility="gone"-->
-                <!--                    android:paddingBottom="@dimen/pt_12"/>-->
-                <!--          -->
-
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -386,118 +375,6 @@
                         android:textSize="@dimen/sp_14" />
                 </RelativeLayout>
 
-                <!--                <LinearLayout-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_gravity="center"-->
-                <!--                    android:layout_marginTop="@dimen/dp_20"-->
-                <!--                    android:orientation="horizontal">-->
-
-                <!--                    <TextView-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_alignParentLeft="true"-->
-                <!--                        android:gravity="center"-->
-                <!--                        android:text="@string/id_card"-->
-                <!--                        android:textColor="@color/text_tittle"-->
-                <!--                        android:textSize="@dimen/sp_14" />-->
-
-                <!--                    <ImageView-->
-                <!--                        android:id="@+id/iv_card_circle"-->
-                <!--                        android:layout_width="@dimen/dp_20"-->
-                <!--                        android:layout_height="@dimen/dp_20"-->
-                <!--                        android:layout_marginLeft="@dimen/pt_6"-->
-                <!--                        android:src="@drawable/information_circle" />-->
-                <!--                </LinearLayout>-->
-
-                <!--                <RelativeLayout-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginTop="@dimen/pt_8"-->
-                <!--                    android:background="@drawable/bg_input"-->
-                <!--                    android:paddingLeft="@dimen/pt_16"-->
-                <!--                    android:paddingTop="@dimen/pt_12"-->
-                <!--                    android:paddingRight="@dimen/pt_16"-->
-                <!--                    android:paddingBottom="@dimen/pt_12">-->
-
-                <!--                    <androidx.appcompat.widget.AppCompatEditText-->
-                <!--                        android:id="@+id/edt_id_card"-->
-                <!--                        android:layout_width="match_parent"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:background="@null"-->
-                <!--                        android:hint="@string/hint_id_card"-->
-                <!--                        android:imeOptions="actionNext"-->
-                <!--                        android:nextFocusForward="@id/edt_birthday"-->
-                <!--                        android:singleLine="true"-->
-                <!--                        android:textColor="@color/text_tittle"-->
-                <!--                        android:textColorHint="@color/gray_400"-->
-                <!--                        android:textSize="@dimen/sp_14" />-->
-                <!--                </RelativeLayout>-->
-
-                <!--                <LinearLayout-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_gravity="center"-->
-                <!--                    android:layout_marginTop="@dimen/dp_20"-->
-                <!--                    android:orientation="horizontal">-->
-
-                <!--                    <TextView-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:gravity="center"-->
-                <!--                        android:text="@string/birthday"-->
-                <!--                        android:textColor="@color/text_tittle"-->
-                <!--                        android:textSize="@dimen/sp_14" />-->
-
-                <!--                    <ImageView-->
-                <!--                        android:id="@+id/iv_birthday_circle"-->
-                <!--                        android:layout_width="@dimen/dp_20"-->
-                <!--                        android:layout_height="@dimen/dp_20"-->
-                <!--                        android:layout_marginLeft="@dimen/pt_6"-->
-                <!--                        android:src="@drawable/information_circle" />-->
-                <!--                </LinearLayout>-->
-
-                <!--                <RelativeLayout-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginTop="@dimen/pt_8"-->
-                <!--                    android:background="@drawable/bg_input"-->
-                <!--                    android:paddingLeft="@dimen/pt_16"-->
-                <!--                    android:paddingTop="@dimen/pt_12"-->
-                <!--                    android:paddingRight="@dimen/pt_16"-->
-                <!--                    android:paddingBottom="@dimen/pt_12">-->
-
-                <!--                    <ImageView-->
-                <!--                        android:id="@+id/iv_select_birth"-->
-                <!--                        android:layout_width="20dp"-->
-                <!--                        android:layout_height="20dp"-->
-                <!--                        android:layout_alignParentRight="true"-->
-                <!--                        android:layout_centerVertical="true"-->
-                <!--                        android:src="@drawable/ic_calendar_green" />-->
-
-                <!--                    <androidx.appcompat.widget.AppCompatEditText-->
-                <!--                        android:id="@+id/edt_birthday"-->
-                <!--                        android:layout_width="match_parent"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_toLeftOf="@id/iv_select_birth"-->
-                <!--                        android:background="@null"-->
-                <!--                        android:focusable="false"-->
-                <!--                        android:hint="@string/hint_birthday"-->
-                <!--                        android:imeOptions="actionDone"-->
-                <!--                        android:singleLine="true"-->
-                <!--                        android:textColor="@color/text_tittle"-->
-                <!--                        android:textColorHint="@color/gray_400"-->
-                <!--                        android:textSize="@dimen/sp_14" />-->
-                <!--                </RelativeLayout>-->
-
-                <!--                <TextView-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginTop="@dimen/pt_8"-->
-                <!--                    android:text="@string/note_birthday"-->
-                <!--                    android:textColor="@color/colo"-->
-                <!--                    android:textSize="@dimen/sp_12" />-->
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -536,12 +413,12 @@
                         android:button="@null"
                         android:checked="true"
                         android:drawableLeft="@drawable/checkboxes__sexs"
-                        android:drawablePadding="@dimen/pt_8"
+                        android:drawablePadding="10dp"
                         android:text="@string/sex_male"
                         android:textColor="@color/gray_400" />
 
                     <View
-                        android:layout_width="@dimen/pt_30"
+                        android:layout_width="@dimen/dp_24"
                         android:layout_height="match_parent" />
 
                     <androidx.appcompat.widget.AppCompatRadioButton
@@ -552,12 +429,12 @@
                         android:button="@null"
                         android:checked="false"
                         android:drawableLeft="@drawable/checkboxes__sexs"
-                        android:drawablePadding="@dimen/pt_8"
+                        android:drawablePadding="10dp"
                         android:text="@string/sex_female"
                         android:textColor="@color/gray_400" />
 
                     <View
-                        android:layout_width="@dimen/pt_30"
+                        android:layout_width="@dimen/dp_24"
                         android:layout_height="match_parent" />
 
                     <androidx.appcompat.widget.AppCompatRadioButton
@@ -568,7 +445,7 @@
                         android:button="@null"
                         android:checked="false"
                         android:drawableLeft="@drawable/checkboxes__sexs"
-                        android:drawablePadding="@dimen/pt_8"
+                        android:drawablePadding="10dp"
                         android:text="@string/sex_secrecy"
                         android:textColor="@color/gray_400" />
                 </RadioGroup>
@@ -576,7 +453,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pt_8">
+                    android:layout_marginTop="30dp">
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/rb_privacy_policy"
@@ -585,7 +462,7 @@
                         android:layout_centerVertical="true"
                         android:button="@drawable/checkboxes_remember_pw"
                         android:checked="false"
-                        android:paddingStart="@dimen/pt_8"
+                        android:paddingStart="@dimen/dp_20"
                         android:text="@string/privacy_policy"
                         android:textColor="@color/gray_400" />
 
@@ -601,7 +478,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_12"
                     android:layout_marginBottom="@dimen/dp_68"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -614,8 +491,8 @@
                         android:background="@null"
                         android:button="@drawable/checkboxes_remember_pw"
                         android:checked="false"
-                        android:drawablePadding="@dimen/pt_8"
-                        android:paddingStart="@dimen/pt_8"
+                        android:drawablePadding="12dp"
+                        android:paddingStart="20dp"
                         android:text="@string/user_agreement"
                         android:textColor="@color/gray_400" />
 
@@ -629,71 +506,21 @@
                         android:textColor="@color/color_E2518D" />
                 </RelativeLayout>
 
-
-                <!--                <LinearLayout-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginTop="@dimen/pt_30"-->
-                <!--                    android:orientation="horizontal">-->
-
-                <!--                    <androidx.appcompat.widget.AppCompatCheckBox-->
-                <!--                        android:id="@+id/cb_agree_article"-->
-                <!--                        android:layout_width="@dimen/dp_20"-->
-                <!--                        android:layout_height="@dimen/dp_20"-->
-                <!--                        android:button="@drawable/checkboxes_remember_pw"-->
-                <!--                        android:checked="false" />-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/tv_agree_article"-->
-                <!--                        android:layout_width="0dp"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_marginLeft="@dimen/pt_8"-->
-                <!--                        android:layout_weight="1"-->
-                <!--                        android:text="@string/note_register"-->
-                <!--                        android:textColor="@color/black"-->
-                <!--                        android:textSize="@dimen/sp_14" />-->
-
-                <!--                </LinearLayout>-->
-
-                <!--                <LinearLayout-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginTop="@dimen/pt_30"-->
-                <!--                    android:orientation="horizontal">-->
-
-                <!--                    <androidx.appcompat.widget.AppCompatCheckBox-->
-                <!--                        android:id="@+id/cb_member_account_task"-->
-                <!--                        android:layout_width="@dimen/dp_20"-->
-                <!--                        android:layout_height="@dimen/dp_20"-->
-                <!--                        android:button="@drawable/checkbox_remember_psd"-->
-                <!--                        android:checked="false" />-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/tv_member_account_task"-->
-                <!--                        android:layout_width="0dp"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_marginLeft="@dimen/pt_8"-->
-                <!--                        android:layout_weight="1"-->
-                <!--                        android:text="@string/register_member_account_task"-->
-                <!--                        android:textColor="@color/color_B81B30"-->
-                <!--                        android:textSize="@dimen/sp_14"-->
-                <!--                        android:textStyle="bold" />-->
-
-                <!--                </LinearLayout>-->
-
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
-
         <LinearLayout
             android:id="@+id/ll_register_finish"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:background="@color/white"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/header"
+            app:layout_constraintBottom_toTopOf="@id/btn_confirm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
                 android:layout_width="@dimen/pt_190"
@@ -731,15 +558,12 @@
             android:layout_height="@dimen/dp_57"
             android:textSize="@dimen/sp_14"
             android:textColor="@color/gray_500"
-            android:text="@string/next_step"
+            android:text="確定"
             android:gravity="center"
-            android:background="@color/gray_200"/>
-
-        <View
-            android:id="@+id/bottom_view"
             android:background="@color/gray_200"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"/>
-    </LinearLayout>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

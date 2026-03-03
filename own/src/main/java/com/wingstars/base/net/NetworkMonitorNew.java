@@ -41,7 +41,7 @@ public class NetworkMonitorNew {
             try {
                 connectivityManager.registerNetworkCallback(request, networkCallback);
             } catch (SecurityException e) {
-                Log.e(TAG, "Network permission not granted", e);
+                //Log.e(TAG, "Network permission not granted", e);
             }
         }
     }
@@ -52,7 +52,7 @@ public class NetworkMonitorNew {
             try {
                 connectivityManager.unregisterNetworkCallback(networkCallback);
             } catch (IllegalArgumentException e) {
-                Log.e(TAG, "Network callback already unregistered", e);
+                //Log.e(TAG, "Network callback already unregistered", e);
             }
             networkCallback = null;
         }

@@ -8,9 +8,8 @@
     android:background="@drawable/bg_review_gradient">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_42"
-        android:layout_marginBottom="@dimen/dp_10">
+        android:layout_height="@dimen/dp_64"
+        android:layout_marginTop="@dimen/dp_42">
 
         <ImageView
             android:id="@+id/iv_icon"
@@ -38,13 +37,21 @@
                 android:text="@string/user_main_visitors"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                android:layout_marginTop="11dp"
                 android:textColor="@android:color/black"/>
 
+            <TextView
+                android:id="@+id/effective_date_general"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="一般訪客"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp"/>
             <TextView
                 android:id="@+id/effective_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="一般訪客"
+                android:text=""
                 android:textSize="12sp"
                 android:layout_marginTop="2dp"/>
         </LinearLayout>

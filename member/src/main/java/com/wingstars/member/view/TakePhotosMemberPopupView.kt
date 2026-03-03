@@ -109,7 +109,7 @@ class TakePhotosMemberPopupView(
     }
 
     override fun onItemClick(pos: Int) {
-        Log.e("onItemClick","pos=$pos")
+        //Log.e("onItemClick","pos=$pos")
         Thread(object: Runnable{
             override fun run() {
                 Thread.sleep(200)

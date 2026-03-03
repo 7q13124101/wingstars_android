@@ -78,7 +78,7 @@ class MemberIntroductionAdapter     // -----------------------------------------
             var data = dataList!![position]
 
             Glide.with(binding.ivGirlImage.context).clear(binding.ivGirlImage)
-            Log.e("data.urlF", "data.urlF=${data.urlF}")
+            //Log.e("data.urlF", "data.urlF=${data.urlF}")
             if (data.urlF.isNotEmpty()) {
                 Glide.with(context)
                     .load(data.urlF)

@@ -97,7 +97,7 @@ class GirlIntroductionAdapter     // -------------------------------------------
                 .into(binding.image)*/
 
             Glide.with(binding.image.context).clear(binding.image)
-            Log.e("data.urlF","data.urlF=${data.urlF}")
+            //Log.e("data.urlF","data.urlF=${data.urlF}")
             if (data.urlF.isNotEmpty()) {
                 Glide.with(context)
                     .load(data.urlF)

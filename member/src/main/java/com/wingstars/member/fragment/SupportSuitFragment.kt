@@ -70,7 +70,7 @@ class SupportSuitFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
         }
         binding.srlMemberIntroduction.setOnLoadMoreListener {
             binding.srlMemberIntroduction.finishLoadMore()
-            Log.e("isMore", "isMore=$isMore")
+            //Log.e("isMore", "isMore=$isMore")
             if (isMore) {
                 viewModel.wsFashions(isShowLoading = true, isLoadMore = true)
             }else{
@@ -144,12 +144,13 @@ class SupportSuitFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
 
 
 
-    override fun onItemClick(memberId: Int) {
+    override fun onItemClick(memberId: Int,fashionType: Int) {
         val intent = Intent(
             requireActivity(),
             AtmosphereFashionDetailsActivity::class.java
         )
         intent.putExtra("memberId", memberId)
+        intent.putExtra("fashionType", fashionType)
         startActivity(intent)
     }
 }

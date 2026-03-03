@@ -6,8 +6,11 @@ import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.wingstars.base.net.API
 import com.wingstars.base.net.NetBase
+import com.wingstars.base.net.beans.WSCalendarNResponse
 import com.wingstars.base.net.beans.WSCalendarResponse
+import com.wingstars.base.net.beans.WSFashionCategoryResponse
 import com.wingstars.base.net.beans.WSFashionResponse
+import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.net.beans.WSPostResponse
 import com.wingstars.base.net.beans.WSProductResponse
 import com.wingstars.base.net.beans.YoutubeUiData
@@ -16,6 +19,7 @@ import com.wingstars.member.bean.WSRankBean
 import com.wingstars.member.bean.WSRankBean.ACFBean
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.Calendar
 
 class HomeViewModel : ViewModel() {
 
@@ -23,19 +27,21 @@ class HomeViewModel : ViewModel() {
     val homeDataList = MutableLiveData<MutableList<Int>>()
     val newsDataList = MutableLiveData<MutableList<WSPostResponse>>()
     val memberDataList = MutableLiveData<MutableList<Int>>()
-    val calendarDataList = MutableLiveData<MutableList<WSCalendarResponse>>()
+
+    //    val calendarDataList = MutableLiveData<MutableList<WSCalendarResponse>>()
+    val calendarDataList = MutableLiveData<MutableList<WSCalendarNResponse>>()
+
+    val comingSoonDataList = MutableLiveData<MutableList<WSProductResponse>>()
     val productDataList = MutableLiveData<MutableList<WSProductResponse>>()
     val fashionDataList = MutableLiveData<MutableList<WSFashionResponse>>()
     var wsRankData = MutableLiveData<MutableList<WSMemberRankBean>>()
-
+    var wsFashions = MutableLiveData<MutableList<WSFashionResponse>>()
+    var wsFashionCategorysData = MutableLiveData<MutableList<WSFashionCategoryResponse>>()
+    var wsMembersData = MutableLiveData<MutableList<WSMemberResponse>>()
 
 
     var isLoading = MutableLiveData<Boolean>()
     var tip = MutableLiveData<String>()
-
-
-
-
 
 
     public fun getHomeData() {
@@ -49,15 +55,18 @@ class HomeViewModel : ViewModel() {
         val memberList = mutableListOf(1, 2, 3, 4, 5)
         memberDataList.postValue(memberList)
         getLatestNewsData()
-        getCalendarData()
+        getNewCalendarData()
+//        getCalendarData()
+        getComingSoonData()
         getProductsData()
         getFashionsData()
         getYoutubeData()
     }
+
     fun getLatestNewsData() {
         isLoading.postValue(true)
         API.shared?.api?.let {
-            val observerT =it.wsPosts()
+            val observerT = it.wsPosts()
             observerT?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
                 AndroidSchedulers.mainThread()
             )?.subscribe(
@@ -83,62 +92,111 @@ class HomeViewModel : ViewModel() {
 
         //utApi()
     }
-    fun getCalendarData() {
+
+    //    fun getCalendarData() {
+//        API.shared?.api?.let { api ->
+//            api.wsSchedule(3, 1)
+//                .subscribeOn(Schedulers.io())
+//                .map { list ->
+////                    list.filter { item -> isToday(item.st_dateF) }
+//                    list.filter { overlapsToday(it.st_dateF, it.ed_dateF) }
+//                }
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(
+//                    { todayList ->
+//                        Log.d("getWsCalendarsData", "today size=${todayList.size}")
+//                        calendarDataList.postValue(todayList as MutableList<WSCalendarResponse>?)
+//                    },
+//                    { error ->
+//                        Log.e("getWsCalendarsData", error.toString())
+//                        error.printStackTrace()
+//                    }
+//                )
+//        }
+//    }
+    fun getNewCalendarData() {
+        val date = Calendar.getInstance().get(Calendar.YEAR).toString() + "-" +
+                String.format("%02d", Calendar.getInstance().get(Calendar.MONTH) + 1) + "-" +
+                String.format("%02d",Calendar.getInstance().get(Calendar.DATE))
+        val monthParam = HashMap<String, String>().apply {
+            put("date", date)
+        }
+
+        API.shared?.api?.let {
+            val observer = it.wsCalendarN(monthParam)
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe({ next ->
+                val limitedList = next.take(3).toMutableList()
+                calendarDataList.postValue(limitedList)
+            }, { error ->
+                //Log.e("getWsCalendarsData", error.toString())
+
+                error.printStackTrace()
+            })
+        }
+    }
+
+    //即将贩售商品
+    fun getComingSoonData() {
         API.shared?.api?.let { api ->
-            val observer = api.wsSchedule(3,1)
+            val status = "future"
+            val observer = api.wsProducts(status, 10, 1)
             observer
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     { next ->
-                        Log.d("getWsCalendarsData", next.toString())
-                        calendarDataList.postValue(next)
+                        val list = mutableListOf<WSProductResponse>()
+                        list.addAll(next)
+                        comingSoonDataList.postValue(list)
                     },
                     { error ->
-                        Log.e("getWsCalendarsData", error.toString())
-
                         error.printStackTrace()
                     }
                 )
         }
     }
-    fun getProductsData(){
+
+    fun getProductsData() {
         API.shared?.api?.let { api ->
             val observer = api.wsProducts()
             observer
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    {next ->
-                            val list = mutableListOf<WSProductResponse>()
-                            list.addAll(next)
+                    { next ->
+                        val list = mutableListOf<WSProductResponse>()
+                        list.addAll(next)
                         productDataList.postValue(list)
                     },
-                    {error ->
+                    { error ->
                         error.printStackTrace()
                     }
                 )
         }
     }
-    fun getFashionsData(){
-        val  params = HashMap<String, Int>()
+
+    fun getFashionsData() {
+        val params = HashMap<String, Int>()
         API.shared?.api?.let { api ->
-            val observer = api.wsFashions(params, 6,1)
+            val observer = api.wsFashions(params, 6, 1)
             observer
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    {next ->
+                    { next ->
                         val list = mutableListOf<WSFashionResponse>()
                         list.addAll(next)
                         fashionDataList.postValue(list)
                     },
-                    {error ->
+                    { error ->
                         error.printStackTrace()
                     }
                 )
         }
     }
+
     public fun getRenderedList() {
         isLoading.postValue(true)
         API.shared?.api?.let {
@@ -150,25 +208,25 @@ class HomeViewModel : ViewModel() {
                     if (!next.isNullOrEmpty()) {
                         var data = mutableListOf<WSMemberRankBean>()
 
-                        val latestBoard = next[0]
+                        next.forEach { board ->
+                            val title = board.title?.rendered ?: ""
+                            val acf = board.acf
 
-                        val title = latestBoard.title?.rendered ?: ""
-                        val acf = latestBoard.acf
-
-                        if (acf != null) {
-                            for (i in 1..5) {
-                                val rankBean = acf.rankBean(i)
-                                if (rankBean != null && !rankBean.name.isNullOrEmpty()) {
-                                    var bean = WSMemberRankBean(
-                                        title = title,
-                                        name = rankBean.name,
-                                        volume = rankBean.volume
-                                    )
-                                    data.add(bean)
+                            if (acf != null) {
+                                for (i in 1..5) {
+                                    val rankBean = acf.rankBean(i)
+                                    if (rankBean != null && !rankBean.name.isNullOrEmpty()) {
+                                        var bean = WSMemberRankBean(
+                                            title = title,
+                                            name = rankBean.name,
+                                            volume = rankBean.volume
+                                        )
+                                        data.add(bean)
+                                    }
                                 }
                             }
                         }
-
+                        getWsMembersData(data)
                         wsPhotos(data)
 
 
@@ -182,9 +240,10 @@ class HomeViewModel : ViewModel() {
             )
         }
     }
+
     private fun wsPhotos(data: MutableList<WSMemberRankBean>) {
         API.shared?.api?.let {
-            val observer = it.wsPhotos(100,1)
+            val observer = it.wsPhotos(100, 1)
             observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
                 AndroidSchedulers.mainThread()
             )?.subscribe(
@@ -222,6 +281,7 @@ class HomeViewModel : ViewModel() {
             )
         }
     }
+
     val youtubeVideoList = MutableLiveData<List<YoutubeUiData>>()
 //    val isLoading = MutableLiveData<Boolean>()
 
@@ -268,7 +328,14 @@ class HomeViewModel : ViewModel() {
                                     // Tạo link youtube
                                     val videoLink = "https://www.youtube.com/watch?v=$videoId"
 
-                                    uiList.add(YoutubeUiData(title, image, formattedDate, videoLink))
+                                    uiList.add(
+                                        YoutubeUiData(
+                                            title,
+                                            image,
+                                            formattedDate,
+                                            videoLink
+                                        )
+                                    )
                                 }
                             }
                             Log.d("YoutubeViewModel", "youtubeVideoList: $uiList")
@@ -284,4 +351,136 @@ class HomeViewModel : ViewModel() {
                 )
         }
     }
+
+    public fun wsFashions() {
+        API.shared?.api?.let {
+            val emptyHashMap: java.util.HashMap<String?, Int?>? = HashMap()
+            val observer = it.wsFashions(emptyHashMap, 3, 1)
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    if (!next.isNullOrEmpty()) {
+                        //Log.e("wsFashions", "${next}")
+                        wsFashions.postValue(next)
+                    }
+                },
+                { error ->
+
+                }
+            )
+        }
+    }
+
+    public fun wsFashionCategorys() {
+        API.shared?.api?.let {
+            val observer = it.wsFashionCategorys()
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    if (!next.isNullOrEmpty()) {
+                        wsFashionCategorysData.postValue(next)
+                        wsFashions()
+                    }
+                },
+                { error ->
+
+                }
+            )
+        }
+    }
+
+    fun getWsMembersData(rankData: MutableList<WSMemberRankBean>) {
+        //Log.e("getWsMembersData", "getWsMembersData")
+
+        API.shared?.api?.let {
+            val observer = it.wsMembers(100, 1)
+
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { allMembers ->
+
+                    if (!allMembers.isNullOrEmpty()) {
+                        val filteredList = allMembers.filter { member ->
+                            rankData.any { rankBean ->
+                                rankBean.name?.trim() == member.titleF?.trim()
+                            }
+                        }
+
+                        val sortedList = filteredList.sortedBy { member ->
+                            rankData.indexOfFirst { it.name?.trim() == member.titleF?.trim() }
+                        }
+
+                        //Log.e("getWsMembersData", "Filtered & Sorted Size: ${sortedList.size}")
+
+                        wsMembersData.postValue(sortedList as MutableList<WSMemberResponse>?)
+                    } else {
+                        wsMembersData.postValue(mutableListOf())
+                    }
+                },
+                { error ->
+                    //Log.e("getWsMembersData", "error=${error.message}")
+                    // Xử lý lỗi
+                }
+            )
+        }
+    }
 }
+
+private fun isToday(raw: String?): Boolean {
+    if (raw.isNullOrBlank()) return false
+
+    return try {
+        val input =
+            java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).apply {
+                isLenient = false
+            }
+        val date = input.parse(raw) ?: return false
+
+        val cal = java.util.Calendar.getInstance()
+        cal.time = date
+
+        val now = java.util.Calendar.getInstance()
+
+        cal.get(java.util.Calendar.YEAR) == now.get(java.util.Calendar.YEAR) &&
+                cal.get(java.util.Calendar.DAY_OF_YEAR) == now.get(java.util.Calendar.DAY_OF_YEAR)
+    } catch (e: Exception) {
+        false
+    }
+}
+
+private fun overlapsToday(st: String?, ed: String?): Boolean {
+    val fmt =
+        java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).apply {
+            isLenient = false
+        }
+
+    fun parse(s: String?): java.util.Date? = try {
+        if (s.isNullOrBlank()) null else fmt.parse(s)
+    } catch (_: Exception) {
+        null
+    }
+
+    val start = parse(st) ?: return false
+    val end = parse(ed) ?: start // nếu không có end thì coi như event tức thời
+
+    val todayStart = java.util.Calendar.getInstance().apply {
+        set(java.util.Calendar.HOUR_OF_DAY, 0)
+        set(java.util.Calendar.MINUTE, 0)
+        set(java.util.Calendar.SECOND, 0)
+        set(java.util.Calendar.MILLISECOND, 0)
+    }.time
+
+    val todayEnd = java.util.Calendar.getInstance().apply {
+        set(java.util.Calendar.HOUR_OF_DAY, 23)
+        set(java.util.Calendar.MINUTE, 59)
+        set(java.util.Calendar.SECOND, 59)
+        set(java.util.Calendar.MILLISECOND, 999)
+    }.time
+
+    // overlap condition: start <= todayEnd && end >= todayStart
+    return !start.after(todayEnd) && !end.before(todayStart)
+}
+

@@ -10,7 +10,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_70">
+        android:layout_height="@dimen/dp_70"
+        android:visibility="gone">
 
         <com.wingstars.member.view.NoInterceptHorizontalRecyclerView
             android:id="@+id/rv_team_list"
@@ -28,15 +29,21 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <ImageView
+        <RelativeLayout
             android:id="@+id/iv_prev"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:clickable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:src="@drawable/ic_arrow_left_gray" />
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_24">
+
+            <ImageView
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:src="@drawable/ic_arrow_left_gray" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/tv_date"
@@ -47,15 +54,21 @@
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
 
-        <ImageView
+        <RelativeLayout
             android:id="@+id/iv_next"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:layout_marginStart="@dimen/dp_16"
-            android:clickable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:src="@drawable/ic_arrow_right_gray" />
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_24">
+
+            <ImageView
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="@dimen/dp_16"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:src="@drawable/ic_arrow_right_gray" />
+        </RelativeLayout>
     </LinearLayout>
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -110,13 +123,14 @@
                     android:id="@+id/ll_ws_weekly_empty"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
+                    android:gravity="center_horizontal|top"
                     android:orientation="vertical"
                     android:visibility="gone">
 
                     <ImageView
                         android:layout_width="@dimen/dp_75"
                         android:layout_height="@dimen/dp_75"
+                        android:layout_marginTop="@dimen/dp_30"
                         android:src="@drawable/ic_schedule_none" />
 
                     <TextView

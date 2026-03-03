@@ -39,6 +39,8 @@
             android:exported="false"/>
         <activity android:name=".activity.TakeMomentsDisplayActivity"
             android:exported="false"/>
+        <activity android:name=".activity.WebActivity"
+            android:exported="false"/>
         <!--tools:replace="android:authorities"-->
 
     </application>

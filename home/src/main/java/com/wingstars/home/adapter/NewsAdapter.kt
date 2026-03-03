@@ -10,20 +10,25 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.wingstars.base.net.beans.WSPostResponse
+import com.wingstars.home.R
 import com.wingstars.home.databinding.ItemNewsBinding
 import java.nio.charset.StandardCharsets
 
 class NewsAdapter(
     private val context: Context,
-    private val dataList: MutableList<WSPostResponse>,
+    private var dataList: MutableList<WSPostResponse>, // Đổi sang var để có thể gán lại danh sách
     private val listener: OnItemListener
 ) : RecyclerView.Adapter<NewsAdapter.NormalItemViewHolder>() {
 
     private val pctEncoded = Regex("%[0-9a-fA-F]{2}")
 
-    // 2. Định nghĩa Interface ngay trong class này
     interface OnItemListener {
         fun onItemClick(data: WSPostResponse, position: Int)
+    }
+    fun setList(newList: List<WSPostResponse>) {
+        this.dataList.clear()
+        this.dataList.addAll(newList)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
@@ -31,7 +36,6 @@ class NewsAdapter(
         return NormalItemViewHolder(binding)
     }
 
-    // 3. Override onBindViewHolder chuẩn xác
     override fun onBindViewHolder(holder: NormalItemViewHolder, position: Int) {
         holder.binding(position)
     }
@@ -40,9 +44,8 @@ class NewsAdapter(
         return dataList.size
     }
 
-    // --- Các hàm xử lý chuỗi giữ nguyên ---
+    // --- Các hàm xử lý chuỗi ---
     private fun encodePathSegment(seg: String): String {
-        // ... (Code cũ của bạn giữ nguyên) ...
         val sb = StringBuilder(seg.length * 3)
         var i = 0
         while (i < seg.length) {
@@ -91,7 +94,7 @@ class NewsAdapter(
         }
     }
 
-    inner class NormalItemViewHolder(private val binding: ItemNewsBinding) :
+    inner class NormalItemViewHolder(val binding: ItemNewsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun binding(position: Int) {
@@ -99,11 +102,14 @@ class NewsAdapter(
             val rawUrl = data.urlF
 
             Glide.with(binding.imgNews.context).clear(binding.imgNews)
-            if (!data.urlF.isNullOrEmpty()) {
+
+            if (!rawUrl.isNullOrEmpty()) {
                 val encodedUrl = rawUrl.encodeBlobLikeUrl()
 
                 Glide.with(binding.imgNews)
                     .load(encodedUrl)
+                    .placeholder(R.drawable.ws_logo) // Thêm ảnh chờ
+                    .error(R.drawable.ws_logo)       // Thêm ảnh khi lỗi
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .skipMemoryCache(false)
                     .dontAnimate()
@@ -111,17 +117,20 @@ class NewsAdapter(
                     .apply(RequestOptions().disallowHardwareConfig())
                     .into(binding.imgNews)
             } else {
-                // Xử lý khi không có ảnh (nếu cần)
+                // Xử lý khi không có URL ảnh: Hiện ảnh mặc định
+                binding.imgNews.setImageResource(R.drawable.ws_logo)
             }
 
             binding.tvNewsTitle.text = data.titleF
             binding.tvNewsDate.text = data.dateF
+
             val commonClickListener = android.view.View.OnClickListener {
                 listener.onItemClick(data, position)
             }
-            binding.llNewsRoot.setOnClickListener (commonClickListener)
-            binding.shadowImg.setOnClickListener (commonClickListener)
-            binding.imgNews.setOnClickListener (commonClickListener)
+
+            binding.llNewsRoot.setOnClickListener(commonClickListener)
+            binding.shadowImg.setOnClickListener(commonClickListener)
+            binding.imgNews.setOnClickListener(commonClickListener)
         }
     }
 }

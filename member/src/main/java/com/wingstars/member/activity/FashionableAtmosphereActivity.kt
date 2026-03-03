@@ -82,13 +82,13 @@ class FashionableAtmosphereActivity : BaseActivity(), View.OnClickListener {
         var id = v?.id
         when(id){
             binding.support.id-> {
-                Log.e("support","support=$pos")
+                //Log.e("support","support=$pos")
                 if (pos!=0){
                     binding.viewPager.currentItem = 0
                 }
             }
             binding.event.id-> {
-                Log.e("support","event=$pos")
+                //Log.e("support","event=$pos")
                 if (pos!=1){
                     binding.viewPager.currentItem = 1
                 }

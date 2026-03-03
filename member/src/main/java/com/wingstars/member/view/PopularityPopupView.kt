@@ -33,7 +33,7 @@ class PopularityPopupView(
     }
 
     private fun initView(mContext: Context) {
-        Log.e("navigationBarHeight", "$navigationBarHeight")
+        //Log.e("navigationBarHeight", "$navigationBarHeight")
         binding = PopupPopularityViewBinding.inflate(LayoutInflater.from(mContext))
         popupWindow = PopupWindow(
             binding.root,

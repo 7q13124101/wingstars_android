@@ -101,7 +101,7 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
 
         val authorization =
             NetBase.base64Encode("$account:$password".toByteArray(Charsets.UTF_8))
-        Log.e("authorization", "authorization=$authorization")
+        //Log.e("authorization", "authorization=$authorization")
 
         val params = binding.image!!.layoutParams
         var smallwidth = ScreenUtils.getWidth(requireActivity())
@@ -154,7 +154,7 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
             binding.root.setOnApplyWindowInsetsListener { v, insets ->
                 val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
                 minHight = statusBarHeight + DPUtils.dpToPx(64f, requireActivity()).toInt()
-                Log.e("statusBarHeight", "statusBarHeight=$statusBarHeight")
+                //Log.e("statusBarHeight", "statusBarHeight=$statusBarHeight")
                 setViewTop(binding.title, statusBarHeight)
                 binding.root.setOnApplyWindowInsetsListener(null)
                 insets
@@ -208,7 +208,7 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
             showLoadingUI(it, requireActivity())
         }
         viewModel.wsRankData.observe(viewLifecycleOwner) {
-            Log.e("wsRankData", "${Gson().toJson(it)}")
+            //Log.e("wsRankData", "${Gson().toJson(it)}")
             var adapter = PopularityAdapter(requireActivity(), it, this)
             binding.chartList.layoutManager = LinearLayoutManager(
                 requireActivity(),
@@ -231,7 +231,7 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
 
                 }
             }
-            Log.e("wsFashions", "${Gson().toJson(it)}")
+            //Log.e("wsFashions", "${Gson().toJson(it)}")
             var adapter1 = SupportFashionAdapter(requireActivity(), it, this)
             binding.supportFashionList.adapter = adapter1
         }
@@ -341,21 +341,22 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
         startActivity(Intent(requireActivity(), FanInteractionActivity::class.java))
     }
 
-    override fun onPopularityRankingClickItem(position: Int) {
-        startActivity(
-            Intent(
-                requireActivity(),
-                PopularityRankingActivity::class.java
-            )
+    override fun onPopularityRankingClickItem(type: String) {
+        val intent = Intent(
+            requireActivity(),
+            PopularityRankingActivity::class.java
         )
+        intent.putExtra("type",type)
+        startActivity(intent)
     }
 
-    override fun onSupportFashionClickItem(memberId: Int) {
+    override fun onSupportFashionClickItem(memberId: Int,fashionType: Int) {
         val intent = Intent(
             requireActivity(),
             AtmosphereFashionDetailsActivity::class.java
         )
         intent.putExtra("memberId", memberId)
+        intent.putExtra("fashionType", fashionType)
         startActivity(intent)
     }
 }

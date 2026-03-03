@@ -5,18 +5,22 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tencent.mmkv.MMKV
 import com.wingstars.base.net.API
 import com.wingstars.base.net.NetBase
-import com.wingstars.base.net.NetBase.refreshEvtTasks
 import com.wingstars.base.net.NetBase.sendBroadcast
 import com.wingstars.base.net.NetworkMonitorNew
+import com.wingstars.base.net.beans.CRMBaseFailResponse
 import com.wingstars.base.net.beans.CRMGenQRCodeRequest
 import com.wingstars.base.net.beans.EvtCheckinRequest
 import com.wingstars.base.net.beans.EvtTaskResponse
 import com.wingstars.count.dialog.SortMethod
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import retrofit2.HttpException
 
 class CountViewModel: ViewModel() {
     var isLoading = MutableLiveData<Boolean>()
@@ -30,6 +34,7 @@ class CountViewModel: ViewModel() {
     private var currentSortMethod: SortMethod = SortMethod.SORT_DATE_NEW_TO_OLD
     private var taskListIsCompleted = true
     private var checkInListData: ArrayList<EvtTaskResponse> = ArrayList()
+    private val compositeDisposable = CompositeDisposable()
 
     fun setIsLoading(isLoading: Boolean) {
         this.isLoading.postValue(isLoading)
@@ -141,17 +146,77 @@ class CountViewModel: ViewModel() {
         }
     }
 
+    fun refreshEvtTasks(bLogin: Boolean, bRefreshUI: Boolean = true) {
+        if (taskListData.isNotEmpty()) {
+            if (bLogin && MMKV.defaultMMKV().decodeBool("isLogin")) {
+                val id = MMKV.defaultMMKV().decodeString("crm_member_id")
+                val phone = MMKV.defaultMMKV().decodeString("member_phone")
+                API.shared?.api?.let {
+                    //Member > 会员QRCode
+                    val observer =
+                        it.crmGenQRCode("${NetBase.HOST_CRM}/api/v1/basic/member/${id}/gen-qrcode",
+                            phone?.let { it1 -> CRMGenQRCodeRequest(it1) })
+                    observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                        AndroidSchedulers.mainThread()
+                    )?.subscribe(
+                        { next ->
+                            if (next.success && next.data != null) {
+                                getEvtMemberTasks(next.data.MEMQRCODE, bRefreshUI)
+                            } else {
+                                taskListIsCompleted = true
+                            }
+                        },
+                        { error ->
+                            taskListIsCompleted = true
+                            var msg = error.message.toString()
+
+                            if (error is HttpException) {
+                                try {
+                                    val gson = Gson()
+                                    val type = object : TypeToken<CRMBaseFailResponse>() {}.type
+                                    val failResponse = gson.fromJson<CRMBaseFailResponse>(
+                                        error.response()?.errorBody()?.string(), type
+                                    )
+                                    if (failResponse != null) {
+                                        failResponse.message?.let {
+                                            msg = it
+                                        }
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+                            //Log.e("refreshEvtTasks", msg)
+                        }
+                    )
+                }
+            } else {
+                //清除任务状态，恢复到原始状态
+                taskListData.forEach {
+                    it.status = "unlock"
+                    it.isSendApiF = false
+                }
+                //退出登录状态，需要重置状态并同步UI中
+                if (bRefreshUI) {
+                    // NetBase.shared()?.sendBroadcast(Intent(NetBase.BROADCAST_TASK_REFRESH))
+                }
+            }
+        }
+    }
+
     private fun getEvtMemberTasks(encryptedIdentity: String, bRefreshUI: Boolean) {
         //Event > 会员任务状态列表
         API.shared?.api?.let {
-
-            // encryptedIdentity 的值通过 api crmGenQRCode 取得
-            //val encryptedIdentity = "RMafhFbPQedleQ0E6fk9P8gNEoXdwAjZTULb1bLk73Ute9axTtxxSAonuM2jJ3WaXsN4zlpq3SkFZUB8NlNVtNAmX1myKBeOBerbk56Uu+YTKlHNB+/0iCh9R+5wEV+HvRNU7/RU/DKZZf+jU2L88w=="
-            val observer = it.evtMemberTasks(encryptedIdentity)
+            Log.d("DEBUG_API", "Step 2: Bắt đầu gọi API evtMemberTasks...")
+            val observer = it.evtMemberTasks(
+                "${NetBase.HOST_EVENT}/api/v1/public/members/tasks",
+                encryptedIdentity
+            )
             observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
                 AndroidSchedulers.mainThread()
             )?.subscribe(
                 { next ->
+                    Log.d("DEBUG_API", "[evtMemberTasks] next.data.size: ${next}")
                     if (!next.isNullOrEmpty()) {
                         next.forEach { tr ->
                             val node = taskListData.find { it.id == tr.id }
@@ -166,76 +231,105 @@ class CountViewModel: ViewModel() {
                             if (it.triggerType == "app" && !it.triggerTag.isNullOrEmpty() && it.triggerTag == "checkin") {
                                 checkInListData.add(it)
                             }
-
                         }
 
-                        if (bRefreshUI)
-                            sendBroadcast(Intent(NetBase.BROADCAST_TASK_REFRESH))
+                        if (bRefreshUI) {
+                            taskList.value = taskListData
+                        }
                     }
                     taskListIsCompleted = true
                 },
                 { error ->
+                    Log.d("DEBUG_API", "[evtMemberTasks] Error: ${error.message}")
                     taskListIsCompleted = true
-                    error.message?.let { it1 ->
-                    }
+                    error.printStackTrace()
                 }
             )
         }
     }
 
+//    private fun getEvtMemberTasks(encryptedIdentity: String, bRefreshUI: Boolean) {
+//        //Event > 会员任务状态列表
+//        API.shared?.api?.let {
+//
+//            // encryptedIdentity 的值通过 api crmGenQRCode 取得
+//            //val encryptedIdentity = "RMafhFbPQedleQ0E6fk9P8gNEoXdwAjZTULb1bLk73Ute9axTtxxSAonuM2jJ3WaXsN4zlpq3SkFZUB8NlNVtNAmX1myKBeOBerbk56Uu+YTKlHNB+/0iCh9R+5wEV+HvRNU7/RU/DKZZf+jU2L88w=="
+//            val observer = it.evtMemberTasks(encryptedIdentity)
+//            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+//                AndroidSchedulers.mainThread()
+//            )?.subscribe(
+//                { next ->
+//                    Log.d("APItttttgt", "[evtMemberTasks] next.data.size: ${next.size}")
+//                    if (!next.isNullOrEmpty()) {
+//                        next.forEach { tr ->
+//                            val node = taskListData.find { it.id == tr.id }
+//                            if (node != null) {
+//                                node.status = tr.personalEventTaskStatus
+//                                node.isSendApiF = false
+//                            }
+//                        }
+//
+//                        checkInListData.clear()
+//                        taskListData.forEach {
+//                            if (it.triggerType == "app" && !it.triggerTag.isNullOrEmpty() && it.triggerTag == "checkin") {
+//                                checkInListData.add(it)
+//                            }
+//
+//                        }
+//
+//                        if (bRefreshUI)
+//                            sendBroadcast(Intent(NetBase.BROADCAST_TASK_REFRESH))
+//                    }
+//                    taskListIsCompleted = true
+//                },
+//                { error ->
+//                    taskListIsCompleted = true
+//                    error.message?.let { it1 ->
+//                    }
+//                }
+//            )
+//        }
+//    }
+
     // Member > 查询会员详细资料=>點數
     fun getMemberPointFromDetailsData(showLoading: Boolean = true) {
         if (MMKV.defaultMMKV().decodeBool("isLogin")) {
-            if (showLoading) {
-                setIsLoading(true)
-            }
+            if (showLoading) setIsLoading(true)
+
             API.shared?.api?.let {
                 val id = MMKV.defaultMMKV().decodeString("crm_member_id")
-                val observer =
-                    it.crmMemberDetail()
-                observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
-                    AndroidSchedulers.mainThread()
-                )?.subscribe(
-                    { next ->
-                        if (showLoading) {
-                            setIsLoading(false)
+                if (id.isNullOrEmpty()) {
+                    //Log.e("API_ERROR", "Member ID is null or empty!")
+                    if (showLoading) setIsLoading(false)
+                    points.postValue("0")
+                    return@let
+                }
+                val observer = it.crmMemberDetail(id)
+                val disposable = observer?.subscribeOn(Schedulers.io())
+                    ?.unsubscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(
+                        { next ->
+                            if (showLoading) setIsLoading(false)
+                            if (next.success && next.data != null) {
+                                val p = next.data.Points?.toString() ?: "0"
+                                points.postValue(p)
+                            } else {
+                                points.postValue("0")
+                            }
+                        },
+                        { error ->
+                            if (showLoading) setIsLoading(false)
+                            //Log.e("API_ERROR", error.message.toString())
+                            points.postValue("0")
                         }
-                        if (next.success) {
-                            points.postValue(next.data.Points.toString())
-                        } else {
-                            // points.postValue("0")
-                            //Toast.makeText(BaseApplication.shared()!!, next.message, Toast.LENGTH_LONG).show()
-                        }
-                    },
-                    { error ->
-                        if (showLoading) {
-                            setIsLoading(false)
-                        }
-                        //  points.postValue("0")
-                        var msg = error.message.toString()
-//                        if (error is HttpException) {
-//                            try {
-//                                val gson = Gson()
-//                                val type = object : TypeToken<CRMBaseFailResponse>() {}.type
-//                                val failResponse = gson.fromJson<CRMBaseFailResponse>(
-//                                    error.response()?.errorBody()?.string(), type
-//                                )
-//                                failResponse?.message?.let {
-//                                    msg = it
-//                                }
-//                            } catch (e: Exception) {
-//
-//                            }
-//                        }
-
-                        msg.let { it1 ->
-                            //Toast.makeText(BaseApplication.shared()!!, "$it1", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                )
+                    )
+                if (disposable != null) {
+                    compositeDisposable.add(disposable)
+                }
             }
         } else {
-            //points.postValue("0")
+            points.postValue("0")
         }
     }
 
@@ -331,5 +425,9 @@ class CountViewModel: ViewModel() {
                 )
             }
         }
+    }
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.clear()
     }
 }

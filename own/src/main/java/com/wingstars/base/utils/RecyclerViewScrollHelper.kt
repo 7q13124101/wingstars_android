@@ -12,7 +12,7 @@ class RecyclerViewScrollHelper {
             recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    Log.e("dy","dy=$dy")
+                    //Log.e("dy","dy=$dy")
                     // 判断是否到达顶部
                     if (!recyclerView.canScrollVertically(-1)) {
                         listener.onScrollTop()

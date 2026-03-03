@@ -315,7 +315,7 @@
                            android:textStyle="bold"
                            android:layout_marginBottom="@dimen/pt_7"/>
                        <TextView
-                           android:id="@+id/finish_time"
+                           android:id="@+id/exchange_location"
                            android:ellipsize="end"
                            android:singleLine="true"
                            android:textColor="@color/color_101828"

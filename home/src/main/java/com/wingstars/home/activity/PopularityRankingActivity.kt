@@ -67,7 +67,7 @@ class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
     private fun setScreening(name: String) {
         if (!wsNewRankData.isNullOrEmpty()) {
             val filter = wsNewRankData.filter { it.title == name }
-            Log.e("setScreening", "${Gson().toJson(filter)}")
+            //Log.e("setScreening", "${Gson().toJson(filter)}")
             if (!filter.isNullOrEmpty()) {
                 val acf = filter[0].acf
                 if (!acf.isNullOrEmpty()) {

@@ -139,10 +139,10 @@ class CropImageViewActivity : BaseActivity(), View.OnClickListener {
             outputStream?.flush()
             outputStream?.close()
             //Toast.makeText(this, "Image saved to gallery", Toast.LENGTH_SHORT).show()
-            Log.e("saveImageToGallery","保存成功")
+            //Log.e("saveImageToGallery","保存成功")
 
         } catch (e: IOException) {
-            Log.e("saveImageToGallery","保存失败e="+e.message)
+            //Log.e("saveImageToGallery","保存失败e="+e.message)
             e.printStackTrace()
             //Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show()
         }
@@ -186,9 +186,9 @@ class CropImageViewActivity : BaseActivity(), View.OnClickListener {
             val localUri = Uri.fromFile(file)
             val localIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri)
             sendBroadcast(localIntent)
-            Log.e("saveImage", "saveFile 保存成功" )
+            //Log.e("saveImage", "saveFile 保存成功" )
         } catch (e: IOException) {
-            Log.e("saveImage", "saveFile 保存失败 e=" + e.message)
+            //Log.e("saveImage", "saveFile 保存失败 e=" + e.message)
             e.printStackTrace()
         }
         runOnUiThread {
@@ -199,11 +199,11 @@ class CropImageViewActivity : BaseActivity(), View.OnClickListener {
 
     private fun saveFile1(originalBitmap: Bitmap, frameBitmap: Bitmap,types: Int) {
 
-        Log.e("saveFile", "saveFile 开始保存")
+        //Log.e("saveFile", "saveFile 开始保存")
         try {
            // val frameBitmap = BitmapFactory.decodeResource(resources, int)  //R.drawable.fans1
 
-            Log.e("originalBitmap","frameBitmap.width = ${frameBitmap.width},frameBitmap.height=${frameBitmap.height}")
+            //Log.e("originalBitmap","frameBitmap.width = ${frameBitmap.width},frameBitmap.height=${frameBitmap.height}")
 // 2. 创建与边框图片同大小的Bitmap
             val result =
                 Bitmap.createBitmap(frameBitmap.width, frameBitmap.height, Bitmap.Config.ARGB_8888)
@@ -237,25 +237,25 @@ class CropImageViewActivity : BaseActivity(), View.OnClickListener {
             // 关闭输出流
             out.flush();
             out.close();
-            Log.e("saveFile", "saveFile 保存完成 fusionFile=" + fusionFile.path)
+            //Log.e("saveFile", "saveFile 保存完成 fusionFile=" + fusionFile.path)
             file = fusionFile
             downLoads()
 
         } catch (e: Exception) {
-            Log.e("saveFile", "saveFile 保存失败 e=" + e.message)
+            //Log.e("saveFile", "saveFile 保存失败 e=" + e.message)
         }
 
     }
 
     fun captureView(v: View): Bitmap {
-        Log.e("captureView","开始-----------v.getHeight()")
+        //Log.e("captureView","开始-----------v.getHeight()")
         val bitmap = Bitmap.createBitmap(
             v.getWidth(), v.getHeight(),
             Bitmap.Config.ARGB_8888
         )
         val canvas = Canvas(bitmap)
         v.draw(canvas)
-        Log.e("captureView","结束-----------")
+        //Log.e("captureView","结束-----------")
         return bitmap
     }
 
@@ -302,7 +302,7 @@ class CropImageViewActivity : BaseActivity(), View.OnClickListener {
     }
     private fun setImage(width: Int, height: Int,view: View) {
 
-        Log.e("width", "width=" + width)
+        //Log.e("width", "width=" + width)
         val params = view.layoutParams
         params.width = width
         params.height = height

@@ -20,7 +20,13 @@ class DeleteAccountDialog (
         val inflater = LayoutInflater.from(context)
         binding = DialogDeleteAccountBinding.inflate(inflater)
         dialog.setContentView(binding.root)
-
+        binding.btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        binding.btnConfirm.setOnClickListener {
+            onConfirm.invoke()
+            dialog.dismiss()
+        }
         dialog.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)
             setLayout(

@@ -15,7 +15,6 @@ class MMKVManagement {
         private val NS_USER_ID = "ns_user_id"           //中继登录返回的用户id
         private val NS_ACCESS_TOKEN = "ns_access_token" //中继登录返回的用户token
         private val NS_REFRESH_TOKEN = "ns_refresh_token" //中继登录返回的用户refresh_token
-
         private val CRM_CLIENT_ACCESS_TOKEN = "crm_client_access_token"  //CRM的clientToken
         private val CRM_MEMBER_ACCESS_TOKEN = "crm_member_access_token"  //CRM的会员token
 
@@ -32,6 +31,19 @@ class MMKVManagement {
         private val CRM_CLIENT_ID = "crm_client_id"
 
         private val CRM_CLIENT_REFRESH_TOKEN = "crm_client_refresh_token"
+
+        private val MEMBER_BIRTHDAY = "member_birthday"
+
+        private val MEMBER_GENDER = "member_gender"
+
+        private val MEMBER_NAME = "member_name"
+
+        private val MEMBER_MAIL = "member_mail"
+
+        private val MEMBER_IDENTITY = "member_identity"
+
+        private val CRM_MEMBER_EXPIRED_DATE = "crm_expired_date"
+
         //---------------------------请西安同事在下面新增MMKV相关set/get方法---------------------
 
         public fun init(context: Context) {
@@ -61,6 +73,13 @@ class MMKVManagement {
         public fun setCrmMemberCode(crm_member_code: String) {
             MMKV.defaultMMKV().encode(CRM_MEMBER_CODE, crm_member_code)
         }
+        public fun getCrmMemberBarcode(): String {
+            return MMKV.defaultMMKV().decodeString(CRM_MEMBER_CODE, "")!!
+        }
+
+        public fun setCrmMemberBarcode(crm_member_code: String) {
+            MMKV.defaultMMKV().encode(CRM_MEMBER_CODE, crm_member_code)
+        }
 
         public fun getCrmMemberUserType(): String {
             return MMKV.defaultMMKV().decodeString(CRM_MEMBER_USER_TYPE, "")!!
@@ -69,7 +88,6 @@ class MMKVManagement {
         public fun setCrmMemberUserType(crm_member_user_type: String) {
             MMKV.defaultMMKV().encode(CRM_MEMBER_USER_TYPE, crm_member_user_type)
         }
-
 
         public fun getCrmMemberRefreshToken(): String {
             return MMKV.defaultMMKV().decodeString(CRM_MEMBER_REFRESH_TOKEN, "")!!
@@ -176,12 +194,59 @@ class MMKVManagement {
             MMKV.defaultMMKV().encode(MEMBER_PHONE, member_phone)
         }
 
+        public fun getMemberName(): String {
+            return MMKV.defaultMMKV().decodeString(MEMBER_NAME, "")!!
+        }
+
+        public fun setMemberName(member_name: String) {
+            MMKV.defaultMMKV().encode(MEMBER_NAME, member_name)
+        }
+
         public fun getMemberPassword(): String {
             return MMKV.defaultMMKV().decodeString(MEMBER_PSD, "")!!
         }
 
         public fun setMemberPassword(member_psd: String) {
             MMKV.defaultMMKV().encode(MEMBER_PSD, member_psd)
+        }
+        fun getMemberBirthday(): String {
+            return MMKV.defaultMMKV().decodeString(MEMBER_BIRTHDAY, "")!!
+        }
+
+        fun setMemberBirthday(birthday: String) {
+            MMKV.defaultMMKV().encode(MEMBER_BIRTHDAY, birthday)
+        }
+
+        fun getMemberGender(): String {
+            return MMKV.defaultMMKV().decodeString(MEMBER_GENDER, "")!!
+        }
+
+        fun setMemberGender(gender: String) {
+            MMKV.defaultMMKV().encode(MEMBER_GENDER, gender)
+        }
+
+        fun getMemberMail(): String {
+            return MMKV.defaultMMKV().decodeString(MEMBER_MAIL, "")!!
+        }
+
+        fun setMemberMail(mail: String) {
+            MMKV.defaultMMKV().encode(MEMBER_MAIL, mail)
+        }
+
+        fun getMemberIdentity(): String {
+            return MMKV.defaultMMKV().decodeString(MEMBER_IDENTITY, "")!!
+        }
+
+        fun setMemberIdentity(identity: String) {
+            MMKV.defaultMMKV().encode(MEMBER_IDENTITY, identity)
+        }
+
+        fun getMemberExpiredDate(): String {
+            return MMKV.defaultMMKV().decodeString(CRM_MEMBER_EXPIRED_DATE, "")!!
+        }
+
+        fun setMemberExpiredDate(expireddate: String) {
+            MMKV.defaultMMKV().encode(CRM_MEMBER_EXPIRED_DATE, expireddate)
         }
 
         //---------------------------请台湾同事在下面新增MMKV相关set/get方法---------------------

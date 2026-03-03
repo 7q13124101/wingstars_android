@@ -75,7 +75,7 @@
                     android:src="@drawable/bg_count_pink" />
 
                 <TextView
-                    android:id="@+id/tv_count_hawks"
+                    android:id="@+id/tv_count_WS"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"

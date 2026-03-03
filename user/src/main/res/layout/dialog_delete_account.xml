@@ -29,15 +29,14 @@
         android:gravity="center"
         android:layout_marginTop="@dimen/dp_20">
 
-        <EditText
-            android:id="@+id/edt_mobile"
-            android:layout_width="@dimen/dp_136"
+        <Button
+            android:id="@+id/btnConfirm"
+            android:layout_width="@dimen/dp_169"
             android:layout_height="@dimen/dp_47"
             android:background="@drawable/bg_button_off"
             android:padding="12dp"
             android:text="是"
             android:gravity="center"
-            android:inputType="text"
             android:singleLine="true"
             android:textColor="@color/color_E2518D"
             android:textSize="@dimen/sp_14" />
@@ -45,15 +44,14 @@
             android:layout_width="20dp"
             android:layout_height="1dp"/>
 
-        <EditText
-            android:id="@+id/edt_mobile1"
-            android:layout_width="@dimen/dp_136"
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="@dimen/dp_169"
             android:layout_height="@dimen/dp_47"
             android:background="@drawable/bg_button_on"
             android:padding="12dp"
             android:text="否"
             android:gravity="center"
-            android:inputType="text"
             android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_14"/>

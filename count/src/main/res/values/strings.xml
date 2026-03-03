@@ -19,12 +19,15 @@
     <string name="count_usage_records">使用紀錄</string>
     <string name="user_coming_soon">恭喜</string>
     <string name="count_none_records">目前沒有紀錄</string>
+    <string name="count_none_tasks">目前沒有任務</string>
+    <string name="go_to">前往</string>
     <string name="confirm">確定</string>
     <string name="count_gift_exchange">贈品兌換</string>
     <string name="count_exchange">活動兌換</string>
     <string name="my_count">我的點數</string>
     <string name="enter_exchange_name">輸入兌換名稱</string>
-    <string name="count_none_gift">目前沒有紀錄</string>
+    <string name="count_none_gift">目前沒有贈品兌換</string>
+    <string name="count_none_exchange">目前沒有活動兌換</string>
     <string name="dialog_sort_type">排序方式</string>
     <string name="dialog_sort_date_new_to_old">日期新到舊</string>
     <string name="dialog_sort_date_old_to_new">日期舊到新</string>
@@ -33,9 +36,9 @@
     <string name="count_exchange_history">兌換歷程</string>
     <string name="count_not_used">未使用</string>
     <string name="count_have_used">已使用</string>
-    <string name="count_none_used_coupons">尚無已使用兌換券</string>
+    <string name="count_none_used_coupons">目前沒有兌換歷程</string>
     <string name="count_have_used_remind">僅顯示近 1 年紀錄</string>
-    <string name="count_none_unused_coupons">尚無未使用兌換券</string>
+    <string name="count_none_unused_coupons">目前沒有兌換歷程</string>
     <string name="count_activate_barcode">開啟條碼</string>
     <string name="gift_details">贈品兌換詳情</string>
     <string name="exchange_details">活動兌換詳情</string>
@@ -56,6 +59,8 @@
     <string name="information">活動資訊</string>
     <string name="redeem_immediately">立即兌換</string>
     <string name="login_required">登入/註冊</string>
+    <string name="data_failed">數據獲取失敗</string>
+    <string name="exchange_content">提醒您，一旦使用兌換即無法取消。確定要兌換贈品嗎？</string>
 
 
     <string name="pull_down_to_refresh">下拉重整</string>
@@ -65,5 +70,31 @@
     <string name="refresh_success">重整成功</string>
     <string name="refresh_failed" translatable="false">重整失敗</string>
     <string name="et_otp">輸入手機驗證碼</string>
+    <string name="NoLimit">不限</string>
+    <string name="not_yet_open">尚未開放</string>
+    <string name="finished">已結束</string>
+    <string name="redeemed">已兌換</string>
+    <string name="insufficient_points">點數不足</string>
+    <string name="has_completed">已兌換贈品</string>
+    <string name="limit">未符合兌換條件</string>
+    <string name="goto_connect">前往</string>
+    <string name="all_members">所有會員皆適用</string>
+    <string name="count_unlock">即將開放</string>
+    <string name="count_unlockNot">尚未解鎖</string>
+    <string name="count_pending">未完成</string>
+    <string name="count_reward">已領取</string>
+    <string name="count_expired">已過期</string>
+    <string name="count_obtained">完成</string>
+    <string name="count_exchange_completed">兌換完畢</string>
+
+    <string name="current_day">今日</string>
+
+    <string name="week_1">一</string>
+    <string name="week_2">二</string>
+    <string name="week_3">三</string>
+    <string name="week_4">四</string>
+    <string name="week_5">五</string>
+    <string name="week_6">六</string>
+    <string name="week_7">日</string>
 
 </resources>

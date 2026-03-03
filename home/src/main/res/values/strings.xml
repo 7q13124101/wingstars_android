@@ -8,6 +8,7 @@
     <string name="support_fashion">氛圍時尚</string>
     <string name="girl_introduction">女孩介紹</string>
     <string name="support_popularity_list">應援人氣榜</string>
+    <string name="pre_order_time">預購時間：</string>
 
     <string name="pull_down_to_refresh">下拉重整</string>
     <string name="release_to_refresh">釋放重整</string>
@@ -17,11 +18,17 @@
     <string name="refresh_failed">重整失敗</string>
 
     //氛圍時尚
-    <string name="style_outfits"> 氛圍時尚 </string>
+    <string name="stylist_vibe_title"> 氛圍時尚 </string>
     <string name="none_style_outfits">無數據</string>
 
     //最新消息
-    <string name="latest_news">最新消息</string>
+    <string name="today_schedule_title">今日行程</string>
+    <string name="coming_soon_title">即將販售</string>
+    <string name="news_title">最新消息</string>
+    <string name="popularity_ranking_title">應援人氣榜</string>
+    <string name="products_title">熱銷商品</string>
+
+
 
 
 

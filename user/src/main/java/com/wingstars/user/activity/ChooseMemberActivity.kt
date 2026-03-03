@@ -3,6 +3,7 @@ package com.wingstars.user.activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -21,7 +22,8 @@ class ChooseMemberActivity : BaseActivity() {
 
     private lateinit var binding: ActivityChooseMemberBinding
     private val viewModel: CheerLeaderViewModel by viewModels()
-
+    private var selectedNames = arrayOf<String?>(null, null, null)
+    private var currentMemberList: List<MemberUI> = emptyList()
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,14 +36,13 @@ class ChooseMemberActivity : BaseActivity() {
         viewModel.fetchCheerLeaderList()
     }
     private fun observeViewModel() {
-
         viewModel.memberListUI.observe(this) { members ->
+            currentMemberList = members ?: emptyList()
             if (members.isNullOrEmpty()) {
                 binding.rvMember.adapter = MemberUIAdapter(emptyList(),this)
                 binding.rvMemberSecond.adapter = MemberUIAdapter(emptyList(), this)
                 return@observe
             }
-
             val half = members.size / 2
             binding.rvMember.adapter =
                 MemberUIAdapter(members.take(half), this)
@@ -49,7 +50,6 @@ class ChooseMemberActivity : BaseActivity() {
             binding.rvMemberSecond.adapter =
                 MemberUIAdapter(members.drop(half), this)
         }
-
         viewModel.errorMessage.observe(this) { msg ->
             msg?.takeIf { it.isNotBlank() }?.let {
                 Toast.makeText(this, it, Toast.LENGTH_LONG).show()
@@ -58,66 +58,73 @@ class ChooseMemberActivity : BaseActivity() {
         viewModel.isLoading.observe(this) {
         }
     }
+
     override fun initView() {
         binding.ivBack.setOnClickListener { finish() }
         binding.rvMember.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvMemberSecond.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val inputViews = arrayOf(
+            binding.edtTeamMember to binding.ivArrowDown,
+            binding.edtTeamMember1 to binding.ivArrowDown1,
+            binding.edtTeamMember2 to binding.ivArrowDown2
+        )
 
-
-        var currentMemberList: List<MemberUI> = emptyList()
-
-        viewModel.memberListUI.observe(this){
-                members -> currentMemberList = members?: emptyList()
+        inputViews.forEachIndexed { index, pair ->
+            val (editText, arrow) = pair
+            val clickListener = View.OnClickListener { openMemberDialog(index) }
+            editText.setOnClickListener(clickListener)
+            arrow.setOnClickListener(clickListener)
         }
-        var selectedName: String? = null
-        var selectedName1: String? = null
-        var selectedName2: String? = null
-
-        binding.rlTeamMember.setOnClickListener {
-            ChooseMemberDialog(currentMemberList,{ selected ->
-                val parts = selected.split("|")
-                val number = parts.getOrNull(0) ?: ""
-                val name = parts.getOrNull(1) ?: ""
-                selectedName = selected
-                binding.edtTeamMember.setText("$number $name")
-                binding.edtTeamMember.setTextColor(getColor(R.color.color_4A5565))
-                checkEnableSaveButton()
-            }, selectedName).show(supportFragmentManager, "choose")
-        }
-        binding.ivArrowDown1.setOnClickListener {
-            ChooseMemberDialog(currentMemberList, { selected ->
-                val parts = selected.split("|")
-                val number = parts.getOrNull(0) ?: ""
-                val name = parts.getOrNull(1) ?: ""
-                selectedName1 = selected
-                binding.edtTeamMember1.setText("$number $name")
-                binding.edtTeamMember1.setTextColor(getColor(R.color.color_4A5565))
-                checkEnableSaveButton()
-            }, selectedName1).show(supportFragmentManager, "choose")
-        }
-        binding.ivArrowDown2.setOnClickListener {
-            ChooseMemberDialog(currentMemberList, { selected ->
-                val parts = selected.split("|")
-                val number = parts.getOrNull(0) ?: ""
-                val name = parts.getOrNull(1) ?: ""
-                selectedName2 = selected
-                binding.edtTeamMember2.setText("$number $name")
-                binding.edtTeamMember2.setTextColor(getColor(R.color.color_4A5565))
-                checkEnableSaveButton()
-            }, selectedName2).show(supportFragmentManager, "choose")
-        }
-
         binding.btnSave.setOnClickListener {
-            val intent = Intent()
-            intent.putExtra("name1", selectedName ?: "")
-            intent.putExtra("name2", selectedName1 ?: "")
-            intent.putExtra("name3", selectedName2 ?: "")
+            val intent = Intent().apply {
+                putExtra("name1", selectedNames[0] ?: "")
+                putExtra("name2", selectedNames[1] ?: "")
+                putExtra("name3", selectedNames[2] ?: "")
+            }
             setResult(RESULT_OK, intent)
             finish()
         }
     }
+    private fun openMemberDialog(index: Int) {
+        ChooseMemberDialog(currentMemberList, { selected ->
+            val isAlreadySelectedElsewhere = selectedNames.indices
+                .any { i -> i != index && selectedNames[i] == selected }
+
+            if (isAlreadySelectedElsewhere) {
+                Toast.makeText(this, "請選擇其他成員。", Toast.LENGTH_SHORT).show()
+                return@ChooseMemberDialog
+            }
+            selectedNames[index] = selected
+            val parts = selected.split("|")
+            val displayText = "${parts.getOrNull(0) ?: ""} ${parts.getOrNull(1) ?: ""}"
+
+            when(index) {
+                0 -> binding.edtTeamMember.setText(displayText)
+                1 -> binding.edtTeamMember1.setText(displayText)
+                2 -> binding.edtTeamMember2.setText(displayText)
+            }
+
+            updateInputStyle(index)
+            checkEnableSaveButton()
+        }, selectedNames[index]).show(supportFragmentManager, "choose")
+    }
+    private fun updateInputStyle(index: Int) {
+        val color = getColor(R.color.color_4A5565)
+        when(index) {
+            0 -> binding.edtTeamMember.setTextColor(color)
+            1 -> binding.edtTeamMember1.setTextColor(color)
+            2 -> binding.edtTeamMember2.setTextColor(color)
+        }
+    }
+    private fun isMemberAlreadySelected(
+        currentSelected: String?,
+        vararg others: String?
+    ): Boolean {
+        return currentSelected != null && others.any { it == currentSelected }
+    }
+
     private fun checkEnableSaveButton() {
         val has1 = !binding.edtTeamMember.text.isNullOrEmpty()
         val has2 = !binding.edtTeamMember1.text.isNullOrEmpty()

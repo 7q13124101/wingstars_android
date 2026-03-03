@@ -42,7 +42,7 @@ class TodayItineraryDetailsActivity : BaseActivity() {
         binding.tvEventTitle.text = data.titleF
         binding.tvEventDate.text = data.st_dateF
         binding.tvEventLocation.text = data.mapF
-        Log.e("bindData", "bindData=${data.urlF}")
+        //Log.e("bindData", "bindData=${data.urlF}")
 
 
         // --- B. Hiển thị Ảnh Banner ---

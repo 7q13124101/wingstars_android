@@ -165,6 +165,22 @@ abstract class BaseActivity : AppCompatActivity() {
     open fun showToast(tip: String) {
         Toast.makeText(this, tip, Toast.LENGTH_LONG).show()
     }
+    fun updateNavigationBarColor(colorResId: Int, isLightIcon: Boolean = true) {
+        try {
+            com.gyf.immersionbar.ImmersionBar.with(this)
+                .keyboardEnable(true)
+                .navigationBarColor(colorResId)
+                .navigationBarDarkIcon(!isLightIcon)
+                .init()
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                window.isNavigationBarContrastEnforced = false
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
 
 }

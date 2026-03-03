@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.InputType
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -16,14 +19,13 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.base.net.beans.CRMSignUpRequest
-import com.wingstars.base.utils.DPUtils
-import com.wingstars.base.utils.ScreenUtils
 import com.wingstars.login.R
 import com.wingstars.login.databinding.ActivityRegistersBinding
 import com.wingstars.register.registrationterms.RegistrationTermsActivity
@@ -44,28 +46,53 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
             view1 = binding.root,
             navigationBarColor = R.color.gray_200,
             setFoot = false,
+            setHeadAndFoot = false,
             initialization = this
         )
 
     }
 
-    private fun startCountDown(totalMs: Long = 60_000) {
+    private fun startCountDown(totalMs: Long = 5_000) {
         timer?.cancel()
         binding.tvCodeTimer.visibility = View.VISIBLE
         binding.tvResend?.visibility = View.GONE
 
         timer = object : CountDownTimer(totalMs, 1000) {
             override fun onTick(ms: Long) {
-                val sec = (ms / 1000).toInt()
-                binding.tvCodeTimer.text = "${sec}s"
-            }
 
+                val min = (ms / 1000) / 60
+                val sec = (ms / 1000) % 60
+                val pinkText = "${sec}s "
+                val grayText = "重新發送"
+                val fullText = pinkText + grayText
+                val spannable = SpannableString(fullText)
+//                binding.tvCodeTimer.text = String.format("%02d 重新發送", sec)
+                spannable.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            this@RegisterActivity,
+                            R.color.color_E2518D
+                        )
+                    ),
+                    0,
+                    pinkText.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                spannable.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(this@RegisterActivity, R.color.text_subtitle)),
+                    pinkText.length,
+                    fullText.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                binding.tvCodeTimer.text = spannable
+            }
             override fun onFinish() {
-                binding.tvCodeTimer.text = "0s"
                 if (binding.tvResend != null) {
                     binding.tvCodeTimer.visibility = View.GONE
-
                     binding.tvResend.visibility = View.VISIBLE
+                    binding.tvResend.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.white))
+                    binding.tvResend.background = ContextCompat.getDrawable(this@RegisterActivity, R.drawable.bg_send_code_able)
                 } else {
                     showSendButtonUI()
                 }
@@ -82,16 +109,14 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         val colorBg = if (hasFocus && ok) R.drawable.bg_send_code_able
         else R.drawable.bg_sends_code
         binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
-        Log.e("edtPhone", "updateSendButtonState")
+        //Log.e("edtPhone", "updateSendButtonState")
         binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
 
     }
 
     private fun showTimerUI() {
-        // Ẩn nút gửi mã, hiện khung timer
         binding.btnSendCode.visibility = View.GONE
         binding.rlCodeTimer.visibility = View.VISIBLE
-        // Chuyển neo phải của EditText sang timer
         setEditTextRightAnchor(R.id.rl_code_timer)
         updateConfirmButtonState()
     }
@@ -203,15 +228,15 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         val enabled = isAllValid()
         binding.btnConfirm.isEnabled = enabled
         if (enabled) {
-            binding.bottomView.setBackgroundColor(getColor(R.color.color_EE97BB))
             binding.btnConfirm.background =
                 ContextCompat.getDrawable(this, R.drawable.bg_button_login_able)
             binding.btnConfirm.setTextColor(ContextCompat.getColor(this, R.color.white))
+            updateNavigationBarColor(R.color.color_EE97BB, isLightIcon = true)
         } else {
-            binding.bottomView.setBackgroundColor(getColor(R.color.gray_200))
             binding.btnConfirm.background =
                 ContextCompat.getDrawable(this, R.drawable.bg_button_login_disable)
             binding.btnConfirm.setTextColor(ContextCompat.getColor(this, R.color.gray_500))
+            updateNavigationBarColor(R.color.gray_200, isLightIcon = false)
         }
 //        debugValidity(enabled)
     }
@@ -292,6 +317,11 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         viewModel.setNavigator(this)
 //        updateConfirmButtonState()
 //        updateSendButtonState()
+        val autoPhone = intent.getStringExtra("PHONE_NUMBER")
+        if (!autoPhone.isNullOrEmpty()) {
+            binding.edtPhone.setText(autoPhone)
+            binding.edtPhone.setSelection(autoPhone.length)
+        }
         binding.tvResend.setOnClickListener(this)
         binding.ivClose.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
         binding.tvPhoneInputError.visibility = View.INVISIBLE
@@ -307,7 +337,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
                 if (hasFocus && binding.btnSendCode.isEnabled) R.drawable.bg_send_code_able
                 else R.drawable.bg_sends_code
             binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
-            Log.e("edtPhone", "edtPhone")
+            //Log.e("edtPhone", "edtPhone")
             binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
         }
         binding.edtPhone.addTextChangedListener(object : TextWatcher {
@@ -496,7 +526,6 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 height
             )
-            binding.bottomView?.layoutParams = layoutParams
         }
         initView()
     }
@@ -504,6 +533,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
     override fun getPhoneCodeSuccess() {
         showTimerUI()      // ẩn nút, hiện đồng hồ
         startCountDown()   // 60 giây
+        Toast.makeText(this, "驗證碼已發送。", Toast.LENGTH_SHORT).show()
     }
 
     override fun registerSuccess() {
