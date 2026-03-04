@@ -63,6 +63,16 @@ class UserFragment : BaseFragment(){
         initView()
         originalConstraintSet = ConstraintSet()
         originalConstraintSet.clone(binding.barcodeMember)
+
+        // Fade gradient header based on scroll position
+        val gradientMaxScroll by lazy {
+            binding.bgHeader1.height.takeIf { it > 0 }
+                ?: resources.getDimensionPixelSize(R.dimen.dp_190)
+        }
+        binding.content.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            val alpha = 1f - (scrollY.toFloat() / gradientMaxScroll).coerceIn(0f, 1f)
+            binding.bgHeader1.alpha = alpha
+        }
     }
     private fun initView() {
         val packageManager: PackageManager =  requireActivity().packageManager
