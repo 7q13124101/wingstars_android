@@ -172,7 +172,7 @@ public interface ApiService {
     Observable<List<WSCalendarResponse>> wsSchedule(@Query("per_page") int per_page, @Query("page") int page);
 
     //热销商品
-    @GET(NetBase.HOST_BASE + "/wp-json/wc/v3/products?per_page=4&order=desc&status=publish")
+    @GET(NetBase.HOST_BASE + "/wp-json/wc/v3/products?per_page=4&order=desc")
     Observable<List<WSProductResponse>> wsProducts();
 
     //即将贩售商品
