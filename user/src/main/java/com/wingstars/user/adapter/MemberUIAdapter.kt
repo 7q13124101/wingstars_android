@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.GlideException
@@ -14,7 +15,6 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.wingstars.base.net.NetBase.WINGSTARS_ACCOUNT_ENC
 import com.wingstars.base.net.NetBase.WINGSTARS_PASSWORD_ENC
 import com.wingstars.user.R
-import com.wingstars.user.activity.ChooseMemberActivity
 
 data class MemberUI(
     val memberId: String,
@@ -24,11 +24,13 @@ data class MemberUI(
 
 class MemberUIAdapter(
     private val memberList: List<MemberUI>,
-    activity: ChooseMemberActivity,
+    private val selectedMap: Map<String, Int> = emptyMap(),
+    private val onMemberClick: ((MemberUI) -> Unit)? = null,
 ) : RecyclerView.Adapter<MemberUIAdapter.MemberUIViewHolder>() {
     class MemberUIViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imgBg: ImageView = view.findViewById(R.id.img_bg_member)
         val imgIcon: ImageView = view.findViewById(R.id.img_member)
+        val tvOrder: TextView = view.findViewById(R.id.tv_order)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberUIViewHolder {
@@ -39,15 +41,23 @@ class MemberUIAdapter(
 
     override fun onBindViewHolder(holder: MemberUIViewHolder, position: Int) {
         val member = memberList[position]
-        holder.imgIcon?.let { iconView ->
-            if(!member.iconImageUrl.isNullOrEmpty()){
-                loadImageWithAuth(member.iconImageUrl,iconView)
-                iconView.visibility = View.VISIBLE
-            }else{
-                iconView.visibility = View.GONE
-            }
+        if (!member.iconImageUrl.isNullOrEmpty()) {
+            loadImageWithAuth(member.iconImageUrl, holder.imgIcon)
+            holder.imgIcon.visibility = View.VISIBLE
+        } else {
+            holder.imgIcon.visibility = View.GONE
         }
         holder.imgBg.setImageResource(R.drawable.bg_image_member)
+
+        val order = selectedMap[member.memberId]
+        if (order != null) {
+            holder.tvOrder.text = order.toString()
+            holder.tvOrder.visibility = View.VISIBLE
+        } else {
+            holder.tvOrder.visibility = View.GONE
+        }
+
+        holder.itemView.setOnClickListener { onMemberClick?.invoke(member) }
     }
 
     override fun getItemCount(): Int = memberList.size
