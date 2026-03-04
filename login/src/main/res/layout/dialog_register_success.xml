@@ -16,7 +16,7 @@
             android:id="@+id/imgMascot"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_takamei"
+            android:src="@drawable/ic_takamei_success"
             android:scaleType="centerCrop"
             android:clipToOutline="true"
             tools:ignore="ContentDescription" />
