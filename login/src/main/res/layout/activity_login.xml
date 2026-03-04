@@ -200,7 +200,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_input_selector"
-                        android:addStatesFromChildren="true"                        android:paddingLeft="@dimen/dp_20"
+                        android:addStatesFromChildren="true"
+                        android:paddingLeft="@dimen/dp_20"
                         android:paddingTop="@dimen/dp_17"
                         android:paddingRight="@dimen/dp_20"
                         android:paddingBottom="@dimen/dp_17"
@@ -212,7 +213,8 @@
                             android:layout_height="@dimen/dp_20"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
-                            android:button="@drawable/checkbox_psd_visible"
+                            android:button="@null"
+                            android:background="@drawable/checkbox_psd_visible"
                             android:checked="false" />
 
                         <androidx.appcompat.widget.AppCompatEditText
@@ -227,6 +229,8 @@
                             android:singleLine="true"
                             android:textColor="@color/text_tittle"
                             android:textColorHint="@color/gray_400"
+                            android:letterSpacing="0.1"
+                            android:typeface="sans"
                             android:textSize="@dimen/sp_14" />
 
                     </RelativeLayout>
