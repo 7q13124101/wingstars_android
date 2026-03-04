@@ -15,6 +15,7 @@ import com.wingstars.user.adapter.MemberUI
 import com.wingstars.user.adapter.MemberUIAdapter
 import com.wingstars.user.databinding.ActivityChooseMemberBinding
 import com.wingstars.user.dialog.ChooseMemberDialog
+import com.wingstars.user.utils.MemberStorage
 import com.wingstars.user.viewmodel.CheerLeaderViewModel
 import kotlin.getValue
 
@@ -32,9 +33,28 @@ class ChooseMemberActivity : BaseActivity() {
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.isAppearanceLightStatusBars = true
         initView()
+        restoreSelectedMember()
         observeViewModel()
         viewModel.fetchCheerLeaderList()
     }
+    private fun restoreSelectedMember() {
+        val names = MemberStorage.getSelectedMembers()
+        selectedNames[0] = names[0]
+        selectedNames[1] = names[1]
+        selectedNames[2] = names[2]
+
+        binding.edtTeamMember.setText(selectedNames[0] ?: "")
+        binding.edtTeamMember1.setText(selectedNames[1] ?: "")
+        binding.edtTeamMember2.setText(selectedNames[2] ?: "")
+
+        selectedNames.forEachIndexed { index, name ->
+            if (!name.isNullOrBlank()) {
+                updateInputStyle(index)
+            }
+        }
+        checkEnableSaveButton()
+    }
+
     private fun observeViewModel() {
         viewModel.memberListUI.observe(this) { members ->
             currentMemberList = members ?: emptyList()
@@ -78,6 +98,12 @@ class ChooseMemberActivity : BaseActivity() {
             arrow.setOnClickListener(clickListener)
         }
         binding.btnSave.setOnClickListener {
+            val member1 = selectedNames[0] ?: ""
+            val member2 = selectedNames[1] ?: ""
+            val member3 = selectedNames[2] ?: ""
+
+            MemberStorage.saveSelectedMembers(member1, member2, member3)
+
             val intent = Intent().apply {
                 putExtra("name1", selectedNames[0] ?: "")
                 putExtra("name2", selectedNames[1] ?: "")

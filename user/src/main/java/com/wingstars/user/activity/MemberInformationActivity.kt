@@ -23,6 +23,7 @@ import com.wingstars.login.LoginActivity
 import com.wingstars.user.utils.KeyboardUtils
 import com.wingstars.user.databinding.ActivityMemberInformationBinding
 import com.wingstars.user.dialog.DeleteAccountDialog
+import com.wingstars.user.utils.MemberStorage
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
@@ -30,6 +31,10 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 class MemberInformationActivity : BaseActivity() {
     private lateinit var binding: ActivityMemberInformationBinding
+    private var name1: String = ""
+    private var name2: String = ""
+    private var name3: String = ""
+
     private val changePasswordLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -37,13 +42,13 @@ class MemberInformationActivity : BaseActivity() {
                 binding.edtPassword.setText(newPassword)
             }
         }
-
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMemberInformationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val controller = WindowInsetsControllerCompat(window, window.decorView)
+        loadSelectedMembers()
         controller.isAppearanceLightStatusBars = true
         initView()
     }
@@ -61,13 +66,23 @@ class MemberInformationActivity : BaseActivity() {
         }
         return super.dispatchTouchEvent(ev)
     }
+    private fun loadSelectedMembers() {
+        val names = MemberStorage.getSelectedMembers()
+        name1 = names[0]
+        name2 = names[1]
+        name3 = names[2]
+
+        val displayText = listOf(name1, name2, name3)
+            .filter { it.isNotBlank() }
+            .joinToString("、")
+        binding.edtFavMember.setText(displayText)
+    }
     override fun initView(){
         binding.ivBack.setOnClickListener { finish() }
         binding.edtFavMember.setOnClickListener {
             chooseMemberLauncher.launch(Intent(this, ChooseMemberActivity::class.java))
         }
-        binding.icArrow.setOnClickListener {
-            chooseMemberLauncher.launch(Intent(this, ChooseMemberActivity::class.java))
+        binding.icArrow.setOnClickListener { chooseMemberLauncher.launch(Intent(this, ChooseMemberActivity::class.java))
         }
         binding.edtBarcodeCarrier.setOnClickListener {
             barcodeLauncher.launch(Intent(this, MobileBarcodeCarrierActivity::class.java))
@@ -88,13 +103,25 @@ class MemberInformationActivity : BaseActivity() {
         }
     }
     private val chooseMemberLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-        if(result.resultCode == RESULT_OK){
-            val name1 = result.data?.getStringExtra("name1")?:""
-            val name2 = result.data?.getStringExtra("name2")?:""
-            val name3 = result.data?.getStringExtra("name3")?:""
-            val displayText = listOf(name1, name2, name3)
-                .filter { it.isNotEmpty() }
-                .joinToString("、") { it.replace("|", " ") }
+        if(result.resultCode == RESULT_OK && result.data != null){
+//            val data = result.data!!
+            name1 = result.data?.getStringExtra("name1") ?: ""
+            name2 = result.data?.getStringExtra("name2") ?: ""
+            name3 = result.data?.getStringExtra("name3") ?: ""
+
+            val names = listOf(name1,
+                name2,
+                name3).filterNotNull()
+                .filter { it.isNotBlank() }
+            val displayText = names.joinToString("`")
+
+
+//            val name1 = result.data?.getStringExtra("name1")?:""
+//            val name2 = result.data?.getStringExtra("name2")?:""
+//            val name3 = result.data?.getStringExtra("name3")?:""
+//            val displayText = listOf(name1, name2, name3)
+//                .filter { it.isNotEmpty() }
+//                .joinToString("、") { it.replace("|", " ") }
             binding.edtFavMember.setText(displayText)
         }
     }

@@ -10,6 +10,7 @@
         android:id="@+id/shadow_img"
         android:layout_width="114dp"
         android:layout_height="107dp"
+        android:layout_marginBottom="@dimen/dp_20"
         app:hl_cornerRadius="20dp">
         <ImageView
             android:id="@+id/img_news"
