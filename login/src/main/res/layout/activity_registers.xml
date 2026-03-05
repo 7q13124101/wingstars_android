@@ -237,6 +237,8 @@
                         android:singleLine="true"
                         android:textColor="@color/text_tittle"
                         android:textColorHint="@color/gray_400"
+                        android:letterSpacing="0.1"
+                        android:typeface="sans"
                         android:textSize="@dimen/sp_14" />
                 </RelativeLayout>
 
@@ -295,6 +297,8 @@
                         android:singleLine="true"
                         android:textColor="@color/text_tittle"
                         android:textColorHint="@color/gray_400"
+                        android:letterSpacing="0.1"
+                        android:typeface="sans"
                         android:textSize="@dimen/sp_14" />
                 </RelativeLayout>
 
@@ -415,7 +419,7 @@
                         android:drawableLeft="@drawable/checkboxes__sexs"
                         android:drawablePadding="10dp"
                         android:text="@string/sex_male"
-                        android:textColor="@color/gray_400" />
+                        android:textColor="#4A5565" />
 
                     <View
                         android:layout_width="@dimen/dp_24"
@@ -431,7 +435,7 @@
                         android:drawableLeft="@drawable/checkboxes__sexs"
                         android:drawablePadding="10dp"
                         android:text="@string/sex_female"
-                        android:textColor="@color/gray_400" />
+                        android:textColor="#4A5565" />
 
                     <View
                         android:layout_width="@dimen/dp_24"
@@ -447,7 +451,7 @@
                         android:drawableLeft="@drawable/checkboxes__sexs"
                         android:drawablePadding="10dp"
                         android:text="@string/sex_secrecy"
-                        android:textColor="@color/gray_400" />
+                        android:textColor="#4A5565" />
                 </RadioGroup>
 
                 <RelativeLayout
@@ -464,7 +468,7 @@
                         android:checked="false"
                         android:paddingStart="@dimen/dp_20"
                         android:text="@string/privacy_policy"
-                        android:textColor="@color/gray_400" />
+                        android:textColor="#101828" />
 
                     <TextView
                         android:id="@+id/privacy"
@@ -494,7 +498,7 @@
                         android:drawablePadding="12dp"
                         android:paddingStart="20dp"
                         android:text="@string/user_agreement"
-                        android:textColor="@color/gray_400" />
+                        android:textColor="#101828" />
 
                     <TextView
                         android:id="@+id/agreement"
@@ -525,7 +529,7 @@
             <ImageView
                 android:layout_width="@dimen/pt_190"
                 android:layout_height="@dimen/pt_190"
-                android:src="@drawable/ic_takamei" />
+                android:src="@drawable/ic_takamei_success" />
 
             <TextView
                 android:layout_width="match_parent"
