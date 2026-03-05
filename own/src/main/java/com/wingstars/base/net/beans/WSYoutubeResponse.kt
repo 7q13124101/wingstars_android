@@ -33,7 +33,16 @@ data class VideoSnippet(
 
 data class VideoThumbnails(
     @SerializedName("medium")
-    val medium: ThumbnailInfo?
+    val medium: ThumbnailInfo?,
+
+    @SerializedName("high")
+    val high: ThumbnailInfo?, // Kích thước 480x360
+
+    @SerializedName("standard")
+    val standard: ThumbnailInfo?, // Kích thước 640x480
+
+    @SerializedName("maxres")
+    val maxres: ThumbnailInfo? // Kích thước 1280x720
 )
 
 data class ThumbnailInfo(

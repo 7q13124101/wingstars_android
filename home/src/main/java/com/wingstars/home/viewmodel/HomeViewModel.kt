@@ -160,15 +160,29 @@ class HomeViewModel : ViewModel() {
 
     fun getProductsData() {
         API.shared?.api?.let { api ->
-            val observer = api.wsProducts()
+            // Thay vì dùng wsProducts() fix cứng 4 cái, ta dùng hàm có param để gọi 20 cái
+            val observer = api.wsProducts("publish", 20, 1)
+
             observer
                 .subscribeOn(Schedulers.io())
+                // Phân rã List trả về thành từng object sản phẩm lẻ
+                .flatMapIterable { it }
+                // Lọc: Chỉ giữ lại những sản phẩm có giá > 0
+                .filter { product ->
+                    val priceStr = product.price
+                    // Kiểm tra giá không null, không rỗng và lớn hơn 0
+                    !priceStr.isNullOrEmpty() && (priceStr.toDoubleOrNull() ?: 0.0) > 0.0
+                }
+                // Chỉ lấy đúng 4 sản phẩm sau khi đã lọc
+                .take(4)
+                // Gom 4 sản phẩm đó lại thành 1 List
+                .toList()
+                .toObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    { next ->
-                        val list = mutableListOf<WSProductResponse>()
-                        list.addAll(next)
-                        productDataList.postValue(list)
+                    { validProducts ->
+                        // Đẩy danh sách đã lọc sạch sẽ lên LiveData để UI tự động cập nhật
+                        productDataList.postValue(validProducts.toMutableList())
                     },
                     { error ->
                         error.printStackTrace()
@@ -314,7 +328,14 @@ class HomeViewModel : ViewModel() {
 
                                 if (snippet != null && idObj != null) {
                                     val title = snippet.title ?: ""
-                                    val image = snippet.thumbnails?.medium?.url ?: ""
+
+                                    // Ưu tiên lấy ảnh maxres (nét nhất), sau đó lùi dần
+                                    val image = snippet.thumbnails?.maxres?.url
+                                        ?: snippet.thumbnails?.standard?.url
+                                        ?: snippet.thumbnails?.high?.url
+                                        ?: snippet.thumbnails?.medium?.url
+                                        ?: ""
+
                                     val videoId = idObj.videoId ?: ""
 
                                     // Xử lý ngày: Lấy 10 ký tự đầu (2025-12-22) và thay dấu - bằng dấu .

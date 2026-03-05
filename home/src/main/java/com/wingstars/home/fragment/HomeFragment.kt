@@ -20,6 +20,7 @@ import com.wingstars.base.net.beans.WSProductResponse
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.base.utils.MMKVManagement
 import com.wingstars.home.R
+import com.wingstars.home.activity.LatestNewsDetailActivity
 import com.wingstars.home.activity.TodayItineraryDetailsActivity
 import com.wingstars.home.adapter.*
 import com.wingstars.home.databinding.FragmentHomeBinding
@@ -250,7 +251,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         // 7. 最新消息
         newsAdapter = NewsAdapter(requireActivity(), mutableListOf(), object : NewsAdapter.OnItemListener {
             override fun onItemClick(data: com.wingstars.base.net.beans.WSPostResponse, position: Int) {
-                startActivity(Intent(requireActivity(), com.wingstars.home.activity.LatestNewsActivity::class.java))
+                val intent = Intent(requireActivity(), LatestNewsDetailActivity::class.java)
+                intent.putExtra("ITEM_NEWS_DATA", data)
+                startActivity(intent)
             }
         })
         val newsSection = SectionWrapperAdapter(
