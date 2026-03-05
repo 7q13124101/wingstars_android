@@ -527,10 +527,12 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
             val adapter = binding.rvCardClassificationList.adapter as CalendarAdapter
             adapter.updateData(selectedCalendarActivities)
 
-            binding.rvCardClassificationList.visibility = if (selectedCalendarActivities.isNotEmpty()) {
-                View.VISIBLE
+            if(selectedBirthdayUsers.isNotEmpty() && selectedCalendarActivities.isNotEmpty()) {
+                binding.rvBirthdayList.visibility = View.VISIBLE
+                binding.rvCardClassificationList.visibility = View.GONE
             } else {
-                View.GONE
+                binding.rvBirthdayList.visibility = View.GONE
+                binding.rvCardClassificationList.visibility = View.VISIBLE
             }
 
             checkEmptyViewVisibility()
