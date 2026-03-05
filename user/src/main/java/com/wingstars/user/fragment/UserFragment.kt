@@ -91,7 +91,7 @@ class UserFragment : BaseFragment(){
             }
         }
         binding.barcodeNull.setOnClickListener {
-            val intent = Intent(requireActivity(), MobileBarcodeCarrierActivity::class.java)
+            val intent = Intent(requireActivity(), MemberInformationActivity::class.java)
             startActivity(intent)
         }
         binding.icArrowDown.setOnClickListener {

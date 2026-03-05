@@ -223,6 +223,7 @@ class LoginViewModel : ViewModel(){
         MMKVManagement.setMemberIdentity(data.Identity ?: "")
         MMKVManagement.setMemberMail(data.Email ?: "")
         MMKVManagement.setCrmMemberBarcode(data.CarrierCode ?: "")
+        MMKVManagement.setMemberFavMember(data.ExtraData.favorite_players ?: emptyList())
         Log.d("LoginDebug", "✅ Member info saved to MMKV: ${data.Name}, ${data.Email}")
         Log.d("LoginMemberCode", "✅ Member info saved to MMKV: ${data.CarrierCode}")
 

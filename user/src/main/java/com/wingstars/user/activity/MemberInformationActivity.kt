@@ -5,7 +5,6 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
-import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,7 +12,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.WindowInsetsControllerCompat
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.base.net.API
-import com.wingstars.base.net.ApiService
 import com.wingstars.base.net.NetBase
 import com.wingstars.base.net.beans.CRMBaseResponse
 import com.wingstars.base.net.beans.CRMDeleteRespone
@@ -28,6 +26,10 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class MemberInformationActivity : BaseActivity() {
     private lateinit var binding: ActivityMemberInformationBinding
@@ -35,27 +37,20 @@ class MemberInformationActivity : BaseActivity() {
     private var name2: String = ""
     private var name3: String = ""
 
-    private val changePasswordLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val newPassword = result.data?.getStringExtra("new_password") ?: ""
-                binding.edtPassword.setText(newPassword)
-            }
-        }
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMemberInformationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val controller = WindowInsetsControllerCompat(window, window.decorView)
-        loadSelectedMembers()
         controller.isAppearanceLightStatusBars = true
         initView()
     }
+
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (ev.action == MotionEvent.ACTION_DOWN) {
             val view = currentFocus
-            if (view is EditText || view is AutoCompleteTextView) {
+            if (view is EditText) {
                 val outRect = Rect()
                 view.getGlobalVisibleRect(outRect)
                 if (!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
@@ -66,6 +61,7 @@ class MemberInformationActivity : BaseActivity() {
         }
         return super.dispatchTouchEvent(ev)
     }
+
     private fun loadSelectedMembers() {
         val names = MemberStorage.getSelectedMembers()
         name1 = names[0]
@@ -77,12 +73,14 @@ class MemberInformationActivity : BaseActivity() {
             .joinToString("、")
         binding.edtFavMember.setText(displayText)
     }
-    override fun initView(){
+
+    override fun initView() {
         binding.ivBack.setOnClickListener { finish() }
         binding.edtFavMember.setOnClickListener {
             chooseMemberLauncher.launch(Intent(this, ChooseMemberActivity::class.java))
         }
-        binding.icArrow.setOnClickListener { chooseMemberLauncher.launch(Intent(this, ChooseMemberActivity::class.java))
+        binding.icArrow.setOnClickListener {
+            chooseMemberLauncher.launch(Intent(this, ChooseMemberActivity::class.java))
         }
         binding.edtBarcodeCarrier.setOnClickListener {
             barcodeLauncher.launch(Intent(this, MobileBarcodeCarrierActivity::class.java))
@@ -92,47 +90,51 @@ class MemberInformationActivity : BaseActivity() {
         }
 
         binding.ivIdCard.setOnClickListener {
-            var intent = Intent(this, ChangeMemberPasswordActivity::class.java)
+            val intent = Intent(this, ChangeMemberPasswordActivity::class.java)
+            changePasswordLauncher.launch(intent)
+        }
+        binding.edtPassword.setOnClickListener {
+            val intent = Intent(this, ChangeMemberPasswordActivity::class.java)
             changePasswordLauncher.launch(intent)
         }
         binding.edtDeleteAccount.setOnClickListener {
             DeleteAccountDialog(this) {
-                // Khi người dùng nhấn "Xác nhận" trên Dialog
                 deleteAccountApi()
             }.show()
         }
     }
-    private val chooseMemberLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-        if(result.resultCode == RESULT_OK && result.data != null){
-//            val data = result.data!!
-            name1 = result.data?.getStringExtra("name1") ?: ""
-            name2 = result.data?.getStringExtra("name2") ?: ""
-            name3 = result.data?.getStringExtra("name3") ?: ""
 
-            val names = listOf(name1,
-                name2,
-                name3).filterNotNull()
-                .filter { it.isNotBlank() }
-            val displayText = names.joinToString("`")
+    private val chooseMemberLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK && result.data != null) {
+                val names = listOf(
+                    result.data?.getStringExtra("name1") ?: "",
+                    result.data?.getStringExtra("name2") ?: "",
+                    result.data?.getStringExtra("name3") ?: ""
+                ).filter { it.isNotBlank() }
 
+                binding.edtFavMember.setText(names.joinToString("`"))
 
-//            val name1 = result.data?.getStringExtra("name1")?:""
-//            val name2 = result.data?.getStringExtra("name2")?:""
-//            val name3 = result.data?.getStringExtra("name3")?:""
-//            val displayText = listOf(name1, name2, name3)
-//                .filter { it.isNotEmpty() }
-//                .joinToString("、") { it.replace("|", " ") }
-            binding.edtFavMember.setText(displayText)
+                MMKVManagement.setMemberFavMember(names)
+            }
         }
-    }
     private val barcodeLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ){ result ->
-        if(result.resultCode == RESULT_OK){
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
             val mobile = result.data?.getStringExtra("mobile_number") ?: ""
             binding.edtBarcodeCarrier.setText(mobile)
         }
     }
+
+    private val changePasswordLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val newPassword = result.data?.getStringExtra("new_password") ?: ""
+                binding.edtPassword.setText(newPassword)
+            }
+        }
+
     private fun loadMemberInfo() {
         if (!MMKVManagement.isLogin()) return
         val password = MMKVManagement.getMemberPassword()
@@ -143,19 +145,38 @@ class MemberInformationActivity : BaseActivity() {
         val name = MMKVManagement.getMemberName()
         val mail = MMKVManagement.getMemberMail()
         val barcodeNumber = MMKVManagement.getCrmMemberBarcode()
+        val favMembers = MMKVManagement.getMemberFavMember()
         binding.phoneMember.text = phone
         binding.idCardNumber.text = identity
-        binding.birthday.text = birthday
+        binding.birthday.text = formatBirthday(birthday)
+        binding.birthday.text = formatBirthday(birthday)
+        binding.edtFavMember.setText(favMembers.joinToString("`"))
         binding.edtPassword.setText(password)
         binding.userGender.text = when (gender) {
-            "M", "Male", "男" -> "男"
-            "F", "Female", "女" -> "女"
+            "M", "Male", "男" -> "男姓"
+            "F", "Female", "女" -> "女姓"
             else -> ""
         }
         binding.tvUserName.text = name
         binding.tvUserMail.text = mail
         binding.edtBarcodeCarrier.setText(barcodeNumber)
     }
+
+    fun formatBirthday(birthdayRaw: String?): String {
+        if (birthdayRaw.isNullOrBlank()) return ""
+
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+            inputFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+            val date: Date = inputFormat.parse(birthdayRaw)!!
+            val outputFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+            outputFormat.format(date)
+        } catch (_: Exception) {
+            ""
+        }
+    }
+
     private fun deleteAccountApi() {
         val userId = MMKVManagement.getCrmMemberCode()
         if (userId.isEmpty()) {
@@ -177,16 +198,28 @@ class MemberInformationActivity : BaseActivity() {
                     override fun onNext(response: CRMBaseResponse<CRMDeleteRespone>) {
                         loadingDialog.dismiss()
                         if (response.success) {
-                            Toast.makeText(this@MemberInformationActivity, "帳號已成功刪除", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@MemberInformationActivity,
+                                "帳號已成功刪除",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             performLogoutAfterDelete()
                         } else {
-                            Toast.makeText(this@MemberInformationActivity, response.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@MemberInformationActivity,
+                                response.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
 
                     override fun onError(e: Throwable) {
                         loadingDialog.dismiss()
-                        Toast.makeText(this@MemberInformationActivity, "網路錯誤: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@MemberInformationActivity,
+                            "網路錯誤: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     override fun onComplete() {
@@ -204,6 +237,7 @@ class MemberInformationActivity : BaseActivity() {
         startActivity(intent)
         finish()
     }
+
     override fun onResume() {
         super.onResume()
         loadMemberInfo()
