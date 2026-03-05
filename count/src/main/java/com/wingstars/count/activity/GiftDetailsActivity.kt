@@ -75,6 +75,19 @@ class GiftDetailsActivity : AppCompatActivity() {
         initView()
     }
 
+    fun String?.formatDate(): String {
+        if (this.isNullOrEmpty()) return ""
+        return try {
+            val inputFormat = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault())
+            val outputFormat = java.text.SimpleDateFormat("yyyy/MM/dd HH:mm", java.util.Locale.getDefault())
+
+            val date = inputFormat.parse(this)
+            outputFormat.format(date!!)
+        } catch (e: Exception) {
+            this
+        }
+    }
+
     private fun loadData() {
         val serializableData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("data", CRMCouponsAvailableResponse::class.java)
@@ -107,6 +120,8 @@ class GiftDetailsActivity : AppCompatActivity() {
             }
         }
 
+        val pageTitle = intent.getStringExtra("title") ?: getString(R.string.gift_details)
+        binding.title.text = pageTitle
         status = intent.getStringExtra("status")
         if (status.isNullOrEmpty()) {
             status = ActivityStatusEnum.GIFT_REDEEMED.name
@@ -117,6 +132,8 @@ class GiftDetailsActivity : AppCompatActivity() {
 
         binding.couponName.text = data.couponName ?: ""
         binding.pointCost.text = "${data.pointCost ?: 0} 點"
+        binding.tvCouponTime.text = "${data.couponStartDate.formatDate()} ~ ${data.couponEndDate.formatDate()}"
+
 
         val eligibleMembersStr = data.eligibleMembersStr
         if (!eligibleMembersStr.isNullOrEmpty() && eligibleMembersStr != getString(R.string.all_members)) {
@@ -127,7 +144,9 @@ class GiftDetailsActivity : AppCompatActivity() {
 
         binding.maxPerMember.text = if (data.maxPerMember == -1) getString(R.string.NoLimit) else "${data.maxPerMember} 次"
         binding.activityTime.text = "${data.totalQuantity ?: 0}"
-        binding.exchangeLocation.text = data.redeemStore?.joinToString(", ") ?: ""
+//        binding.exchangeLocation.text = data.redeemStore?.joinToString(", ") ?: ""
+        binding.exchangeLocation.text = data.redeemStore?.joinToString(", ")?.ifEmpty { null } ?: "不限定兌換地點"
+
         binding.tvUsageRules.text = data.description ?: ""
         binding.tvPrecautions.text = data.usageRules ?: ""
 
@@ -173,14 +192,25 @@ class GiftDetailsActivity : AppCompatActivity() {
 
     private fun setButtonBackground(pointCost: Int, point: Int, claimedCount: Int, maxPerMember: Int) {
         if (point < pointCost) {
-            binding.button.visibility = View.GONE
+            binding.btnExchange.text = getString(R.string.insufficient_points)
+            disableButton()
             return
         }
-        binding.button.visibility = View.VISIBLE
-        binding.btnExchange.isEnabled = true
-        val redeemStartAt = data.redeemStartAt
-        if (redeemStartAt != null) {
-            val startDate = parseDate(redeemStartAt)
+//        binding.button.visibility = View.VISIBLE
+//        binding.btnExchange.isEnabled = true
+//        val redeemStartAt = data.redeemStartAt
+//        if (redeemStartAt != null) {
+//            val startDate = parseDate(redeemStartAt)
+//            if (startDate != null && startDate.after(Date())) {
+//                binding.btnExchange.text = getString(R.string.not_yet_open)
+//                disableButton()
+//                return
+
+        binding.btnExchange.text = getString(R.string.count_activate_barcode)
+
+        val couponStartDate = data.couponStartDate
+        if (couponStartDate != null) {
+            val startDate = parseDate(couponStartDate)
             if (startDate != null && startDate.after(Date())) {
                 binding.btnExchange.text = getString(R.string.not_yet_open)
                 disableButton()
@@ -188,9 +218,17 @@ class GiftDetailsActivity : AppCompatActivity() {
             }
         }
 
-        val redeemEndAt = data.redeemEndAt
-        if (redeemEndAt != null) {
-            val endDate = parseDate(redeemEndAt)
+//        val redeemEndAt = data.redeemEndAt
+//        if (redeemEndAt != null) {
+//            val endDate = parseDate(redeemEndAt)
+//            if (endDate != null && Date().after(endDate)) {
+//                binding.btnExchange.text = getString(R.string.finished)
+//                disableButton()
+//                return
+
+        val couponEndDate = data.couponEndDate
+        if (couponEndDate != null) {
+            val endDate = parseDate(couponEndDate)
             if (endDate != null && Date().after(endDate)) {
                 binding.btnExchange.text = getString(R.string.finished)
                 disableButton()
@@ -356,14 +394,15 @@ class GiftDetailsActivity : AppCompatActivity() {
     }
 
     private fun handleExchangeClick() {
-        android.util.Log.d("GiftDetails", "Current Status: $status")
+//        android.util.Log.d("GiftDetails", "Current Status: $status")
         when (status) {
             ActivityStatusEnum.GIFT_REDEEMED.name -> {
                 if (data.otpRequired) {
                     viewModel.getOTPCoupons(data.id)
                 } else {
-                    val randomOtp = (100000..999999).random().toString()
-                    showOtpDialog(randomOtp)
+                    viewModel.crmRedeemCoupon(data.id, "")
+//                    val randomOtp = (100000..999999).random().toString()
+//                    showOtpDialog(randomOtp)
 //                    showConfirmRedeemDialog()
                 }
             }
@@ -500,7 +539,7 @@ class GiftDetailsActivity : AppCompatActivity() {
             if (index < 0 || index >= fullDataList.size) return
             val item = fullDataList[index]
             tvName.text = item.couponName
-            tvPeriod1.text = "兌換期間：${item.redeemStartAt ?: ""} ~ ${item.redeemEndAt ?: ""}"
+            tvPeriod1.text = "兌換期間：${item.couponStartDate.formatDate() ?: ""} ~ ${item.couponEndDate.formatDate() ?: ""}"
             val imgUrl = if (!item.galleryImages.isNullOrEmpty()) item.galleryImages[0] else item.coverImage
             Glide.with(this).load(imgUrl).placeholder(R.drawable.bg_round_image).into(ivImage)
 

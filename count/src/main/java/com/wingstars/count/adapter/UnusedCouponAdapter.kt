@@ -10,6 +10,8 @@ import com.wingstars.count.R
 import com.wingstars.count.databinding.ItemUnusedCouponsBinding
 import com.wingstars.base.net.beans.CRMCouponsResponse
 import java.text.SimpleDateFormat
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class UnusedCouponAdapter(
@@ -40,6 +42,18 @@ class UnusedCouponAdapter(
     inner class CouponViewHolder(private val binding: ItemUnusedCouponsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        fun formatDate(dateStr: String?): String {
+            if (dateStr.isNullOrEmpty()) return ""
+
+            return try {
+                val date = OffsetDateTime.parse(dateStr)
+                val outputFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
+                date.format(outputFormatter)
+            } catch (e: Exception) {
+                ""
+            }
+        }
+
         fun bind(data: CRMCouponsResponse) {
             val context = binding.root.context
             data.coupon?.eligibleMembersStr?.let {
@@ -61,36 +75,38 @@ class UnusedCouponAdapter(
                     .into(binding.ivGoodsImage)
             }
 
+            val start = formatDate(data.coupon?.couponStartDate)
+            val end = formatDate(data.coupon?.couponEndDate)
             binding.tvExchangeName.text = data.coupon?.couponName
-            binding.tvExchangePeriod1.text = "兌換開始：${data.coupon?.redeemStartAtF}"
+            binding.tvExchangePeriod1.text = "兌換時間：$start~$end"
 //            binding.tvExchangePeriod2.text = "兌換截止：${data.coupon?.redeemEndAtF}"
 
-            val endAt = data.coupon?.redeemEndAtF
-            android.util.Log.d("UnusedCouponAdapter", "EndAt String: $endAt")
+            val endAt = data.coupon?.couponEndDate
+//            android.util.Log.d("UnusedCouponAdapter", "EndAt String: $endAt")
             if (endAt.isNullOrEmpty()) {
-                binding.tvExchangePeriod1.text = "兌換開始：~"
+                binding.tvExchangePeriod1.text = "兌換時間：~"
 //                binding.tvExchangePeriod2.text = "兌換截止：~"
                 binding.llActivityBarcode.visibility = View.VISIBLE
                 binding.llRoot.setBackgroundResource(R.drawable.bg_item_unused)
-            } else {
-                val expired = try {
-                    val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
-                    val endDate = sdf.parse(endAt)
-                    val now = Date()
-                    endDate != null && endDate.before(now)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    true
-                }
+//            } else {
+//                val expired = try {
+//                    val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
+//                    val endDate = sdf.parse(endAt)
+//                    val now = Date()
+//                    endDate != null && endDate.before(now)
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                    true
+//                }
 
-                if (expired) {
-                    binding.llActivityBarcode.visibility = View.GONE
-                    binding.llRoot.setBackgroundResource(R.drawable.bg_item_unused_notpr)
-                } else {
-                    binding.llActivityBarcode.visibility = View.VISIBLE
-                    binding.llRoot.setBackgroundResource(R.drawable.bg_item_unused)
-                    binding.llActivityBarcode.alpha = 1.0f
-                }
+//                if (expired) {
+//                    binding.llActivityBarcode.visibility = View.GONE
+//                    binding.llRoot.setBackgroundResource(R.drawable.bg_item_unused_notpr)
+//                } else {
+//                    binding.llActivityBarcode.visibility = View.VISIBLE
+//                    binding.llRoot.setBackgroundResource(R.drawable.bg_item_unused)
+//                    binding.llActivityBarcode.alpha = 1.0f
+//                }
             }
 
             binding.root.setOnClickListener {

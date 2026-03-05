@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.wingstars.base.net.beans.CRMCouponsAvailableResponse
+import com.wingstars.base.net.beans.CRMCouponsResponse
 import com.wingstars.count.R
 import com.wingstars.count.Repository.ActivityStatusEnum
 import com.wingstars.count.databinding.ActivityExchangeDetailsBinding
@@ -78,15 +79,31 @@ class ExchangeDetailsActivity : AppCompatActivity() {
     }
 
     private fun loadDataFromIntent() {
-        val serializableData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        status = intent.getStringExtra("status")
+        couponCode = intent.getStringExtra("couponCode")
+        val countStr = intent.getStringExtra("count") ?: "0"
+        memberCards = intent.getStringArrayListExtra("memberCards")
+
+        val couponDataExtra = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra("coupon_data", CRMCouponsResponse.Coupon::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getSerializableExtra("coupon_data") as? CRMCouponsResponse.Coupon
+        }
+
+        val directDataExtra = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("data", CRMCouponsAvailableResponse::class.java)
         } else {
             @Suppress("DEPRECATION")
             intent.getSerializableExtra("data") as? CRMCouponsAvailableResponse
         }
 
-        if (serializableData != null) {
-            data = serializableData
+        if (couponDataExtra != null) {
+            val toJson = com.google.gson.Gson().toJson(couponDataExtra)
+            val type = object : com.google.gson.reflect.TypeToken<CRMCouponsAvailableResponse>() {}.type
+            data = com.google.gson.Gson().fromJson(toJson, type)
+        } else if (directDataExtra != null) {
+            data = directDataExtra
         } else {
             Toast.makeText(this, "Data error", Toast.LENGTH_SHORT).show()
             finish()
@@ -96,10 +113,11 @@ class ExchangeDetailsActivity : AppCompatActivity() {
         val listExtra = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("EXTRA_LIST_DATA", ArrayList::class.java) as? ArrayList<CRMCouponsAvailableResponse>
         } else {
+            @Suppress("DEPRECATION")
             intent.getSerializableExtra("EXTRA_LIST_DATA") as? ArrayList<CRMCouponsAvailableResponse>
         }
 
-        if (listExtra != null && listExtra.isNotEmpty()) {
+        if (!listExtra.isNullOrEmpty()) {
             fullDataList = listExtra
             currentIndex = intent.getIntExtra("EXTRA_CURRENT_INDEX", 0)
         } else {
@@ -109,11 +127,6 @@ class ExchangeDetailsActivity : AppCompatActivity() {
             }
         }
 
-        status = intent.getStringExtra("status")
-        couponCode = intent.getStringExtra("couponCode")
-        val countStr = intent.getStringExtra("count") ?: "0"
-        memberCards = intent.getStringArrayListExtra("memberCards")
-
         displayCouponDetails(data)
         val currentPoints = countStr.toIntOrNull() ?: 0
         val claimedCount = data.claimedCount?.toInt() ?: 0
@@ -122,11 +135,34 @@ class ExchangeDetailsActivity : AppCompatActivity() {
 
 
     private fun setButtonBackground(pointCost: Int, point: Int, claimedCount: Int, maxPerMember: Int) {
-        if (status == ActivityStatusEnum.UNUSED_REDEMPTION.name) {
-            binding.button.visibility = View.VISIBLE
-            binding.btnExchange.text = "開啟條碼"
-            enableButton()
-            return
+
+        when (status) {
+            ActivityStatusEnum.USED_REDEMPTION.name -> {
+                binding.btnExchange.visibility = View.GONE
+                binding.status.text = getString(R.string.count_have_used)
+                return
+            }
+
+            ActivityStatusEnum.UNUSED_REDEMPTION.name -> {
+                binding.button.visibility = View.VISIBLE
+                binding.btnExchange.visibility = View.VISIBLE
+                binding.status.text = getString(R.string.count_not_used)
+                val claimStartAt = data.claimStartAt
+                if (claimStartAt != null) {
+                    val claimDate = parseDate(claimStartAt)
+                    if (claimDate != null && claimDate.after(Date())) {
+                        binding.btnExchange.text = getString(R.string.not_yet_open)
+                        disableButton()
+                    } else {
+                        binding.btnExchange.text = getString(R.string.count_activate_barcode)
+                        enableButton()
+                    }
+                } else {
+                    binding.btnExchange.text = getString(R.string.count_activate_barcode)
+                    enableButton()
+                }
+                return
+            }
         }
 
         if (point < pointCost) {
@@ -134,11 +170,18 @@ class ExchangeDetailsActivity : AppCompatActivity() {
             disableButton()
             return
         }
-        binding.btnExchange.visibility = View.VISIBLE
 
-        val redeemStartAt = data.redeemStartAt
-        if (redeemStartAt != null) {
-            val startDate = parseDate(redeemStartAt)
+//        val redeemStartAt = data.redeemStartAt
+//        if (redeemStartAt != null) {
+//            val startDate = parseDate(redeemStartAt)
+//            if (startDate != null && startDate.after(Date())) {
+//                binding.btnExchange.text = getString(R.string.not_yet_open)
+//                disableButton()
+//                return
+
+        val couponStartDate = data.couponStartDate
+        if (couponStartDate != null) {
+            val startDate = parseDate(couponStartDate)
             if (startDate != null && startDate.after(Date())) {
                 binding.btnExchange.text = getString(R.string.not_yet_open)
                 disableButton()
@@ -146,9 +189,17 @@ class ExchangeDetailsActivity : AppCompatActivity() {
             }
         }
 
-        val redeemEndAt = data.redeemEndAt
-        if (redeemEndAt != null) {
-            val endDate = parseDate(redeemEndAt)
+//        val redeemEndAt = data.redeemEndAt
+//        if (redeemEndAt != null) {
+//            val endDate = parseDate(redeemEndAt)
+//            if (endDate != null && Date().after(endDate)) {
+//                binding.btnExchange.text = getString(R.string.finished)
+//                disableButton()
+//                return
+
+        val couponEndDate = data.couponEndDate
+        if (couponEndDate != null) {
+            val endDate = parseDate(couponEndDate)
             if (endDate != null && Date().after(endDate)) {
                 binding.btnExchange.text = getString(R.string.finished)
                 disableButton()
@@ -179,7 +230,7 @@ class ExchangeDetailsActivity : AppCompatActivity() {
 
         if (maxPerMember != -1) {
             if (claimedCount >= maxPerMember) {
-                binding.btnExchange.text = getString(R.string.has_completed)
+                binding.btnExchange.text = getString(R.string.redeemed)
                 disableButton()
                 return
             }
@@ -188,7 +239,7 @@ class ExchangeDetailsActivity : AppCompatActivity() {
         val totalIssued = data.totalIssued ?: 0
         val totalQuantity = data.totalQuantity
         if (totalQuantity != -1 && totalIssued >= totalQuantity) {
-            binding.btnExchange.text = getString(R.string.has_completed)
+            binding.btnExchange.text = getString(R.string.redeemed)
             disableButton()
             return
         }
@@ -311,10 +362,24 @@ class ExchangeDetailsActivity : AppCompatActivity() {
         }
     }
 
+    fun String?.formatDate(): String {
+        if (this.isNullOrEmpty()) return ""
+        return try {
+            val inputFormat = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault())
+            val outputFormat = java.text.SimpleDateFormat("yyyy/MM/dd HH:mm", java.util.Locale.getDefault())
+
+            val date = inputFormat.parse(this)
+            outputFormat.format(date!!)
+        } catch (e: Exception) {
+            this
+        }
+    }
+
     private fun displayCouponDetails(item: CRMCouponsAvailableResponse) {
         binding.couponName.text = item.couponName
         binding.pointCost.text = "${item.pointCost ?: 0} 點"
-        binding.tvCouponTime.text = "${item.redeemStartAt ?: ""} ~ ${item.redeemEndAt ?: ""}"
+//        binding.tvCouponTime.text = "${item.redeemStartAt ?: ""} ~ ${item.redeemEndAt ?: ""}"
+        binding.tvCouponTime.text = "${item.couponStartDate.formatDate()} ~ ${item.couponEndDate.formatDate()}"
         val eligibleMembersStr = data.eligibleMembersStr
         if (!eligibleMembersStr.isNullOrEmpty() && eligibleMembersStr != getString(R.string.all_members)) {
             binding.status.text = eligibleMembersStr
@@ -323,8 +388,10 @@ class ExchangeDetailsActivity : AppCompatActivity() {
         }
         binding.maxPerMember.text = if (data.maxPerMember == -1) getString(R.string.NoLimit) else "${data.maxPerMember} 次"
         binding.activityTime.text = "${data.totalQuantity ?: 0}"
-        binding.exchangeLocation.text = data.redeemStore?.joinToString(", ") ?: ""
+//        binding.exchangeLocation.text = data.redeemStore?.joinToString(", ") ?: ""
+        binding.exchangeLocation.text = data.redeemStore?.joinToString(", ")?.ifEmpty { null } ?: "不限定兌換地點"
         binding.tvUsageRules.text = item.usageRules
+//        binding.tvDescription.text = item.description
 
         val newImages = item.galleryImages ?: listOfNotNull(item.coverImage)
         if (currentBannerImages != newImages) {
@@ -346,8 +413,9 @@ class ExchangeDetailsActivity : AppCompatActivity() {
             if (data.otpRequired) {
                 viewModel.getOTPCoupons(data.id)
             } else {
-                val randomOtp = (100000..999999).random().toString()
-                showOtpDialog(data.id, randomOtp)
+                viewModel.crmRedeemCoupon(data.id, "")
+//                val randomOtp = (100000..999999).random().toString()
+//                showOtpDialog(data.id, randomOtp)
             }
         }
     }
@@ -405,7 +473,7 @@ class ExchangeDetailsActivity : AppCompatActivity() {
 
             // 1. Cập nhật Dialog UI
             tvName.text = item.couponName
-            tvPeriod1.text = "兌換期間：${item.redeemStartAt ?: ""} ~ ${item.redeemEndAt ?: ""}"
+            tvPeriod1.text = "兌換期間：${item.couponStartDate.formatDate() ?: ""} ~ ${item.couponEndDate.formatDate() ?: ""}"
             val imgUrl = if (!item.galleryImages.isNullOrEmpty()) item.galleryImages[0] else item.coverImage
             Glide.with(this).load(imgUrl).placeholder(R.drawable.bg_round_image).into(ivImage)
 

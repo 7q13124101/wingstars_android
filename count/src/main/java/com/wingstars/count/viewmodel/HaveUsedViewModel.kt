@@ -1,5 +1,6 @@
 package com.wingstars.count.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
@@ -12,6 +13,7 @@ import com.wingstars.base.net.beans.CRMCouponsResponse
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.HttpException
+import kotlin.math.log
 
 class HaveUsedViewModel : ViewModel() {
     // TODO: Implement the ViewModel
@@ -32,6 +34,7 @@ class HaveUsedViewModel : ViewModel() {
                 AndroidSchedulers.mainThread()
             )?.subscribe(
                 { next ->
+//                    Log.d("test api",next.toString())
                     haveUsedCouponsData.postValue(next.data)
                     setIsLoading(false)
                 },

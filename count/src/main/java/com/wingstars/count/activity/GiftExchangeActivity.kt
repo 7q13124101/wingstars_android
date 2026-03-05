@@ -66,6 +66,11 @@ class GiftExchangeActivity : AppCompatActivity() {
         }
     }
 
+//    override fun onResume() {
+//        super.onResume()
+//        viewModel.setProductCouponsInfo(-1, currentSortMethod)
+//    }
+
     private fun initView() {
         adapter = CountNewDetailAdapter(this, mutableListOf()) { item ->
             val intent = Intent(this, GiftDetailsActivity::class.java)
