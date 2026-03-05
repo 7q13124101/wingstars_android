@@ -52,7 +52,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
 
     }
 
-    private fun startCountDown(totalMs: Long = 5_000) {
+    private fun startCountDown(totalMs: Long = 60_000) {
         timer?.cancel()
         binding.tvCodeTimer.visibility = View.VISIBLE
         binding.tvResend?.visibility = View.GONE
@@ -367,24 +367,28 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
             viewModel.getRegisterPhoneCode(phone)
 
         }
-        binding.cbPsdConfirmVisible.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                binding.edtPsdConfirm.inputType =
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+        binding.cbPsdConfirmVisible.setOnCheckedChangeListener { _, isChecked ->
+            val typeface = binding.edtPsdConfirm.typeface
+
+            binding.edtPsdConfirm.inputType = if (isChecked) {
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             } else {
-                binding.edtPsdConfirm.inputType =
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
+
+            binding.edtPsdConfirm.typeface = typeface
             binding.edtPsdConfirm.text?.let { binding.edtPsdConfirm.setSelection(it.length) }
         }
-        binding.cbPsdVisible.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                binding.edtPsd.inputType =
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+        binding.cbPsdVisible.setOnCheckedChangeListener { _, isChecked ->
+            val typeface = binding.edtPsd.typeface
+
+            binding.edtPsd.inputType = if (isChecked) {
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             } else {
-                binding.edtPsd.inputType =
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
+
+            binding.edtPsd.typeface = typeface
             binding.edtPsd.text?.let { binding.edtPsd.setSelection(it.length) }
         }
         binding.ivSexCircle.setOnClickListener {
