@@ -142,6 +142,14 @@ public interface ApiService {
             @Query("type") String type,
             @Query("key") String apiKey
     );
+    // API mới: Lấy danh sách video cực nhanh, chỉ tốn 1 điểm Quota
+//    @GET(NetBase.HOST_GOOGLE + "/youtube/v3/playlistItems")
+//    Observable<YoutubeSearchResponse> getYoutubePlaylistItems(
+//            @Query("part") String part,
+//            @Query("playlistId") String playlistId,
+//            @Query("maxResults") int maxResults,
+//            @Query("key") String apiKey
+//    );
     @GET(NetBase.HOST_CRM +"api/v1/basic/member/{id}/message/inapp/list")
     Observable<List<CRMInAppMessageResponse>>getInAppMessages(
             @Path("id") String memberId,
@@ -172,8 +180,12 @@ public interface ApiService {
     Observable<List<WSCalendarResponse>> wsSchedule(@Query("per_page") int per_page, @Query("page") int page);
 
     //热销商品
-    @GET(NetBase.HOST_BASE + "/wp-json/wc/v3/products?per_page=4&order=desc")
-    Observable<List<WSProductResponse>> wsProducts();
+//    @GET(NetBase.HOST_BASE + "/wp-json/wc/v3/products?per_page=4&order=desc&status=publish")
+//    Observable<List<WSProductResponse>> wsProducts();
+
+    // 將 per_page 改為要傳入的變數。
+    @GET(NetBase.HOST_BASE + "/wp-json/wc/v3/products?order=desc&status=publish")
+    Observable<List<WSProductResponse>> wsProducts(@Query("per_page") int per_page);
 
     //即将贩售商品
     //status = "future": 即将贩售商品
