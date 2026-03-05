@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.wingstars.user.R
 import com.wingstars.user.databinding.ActivityUserTermsBinding
@@ -32,6 +33,18 @@ class PolicyTermActivity : AppCompatActivity() {
 
     private fun initView() {
         binding.ivBack.setOnClickListener { finish() }
+        
+        // Cấu hình font Noto Sans TC cho các phần tiêu đề tĩnh nếu cần
+        val notoBold = ResourcesCompat.getFont(this, R.font.notosans_tc_bold)
+        val notoRegular = ResourcesCompat.getFont(this, R.font.notosans_tc_regular)
+        
+        binding.txtTitle.typeface = notoBold
+        binding.txtTitleTop.typeface = notoBold
+        binding.txtContentTop.typeface = notoRegular
+        
+        // Tăng dãn cách dòng cho txtContentTop
+        binding.txtContentTop.setLineSpacing(0f, 1.2f)
+
         if (tag == "PrivacyPolicy") {
             viewModel.getPrivacyPolicyJson(this)
             binding.txtTitle.text = getString(R.string.user_privacy_policy)
@@ -52,10 +65,15 @@ class PolicyTermActivity : AppCompatActivity() {
                                 .inflate(R.layout.item_policy, binding.llPolicyContent, false)
                             val tvPolicyTitle: TextView? = inflate.findViewById(R.id.tv_policy_title)
                             val tvPolicyContent: TextView? = inflate.findViewById(R.id.tv_policy_content)
+                            
+                            // Áp dụng font và màu sắc theo yêu cầu
+                            tvPolicyTitle?.typeface = notoBold
+                            tvPolicyContent?.typeface = notoRegular
+
                             tvPolicyContent?.layoutParams?.let { lp ->
                                 if (lp is LinearLayout.LayoutParams) {
                                     lp.rightMargin = dp2px(5F)?.toInt() ?: 0
-                                    lp.topMargin = dp2px(5F)?.toInt() ?: 0
+                                    lp.topMargin = dp2px(0F)?.toInt() ?: 0 // Đưa văn bản sát hẳn vào tiêu đề
                                     lp.bottomMargin = dp2px(5F)?.toInt() ?: 0
                                     tvPolicyContent.layoutParams = lp
                                 }
@@ -75,7 +93,7 @@ class PolicyTermActivity : AppCompatActivity() {
                     }
                 }
             }
-        }else if (tag == "UserTerms") {
+        } else if (tag == "UserTerms") {
             viewModel.getUserTermsJson(this)
             binding.txtTitle.text = getString(R.string.user_terms_of_use)
             binding.txtTitle.setTextColor(getColor(R.color.color_101828))
@@ -95,10 +113,15 @@ class PolicyTermActivity : AppCompatActivity() {
                                 .inflate(R.layout.item_policy, binding.llPolicyContent, false)
                             val tvPolicyTitle: TextView? = inflate.findViewById(R.id.tv_policy_title)
                             val tvPolicyContent: TextView? = inflate.findViewById(R.id.tv_policy_content)
+                            
+                            // Áp dụng font và màu sắc theo yêu cầu
+                            tvPolicyTitle?.typeface = notoBold
+                            tvPolicyContent?.typeface = notoRegular
+
                             tvPolicyContent?.layoutParams?.let { lp ->
                                 if (lp is LinearLayout.LayoutParams) {
                                     lp.rightMargin = dp2px(5F)?.toInt() ?: 0
-                                    lp.topMargin = dp2px(5F)?.toInt() ?: 0
+                                    lp.topMargin = dp2px(0F)?.toInt() ?: 0 // Đưa văn bản sát hẳn vào tiêu đề
                                     lp.bottomMargin = dp2px(5F)?.toInt() ?: 0
                                     tvPolicyContent.layoutParams = lp
                                 }
@@ -108,10 +131,12 @@ class PolicyTermActivity : AppCompatActivity() {
                             } else {
                                 tvPolicyTitle?.visibility = View.VISIBLE
                                 tvPolicyTitle?.text = dataDTO.title
+                                tvPolicyTitle?.setTextColor(getColor(R.color.color_101828))
                             }
                             val safeContent = dataDTO.content ?: ""
                             tvPolicyContent?.text = formatPolicyText(safeContent)
-                            tvPolicyContent?.setTextColor(getColor(R.color.color_101828))
+                            // Sử dụng màu #4A5565 cho nội dung
+                            tvPolicyContent?.setTextColor(getColor(R.color.color_4A5565))
                             binding.llPolicyContent.addView(inflate)
                         }
                     }

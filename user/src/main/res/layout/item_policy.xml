@@ -3,29 +3,32 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginTop="@dimen/dp_16">
+    android:layout_marginTop="@dimen/dp_5">
     <TextView
         android:id="@+id/tv_policy_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/noto_sans_tc_family"
         android:gravity="center_vertical"
         android:text=""
         android:textStyle="bold"
         android:textSize="@dimen/sp_14"
         android:paddingStart="@dimen/dp_20"
-        android:paddingTop="@dimen/dp_10"
-        android:background="@color/color_F5F5F5"
-        android:paddingBottom="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_4"
+        android:background="@color/color_F3F4F6"
+        android:paddingBottom="0dp"
         android:textColor="@color/color_101828"/>
     <TextView
         android:id="@+id/tv_policy_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/noto_sans_tc_family"
         android:textStyle="normal"
         android:text=""
         android:textSize="@dimen/sp_14"
         android:paddingLeft="@dimen/dp_20"
         android:paddingRight="@dimen/dp_20"
-        android:textColor="@color/color_101828" />
+        android:lineSpacingMultiplier="1.2"
+        android:textColor="@color/color_4A5565" />
 
 </LinearLayout>
