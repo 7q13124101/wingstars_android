@@ -104,13 +104,13 @@ class GiftExchangeActivity : AppCompatActivity() {
             binding.tvCountWin.text = "$countVal"
         }
 
-//        viewModel.isLoading.observe(this) { isLoading ->
-//            if (isLoading) {
-//                binding.chLoading.visibility = View.VISIBLE
-//            } else {
-//                binding.chLoading.visibility = View.GONE
-//            }
-//        }
+        viewModel.isLoading.observe(this) { isLoading ->
+            if (isLoading) {
+                binding.srlProductCoupons.autoRefresh()
+            } else {
+                binding.srlProductCoupons.finishRefresh()
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

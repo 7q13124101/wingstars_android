@@ -27,6 +27,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.wingstars.base.net.beans.CRMCouponsAvailableResponse
+import com.wingstars.base.net.beans.CRMCouponsResponse
 import com.wingstars.count.R
 import com.wingstars.count.Repository.ActivityStatusEnum
 import com.wingstars.count.databinding.ActivityGiftDetailsBinding
@@ -89,6 +90,16 @@ class GiftDetailsActivity : AppCompatActivity() {
     }
 
     private fun loadData() {
+        status = intent.getStringExtra("status")
+        couponCode = intent.getStringExtra("couponCode")
+        memberCards = intent.getStringArrayListExtra("memberCards")
+
+        val couponDataExtra = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra("coupon_data", CRMCouponsResponse.Coupon::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getSerializableExtra("coupon_data") as? CRMCouponsResponse.Coupon
+        }
         val serializableData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("data", CRMCouponsAvailableResponse::class.java)
         } else {
@@ -96,7 +107,11 @@ class GiftDetailsActivity : AppCompatActivity() {
             intent.getSerializableExtra("data") as? CRMCouponsAvailableResponse
         }
 
-        if (serializableData != null) {
+        if (couponDataExtra != null) {
+            val toJson = com.google.gson.Gson().toJson(couponDataExtra)
+            val type = object : com.google.gson.reflect.TypeToken<CRMCouponsAvailableResponse>() {}.type
+            data = com.google.gson.Gson().fromJson(toJson, type)
+        } else if (serializableData != null) {
             data = serializableData
         } else {
             Toast.makeText(this, "Data error", Toast.LENGTH_SHORT).show()
