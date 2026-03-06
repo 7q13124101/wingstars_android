@@ -21,7 +21,6 @@
         <activity
             android:name=".activity.MobileBarcodeCarrierActivity"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity android:name=".activity.MemBarCodeActivity" />
         <activity android:name=".activity.StoreLocationActivity" />
         <activity android:name=".activity.PolicyTermActivity"
             android:exported="true">

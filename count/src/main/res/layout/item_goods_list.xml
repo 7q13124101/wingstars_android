@@ -1,134 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
+    <com.lihang.ShadowLayout
+        android:id="@+id/ll_wing_stars_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/pt_7">
+        android:layout_margin="@dimen/pt_7"
+        app:hl_cornerRadius="@dimen/dp_12"
+        app:hl_shadowColor="@color/color_19000000">
 
-        <com.lihang.ShadowLayout
-            android:id="@+id/ll_wing_stars_root"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:hl_cornerRadius="@dimen/dp_12"
-            app:hl_shadowColor="@color/color_19000000">
+            android:paddingBottom="@dimen/pt_10"> <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="@dimen/pt_10"
+            android:layout_marginTop="14dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/CornersRounded_12" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_mask_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@color/half_black"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/image"
+                app:layout_constraintEnd_toEndOf="@id/image"
+                app:layout_constraintStart_toStartOf="@id/image"
+                app:layout_constraintTop_toTopOf="@id/image"
+                app:shapeAppearanceOverlay="@style/CornersRounded_12" />
+
+            <TextView
+                android:id="@+id/tv_exchange_completed"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/pt_10">
+                android:text="兌換完畢"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/image"
+                app:layout_constraintEnd_toEndOf="@id/image"
+                app:layout_constraintStart_toStartOf="@id/image"
+                app:layout_constraintTop_toTopOf="@id/image" />
 
-                <ImageView
-                    android:id="@+id/image"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:scaleType="centerCrop"
-                    android:adjustViewBounds="true"
-                    android:background="@drawable/bg_round_image"
-                    android:clipToOutline="true"
-                    android:layout_marginVertical="@dimen/pt_4"
-                    />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="@dimen/pt_12"
-                    android:layout_marginEnd="-15dp">
+            <TextView
+                android:id="@+id/coupon_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/pt_12"
+                android:layout_marginTop="@dimen/pt_10"
+                android:layout_marginEnd="15dp"
+                android:text="有鷹來同樂 TSG Party - Wing Stars 簽名會（第三梯次）"
+                android:textColor="@color/color_101828"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/image"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/coupon_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）"
-                        android:gravity="center_vertical"
-                        android:textSize="@dimen/sp_14"
-                        android:textStyle="bold"
-                        android:textColor="@color/color_101828"
-                        android:layout_marginTop="@dimen/pt_6" />
+            <ImageView
+                android:id="@+id/rl_icon"
+                android:layout_width="@dimen/pt_15"
+                android:layout_height="@dimen/pt_15"
+                android:layout_marginTop="@dimen/pt_6"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/bg_count_deep"
+                app:layout_constraintStart_toStartOf="@id/coupon_name"
+                app:layout_constraintTop_toBottomOf="@id/coupon_name" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/pt_3"
+                android:text="100"
+                android:textColor="@color/color_4A5565"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintBottom_toBottomOf="@id/rl_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/rl_icon"
+                app:layout_constraintTop_toTopOf="@id/rl_icon" />
 
-                        <ImageView
-                            android:id="@+id/rl_icon"
-                            android:layout_width="@dimen/pt_15"
-                            android:layout_height="@dimen/pt_15"
-                            android:scaleType="centerInside"
-                            android:adjustViewBounds="true"
-                            android:layout_gravity="center"
-                            android:src="@drawable/bg_count_deep" />
+            <TextView
+                android:id="@+id/coupon_start_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pt_6"
+                android:text="2025/11/09 (日)"
+                android:textColor="@color/color_101828"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/coupon_name"
+                app:layout_constraintTop_toBottomOf="@id/tv_count" />
 
-                        <View
-                            android:layout_width="@dimen/pt_3"
-                            android:layout_height="match_parent" />
 
-                        <TextView
-                            android:id="@+id/tv_count"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="100"
-                            android:textColor="@color/color_4A5565"
-                            android:textSize="@dimen/sp_14" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/coupon_start_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="2025/11/09 (日)"
-                        android:textSize="@dimen/sp_14"
-                        android:textColor="@color/color_101828" />
-                </LinearLayout>
-
-            </LinearLayout>
-            <FrameLayout
-                android:id="@+id/label"
+            <ImageView
+                android:id="@+id/iv_badge_bg"
                 android:layout_width="wrap_content"
                 android:layout_height="72dp"
-                android:layout_gravity="top|end"
-                android:clipChildren="false"
-                android:clipToPadding="false">
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_corner_badge_yellow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_corner_badge_yellow"
-                    android:scaleType="fitXY" />
+            <TextView
+                android:id="@+id/label_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="@dimen/pt_7"
+                android:includeFontPadding="false"
+                android:lineSpacingExtra="0dp"
+                android:lineSpacingMultiplier="0.9"
+                android:text="星朋友"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@id/iv_badge_bg"
+                app:layout_constraintTop_toTopOf="@id/iv_badge_bg" />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/dp_20"
-                    android:layout_marginRight="@dimen/pt_7">
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <TextView
-                        android:id="@+id/label_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="星朋友"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/sp_12"
-                        android:includeFontPadding="false"
-                        android:lineSpacingExtra="0dp"
-                        android:lineSpacingMultiplier="0.9"
-                        android:layout_gravity="top|end"
-                        android:gravity="center"
-                        android:paddingTop="4dp"/>
-                </FrameLayout>
-
-            </FrameLayout>
-
-        </com.lihang.ShadowLayout>
-
-    </FrameLayout>
+    </com.lihang.ShadowLayout>
 </layout>

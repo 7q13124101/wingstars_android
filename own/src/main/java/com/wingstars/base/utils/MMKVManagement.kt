@@ -1,6 +1,8 @@
 package com.wingstars.base.utils
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tencent.mmkv.MMKV
 
 class MMKVManagement {
@@ -39,6 +41,7 @@ class MMKVManagement {
         private val MEMBER_NAME = "member_name"
 
         private val MEMBER_MAIL = "member_mail"
+        private val MEMBER_FAV_MEMBER = "member_fav_member"
 
         private val MEMBER_IDENTITY = "member_identity"
 
@@ -232,7 +235,16 @@ class MMKVManagement {
         fun setMemberMail(mail: String) {
             MMKV.defaultMMKV().encode(MEMBER_MAIL, mail)
         }
+        fun setMemberFavMember(favMember: List<String>?) {
+            val json = Gson().toJson(favMember ?: emptyList<String>())
+            MMKV.defaultMMKV().encode(MEMBER_FAV_MEMBER, json)
+        }
 
+        fun getMemberFavMember(): List<String> {
+            val json = MMKV.defaultMMKV().decodeString(MEMBER_FAV_MEMBER, "[]")
+            val type = object : TypeToken<List<String>>() {}.type
+            return Gson().fromJson(json, type)
+        }
         fun getMemberIdentity(): String {
             return MMKV.defaultMMKV().decodeString(MEMBER_IDENTITY, "")!!
         }

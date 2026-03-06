@@ -16,6 +16,7 @@ import com.wingstars.base.net.beans.CRMInAppMessageResponse;
 import com.wingstars.base.net.beans.CRMJournalHistoryResponse;
 import com.wingstars.base.net.beans.CRMMemberContactResponse;
 import com.wingstars.base.net.beans.CRMMessageReadRequest;
+import com.wingstars.base.net.beans.CRMUpdateContactRequest;
 import com.wingstars.base.net.beans.CRMOTPCoupons;
 import com.wingstars.base.net.beans.CRMRedeemCouponRequest;
 import com.wingstars.base.net.beans.CRMRedeemCouponResponse;
@@ -115,6 +116,8 @@ public interface ApiService {
     Observable<CRMBaseResponse<CRMMemberContactResponse>> crmGetMemberContact(@Url String url);
     @GET()
     Observable<CRMBaseResponse<CRMMemberContactResponse>> crmGetMemberExpiredDate(@Url String url);
+    @PUT()
+    Observable<CRMBaseResponse<CRMMemberContactResponse>> crmUpdateMemberContact(@Url String url, @Body CRMUpdateContactRequest request);
     @POST()
     Observable<CRMBaseResponse<CRMSendOtpResponse>> crmSendOtp(@Url String url, @Body CRMSendOtpRequest genSendOtp);
     @PUT()

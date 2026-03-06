@@ -29,6 +29,9 @@ import com.wingstars.count.viewmodel.NotUsedViewModel
 import com.wingstars.base.net.NetworkMonitorNew
 import com.wingstars.base.net.beans.CRMCouponsResponse
 import com.wingstars.count.Repository.ActivityStatusEnum
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 class NotUsedFragment : Fragment() {
     private var _binding: FragmentNotUsedBinding? = null
@@ -84,13 +87,16 @@ class NotUsedFragment : Fragment() {
         }
 
         val intent = if (couponType == 1) {
-            Intent(requireActivity(), GiftDetailsActivity::class.java)
+            Intent(requireActivity(), GiftDetailsActivity::class.java).apply {
+                putExtra("title",getString(R.string.gift_details))
+            }
         } else {
-            Intent(requireActivity(), ExchangeDetailsActivity::class.java)
+            Intent(requireActivity(), ExchangeDetailsActivity::class.java).apply {
+                putExtra("title",getString(R.string.exchange_details))
+            }
         }
         intent.putExtra("data", listToSend[position])
         intent.putExtra("status", ActivityStatusEnum.UNUSED_REDEMPTION.name)
-        intent.putExtra("title", getString(R.string.exchange_details))
         intent.putExtra("couponCode", selectedItem.couponCode)
         intent.putExtra("EXTRA_LIST_DATA", listToSend)
         intent.putExtra("EXTRA_CURRENT_INDEX", position)
@@ -215,7 +221,6 @@ class NotUsedFragment : Fragment() {
             setGravity(Gravity.BOTTOM)
         }
 
-        // Sử dụng biến local dialog để code gọn hơn, nhưng nó tham chiếu đến qrCodeDialog
         val dialog = qrCodeDialog!!
 
         val llexchangedetail = dialog.findViewById<View>(R.id.ll_exchange_detail)
@@ -254,11 +259,25 @@ class NotUsedFragment : Fragment() {
         ivQrCode.setOnClickListener { zoomQrCode() }
         tvQrEnlarge.setOnClickListener { zoomQrCode() }
 
+        fun formatDate(dateStr: String?): String {
+            if (dateStr.isNullOrEmpty()) return ""
+
+            return try {
+                val date = OffsetDateTime.parse(dateStr)
+                val outputFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
+                date.format(outputFormatter)
+            } catch (e: Exception) {
+                ""
+            }
+        }
+
         fun updateDialogUI() {
             val item = dataList[currentDialogPosition]
+            val start = formatDate(item.coupon?.couponStartDate)
+            val end = formatDate(item.coupon?.couponEndDate)
             tvName.text = item.coupon?.couponName
-            tvPeriod1.text = "兌換開始：${item.coupon?.redeemStartAtF}"
-
+//            tvPeriod1.text = "兌換時間：${item.coupon?.couponStartDate ?: ""}~${item.coupon?.couponEndDate ?: ""}"
+            tvPeriod1.text = "兌換時間：$start~$end"
             Glide.with(context)
                 .load(item.coupon?.coverImage)
                 .into(ivImage)

@@ -8,6 +8,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.wingstars.count.databinding.ItemHaveUsedCouponsBinding
 import com.wingstars.base.net.beans.CRMCouponsResponse
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 class HaveUsedCouponAdapter(
     private var list: MutableList<CRMCouponsResponse> = mutableListOf(),
@@ -35,6 +38,17 @@ class HaveUsedCouponAdapter(
 
     inner class CouponViewHolder(private val binding: ItemHaveUsedCouponsBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        fun formatDate(dateStr: String?): String {
+            if (dateStr.isNullOrEmpty()) return ""
+
+            return try {
+                val date = OffsetDateTime.parse(dateStr)
+                val outputFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
+                date.format(outputFormatter)
+            } catch (e: Exception) {
+                ""
+            }
+        }
 
         fun bind(data: CRMCouponsResponse) {
             val context = binding.root.context
@@ -58,8 +72,10 @@ class HaveUsedCouponAdapter(
                     .into(binding.ivGoodsImage)
             }
 
+            val start = formatDate(data.coupon?.couponStartDate)
+//            val end = formatDate(data.coupon?.couponEndDate)
             binding.tvExchangeName.text = data.coupon?.couponName
-            binding.tvExchangePeriod1.text = "兌換開始：${data.coupon?.redeemStartAtF}"
+            binding.tvExchangePeriod1.text = "兌換開始：$start"
 //            binding.tvExchangePeriod2.text = "兌換截止：${data.coupon?.redeemEndAtF}"
 
             // 4. Sự kiện Click
