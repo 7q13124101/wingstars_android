@@ -22,7 +22,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson // Nhớ import Gson
 import com.wingstars.count.R
 import com.wingstars.count.Repository.ActivityStatusEnum
 import com.wingstars.count.adapter.ActivityExchangeAdapter

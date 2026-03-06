@@ -10,6 +10,7 @@ import com.wingstars.base.base.BaseActivity
 import com.wingstars.base.net.API
 import com.wingstars.base.net.NetBase
 import com.wingstars.base.net.beans.CRMBaseResponse
+import com.wingstars.base.net.beans.CRMExtraData
 import com.wingstars.base.net.beans.CRMMemberContactResponse
 import com.wingstars.base.net.beans.CRMUpdateContactRequest
 import com.wingstars.base.utils.MMKVManagement
@@ -72,7 +73,7 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
         }
     }
 
-    private fun updateMemberContact(carrierCode: String) {
+    private fun updateMemberContact(invoiceNumber: String) {
         val memberId = MMKVManagement.getCrmMemberId()
         if (memberId.isEmpty() || memberId == "0") {
             Toast.makeText(this, "無法取得會員ID", Toast.LENGTH_SHORT).show()
@@ -81,9 +82,9 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
 
         val loadingDialog = UpLoadingDialog.Builder(this).createDialog(this)
         loadingDialog.show()
-
+        val crmExtraData = CRMExtraData(invoice_number= invoiceNumber)
         val request = CRMUpdateContactRequest(
-            carrierCode = carrierCode
+            extraData= crmExtraData
         )
 
         val url = "${NetBase.HOST_CRM}/api/v1/basic/member/$memberId/contact"
@@ -98,9 +99,9 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
                     { response: CRMBaseResponse<CRMMemberContactResponse> ->
                         loadingDialog.dismiss()
                         if (response.success) {
-                            MMKVManagement.setCrmMemberBarcode(carrierCode)
+                            MMKVManagement.setCrmMemberBarcode(invoiceNumber)
                             val intent = Intent()
-                            intent.putExtra("mobile_number", carrierCode)
+                            intent.putExtra("mobile_number", invoiceNumber)
                             setResult(RESULT_OK, intent)
                             finish()
                         } else {

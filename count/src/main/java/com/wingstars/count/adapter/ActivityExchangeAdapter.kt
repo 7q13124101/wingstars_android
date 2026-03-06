@@ -22,7 +22,7 @@ class ActivityExchangeAdapter(
 
     private var dataList: MutableList<CRMCouponsAvailableResponse> = mutableListOf()
     companion object {
-        private val inputFormat = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.TAIWAN)
+        private val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.TAIWAN)
         private val outputDateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
     }
 
@@ -99,38 +99,60 @@ class ActivityExchangeAdapter(
             bindCouponCost(item)
             bindImage(item)
             bindLabel(item)
+            bindSoldOutStatus(item)
+        }
+
+        private fun bindSoldOutStatus(item: CRMCouponsAvailableResponse) {
+            val claimedCount = item.claimedCount?.toString()?.toDoubleOrNull()?.toInt() ?: 0
+            val maxPerMember = item.maxPerMember
+            val totalIssued = item.totalIssued ?: 0
+            val totalQuantity = item.totalQuantity
+            val isSoldOut = (maxPerMember != -1 && claimedCount >= maxPerMember) ||
+                    (totalQuantity != -1 && totalIssued >= totalQuantity)
+            val visibility = if (isSoldOut) View.VISIBLE else View.GONE
+
+            binding.ivMaskImage.visibility = visibility
+            binding.tvExchangeCompleted.visibility = visibility
+            binding.llWingStarsRoot.setOnClickListener {
+                onItemClick(item)
+            }
         }
 
         private fun bindLabel(item: CRMCouponsAvailableResponse) {
             val eligibleMembersStr = item.eligibleMembersStr
-            if (!eligibleMembersStr.isNullOrEmpty() && eligibleMembersStr != context.getString(R.string.all_members)){
-                binding.label.visibility = View.VISIBLE
+            val shouldShowLabel = !eligibleMembersStr.isNullOrEmpty() &&
+                    eligibleMembersStr != context.getString(R.string.all_members)
+
+            if (shouldShowLabel) {
+                binding.ivBadgeBg.visibility = View.VISIBLE
+                binding.labelTv.visibility = View.VISIBLE
                 binding.labelTv.text = eligibleMembersStr
             } else {
-                binding.label.visibility = View.GONE
+                binding.ivBadgeBg.visibility = View.GONE
+                binding.labelTv.visibility = View.GONE
             }
         }
 
         private fun bindDate(item: CRMCouponsAvailableResponse) {
-            val redeemStart = item.redeemStartAtF
+            val couponStart = item.couponStartDate
 
-            if (redeemStart.isNullOrEmpty()) {
+            if (couponStart.isNullOrEmpty()) {
                 binding.couponStartDate.text = "~"
                 return
             }
 
             try {
-                val date = inputFormat.parse(redeemStart)
+                val date = inputFormat.parse(couponStart)
 
                 if (date != null) {
                     val dateStr = outputDateFormat.format(date)
                     val week = getWeekDayString(date)
                     binding.couponStartDate.text = "$dateStr $week"
                 } else {
-                    binding.couponStartDate.text = redeemStart
+                    binding.couponStartDate.text = couponStart
                 }
             } catch (e: Exception) {
-                binding.couponStartDate.text = redeemStart
+                binding.couponStartDate.text = couponStart
             }
         }
 
@@ -192,7 +214,9 @@ class ActivityExchangeAdapter(
             return oldItem.couponName == newItem.couponName &&
                     oldItem.pointCost == newItem.pointCost &&
                     oldItem.redeemStartAt == newItem.redeemStartAt &&
-                    oldItem.coverImage == newItem.coverImage
+                    oldItem.coverImage == newItem.coverImage &&
+                    oldItem.claimedCount == newItem.claimedCount &&
+                    oldItem.totalIssued == newItem.totalIssued
         }
     }
 }

@@ -21,7 +21,7 @@ import retrofit2.HttpException
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class LoginViewModel : ViewModel(){
+class LoginViewModel : ViewModel() {
     var isLoading = MutableLiveData<Boolean>()
     val resetPasswordResult = MutableLiveData<Boolean>()
     val resetPasswordError = MutableLiveData<String>()
@@ -32,9 +32,10 @@ class LoginViewModel : ViewModel(){
 
 
     private var navigator: LoginNavigator? = null
-    fun setNavigator(navigator: LoginNavigator){
+    fun setNavigator(navigator: LoginNavigator) {
         this.navigator = navigator
     }
+
     fun userCheck(request: CRMSignInRequest, isRememberAccount: Boolean) {
         // 1. Log bắt đầu chạy
         Log.d("LoginDebug", "1. Hàm userCheck đã được gọi. Account: ${request.account}")
@@ -93,6 +94,7 @@ class LoginViewModel : ViewModel(){
             //Log.e("LoginDebug", "LỖI: Code không chạy vào trong .let { } do API null")
         }
     }
+
     private fun handleHttpError(error: Throwable) {
         var msg = error.message.toString()
         if (error is HttpException) {
@@ -172,6 +174,7 @@ class LoginViewModel : ViewModel(){
                 )
         }
     }
+
     private fun fetchFullMemberData() {
         val memberId = MMKVManagement.getCrmMemberId()
         API.shared?.api?.let { api ->
@@ -222,12 +225,11 @@ class LoginViewModel : ViewModel(){
         MMKVManagement.setMemberGender(data.Gender ?: "")
         MMKVManagement.setMemberIdentity(data.Identity ?: "")
         MMKVManagement.setMemberMail(data.Email ?: "")
-        MMKVManagement.setCrmMemberBarcode(data.CarrierCode ?: "")
+        MMKVManagement.setCrmMemberBarcode(data.ExtraData.invoice_number ?: "")
         MMKVManagement.setMemberFavMember(data.ExtraData.favorite_players ?: emptyList())
         Log.d("LoginDebug", "✅ Member info saved to MMKV: ${data.Name}, ${data.Email}")
-        Log.d("LoginMemberCode", "✅ Member info saved to MMKV: ${data.CarrierCode}")
-
     }
+
     fun sendOtp() {
         val phone = MMKVManagement.getMemberPhone()
         if (phone.isBlank()) {
@@ -237,7 +239,7 @@ class LoginViewModel : ViewModel(){
         val request = CRMSendOtpRequest(phone, "resetPassword")
         val url = "${NetBase.HOST_CRM}/api/v1/client/otp/sms"
         API.shared?.api?.let { api ->
-            api.crmSendOtp(url, request )
+            api.crmSendOtp(url, request)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
@@ -251,6 +253,7 @@ class LoginViewModel : ViewModel(){
                 })
         }
     }
+
     fun resetPassword(otp: String, newPassword: String) {
         val memberId = MMKVManagement.getCrmMemberId()
         if (memberId.isBlank()) {
@@ -284,7 +287,6 @@ class LoginViewModel : ViewModel(){
                 })
         }
     }
-
 
 
     private fun updateMemberInfo(

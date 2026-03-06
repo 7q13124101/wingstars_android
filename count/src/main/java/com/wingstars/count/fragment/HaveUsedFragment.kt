@@ -40,7 +40,6 @@ class HaveUsedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Khởi tạo ViewModel
         viewModel = ViewModelProvider(requireActivity())[HaveUsedViewModel::class.java]
 
         setupRecyclerView()

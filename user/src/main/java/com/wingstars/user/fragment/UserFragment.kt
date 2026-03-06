@@ -277,12 +277,13 @@ class UserFragment : BaseFragment(){
         val isLoggedIn = MMKVManagement.isLogin()
         val name = MMKVManagement.getMemberName()
 //        Log.d("UserFragment", "Update UI: Login=$isLoggedIn, Name=$name")
-        binding.cardGeneralMember.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
-        binding.cardFriendshipMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+//        binding.cardGeneralMember.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
+//        binding.cardFriendshipMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+        binding.containerLeft.isEnabled = false
         binding.qrMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
         binding.barcodeMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
         binding.layoutMain.tvLogin.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
-        binding.layoutMain.tvLoginStartFriend.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+        binding.layoutMain.tvLoginGenerally.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
         binding.layoutMain.effectiveDateGeneral.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
         if (isLoggedIn) {
             binding.layoutMain.tvUserName.text = name
