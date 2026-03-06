@@ -110,12 +110,24 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
 
         // --- Setup giao diện nhập Mật khẩu (Bước 2) ---
         binding.cbPsdVisible.setOnCheckedChangeListener { _, isChecked ->
-            binding.edtPsd.inputType = if (isChecked) InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD else InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            val tf = binding.edtPsd.typeface
+            binding.edtPsd.inputType = if (isChecked) {
+                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            } else {
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+            binding.edtPsd.typeface = tf
             binding.edtPsd.setSelection(binding.edtPsd.length())
         }
 
         binding.cbPsdConfirmVisible.setOnCheckedChangeListener { _, isChecked ->
-            binding.edtPsdConfirm.inputType = if (isChecked) InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD else InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            val tf = binding.edtPsdConfirm.typeface
+            binding.edtPsdConfirm.inputType = if (isChecked) {
+                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            } else {
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+            binding.edtPsdConfirm.typeface = tf
             binding.edtPsdConfirm.setSelection(binding.edtPsdConfirm.length())
         }
 
@@ -210,12 +222,15 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
         val dialog = builder.create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         val btnConfirm = dialogView.findViewById<android.view.View>(R.id.btnConfirm)
+
         btnConfirm.setOnClickListener {
             dialog.dismiss()
             val phoneStr = binding.edtPhone.text.toString().trim()
             val intent = Intent(this, com.wingstars.login.LoginActivity::class.java)
-            intent.putExtra("PHONE_NUMBER", phoneStr)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.putExtra("FROM_RESET_PSD", true) // Gửi tín hiệu: "Tôi vừa đổi pass xong đây"
             startActivity(intent)
+            finish()
         }
         dialog.show()
     }

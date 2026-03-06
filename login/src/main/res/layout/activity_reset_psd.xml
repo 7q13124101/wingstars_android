@@ -288,7 +288,11 @@
                             android:singleLine="true"
                             android:textColor="@color/text_tittle"
                             android:textColorHint="@color/gray_400"
-                            android:textSize="@dimen/sp_14" />
+                            android:textSize="@dimen/sp_14"
+                            android:letterSpacing="0.1"
+                            android:typeface="sans"
+                            android:fontFamily="sans-serif"
+                            />
                     </RelativeLayout>
                     <TextView
                         android:id="@+id/tv_psd_input_error"
@@ -347,7 +351,11 @@
                             android:singleLine="true"
                             android:textColor="@color/text_tittle"
                             android:textColorHint="@color/gray_400"
-                            android:textSize="@dimen/sp_14" />
+                            android:textSize="@dimen/sp_14"
+                            android:letterSpacing="0.1"
+                            android:typeface="sans"
+                            android:fontFamily="sans-serif"
+                            />
                     </RelativeLayout>
                     <TextView
                         android:id="@+id/tv_psd_reinput_error"
