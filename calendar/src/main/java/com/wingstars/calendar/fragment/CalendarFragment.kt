@@ -235,7 +235,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
                     refreshCalendarScheme(false)
                 }
             }
-
+            binding.tvDateItinerary.text = "${month}/1 ${getString(R.string.calendar_itinerary)}"
             // 月份滑动切换时重置选中状态
             resetSelectionOnViewChange()
         }
