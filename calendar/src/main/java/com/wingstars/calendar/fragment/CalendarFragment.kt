@@ -66,6 +66,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
     private var currentDisplayYear: Int = getCurrentYear()
     private var currentDisplayMonth: Int = getCurrentMonth()
 
+    private var currentDisplayDay: Int = getCurrentDay()
     // 记录哪些年份的数据已经加载过，避免重复加载
     private val loadedYears = mutableSetOf<Int>()
 
@@ -182,12 +183,26 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
         }
     }
 
+    fun getCurrentDay(): Int {
+        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDate.now().dayOfMonth
+        } else {
+            java.util.Calendar.getInstance().get(java.util.Calendar.DATE)
+        }
+    }
+
     private fun initCalendar() {
         binding.ivPrev.setOnClickListener {
             binding.calendarView.scrollToPre(true)
+            binding.tvDateItinerary.text = "${currentDisplayMonth}/1 ${getString(R.string.calendar_itinerary)}"
+
+            binding.calendarView.isSelected = true
         }
         binding.ivNext.setOnClickListener {
             binding.calendarView.scrollToNext(true)
+            binding.tvDateItinerary.text = "${currentDisplayMonth}/1 ${getString(R.string.calendar_itinerary)}"
+
+            binding.calendarView.isSelected = true
         }
 
         binding.tvLogin.setOnClickListener {
@@ -227,6 +242,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
 
         // 初始化时设置标题
         binding.tvTitleDate.text = "${currentDisplayYear}年${currentDisplayMonth}月"
+        binding.tvDateItinerary.text = "${currentDisplayMonth}/${currentDisplayDay} ${getString(R.string.calendar_itinerary)}"
     }
 
     private fun initData() {
@@ -492,7 +508,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
                     scheme = "general"
                 }
                 CalendarViewModel.CalendarCategory.BIRTHDAY -> { // 生日活动
-                    shcemeColor = ContextCompat.getColor(context, R.color.color_DE9DBA)
+//                    shcemeColor = ContextCompat.getColor(context, R.color.color_DE9DBA)
                     scheme = "birthday"
                 }
                 CalendarViewModel.CalendarCategory.MALE_EAGLE -> {// 雄鹰
@@ -527,12 +543,10 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
             val adapter = binding.rvCardClassificationList.adapter as CalendarAdapter
             adapter.updateData(selectedCalendarActivities)
 
-            if(selectedBirthdayUsers.isNotEmpty() && selectedCalendarActivities.isNotEmpty()) {
-                binding.rvBirthdayList.visibility = View.VISIBLE
-                binding.rvCardClassificationList.visibility = View.GONE
+            binding.rvCardClassificationList.visibility = if(selectedCalendarActivities.isNotEmpty()) {
+                View.VISIBLE
             } else {
-                binding.rvBirthdayList.visibility = View.GONE
-                binding.rvCardClassificationList.visibility = View.VISIBLE
+                View.GONE
             }
 
             checkEmptyViewVisibility()
@@ -664,6 +678,7 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
         }
         val sortedList = selectedItems
             .map { it.originalItem }
+            .filter { it.categoryF != CalendarViewModel.CalendarCategory.BIRTHDAY }
             .sortedBy { categoryPriority[it.categoryF] ?: 6 }
             .toMutableList()
 
