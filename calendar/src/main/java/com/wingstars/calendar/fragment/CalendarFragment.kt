@@ -5,10 +5,13 @@ import android.content.Intent
 import android.os.Build
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.isEmpty
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
@@ -255,7 +258,26 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
                 refreshCalendarScheme(false)
                 // 恢复显示当前月份
                 scrollToCurrentDisplayMonth()
+                binding.calendarView.postDelayed({automaticallyDisplayEvents()}, 100)
             }
+        }
+    }
+    private fun automaticallyDisplayEvents() {
+        if (allDailyCalendarList.isEmpty()) {
+            binding.calendarView.postDelayed({automaticallyDisplayEvents()}, 100)
+            return
+        }
+
+        val today = Calendar().apply {
+            year = currentDisplayYear
+            month = currentDisplayMonth
+            day = currentDisplayDay
+        }
+
+        binding.calendarView.post {
+            binding.calendarView.scrollToCalendar(today.year, today.month, today.day, true)
+            currentSelectedCalendar = today
+            onCalendarSelect(today, true)
         }
     }
 
