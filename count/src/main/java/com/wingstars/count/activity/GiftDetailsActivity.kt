@@ -281,15 +281,10 @@ class GiftDetailsActivity : AppCompatActivity() {
         }
 
         val totalIssued = data.totalIssued ?: 0
-        val totalQuantity = data.totalQuantity
+        val totalQuantity = data.totalQuantity?: -1
         if (totalQuantity != -1 && totalIssued >= totalQuantity) {
             binding.btnExchange.text = getString(R.string.has_completed)
             disableButton()
-            return
-        }
-
-        if (point < pointCost) {
-            binding.button.visibility = View.GONE
             return
         }
         setButtonRestore()

@@ -85,6 +85,7 @@
                         android:layout_marginLeft="@dimen/pt_5"
                         android:textColor="@color/color_101828"
                         android:text="1100"
+                        android:textStyle="bold"
                         android:textSize="@dimen/sp_20" />
                 </LinearLayout>
             </RelativeLayout>

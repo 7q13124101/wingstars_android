@@ -171,6 +171,6 @@ class GiftExchangeViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
-        //Log.e("GiftExchangeViewModel", "API Error: $msg")
+//        Log.e("GiftExchangeViewModel", "API Error: $msg")
     }
 }
