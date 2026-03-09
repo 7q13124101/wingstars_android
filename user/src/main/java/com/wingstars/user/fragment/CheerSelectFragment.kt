@@ -127,7 +127,8 @@ class CheerSelectFragment : BottomSheetDialogFragment() {
             return
         }
         val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_member_select, null)
+        val dialogView =
+            LayoutInflater.from(requireContext()).inflate(R.layout.dialog_member_select, null)
         dialog.setContentView(dialogView)
 
         val rvMembers = dialogView.findViewById<RecyclerView>(R.id.rv_members)
@@ -161,9 +162,21 @@ class CheerSelectFragment : BottomSheetDialogFragment() {
 
     private fun setupFontSizeRecycler(currentSize: String) {
         val list = listOf(
-            PhrasesBean(getString(R.string.cheer_font_size_small), "", currentSize == getString(R.string.cheer_font_size_small)),
-            PhrasesBean(getString(R.string.cheer_font_size_medium), "", currentSize == getString(R.string.cheer_font_size_medium)),
-            PhrasesBean(getString(R.string.cheer_font_size_large), "", currentSize == getString(R.string.cheer_font_size_large))
+            PhrasesBean(
+                getString(R.string.cheer_font_size_small),
+                "",
+                currentSize == getString(R.string.cheer_font_size_small)
+            ),
+            PhrasesBean(
+                getString(R.string.cheer_font_size_medium),
+                "",
+                currentSize == getString(R.string.cheer_font_size_medium)
+            ),
+            PhrasesBean(
+                getString(R.string.cheer_font_size_large),
+                "",
+                currentSize == getString(R.string.cheer_font_size_large)
+            )
         )
 
         val adapter = PhrasesAdapter(list) { selectedItem ->
@@ -183,6 +196,7 @@ class CheerSelectFragment : BottomSheetDialogFragment() {
         }
         binding.rvPlaySpeed.adapter = adapter
     }
+
     private fun notifyChangeToActivity() {
         val currentText = binding.edtHurraysPhrases.text.toString()
         val speedAdapter = binding.rvPlaySpeed.adapter as? PhrasesAdapter
@@ -191,7 +205,8 @@ class CheerSelectFragment : BottomSheetDialogFragment() {
         val fontAdapter = binding.rvFontSize.adapter as? PhrasesAdapter
         val selectedFontItem = fontAdapter?.getSelectedItem()
         val currentMemberName = binding.edtTeamMember.text.toString()
-        val memberBean = if (currentMemberName.isNotEmpty()) PhrasesBean(currentMemberName, "") else null
+        val memberBean =
+            if (currentMemberName.isNotEmpty()) PhrasesBean(currentMemberName, "") else null
         if (selectedFontItem != null) {
             cheerData?.fontSizeStr = selectedFontItem.title
         }
@@ -216,7 +231,8 @@ class CheerSelectFragment : BottomSheetDialogFragment() {
     }
 
     private fun showColorDialog(isFontColor: Boolean) {
-        val title = if (isFontColor) getString(R.string.select_font_color) else getString(R.string.select_bg_color)
+        val title =
+            if (isFontColor) getString(R.string.select_font_color) else getString(R.string.select_bg_color)
         val currentColor = if (isFontColor) {
             cheerData?.fontData?.selectColor ?: "#000000"
         } else {
@@ -243,11 +259,19 @@ class CheerSelectFragment : BottomSheetDialogFragment() {
             val color = android.graphics.Color.parseColor(colorHex)
             val background = view.background as? android.graphics.drawable.GradientDrawable
             background?.setColor(color) ?: view.setBackgroundColor(color)
-        } catch (e: Exception) { e.printStackTrace() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     interface OnClickItemListener {
-        fun onClickItem(cheerStr: String, phrase: String, memberInfo: PhrasesBean?, playSpeed: String)
+        fun onClickItem(
+            cheerStr: String,
+            phrase: String,
+            memberInfo: PhrasesBean?,
+            playSpeed: String
+        )
+
         fun onSelectFinalColorChange(fontData: ColorData, backgroundData: ColorData)
     }
 
