@@ -92,8 +92,9 @@ class GiftExchangeActivity : AppCompatActivity() {
         val count = countIntent?.toIntOrNull() ?: -1
         viewModel.setProductCouponsInfo(count, currentSortMethod)
         viewModel.searchActivityData.observe(this) { list ->
-            adapter.setList(list)
-            handleEmptyState(list.size)
+            val safeList = list ?: emptyList()
+            adapter.setList(safeList)
+            handleEmptyState(safeList.size)
         }
 
         viewModel.productCouponsData.observe(this) {

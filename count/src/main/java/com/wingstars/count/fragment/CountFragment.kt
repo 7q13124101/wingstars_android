@@ -120,16 +120,20 @@ class CountFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        if (fullDataList.isNotEmpty()) {
-            updateListDisplay()
-        }
+//        if (fullDataList.isNotEmpty()) {
+//            updateListDisplay()
+//        }
 
         checkLoginStatus()
         if (MMKV.defaultMMKV().decodeBool("isLogin")) {
             viewModel.getMemberPointFromDetailsData(false)
+            viewModel.getEvtTasks()
         } else {
             binding.tvCountWinstar.text = "0"
+            fullDataList = ArrayList()
+            updateListDisplay()
         }
+
     }
 
     override fun onDestroy() {
