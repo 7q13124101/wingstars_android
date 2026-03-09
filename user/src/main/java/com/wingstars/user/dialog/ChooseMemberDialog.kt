@@ -21,7 +21,7 @@ class ChooseMemberDialog(
         rv.layoutManager = LinearLayoutManager(context)
         val members = memberListFromApi.map{memberUI ->
             MemberInfo(
-                number = memberUI.memberId,
+                number = memberUI.memberId.trim(),
                 name = memberUI.memberName
             )
         }
