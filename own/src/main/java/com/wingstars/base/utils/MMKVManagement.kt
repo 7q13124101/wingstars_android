@@ -49,6 +49,8 @@ class MMKVManagement {
 
         private val CRM_MEMBER_EXPIRED_DATE = "crm_expired_date"
 
+        private val IS_NOTIFICATION_ON = "is_notification_on_"
+
         //---------------------------请西安同事在下面新增MMKV相关set/get方法---------------------
 
         public fun init(context: Context) {
@@ -269,6 +271,16 @@ class MMKVManagement {
 
         fun setMemberExpiredDate(expireddate: String) {
             MMKV.defaultMMKV().encode(CRM_MEMBER_EXPIRED_DATE, expireddate)
+        }
+
+        public fun setIsNotificationOn(isOn: Boolean) {
+            val memberId = getCrmMemberId()
+            MMKV.defaultMMKV().encode(IS_NOTIFICATION_ON + memberId, isOn)
+        }
+
+        public fun isNotificationOn(): Boolean {
+            val memberId = getCrmMemberId()
+            return MMKV.defaultMMKV().decodeBool(IS_NOTIFICATION_ON + memberId, false)
         }
 
         //---------------------------请台湾同事在下面新增MMKV相关set/get方法---------------------

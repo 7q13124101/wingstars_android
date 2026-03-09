@@ -128,8 +128,9 @@ class UserFragment : BaseFragment() {
         }
         binding.llUserNotificationSettings.setOnClickListener {
             checkLoginOrGoLogin {
-                val dialog = NotificationDialog(isNotificationOn) { isOn ->
+                val dialog = NotificationDialog(MMKVManagement.isNotificationOn()) { isOn ->
                     isNotificationOn = isOn
+                    MMKVManagement.setIsNotificationOn(isOn)
                     binding.form4Status.text = if (isOn) "已開啟" else ""
                 }
                 dialog.show(parentFragmentManager)
@@ -272,7 +273,8 @@ class UserFragment : BaseFragment() {
         val mmkv = MMKV.defaultMMKV()
         mmkv.encode("isLogin", false)
         mmkv.removeValueForKey("crm_member_access_token")
-        mmkv.removeValueForKey("user_name")
+//        mmkv.removeValueForKey("user_name")
+        mmkv.removeValueForKey("member_name")
         updateLoginUI()
         val intent = Intent(requireContext(), LoginActivity::class.java)
         intent.putExtra("isFromSplash", true)
@@ -294,6 +296,8 @@ class UserFragment : BaseFragment() {
         binding.layoutMain.effectiveDateGeneral.visibility =
             if (isLoggedIn) View.GONE else View.VISIBLE
         if (isLoggedIn) {
+            isNotificationOn = MMKVManagement.isNotificationOn()
+            binding.form4Status.text = if (isNotificationOn) "已開啟" else ""
             binding.layoutMain.tvUserName.text = name
             val expiredDate = MMKVManagement.getMemberExpiredDate()
             binding.layoutMain.effectiveDate.text = if (expiredDate.isNotEmpty()) {
