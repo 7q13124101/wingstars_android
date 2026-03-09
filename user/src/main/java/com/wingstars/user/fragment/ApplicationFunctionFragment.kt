@@ -5,13 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.gson.Gson
 import com.wingstars.base.net.NetworkMonitorNew
+import com.wingstars.base.net.beans.FrequentlyQuestionsResponse
+import com.wingstars.user.adapter.FaqExpandableAdapter
 import com.wingstars.user.databinding.FragmentApplicationFunctionBinding
+import java.io.InputStreamReader
 
 class ApplicationFunctionFragment : Fragment() {
     private var _binding: FragmentApplicationFunctionBinding? = null
     private val binding get() = _binding!!
     private var isDataLoaded = false
+
     override fun onResume() {
         super.onResume()
         if (!isDataLoaded) {
@@ -19,25 +24,53 @@ class ApplicationFunctionFragment : Fragment() {
             isDataLoaded = true
         }
     }
+
     private fun loadData() {
         if (NetworkMonitorNew.getInstance(requireActivity()).currentNetworkState.isConnected) {
             binding.nsvPointsTask.visibility = View.VISIBLE
             binding.llEmpty.visibility = View.GONE
+            
+            // Đọc dữ liệu từ file JSON trong assets
+            val faqData = readFaqJson()
+            faqData?.let { response ->
+                // Lọc lấy dữ liệu cho phần "點數任務"
+                val filteredData = response.data.find { it.partName == "點數任務" }
+                filteredData?.let {
+                    val adapter = FaqExpandableAdapter(requireContext(), it.outData)
+                    binding.rvPointsTaskList.setAdapter(adapter)
+                    
+                    // Mở sẵn các group nếu muốn
+                    for (i in 0 until adapter.groupCount) {
+                        binding.rvPointsTaskList.expandGroup(i)
+                    }
+                }
+            }
         } else {
             binding.nsvPointsTask.visibility = View.GONE
             binding.llEmpty.visibility = View.VISIBLE
         }
     }
+
+    private fun readFaqJson(): FrequentlyQuestionsResponse? {
+        return try {
+            val assetManager = requireContext().assets
+            val inputStream = assetManager.open("frequently_questions.json")
+            val reader = InputStreamReader(inputStream)
+            Gson().fromJson(reader, FrequentlyQuestionsResponse::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentApplicationFunctionBinding.inflate(inflater, container, false)
-        initView()
         return binding.root
     }
-    private fun initView() {
-    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

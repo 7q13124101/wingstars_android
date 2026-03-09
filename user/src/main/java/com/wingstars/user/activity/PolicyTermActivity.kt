@@ -34,7 +34,7 @@ class PolicyTermActivity : AppCompatActivity() {
     private fun initView() {
         binding.ivBack.setOnClickListener { finish() }
         
-        // Cấu hình font Noto Sans TC cho các phần tiêu đề tĩnh nếu cần
+        // Config Noto Sans TC font for static titles
         val notoBold = ResourcesCompat.getFont(this, R.font.notosans_tc_bold)
         val notoRegular = ResourcesCompat.getFont(this, R.font.notosans_tc_regular)
         
@@ -42,7 +42,7 @@ class PolicyTermActivity : AppCompatActivity() {
         binding.txtTitleTop.typeface = notoBold
         binding.txtContentTop.typeface = notoRegular
         
-        // Tăng dãn cách dòng cho txtContentTop
+        // Increase line spacing for txtContentTop
         binding.txtContentTop.setLineSpacing(0f, 1.2f)
 
         if (tag == "PrivacyPolicy") {
@@ -66,14 +66,14 @@ class PolicyTermActivity : AppCompatActivity() {
                             val tvPolicyTitle: TextView? = inflate.findViewById(R.id.tv_policy_title)
                             val tvPolicyContent: TextView? = inflate.findViewById(R.id.tv_policy_content)
                             
-                            // Áp dụng font và màu sắc theo yêu cầu
+                            // Apply font and color requirements
                             tvPolicyTitle?.typeface = notoBold
                             tvPolicyContent?.typeface = notoRegular
 
                             tvPolicyContent?.layoutParams?.let { lp ->
                                 if (lp is LinearLayout.LayoutParams) {
                                     lp.rightMargin = dp2px(5F)?.toInt() ?: 0
-                                    lp.topMargin = dp2px(0F)?.toInt() ?: 0 // Đưa văn bản sát hẳn vào tiêu đề
+                                    lp.topMargin = dp2px(0F)?.toInt() ?: 0 // Align text closely with title
                                     lp.bottomMargin = dp2px(5F)?.toInt() ?: 0
                                     tvPolicyContent.layoutParams = lp
                                 }
@@ -114,14 +114,14 @@ class PolicyTermActivity : AppCompatActivity() {
                             val tvPolicyTitle: TextView? = inflate.findViewById(R.id.tv_policy_title)
                             val tvPolicyContent: TextView? = inflate.findViewById(R.id.tv_policy_content)
                             
-                            // Áp dụng font và màu sắc theo yêu cầu
+                            // Apply font and color requirements
                             tvPolicyTitle?.typeface = notoBold
                             tvPolicyContent?.typeface = notoRegular
 
                             tvPolicyContent?.layoutParams?.let { lp ->
                                 if (lp is LinearLayout.LayoutParams) {
                                     lp.rightMargin = dp2px(5F)?.toInt() ?: 0
-                                    lp.topMargin = dp2px(0F)?.toInt() ?: 0 // Đưa văn bản sát hẳn vào tiêu đề
+                                    lp.topMargin = dp2px(0F)?.toInt() ?: 0 // Align text closely with title
                                     lp.bottomMargin = dp2px(5F)?.toInt() ?: 0
                                     tvPolicyContent.layoutParams = lp
                                 }
@@ -135,7 +135,7 @@ class PolicyTermActivity : AppCompatActivity() {
                             }
                             val safeContent = dataDTO.content ?: ""
                             tvPolicyContent?.text = formatPolicyText(safeContent)
-                            // Sử dụng màu #4A5565 cho nội dung
+                            // Use #4A5565 for content
                             tvPolicyContent?.setTextColor(getColor(R.color.color_4A5565))
                             binding.llPolicyContent.addView(inflate)
                         }
