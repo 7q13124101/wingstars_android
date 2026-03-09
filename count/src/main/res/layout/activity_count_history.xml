@@ -81,6 +81,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/pt_8"
                     android:text="1000"
+                    android:textStyle="bold"
                     android:layout_toEndOf="@id/rl_icon"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_24" />
