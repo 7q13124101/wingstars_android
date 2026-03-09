@@ -23,7 +23,6 @@ class NotificationActivity : BaseActivity() {
     private lateinit var binding: ActivityNotificationBinding
     private val viewModel: NotificationViewModel by viewModels()
     private lateinit var adapter: NotificationAdapter
-    private var isKeepListVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,21 +40,21 @@ class NotificationActivity : BaseActivity() {
         binding.btnBack.setOnClickListener { finish() }
 
         binding.tvMarkAllRead.setOnClickListener {
-            isKeepListVisible = true // Đánh dấu là người dùng vừa thao tác, KHÔNG ẩn danh sách
             viewModel.doNotifyAllRead()
 
-            // Cập nhật UI tạm thời mất chấm đỏ
+            // 1. Cập nhật UI tạm thời: Xóa chấm đỏ của tất cả item đang hiển thị
             val currentItems = adapter.snapshot().items
             currentItems.forEach { it?.status = 1 }
             adapter.notifyDataSetChanged()
 
+            // 2. Đổi màu nút thành màu xám
             binding.tvMarkAllRead.setTextColor(android.graphics.Color.parseColor("#999999"))
             Toast.makeText(this, "已全部標示為已讀", Toast.LENGTH_SHORT).show()
         }
 
         adapter = NotificationAdapter { data ->
+            // Khi click vào 1 item chưa đọc
             if (data.status == 0) {
-                isKeepListVisible = true // Tương tự, tránh ẩn list nếu đây là tin chưa đọc cuối cùng
                 data.status = 1
                 adapter.notifyDataSetChanged()
                 viewModel.doSingleRead(data.id)
@@ -71,28 +70,50 @@ class NotificationActivity : BaseActivity() {
             val hasUnread = allItems.any { it?.status == 0 }
             val totalItems = adapter.itemCount
 
+            // 1. Chỉ cập nhật màu chữ của nút "Đọc tất cả"
             if (hasUnread) {
                 binding.tvMarkAllRead.setTextColor(android.graphics.Color.parseColor("#E2518D"))
             } else {
-                binding.tvMarkAllRead.setTextColor(android.graphics.Color.parseColor("#101828"))
+                binding.tvMarkAllRead.setTextColor(android.graphics.Color.parseColor("#999999"))
             }
 
-
-            // Không có thông báo nào (totalItems == 0)
-            // HOẶC Đã đọc hết (!hasUnread) VÀ Lúc mới vào chưa thao tác gì (!isKeepListVisible)
-            if (totalItems == 0 || (!hasUnread && !isKeepListVisible)) {
-                binding.rvNotification.visibility = android.view.View.GONE
-                binding.layoutEmpty.visibility = android.view.View.VISIBLE
-            } else {
-                binding.rvNotification.visibility = android.view.View.VISIBLE
-                binding.layoutEmpty.visibility = android.view.View.GONE
-            }
         }
     }
     private fun loadData() {
+        // 1. Load data vào adapter
         lifecycleScope.launch {
             viewModel.getNotificationList().collectLatest { pagingData ->
                 adapter.submitData(pagingData)
+            }
+        }
+
+        // 2. Lắng nghe trạng thái tải để xử lý nhấp nháy
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                // Kiểm tra các trạng thái của lần tải đầu tiên (refresh)
+                val isLoading = loadStates.refresh is androidx.paging.LoadState.Loading
+                val isNotLoading = loadStates.refresh is androidx.paging.LoadState.NotLoading
+
+                // Danh sách trống khi đã tải XONG và số lượng = 0
+                val isListEmpty = isNotLoading && adapter.itemCount == 0
+
+                when {
+                    isLoading -> {
+                        // 1. ĐANG TẢI: Giấu ngay màn hình trống đi để khỏi nhấp nháy
+                        binding.layoutEmpty.visibility = android.view.View.GONE
+                        // (Tùy chọn: Bạn có thể bật 1 cái ProgressBar xoay xoay ở đây)
+                    }
+                    isListEmpty -> {
+                        // 2. TẢI XONG VÀ TRỐNG: Giờ mới chắc chắn là không có thông báo nào
+                        binding.rvNotification.visibility = android.view.View.GONE
+                        binding.layoutEmpty.visibility = android.view.View.VISIBLE
+                    }
+                    isNotLoading -> {
+                        // 3. TẢI XONG VÀ CÓ DỮ LIỆU: Hiện danh sách bình thường
+                        binding.rvNotification.visibility = android.view.View.VISIBLE
+                        binding.layoutEmpty.visibility = android.view.View.GONE
+                    }
+                }
             }
         }
     }
