@@ -231,7 +231,10 @@
                             android:textColorHint="@color/gray_400"
                             android:letterSpacing="0.1"
                             android:typeface="sans"
-                            android:textSize="@dimen/sp_14" />
+                            android:textSize="@dimen/sp_14"
+                            android:includeFontPadding="false"
+                            android:fontFamily="sans-serif"
+                            />
 
                     </RelativeLayout>
                     <RelativeLayout

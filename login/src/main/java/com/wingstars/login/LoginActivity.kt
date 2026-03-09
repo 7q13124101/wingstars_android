@@ -116,13 +116,17 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         }
 
         binding.cbPsdVisible.setOnCheckedChangeListener { _, isChecked ->
-            val typeface = binding.edtPsd.typeface
-            binding.edtPsd.inputType = if (isChecked)
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            else
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            binding.edtPsd.typeface = typeface
-            binding.edtPsd.text?.let { binding.edtPsd.setSelection(it.length) }
+
+            val pos = binding.edtPsd.selectionStart
+
+            binding.edtPsd.setRawInputType(
+                if (isChecked)
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                else
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            )
+
+            binding.edtPsd.setSelection(pos)
         }
 
         binding.btnLogin.setOnClickListener {
