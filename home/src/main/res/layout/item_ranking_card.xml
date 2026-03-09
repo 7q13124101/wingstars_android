@@ -7,6 +7,7 @@
     android:layout_width="160dp"
     android:layout_height="305dp"
     android:layout_marginRight="16dp"
+    android:layout_marginBottom="@dimen/dp_20"
     app:cardCornerRadius="20dp"
     app:cardElevation="0dp"
     app:cardPreventCornerOverlap="false"
