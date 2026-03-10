@@ -35,13 +35,13 @@ class CountAdapter(
         notifyDataSetChanged()
     }
 
-    fun addList(newList: List<EvtTaskResponse>, isRefresh: Boolean) {
-        if (isRefresh) {
-            listData.clear()
-        }
-        listData.addAll(newList)
-        notifyDataSetChanged()
-    }
+//    fun addList(newList: List<EvtTaskResponse>, isRefresh: Boolean) {
+//        if (isRefresh) {
+//            listData.clear()
+//        }
+//        listData.addAll(newList)
+//        notifyDataSetChanged()
+//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountViewHolder {
         val binding = ItemCountSingleBinding.inflate(
