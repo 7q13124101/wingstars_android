@@ -33,7 +33,6 @@ class ChooseMemberActivity : BaseActivity() {
     private val viewModel: CheerLeaderViewModel by viewModels()
     private var selectedNames = arrayOf<String?>(null, null, null)
     private var currentMemberList: List<MemberUI> = emptyList()
-    private var pendingFavIds: List<String> = emptyList()
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,29 +46,17 @@ class ChooseMemberActivity : BaseActivity() {
         viewModel.fetchCheerLeaderList()
     }
     private fun restoreSelectedMember() {
-        val names = MemberStorage.getSelectedMembers()
-        selectedNames[0] = names[0].takeIf { it.isNotBlank() }
-        selectedNames[1] = names[1].takeIf { it.isNotBlank() }
-        selectedNames[2] = names[2].takeIf { it.isNotBlank() }
-
-        if (selectedNames.all { it.isNullOrBlank() }) {
-            val mmkvFav = MMKVManagement.getMemberFavMember().take(3)
-            val restored = arrayOfNulls<String>(3)
-            val ids = mutableListOf<String>()
-            mmkvFav.forEachIndexed { index, raw ->
-                val trimmed = raw.trim()
-                if (trimmed.isBlank()) return@forEachIndexed
-                if (trimmed.contains("|")) {
-                    restored[index] = trimmed
-                } else {
-                    restored[index] = trimmed
-                    ids.add(trimmed)
-                }
-            }
-            selectedNames[0] = restored[0]
-            selectedNames[1] = restored[1]
-            selectedNames[2] = restored[2]
-            pendingFavIds = ids
+        // Prefer MMKV (CRM-synced) so this screen matches the Member Info page.
+        val mmkvFav = MMKVManagement.getMemberFavMember().map { it.trim() }.filter { it.isNotBlank() }.take(3)
+        if (mmkvFav.isNotEmpty()) {
+            selectedNames[0] = mmkvFav.getOrNull(0)
+            selectedNames[1] = mmkvFav.getOrNull(1)
+            selectedNames[2] = mmkvFav.getOrNull(2)
+        } else {
+            val names = MemberStorage.getSelectedMembers()
+            selectedNames[0] = names[0].takeIf { it.isNotBlank() }
+            selectedNames[1] = names[1].takeIf { it.isNotBlank() }
+            selectedNames[2] = names[2].takeIf { it.isNotBlank() }
         }
         updateAllInputFields()
         checkEnableSaveButton()
@@ -100,12 +87,31 @@ class ChooseMemberActivity : BaseActivity() {
         return selectedNames
             .mapNotNull { value ->
                 value
-                    ?.split("|")
-                    ?.getOrNull(0)
+                    ?.trim()
+                    ?.substringBefore("|")
+                    ?.substringBefore(" ")
                     ?.trim()
                     ?.takeIf { it.isNotBlank() }
             }
             .toSet()
+    }
+
+    private fun toDisplayText(value: String?): String {
+        if (value.isNullOrBlank()) return ""
+        val token = value.trim()
+        if (token.contains("|")) {
+            val id = token.substringBefore("|").trim()
+            val name = token.substringAfter("|", "").trim()
+            return if (name.isBlank()) id else "$id $name"
+        }
+
+        // Already display form (e.g., "7 昆昆")
+        if (token.contains(" ")) return token
+
+        // id-only: try to attach name for consistency
+        val id = token
+        val resolvedName = currentMemberList.firstOrNull { it.memberId.trim() == id }?.memberName
+        return if (resolvedName.isNullOrBlank()) id else "$id $resolvedName"
     }
 
     private fun observeViewModel() {
@@ -117,7 +123,7 @@ class ChooseMemberActivity : BaseActivity() {
                 return@observe
             }
 
-            if (pendingFavIds.isNotEmpty() || selectedNames.any { it != null && !it.contains("|") }) {
+            if (selectedNames.any { it != null && !it.contains("|") }) {
                 for (i in 0..2) {
                     val raw = selectedNames[i]
                     if (raw.isNullOrBlank()) continue
@@ -147,7 +153,6 @@ class ChooseMemberActivity : BaseActivity() {
                         selectedNames[i] = "${match.memberId.trim()}|${match.memberName}"
                     }
                 }
-                pendingFavIds = emptyList()
                 updateAllInputFields()
                 checkEnableSaveButton()
             }
@@ -194,17 +199,19 @@ class ChooseMemberActivity : BaseActivity() {
             return
         }
 
-        val favoriteIds = selectedNames
-            .mapNotNull { value ->
-                value?.replace("|", " ")?.takeIf { it.isNotBlank() }
-            }
+        val favoritePlayers = selectedNames
+            .map { toDisplayText(it) }
+            .filter { it.isNotBlank() }
 
 
         val loadingDialog = UpLoadingDialog.Builder(this).createDialog(this)
         loadingDialog.show()
 
         val request = CRMUpdateContactRequest(
-            extraData = CRMExtraData(favorite_players = favoriteIds, invoice_number=MMKVManagement.getCrmMemberInvoiceNumber())
+            extraData = CRMExtraData(
+                favorite_players = favoritePlayers,
+                invoice_number = MMKVManagement.getCrmMemberInvoiceNumber()
+            )
         )
         val url = "${NetBase.HOST_CRM}/api/v1/basic/member/$memberId/contact"
 
@@ -221,10 +228,14 @@ class ChooseMemberActivity : BaseActivity() {
                             val member2 = selectedNames[1] ?: ""
                             val member3 = selectedNames[2] ?: ""
                             MemberStorage.saveSelectedMembers(member1, member2, member3)
+
+                            // Keep MMKV in sync so Member Info shows the same immediately.
+                            MMKVManagement.setMemberFavMember(favoritePlayers)
+
                             val intent = Intent().apply {
-                                putExtra("name1", member1)
-                                putExtra("name2", member2)
-                                putExtra("name3", member3)
+                                putExtra("name1", toDisplayText(member1))
+                                putExtra("name2", toDisplayText(member2))
+                                putExtra("name3", toDisplayText(member3))
                             }
                             setResult(RESULT_OK, intent)
                             finish()
@@ -244,7 +255,7 @@ class ChooseMemberActivity : BaseActivity() {
     }
 
     private fun openMemberDialog(index: Int) {
-        val allSelectedIds = (getSelectedMemberIds() + pendingFavIds).toSet()
+        val allSelectedIds = getSelectedMemberIds()
         ChooseMemberDialog(currentMemberList, { selected ->
             val isAlreadySelectedElsewhere = selectedNames.indices
                 .any { i -> i != index && selectedNames[i] == selected }

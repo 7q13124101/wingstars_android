@@ -22,7 +22,8 @@ class ActivityExchangeViewModel : ViewModel() {
 
     var activityData = MutableLiveData<MutableList<CRMCouponsAvailableResponse>>()
     var searchActivityNewF = mutableListOf<CRMCouponsAvailableResponse>()
-    var searchActivityData = MutableLiveData<MutableList<CRMCouponsAvailableResponse>>()
+    val searchActivityData =
+        MutableLiveData<List<CRMCouponsAvailableResponse>>(emptyList())
     var isLoading = MutableLiveData<Boolean>()
     var points = MutableLiveData<String?>()
     var messages = MutableLiveData<String>()
