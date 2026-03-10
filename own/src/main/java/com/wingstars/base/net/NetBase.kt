@@ -66,7 +66,7 @@ object NetBase : Application(){
     const val HOST_GOOGLE = "https://www.googleapis.com"
     const val HOST_YOUTUBE = "https://www.youtube.com"                  //Youtube
     const val YOUTUBE_CHANNEL_ID = "UCSEI3nk0QSGcQKR75O6vM6Q"
-    const val YOUTUBE_API_KEY = "AIzaSyC_3Or0yacfGd30mcbf932MS_Ncyvx26to"
+    const val YOUTUBE_API_KEY = "AIzaSyBF4KgF3Td96_6cl1RsLiJTULoeyu9xgrM"
     const val API_KEY = "8e2KeU3Bntw43R09tNE1"
     const val TOKEN_TYPE = "Bearer"
 
