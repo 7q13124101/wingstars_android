@@ -19,6 +19,8 @@ class MemberAdapter(
     private val onSelect: (MemberInfo) -> Unit
 ) : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
 
+    private val selectedIdsNormalized: Set<String> = selectedIds.map { it.trim() }.toSet()
+
     inner class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txtNumber: TextView = view.findViewById(R.id.tv_number)
         val txtName: TextView = view.findViewById(R.id.tv_name)
@@ -34,16 +36,18 @@ class MemberAdapter(
     override fun onBindViewHolder(holder: MemberViewHolder, position: Int) {
         val member = memberList[position]
 
-        holder.txtNumber.text = member.number
+        val memberId = member.number.trim()
+
+        holder.txtNumber.text = memberId
         holder.txtName.text = member.name
 
         holder.imgTick.visibility =
-            if (selectedIds.contains(member.number)) View.VISIBLE else View.GONE
+            if (selectedIdsNormalized.contains(memberId)) View.VISIBLE else View.GONE
 
         holder.itemView.setOnClickListener {
             val pos = holder.bindingAdapterPosition
             if (pos == RecyclerView.NO_POSITION) return@setOnClickListener
-            onSelect(member)
+            onSelect(member.copy(number = memberId))
         }
     }
 

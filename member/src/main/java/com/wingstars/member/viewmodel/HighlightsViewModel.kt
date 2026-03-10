@@ -19,24 +19,38 @@ class HighlightsViewModel : ViewModel() {
     var highlightsList = MutableLiveData<MutableList<YoutubeListResponse.Item>>()
     var isLoading = MutableLiveData<Boolean>()
 
+    companion object {
+        private var cacheWonderful: MutableList<YoutubeListResponse.Item>? = null
+        private var cacheShorts: MutableList<YoutubeListResponse.Item>? = null
+        private var cacheVlog: MutableList<YoutubeListResponse.Item>? = null
+    }
+
     fun setIsLoading(isLoading: Boolean) {
         this.isLoading.postValue(isLoading)
     }
 
-    fun getHighlightsList(highlightsType: HighlightsType) {
-        setIsLoading(true)
-        val arrayList = mutableListOf<YoutubeListResponse.Item>()
+    fun getHighlightsList(highlightsType: HighlightsType, forceRefresh: Boolean = false) {
+        // Kiểm tra cache trong companion object
+        val currentCache = when (highlightsType) {
+            HighlightsType.HT_WONDERFUL_VIDEOS -> cacheWonderful
+            HighlightsType.HT_FLASH_SHORT_FILM -> cacheShorts
+            HighlightsType.HT_DAILY_VLOG -> cacheVlog
+        }
+        if (!forceRefresh && currentCache != null) {
+            Log.d("YoutubeQuota", "BLOCKED: USING STATIC CACHE - 0 QUOTA POINTS")
+            highlightsList.postValue(currentCache)
+            return
+        }
 
-        // Xác định Playlist ID dựa theo Tab đang bấm
+        // Nếu chưa có cache hoặc bắt buộc làm mới thì gọi API
+        setIsLoading(true)
         val playlistId = when (highlightsType) {
-//            HighlightsType.HT_WONDERFUL_VIDEOS -> "UUSEI3nk0QSGcQKR75O6vM6Q"
             HighlightsType.HT_WONDERFUL_VIDEOS -> "PLTYHsJxRmtwZT2vFEnqXlCVDwiIhSliGf"
-            HighlightsType.HT_FLASH_SHORT_FILM -> "PLTYHsJxRmtwYWMPUQbN2MizeS35YkyTFy"         // Tab 2: TODO - Thay bằng ID Playlist Shorts
-            HighlightsType.HT_DAILY_VLOG -> "PLTYHsJxRmtwa8CotI9T53I1TOWro2IiSA"               // Tab 3: TODO - Thay bằng ID Playlist Vlog
+            HighlightsType.HT_FLASH_SHORT_FILM -> "PLTYHsJxRmtwYWMPUQbN2MizeS35YkyTFy"
+            HighlightsType.HT_DAILY_VLOG -> "PLTYHsJxRmtwa8CotI9T53I1TOWro2IiSA"
         }
 
         API.shared?.api?.let { api ->
-            // Gọi hàm API trực tiếp đến Google với playlistId tương ứng của từng Tab
             api.getYoutubePlaylistItemsDirect(
                 "snippet",
                 playlistId,
@@ -48,14 +62,20 @@ class HighlightsViewModel : ViewModel() {
                 .subscribe(
                     { response ->
                         setIsLoading(false)
-                        response.items?.let { items ->
-                            arrayList.addAll(items)
+                        val items = response.items?.toMutableList() ?: mutableListOf()
+
+                        // Lưu dữ liệu vừa tải vào Cache tương ứng
+                        when (highlightsType) {
+                            HighlightsType.HT_WONDERFUL_VIDEOS -> cacheWonderful = items
+                            HighlightsType.HT_FLASH_SHORT_FILM -> cacheShorts = items
+                            HighlightsType.HT_DAILY_VLOG -> cacheVlog = items
                         }
-                        highlightsList.postValue(arrayList)
+
+                        highlightsList.postValue(items)
                     },
                     { error ->
                         setIsLoading(false)
-                        highlightsList.postValue(arrayList)
+                        highlightsList.postValue(mutableListOf())
                         Log.e("YoutubeError", "Error in GOOGLE: ${error.message}", error)
                     }
                 )

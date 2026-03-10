@@ -33,8 +33,8 @@ class HighlightsFragment(var highlightsType: HighlightsType) : BaseFragment() {
         }
     }
 
-    private fun loadData() {
-        viewModel.getHighlightsList(highlightsType)
+    private fun loadData(forceRefresh: Boolean = false) {
+        viewModel.getHighlightsList(highlightsType, forceRefresh)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,8 +84,12 @@ class HighlightsFragment(var highlightsType: HighlightsType) : BaseFragment() {
             }
         }
 
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            showLoadingUI(it, requireActivity())
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            showLoadingUI(isLoading, requireActivity())
+
+            if (!isLoading) {
+                binding.srlNotUsed.finishRefresh()
+            }
         }
 
 
@@ -116,7 +120,7 @@ class HighlightsFragment(var highlightsType: HighlightsType) : BaseFragment() {
 
 
         binding.srlNotUsed.setOnRefreshListener {
-            loadData()
+            loadData(true)
             //Log.e("viewModel", "srlNotUsed=$highlightsType")
             binding.srlNotUsed.finishRefresh()
         }

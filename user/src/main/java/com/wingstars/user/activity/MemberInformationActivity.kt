@@ -252,14 +252,14 @@ class MemberInformationActivity : BaseActivity() {
                     override fun onNext(response: CRMBaseResponse<CRMMemberContactResponse>) {
                         if (response.success) {
                             bindContactDataToView(response.data)
-                            MMKVManagement.setMemberName(response.data.Name)
-                            MMKVManagement.setMemberPhone(response.data.Phone)
-                            MMKVManagement.setCrmMemberCode(response.data.Code)
-                            MMKVManagement.setMemberBirthday(response.data.Birthday)
-                            MMKVManagement.setMemberGender(response.data.Gender)
-                            MMKVManagement.setMemberIdentity(response.data.Identity)
-                            MMKVManagement.setMemberMail(response.data.Email)
-                            MMKVManagement.setCrmMemberInvoiceNumber(response.data.ExtraData.invoice_number)
+                            MMKVManagement.setMemberName(response.data.Name?: "")
+                            MMKVManagement.setMemberPhone(response.data.Phone?: "")
+                            MMKVManagement.setCrmMemberCode(response.data.Code?: "")
+                            MMKVManagement.setMemberBirthday(response.data.Birthday?: "")
+                            MMKVManagement.setMemberGender(response.data.Gender?: "")
+                            MMKVManagement.setMemberIdentity(response.data.Identity?: "")
+                            MMKVManagement.setMemberMail(response.data.Email?: "")
+                            MMKVManagement.setCrmMemberInvoiceNumber(response.data.ExtraData.invoice_number?: "")
                             MMKVManagement.setMemberFavMember(response.data.ExtraData.favorite_players ?: emptyList())
                         } else {
                             loadMemberInfo()

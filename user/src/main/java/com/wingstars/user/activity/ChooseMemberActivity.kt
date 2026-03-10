@@ -33,6 +33,7 @@ class ChooseMemberActivity : BaseActivity() {
     private val viewModel: CheerLeaderViewModel by viewModels()
     private var selectedNames = arrayOf<String?>(null, null, null)
     private var currentMemberList: List<MemberUI> = emptyList()
+    private var pendingFavIds: List<String> = emptyList()
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +51,26 @@ class ChooseMemberActivity : BaseActivity() {
         selectedNames[0] = names[0].takeIf { it.isNotBlank() }
         selectedNames[1] = names[1].takeIf { it.isNotBlank() }
         selectedNames[2] = names[2].takeIf { it.isNotBlank() }
+
+        if (selectedNames.all { it.isNullOrBlank() }) {
+            val mmkvFav = MMKVManagement.getMemberFavMember().take(3)
+            val restored = arrayOfNulls<String>(3)
+            val ids = mutableListOf<String>()
+            mmkvFav.forEachIndexed { index, raw ->
+                val trimmed = raw.trim()
+                if (trimmed.isBlank()) return@forEachIndexed
+                if (trimmed.contains("|")) {
+                    restored[index] = trimmed
+                } else {
+                    restored[index] = trimmed
+                    ids.add(trimmed)
+                }
+            }
+            selectedNames[0] = restored[0]
+            selectedNames[1] = restored[1]
+            selectedNames[2] = restored[2]
+            pendingFavIds = ids
+        }
         updateAllInputFields()
         checkEnableSaveButton()
     }
@@ -67,7 +88,9 @@ class ChooseMemberActivity : BaseActivity() {
                 resetInputStyle(i)
             } else {
                 val parts = value.split("|")
-                inputs[i].setText("${parts.getOrNull(0) ?: ""} ${parts.getOrNull(1) ?: ""}")
+                val id = parts.getOrNull(0) ?: ""
+                val name = parts.getOrNull(1)
+                inputs[i].setText(if (name.isNullOrBlank()) id else "$id $name")
                 updateInputStyle(i)
             }
         }
@@ -75,7 +98,13 @@ class ChooseMemberActivity : BaseActivity() {
 
     private fun getSelectedMemberIds(): Set<String> {
         return selectedNames
-            .mapNotNull { value -> value?.split("|")?.getOrNull(0)?.takeIf { it.isNotBlank() } }
+            .mapNotNull { value ->
+                value
+                    ?.split("|")
+                    ?.getOrNull(0)
+                    ?.trim()
+                    ?.takeIf { it.isNotBlank() }
+            }
             .toSet()
     }
 
@@ -87,6 +116,42 @@ class ChooseMemberActivity : BaseActivity() {
                 binding.rvMemberSecond.adapter = MemberUIAdapter(emptyList())
                 return@observe
             }
+
+            if (pendingFavIds.isNotEmpty() || selectedNames.any { it != null && !it.contains("|") }) {
+                for (i in 0..2) {
+                    val raw = selectedNames[i]
+                    if (raw.isNullOrBlank()) continue
+
+                    val token = raw.trim()
+                    if (token.isBlank()) continue
+
+                    val candidateIds = listOf(
+                        token.substringBefore("|").trim(),
+                        token.substringBefore(" ").trim()
+                    ).distinct().filter { it.isNotBlank() }
+
+                    val candidateNames = listOf(
+                        token.substringAfter("|", "").trim(),
+                        token.substringAfter(" ", "").trim(),
+                        token
+                    ).distinct().filter { it.isNotBlank() }
+
+                    val matchById = candidateIds.firstNotNullOfOrNull { id ->
+                        members.firstOrNull { it.memberId.trim() == id }
+                    }
+                    val match = matchById ?: candidateNames.firstNotNullOfOrNull { name ->
+                        members.firstOrNull { it.memberName.trim() == name }
+                    }
+
+                    if (match != null) {
+                        selectedNames[i] = "${match.memberId.trim()}|${match.memberName}"
+                    }
+                }
+                pendingFavIds = emptyList()
+                updateAllInputFields()
+                checkEnableSaveButton()
+            }
+
             val half = members.size / 2
             binding.rvMember.adapter = MemberUIAdapter(members.take(half))
             binding.rvMemberSecond.adapter = MemberUIAdapter(members.drop(half))
@@ -179,6 +244,7 @@ class ChooseMemberActivity : BaseActivity() {
     }
 
     private fun openMemberDialog(index: Int) {
+        val allSelectedIds = (getSelectedMemberIds() + pendingFavIds).toSet()
         ChooseMemberDialog(currentMemberList, { selected ->
             val isAlreadySelectedElsewhere = selectedNames.indices
                 .any { i -> i != index && selectedNames[i] == selected }
@@ -190,7 +256,7 @@ class ChooseMemberActivity : BaseActivity() {
             selectedNames[index] = selected
             updateAllInputFields()
             checkEnableSaveButton()
-        }, getSelectedMemberIds()).show(supportFragmentManager, "choose")
+        }, allSelectedIds).show(supportFragmentManager, "choose")
     }
     private fun updateInputStyle(index: Int) {
         val color = getColor(R.color.color_4A5565)
