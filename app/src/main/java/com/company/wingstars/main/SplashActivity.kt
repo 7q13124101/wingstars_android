@@ -44,7 +44,8 @@ class SplashActivity : AppCompatActivity() {
             if (isLogin) {
                 nextIntent = Intent(this, MainActivity::class.java)
             } else {
-                nextIntent = Intent(this, LoginActivity::class.java)
+//                nextIntent = Intent(this, LoginActivity::class.java)
+                nextIntent = Intent(this, MainActivity::class.java)
 
                 nextIntent.putExtra("isFromSplash", true)
             }
