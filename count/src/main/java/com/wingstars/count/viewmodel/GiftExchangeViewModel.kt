@@ -19,7 +19,8 @@ class GiftExchangeViewModel : ViewModel() {
     var countWS = MutableLiveData<Int>()
     var productCouponsData = MutableLiveData<MutableList<CRMCouponsAvailableResponse>>()
     var searchActivityNewF = mutableListOf<CRMCouponsAvailableResponse>()
-    var searchActivityData = MutableLiveData<MutableList<CRMCouponsAvailableResponse>>()
+    val searchActivityData =
+        MutableLiveData<List<CRMCouponsAvailableResponse>>(emptyList())
 
     var isLoading = MutableLiveData<Boolean>()
     var memberCards: ArrayList<String> = ArrayList()
@@ -171,6 +172,6 @@ class GiftExchangeViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
-        //Log.e("GiftExchangeViewModel", "API Error: $msg")
+//        Log.e("GiftExchangeViewModel", "API Error: $msg")
     }
 }

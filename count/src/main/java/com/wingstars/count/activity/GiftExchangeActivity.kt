@@ -92,8 +92,9 @@ class GiftExchangeActivity : AppCompatActivity() {
         val count = countIntent?.toIntOrNull() ?: -1
         viewModel.setProductCouponsInfo(count, currentSortMethod)
         viewModel.searchActivityData.observe(this) { list ->
-            adapter.setList(list)
-            handleEmptyState(list.size)
+            val safeList = list ?: emptyList()
+            adapter.setList(safeList)
+                handleEmptyState(safeList.size)
         }
 
         viewModel.productCouponsData.observe(this) {
@@ -138,7 +139,10 @@ class GiftExchangeActivity : AppCompatActivity() {
         dialog.setContentView(dialogBinding.root)
 
         dialog.window?.apply {
-            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val displayMetrics = resources.displayMetrics
+            val screenHeight = displayMetrics.heightPixels
+            val halfScreenHeight = (screenHeight * 0.5).toInt()
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, halfScreenHeight)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             setGravity(Gravity.BOTTOM)
         }
@@ -172,7 +176,6 @@ class GiftExchangeActivity : AppCompatActivity() {
 
             if (newSortMethod != currentSortMethod) {
                 currentSortMethod = newSortMethod
-                // Gọi ViewModel để sắp xếp lại list hiện tại
                 val keyword = binding.etSearch.text.toString().trim()
                 viewModel.searchData(keyword, currentSortMethod)
             }

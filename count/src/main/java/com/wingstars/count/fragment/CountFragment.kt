@@ -120,16 +120,20 @@ class CountFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        if (fullDataList.isNotEmpty()) {
-            updateListDisplay()
-        }
+//        if (fullDataList.isNotEmpty()) {
+//            updateListDisplay()
+//        }
 
         checkLoginStatus()
         if (MMKV.defaultMMKV().decodeBool("isLogin")) {
             viewModel.getMemberPointFromDetailsData(false)
+            viewModel.getEvtTasks()
         } else {
             binding.tvCountWinstar.text = "0"
+            fullDataList = ArrayList()
+            updateListDisplay()
         }
+
     }
 
     override fun onDestroy() {
@@ -230,6 +234,39 @@ class CountFragment : BaseFragment() {
             updateListDisplay()
         }
 
+//        binding.top.setOnClickListener { binding.scrollView.smoothScrollTo(0, 0) }
+//
+//        binding.scrollView.setOnScrollChangeListener { _: NestedScrollView, _: Int, scrollY: Int, _: Int, _: Int ->
+//            val scrollThreshold = 300
+//            if (scrollY > scrollThreshold) {
+//                if (binding.top.visibility != View.VISIBLE || binding.top.alpha < 1f) {
+//                    binding.top.animate().cancel()
+//                    binding.top.visibility = View.VISIBLE
+//                    binding.top.alpha = 0f
+//                    binding.top.animate().alpha(1f).setDuration(200).start()
+//                }
+//            } else {
+//                if (binding.top.visibility == View.VISIBLE && binding.top.alpha > 0f) {
+//                    binding.top.animate().cancel()
+//                    binding.top.animate().alpha(0f).setDuration(200).withEndAction {
+//                        binding.top.visibility = View.GONE
+//                    }.start()
+//                }
+//            }
+//        }
+//
+//        binding.scrollView.setOnScrollChangeListener(
+//            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+//                val headerHeight = binding.ivHeaderBg.height.toFloat()
+//                val ratio = (scrollY / headerHeight).coerceIn(0f, 1f)
+//                binding.ivHeaderBg.apply {
+//                    alpha = 1f - ratio
+//                    scaleX = 1f + ratio * 0.1f
+//                    scaleY = 1f + ratio * 0.1f
+//                }
+//            }
+//        )
+
         binding.top.setOnClickListener { binding.scrollView.smoothScrollTo(0, 0) }
 
         binding.scrollView.setOnScrollChangeListener { _: NestedScrollView, _: Int, scrollY: Int, _: Int, _: Int ->
@@ -249,11 +286,8 @@ class CountFragment : BaseFragment() {
                     }.start()
                 }
             }
-        }
-
-        binding.scrollView.setOnScrollChangeListener(
-            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
-                val headerHeight = binding.ivHeaderBg.height.toFloat()
+            val headerHeight = binding.ivHeaderBg.height.toFloat()
+            if (headerHeight > 0f) {
                 val ratio = (scrollY / headerHeight).coerceIn(0f, 1f)
                 binding.ivHeaderBg.apply {
                     alpha = 1f - ratio
@@ -261,7 +295,7 @@ class CountFragment : BaseFragment() {
                     scaleY = 1f + ratio * 0.1f
                 }
             }
-        )
+        }
 
 
 
