@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.wingstars.base.net.beans.PhrasesBean
 import com.wingstars.user.R
+import androidx.core.graphics.toColorInt
 
 class PhrasesAdapter(
     private var list: List<PhrasesBean>,
@@ -88,7 +89,7 @@ class PhrasesAdapter(
                 val colorHolder = holder as ColorViewHolder
                 val colorHex = item.title
                 try {
-                    val colorInt = Color.parseColor(colorHex)
+                    val colorInt = colorHex.toColorInt()
                     val background = colorHolder.viewColor.background as? GradientDrawable
                     background?.setColor(colorInt) ?: colorHolder.viewColor.setBackgroundColor(colorInt)
                 } catch (e: Exception) {
