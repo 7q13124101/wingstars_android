@@ -201,11 +201,11 @@ class UserFragment : BaseFragment() {
             val intent = Intent(requireActivity(), ContactCustomerActivity::class.java)
             startActivity(intent)
         }
-        binding.llUserLogOut.setOnClickListener {
-            LogoutDialog(requireContext()) {
-                performLogout()
-            }.show()
-        }
+//        binding.llUserLogOut.setOnClickListener {
+//            LogoutDialog(requireContext()) {
+//                performLogout()
+//            }.show()
+//        }
         binding.llUserFacebook.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = "https://www.facebook.com/tsgwingstars/?locale=zh_TW".toUri()
@@ -233,19 +233,15 @@ class UserFragment : BaseFragment() {
             }
         }
 
-        binding.qrMember.setOnClickListener {
-            val intent = Intent(requireActivity(), CumulativeAmountActivity::class.java)
-            startActivity(intent)
-        }
+//        binding.qrMember.setOnClickListener {
+//            val intent = Intent(requireActivity(), CumulativeAmountActivity::class.java)
+//            startActivity(intent)
+//        }
         binding.llUserCheeringMode.setOnClickListener {
             checkLoginOrGoLogin {
                 val intent = Intent(requireActivity(), CheerModeActivity::class.java)
                 startActivity(intent)
             }
-        }
-        binding.qrMember.setOnClickListener {
-            val intent = Intent(requireActivity(), CumulativeAmountActivity::class.java)
-            startActivity(intent)
         }
         binding.cardGeneralMember.setOnClickListener {
             checkLoginOrGoLogin { }
@@ -307,12 +303,48 @@ class UserFragment : BaseFragment() {
         startActivity(intent)
     }
 
+//    private fun updateLoginUI() {
+//        val isLoggedIn = MMKVManagement.isLogin()
+//        val name = MMKVManagement.getMemberName()
+////        Log.d("UserFragment", "Update UI: Login=$isLoggedIn, Name=$name")
+////        binding.cardGeneralMember.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
+////        binding.cardFriendshipMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+//        binding.containerLeft.isEnabled = false
+//        binding.qrMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+//        binding.barcodeMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+//        binding.layoutMain.tvLogin.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
+//        binding.layoutMain.tvLoginGenerally.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+//        binding.layoutMain.effectiveDateGeneral.visibility =
+//            if (isLoggedIn) View.GONE else View.VISIBLE
+//        if (isLoggedIn) {
+//            binding.layoutMain.tvUserName.text = name
+//            val expiredDate = MMKVManagement.getMemberExpiredDate()
+//            binding.layoutMain.effectiveDate.text = if (expiredDate.isNotEmpty()) {
+//                "會員到期 : ${expiredDate.replace("-", "/")}"
+//            } else {
+//                MMKVManagement.getMemberBirthday()
+//            }
+//
+//        }
+//    }
+
     private fun updateLoginUI() {
         val isLoggedIn = MMKVManagement.isLogin()
         val name = MMKVManagement.getMemberName()
-//        Log.d("UserFragment", "Update UI: Login=$isLoggedIn, Name=$name")
-//        binding.cardGeneralMember.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
-//        binding.cardFriendshipMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+
+        binding.userLogOut.text =
+            if (isLoggedIn) "登出帳號" else "登入帳號"
+
+        binding.llUserLogOut.setOnClickListener {
+            if (MMKVManagement.isLogin()) {
+                LogoutDialog(requireContext()) {
+                    performLogout()
+                }.show()
+            } else {
+                startActivity(Intent(requireActivity(), LoginActivity::class.java))
+            }
+        }
+
         binding.containerLeft.isEnabled = false
         binding.qrMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
         binding.barcodeMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
@@ -320,17 +352,19 @@ class UserFragment : BaseFragment() {
         binding.layoutMain.tvLoginGenerally.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
         binding.layoutMain.effectiveDateGeneral.visibility =
             if (isLoggedIn) View.GONE else View.VISIBLE
+
         if (isLoggedIn) {
             isNotificationOn = MMKVManagement.isNotificationOn()
             binding.form4Status.text = if (isNotificationOn) "已開啟" else ""
             binding.layoutMain.tvUserName.text = name
             val expiredDate = MMKVManagement.getMemberExpiredDate()
-            binding.layoutMain.effectiveDate.text = if (expiredDate.isNotEmpty()) {
-                "會員到期 : ${expiredDate.replace("-", "/")}"
-            } else {
-                MMKVManagement.getMemberBirthday()
-            }
 
+            binding.layoutMain.effectiveDate.text =
+                if (expiredDate.isNotEmpty()) {
+                    "會員到期 : ${expiredDate.replace("-", "/")}"
+                } else {
+                    MMKVManagement.getMemberBirthday()
+                }
         }
     }
 

@@ -15,7 +15,7 @@ class CheerLeaderViewModel: ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
     val errorMessage = MutableLiveData<String?>()
     fun fetchCheerLeaderList(
-        perPage: Int = 20,
+        perPage: Int = 50,
         page: Int = 1
     ) {
         isLoading.value = true
