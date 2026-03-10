@@ -8,8 +8,11 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.widget.NestedScrollView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.zxing.BarcodeFormat
@@ -66,15 +70,23 @@ class UserFragment : BaseFragment() {
         originalConstraintSet = ConstraintSet()
         originalConstraintSet.clone(binding.barcodeMember)
 
-        // Fade gradient header based on scroll position
-        val gradientMaxScroll by lazy {
-            binding.bgHeader1.height.takeIf { it > 0 }
-                ?: resources.getDimensionPixelSize(R.dimen.dp_190)
-        }
-        binding.content.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            val alpha = 1f - (scrollY.toFloat() / gradientMaxScroll).coerceIn(0f, 1f)
-            binding.bgHeader1.alpha = alpha
-        }
+        val gradientDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.bg_review_gradient)!!
+        val whiteOverlay = ColorDrawable(Color.WHITE).also { it.alpha = 0 }
+        binding.layoutMain.rlTop.background = LayerDrawable(arrayOf(gradientDrawable, whiteOverlay))
+
+        binding.content.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+                val headerHeight = binding.bgHeader1.height.toFloat()
+                val ratio = (scrollY / headerHeight).coerceIn(0f, 1f)
+                binding.bgHeader1.apply {
+                    alpha = 1f - ratio
+                    scaleX = 1f + ratio * 0.1f
+                    scaleY = 1f + ratio * 0.1f
+                }
+                (binding.layoutMain.rlTop.background as? LayerDrawable)
+                    ?.getDrawable(1)?.alpha = (ratio * 255).toInt()
+            }
+        )
     }
 
     @SuppressLint("SetTextI18n")

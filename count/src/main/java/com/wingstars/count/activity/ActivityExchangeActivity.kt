@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.RadioButton
@@ -36,6 +37,8 @@ class ActivityExchangeActivity : AppCompatActivity() {
     private lateinit var adapter: ActivityExchangeAdapter
     private val viewModel: ActivityExchangeViewModel by viewModels()
     private var currentSortMethod = SortMethod.SORT_DATE_NEW_TO_OLD
+
+    private var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,17 +92,24 @@ class ActivityExchangeActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.isLoading.observe(this) { isLoading ->
-            if (isLoading) {
-                 binding.srlProductCoupons.autoRefresh()
+        viewModel.isLoading.observe(this) { isLoading = it
+            if (it) {
+                binding.srlProductCoupons.autoRefresh()
+                binding.llEmpty.visibility = View.GONE
             } else {
                 binding.srlProductCoupons.finishRefresh()
+
+                val list = viewModel.searchActivityData.value
+                handleEmptyState(list.isNullOrEmpty())
             }
         }
 
         viewModel.searchActivityData.observe(this) { activities ->
             adapter.submitList(activities)
-            handleEmptyState(activities.isNullOrEmpty())
+
+//            if (!isLoading) {
+//                handleEmptyState(activities.isNullOrEmpty())
+//            }
         }
 
         viewModel.points.observe(this) { points ->
@@ -120,7 +130,10 @@ class ActivityExchangeActivity : AppCompatActivity() {
         dialog.setContentView(dialogBinding.root)
 
         dialog.window?.apply {
-            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val displayMetrics = resources.displayMetrics
+            val screenHeight = displayMetrics.heightPixels
+            val halfScreenHeight = (screenHeight * 0.5).toInt()
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, halfScreenHeight)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             setGravity(Gravity.BOTTOM)
         }

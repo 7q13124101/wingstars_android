@@ -28,6 +28,8 @@ data class YoutubeListResponse(
             data class Thumbnails(
                 val default: ThumbDefault,
                 val medium: ThumbMedium,
+                val high: ThumbHigh? = null,
+                val maxres: ThumbMaxres? = null
             ):java.io.Serializable {
                 data class ThumbDefault(
                     val url: String,
@@ -39,6 +41,17 @@ data class YoutubeListResponse(
                     val url: String,
                     val width: Int,
                     val height: Int,
+                ):java.io.Serializable
+                data class ThumbHigh(
+                    val url: String = "",
+                    val width: Int = 0,
+                    val height: Int = 0
+                ):java.io.Serializable
+
+                data class ThumbMaxres(
+                    val url: String = "",
+                    val width: Int = 0,
+                    val height: Int = 0
                 ):java.io.Serializable
             }
         }

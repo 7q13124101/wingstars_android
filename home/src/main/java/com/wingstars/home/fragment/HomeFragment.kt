@@ -303,9 +303,11 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         }
 
         viewModel.comingSoonDataList.observe(viewLifecycleOwner) { list ->
-            if (!list.isNullOrEmpty()) {
-                comingSoonAdapter.setList(list)
+            val comingSoonList = (list ?: emptyList()).toMutableList()
+            if (!comingSoonList.isNullOrEmpty()) {
+                comingSoonAdapter.setList(comingSoonList)
             }
+            comingSoonSection.setVisible(comingSoonList.isNotEmpty())
         }
 
         viewModel.productDataList.observe(viewLifecycleOwner) { list ->

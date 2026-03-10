@@ -302,13 +302,18 @@ class HomeViewModel : ViewModel() {
     fun getYoutubeData() {
         isLoading.postValue(true)
 
+        // 1. TUYỆT CHIÊU HACK QUOTA: Đổi Channel ID (UC...) thành Playlist ID (UU...)
+        var uploadPlaylistId = NetBase.YOUTUBE_CHANNEL_ID
+        if (uploadPlaylistId.startsWith("UC")) {
+            uploadPlaylistId = "UU" + uploadPlaylistId.substring(2)
+        }
+
         API.shared?.api?.let { api ->
-            api.getYoutubeVideos(
+            // 2. Gọi hàm getYoutubePlaylistItemsDirect chỉ tốn 1 ĐIỂM
+            api.getYoutubePlaylistItemsDirect(
                 "snippet",
-                NetBase.YOUTUBE_CHANNEL_ID,
-                4,
-                "date",
-                "video",
+                uploadPlaylistId,
+                4, // Chỉ lấy 4 video mới nhất cho Trang chủ
                 NetBase.YOUTUBE_API_KEY
             )
                 .subscribeOn(Schedulers.io())
@@ -324,22 +329,22 @@ class HomeViewModel : ViewModel() {
                             // Xử lý dữ liệu thô sang dữ liệu đẹp
                             rawItems.forEach { item ->
                                 val snippet = item.snippet
-                                val idObj = item.id
 
-                                if (snippet != null && idObj != null) {
+                                if (snippet != null) {
                                     val title = snippet.title ?: ""
 
-                                    // Ưu tiên lấy ảnh maxres (nét nhất), sau đó lùi dần
+                                    // Lấy ảnh giống như cũ
                                     val image = snippet.thumbnails?.maxres?.url
-                                        ?: snippet.thumbnails?.standard?.url
                                         ?: snippet.thumbnails?.high?.url
                                         ?: snippet.thumbnails?.medium?.url
+                                        ?: snippet.thumbnails?.default?.url
                                         ?: ""
 
-                                    val videoId = idObj.videoId ?: ""
+                                    // VideoID nằm trong resourceId
+                                    val videoId = snippet.resourceId?.videoId ?: ""
 
-                                    // Xử lý ngày: Lấy 10 ký tự đầu (2025-12-22) và thay dấu - bằng dấu .
-                                    val rawDate = snippet.publishTime ?: ""
+                                    // Ngày đăng lấy từ publishedAt thay vì publishTime
+                                    val rawDate = snippet.publishedAt ?: ""
                                     val formattedDate = if (rawDate.length >= 10) {
                                         rawDate.substring(0, 10).replace("-", ".")
                                     } else {

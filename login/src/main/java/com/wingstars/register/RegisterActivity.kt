@@ -35,9 +35,13 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
     RegisterNavigator {
     private lateinit var binding: ActivityRegistersBinding
     private var timer: CountDownTimer? = null
-    private val phoneRegex = Regex("^09\\d{8}$")     // Taiwan mobile (ví dụ)
+    private val phoneRegex = Regex("^09\\d{8}$")
     private val viewModel: RegisterViewModel by viewModels()
     private var gender = "M"
+
+    private var isOtpSent = false
+
+    private var lastSentPhone = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,17 +105,16 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
     }
 
     private fun updateSendButtonState() {
-        val ok = phoneRegex.matches(binding.edtPhone.text?.toString().orEmpty())
-        binding.btnSendCode.isEnabled = ok
-        // Nếu bạn đang đổi màu chữ theo focus, đừng dùng màu "enabled" khi nút đang disabled
-        val hasFocus = binding.edtPhone.hasFocus()
-        val colorRes = if (hasFocus && ok) R.color.white else R.color.text_tittle
-        val colorBg = if (hasFocus && ok) R.drawable.bg_send_code_able
-        else R.drawable.bg_sends_code
-        binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
-        //Log.e("edtPhone", "updateSendButtonState")
-        binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
+        val phone = binding.edtPhone.text?.toString().orEmpty()
+        val isPhoneValid = phoneRegex.matches(phone)
 
+        binding.btnSendCode.isEnabled = isPhoneValid
+
+        val colorRes = if (isPhoneValid) R.color.white else R.color.text_tittle
+        val bgRes = if (isPhoneValid) R.drawable.bg_send_code_able else R.drawable.bg_sends_code
+
+        binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
+        binding.btnSendCode.background = ContextCompat.getDrawable(this, bgRes)
     }
 
     private fun showTimerUI() {
@@ -205,21 +208,20 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         android.util.Patterns.EMAIL_ADDRESS.matcher(s).matches()
 
     private fun isAllValid(): Boolean {
+        val phone = binding.edtPhone.text.toString().trim()
         val name = binding.edtName?.text?.toString()?.trim().orEmpty()
-        val phone = binding.edtPhone.text?.toString()?.trim().orEmpty()
-        val code = binding.edtPhoneCode?.text?.toString()?.trim().orEmpty() // nếu có ô nhập OTP
+        val code = binding.edtPhoneCode.text.toString().trim()
         val pwd = binding.edtPsd.text?.toString().orEmpty()
         val confirm = binding.edtPsdConfirm.text?.toString().orEmpty()
         val email = binding.edtEmail?.text?.toString()?.trim().orEmpty()
-        val agreed =
-            binding.rbPrivacyPolicy?.isChecked == true && binding.rbUserTerms?.isChecked == true
+        val agreed = binding.rbPrivacyPolicy?.isChecked == true && binding.rbUserTerms?.isChecked == true
 
         val phoneOk = isTaiwanPhone(phone)
-        val codeOk = code.isNotEmpty()
+        val codeOk = isOtpSent && phone == lastSentPhone && code.isNotEmpty()
         val pwdOk = isPasswordStrong(pwd)
         val matchOk = confirm.isNotEmpty() && pwd == confirm
         val nameOk = name.isNotEmpty()
-        val emailOk = isEmailValid(email) // nếu email là optional thì cho phép trống
+        val emailOk = isEmailValid(email)
 
         return nameOk && phoneOk && codeOk && pwdOk && matchOk && emailOk && agreed
     }
@@ -312,16 +314,20 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         dialog.show()
     }
 
+
     override fun initView() {
         binding.btnConfirm.isEnabled = false
         viewModel.setNavigator(this)
-//        updateConfirmButtonState()
-//        updateSendButtonState()
+
         val autoPhone = intent.getStringExtra("PHONE_NUMBER")
         if (!autoPhone.isNullOrEmpty()) {
             binding.edtPhone.setText(autoPhone)
             binding.edtPhone.setSelection(autoPhone.length)
         }
+
+        // 1. Cập nhật trạng thái nút gửi mã lần đầu tiên (phòng trường hợp autoPhone hợp lệ)
+        updateSendButtonState()
+
         binding.tvResend.setOnClickListener(this)
         binding.ivClose.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
         binding.tvPhoneInputError.visibility = View.INVISIBLE
@@ -329,35 +335,54 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         binding.privacy.setOnClickListener(this)
         binding.agreement.setOnClickListener(this)
         setupLiveValidation()
+
+        // 2. Sửa Focus: Chỉ đổi màu khung (RL), KHÔNG đổi màu nút btnSendCode ở đây
         binding.edtPhone.setOnFocusChangeListener { _, hasFocus ->
             binding.rlPhone.isActivated = hasFocus
-            val colorRes = if (hasFocus && binding.btnSendCode.isEnabled) R.color.white
-            else R.color.text_tittle
-            val colorBg =
-                if (hasFocus && binding.btnSendCode.isEnabled) R.drawable.bg_send_code_able
-                else R.drawable.bg_sends_code
-            binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
-            //Log.e("edtPhone", "edtPhone")
-            binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
         }
+
+        // 3. Sửa TextWatcher của edtPhone: Nơi duy nhất quản lý độ sáng của nút gửi mã
         binding.edtPhone.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val ok = phoneRegex.matches(s?.toString().orEmpty())
+                val phone = s?.toString().orEmpty()
+                val ok = phoneRegex.matches(phone)
+
                 binding.tvPhoneInputError.visibility =
-                    if (s.isNullOrEmpty() || ok) View.INVISIBLE else View.VISIBLE
-                updateSendButtonState()
+                    if (phone.isEmpty() || ok) View.INVISIBLE else View.VISIBLE
+
+                // LOGIC QUAN TRỌNG: Nếu đổi SĐT khác với số đã gửi mã, reset trạng thái OTP
+                if (phone != lastSentPhone) {
+                    isOtpSent = false
+                }
+
+                updateSendButtonState() // Hàm này sẽ lo việc nút sáng hay tối dựa trên 'ok'
                 updateConfirmButtonState()
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable?) {}
         })
-        viewModel.isLoading.observe(this) {
-            showLoadingUI(it, this)
+
+        // 4. Cập nhật lại hàm updateSendButtonState trong Activity của bạn như sau:
+        /*
+        private fun updateSendButtonState() {
+            val phone = binding.edtPhone.text?.toString().orEmpty()
+            val isOk = phoneRegex.matches(phone)
+
+            binding.btnSendCode.isEnabled = isOk
+
+            // Luôn sáng trắng nếu SĐT đúng, bất kể có focus hay không
+            val colorRes = if (isOk) R.color.white else R.color.text_tittle
+            val colorBg = if (isOk) R.drawable.bg_send_code_able else R.drawable.bg_sends_code
+
+            binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
+            binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
         }
-        viewModel.message.observe(this) {
-            showToast("$it")
-        }
+        */
+
+        // --- Các phần dưới giữ nguyên ---
+        viewModel.isLoading.observe(this) { showLoadingUI(it, this) }
+        viewModel.message.observe(this) { showToast("$it") }
+
         binding.btnSendCode.setOnClickListener {
             val phone = binding.edtPhone.text?.toString().orEmpty()
             if (!phoneRegex.matches(phone)) {
@@ -365,70 +390,68 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
                 return@setOnClickListener
             }
             viewModel.getRegisterPhoneCode(phone)
-
         }
+
         binding.cbPsdConfirmVisible.setOnCheckedChangeListener { _, isChecked ->
             val typeface = binding.edtPsdConfirm.typeface
-
             binding.edtPsdConfirm.inputType = if (isChecked) {
                 InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             } else {
                 InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
-
             binding.edtPsdConfirm.typeface = typeface
             binding.edtPsdConfirm.text?.let { binding.edtPsdConfirm.setSelection(it.length) }
         }
+
         binding.cbPsdVisible.setOnCheckedChangeListener { _, isChecked ->
             val typeface = binding.edtPsd.typeface
-
             binding.edtPsd.inputType = if (isChecked) {
                 InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             } else {
                 InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
-
             binding.edtPsd.typeface = typeface
             binding.edtPsd.text?.let { binding.edtPsd.setSelection(it.length) }
         }
+
         binding.ivSexCircle.setOnClickListener {
             val intent = Intent(this, RegistrationTermsActivity::class.java)
             startActivity(intent)
         }
+
         binding.edtName?.addTextChangedListener(object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, st: Int, b: Int, c: Int) {
                 updateConfirmButtonState()
             }
         })
+
         binding.edtPhoneCode?.addTextChangedListener(object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, st: Int, b: Int, c: Int) {
                 updateConfirmButtonState()
             }
         })
-        binding.edtEmail.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
 
+        binding.edtEmail.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 updateConfirmButtonState()
             }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
+            override fun afterTextChanged(p0: Editable?) {}
         })
 
         binding.rbPrivacyPolicy?.setOnCheckedChangeListener { _, _ -> updateConfirmButtonState() }
         binding.rbUserTerms?.setOnCheckedChangeListener { _, _ -> updateConfirmButtonState() }
     }
 
+
+
     private fun setupLiveValidation() {
         binding.edtPhone.addTextChangedListener(object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val phone = s?.toString()?.trim().orEmpty()
                 when {
-                    phone.isEmpty() -> showPhoneError(getString(R.string.hint_phone))   // yêu cầu nhập
-                    !isTaiwanPhone(phone) -> showPhoneError(getString(R.string.error_phone_format)) // sai định dạng
+                    phone.isEmpty() -> showPhoneError(getString(R.string.hint_phone))
+                    !isTaiwanPhone(phone) -> showPhoneError(getString(R.string.error_phone_format))
                     else -> showPhoneNormal()
                 }
             }
@@ -446,43 +469,30 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
                 updateConfirmButtonState()
             }
         })
+
         binding.edtPsdConfirm.addTextChangedListener(object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 validatePasswordConfirm()
                 updateConfirmButtonState()
             }
         })
-        binding.btnConfirm.setOnClickListener {
-//            if (!isAllValid()) return@setOnClickListener
-            // showRegisterSuccessDialog()
-            val password = binding.edtPsd.text.toString()
 
+        binding.btnConfirm.setOnClickListener {
+
+            val password = binding.edtPsd.text.toString()
             val name = binding.edtName.text.toString()
             val phone = binding.edtPhone.text.toString()
             val otp = binding.edtPhoneCode.text.toString()
             val email = binding.edtEmail.text.toString()
 
-            if (binding.rbSexMale.isChecked) {
-                gender = "M"
-            } else if (binding.rbSexFemale.isChecked) {
-                gender = "F"
-            } else {
-                gender = "S"
+            gender = when {
+                binding.rbSexMale.isChecked -> "M"
+                binding.rbSexFemale.isChecked -> "F"
+                else -> "S"
             }
 
-
-
             viewModel.checkPhone(
-                CRMSignUpRequest(
-                    name,
-                    phone,
-                    otp,
-                    password,
-                    email,
-                    "",
-                    gender,
-                    ""
-                )
+                CRMSignUpRequest(name, phone, otp, password, email, "", gender, "")
             )
         }
     }
@@ -535,9 +545,11 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
     }
 
     override fun getPhoneCodeSuccess() {
-        showTimerUI()      // ẩn nút, hiện đồng hồ
-        startCountDown()   // 60 giây
-        Toast.makeText(this, "驗證碼已發送。", Toast.LENGTH_SHORT).show()
+        isOtpSent = true
+        lastSentPhone = binding.edtPhone.text.toString()
+        showTimerUI()
+        startCountDown()
+        Toast.makeText(this, "驗證碼已發送", Toast.LENGTH_SHORT).show()
     }
 
     override fun registerSuccess() {
