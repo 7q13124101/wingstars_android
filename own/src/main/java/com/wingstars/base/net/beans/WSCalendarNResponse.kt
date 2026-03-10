@@ -26,13 +26,9 @@ data class WSCalendarNResponse(
             return category
         }
 
-    val st_dateF: String                //start_date format
+    val st_dateF: String                    //start_date format
         get() {
-            return if (start_date.length >= 10) {
-                start_date.substring(0, 16)
-            } else {
-                start_date
-            }
+            return start_date
         }
 
     val ed_dateF: String                    //end_date format
