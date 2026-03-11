@@ -1,62 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="20dp"
-    android:background="@drawable/bg_dialog_round"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_239">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_bottom"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="24dp"
+    android:paddingBottom="32dp">
 
     <ImageView
         android:id="@+id/modal_dialogs"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
         android:src="@drawable/ic_modal_dialogs" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="確定要登出嗎？"
+        android:textSize="16sp"
         android:textColor="@color/color_101828"
-        android:textSize="@dimen/sp_16"
         android:gravity="center"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_marginTop="16dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/dp_20">
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/edt_mobile"
-            android:layout_width="@dimen/dp_169"
-            android:layout_height="@dimen/dp_47"
-            android:background="@drawable/bg_button_off"
-            android:padding="12dp"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
             android:text="取消"
-            android:gravity="center"
-            android:inputType="text"
-            android:singleLine="true"
             android:textColor="@color/color_E2518D"
-            android:textSize="@dimen/sp_14" />
-        <View
-            android:layout_width="20dp"
+            android:background="@drawable/bg_button_off"/>
+
+        <Space
+            android:layout_width="16dp"
             android:layout_height="1dp"/>
 
         <Button
             android:id="@+id/edt_mobile1"
-            android:layout_width="@dimen/dp_169"
-            android:layout_height="@dimen/dp_47"
-            android:background="@drawable/bg_button_on"
-            android:padding="12dp"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
             android:text="確認登出"
-            android:gravity="center"
-            android:inputType="text"
-            android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_14"/>
+            android:background="@drawable/bg_button_on"/>
+
     </LinearLayout>
 
 </LinearLayout>
