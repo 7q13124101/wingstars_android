@@ -24,13 +24,13 @@
     <string name="user_privacy_policy">隱私條款</string>
     <string name="login_success">đăng nhập thành công</string>
     <string name="login_error">Đăng nhập thất bại</string>
-    <string name="login_error_phone">tài khoàn chưa đăng kí hoặc sia mật khẩu</string>
+    <string name="login_error_phone">tài khoàn chưa đăng kí hoặc sai mật khẩu</string>
 
     <string name="user_register">註冊會員</string>
     <string name="why_identity_information">為何需要身分資料</string>
     <string name="why_birthday_information">為何需要生日資料</string>
-    <string name="error_phone_format">請輸入正確手機號碼格式</string>
-    <string name="error_format">請輸入正確格式</string>
+    <string name="error_phone_format">請輸入正確格式</string>
+    <string name="error_format">請輸入正手機號碼確格式</string>
     <string name="error_empty">請輸入帳號與密碼</string>
     <string name="error_phone_login">您尚未註冊，請先註冊會員</string>
     <string name="error_psd_not_match">兩次輸入的密碼不相符，請重新確認</string>
@@ -56,7 +56,7 @@
     <string name="phone_code">驗證碼</string>
     <string name="hint_phone_code_register">請輸入手機驗證碼</string>
     <string name="password">密碼</string>
-    <string name="note_register_psd">密碼限 8~20 個字元，必須包含至少一個英文字母及數字。</string>
+    <string name="note_register_psd">請輸入正確格式</string>
     <string name="register_psd_confirm">密碼確認</string>
     <string name="confirm">確定</string>
     <string name="next_step">下一步</string>
