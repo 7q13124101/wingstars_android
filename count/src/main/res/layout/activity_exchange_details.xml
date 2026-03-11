@@ -86,8 +86,9 @@
                                     android:orientation="horizontal">
 
                                     <FrameLayout
-                                        android:layout_width="240dp"
-                                        android:layout_height="300dp"
+                                        android:id="@+id/fl_user_guide_image"
+                                        android:layout_width="120pt"
+                                        android:layout_height="@dimen/pt_120"
                                         android:background="@drawable/bg_poster_round"
                                         android:clipToOutline="true">
 

@@ -138,7 +138,7 @@ class ExchangeDetailsActivity : AppCompatActivity() {
 
         when (status) {
             ActivityStatusEnum.USED_REDEMPTION.name -> {
-                binding.btnExchange.visibility = View.GONE
+                binding.button.visibility = View.GONE
                 binding.status.text = getString(R.string.count_have_used)
                 return
             }
@@ -568,7 +568,31 @@ class ExchangeDetailsActivity : AppCompatActivity() {
     private fun updateActivityBackgroundData(newData: CRMCouponsAvailableResponse) {
         data = newData
         couponCode = newData.couponCode
+
+        if (newData.couponType == 1){
+            binding.title.text = getString(R.string.gift_details)
+            binding.tvIndicator.visibility = View.GONE
+        }
+        else{
+            binding.title.text = getString(R.string.exchange_details)
+            binding.tvIndicator.visibility = View.VISIBLE
+        }
+
         displayCouponDetails(newData)
+
+        val images = newData.galleryImages
+            ?.takeIf { it.isNotEmpty() }
+            ?: listOf(newData.coverImage)
+
+        binding.bannerUserGuideImage.setAdapter(
+            object : BannerImageAdapter<String>(images) {
+                override fun onBindView(holder: BannerImageHolder, data: String, position: Int, size: Int) {
+                    Glide.with(holder.itemView)
+                        .load(data)
+                        .into(holder.imageView)
+                }
+            }
+        )
     }
     private fun loopCheckCouponStatus() {
         if (checkStatusRunnable != null) {

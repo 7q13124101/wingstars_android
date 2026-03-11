@@ -651,6 +651,12 @@ class GiftDetailsActivity : AppCompatActivity() {
 
     private fun updateActivityBackgroundData(newData: CRMCouponsAvailableResponse) {
         data = newData
+        binding.title.setText(
+            if (newData.couponType == 1)
+                R.string.gift_details
+            else
+                R.string.exchange_details
+        )
         binding.couponName.text = newData.couponName
         binding.pointCost.text = "${newData.pointCost ?: 0} 點"
         binding.activityTime.text = "${newData.totalQuantity ?: 0}"
@@ -658,9 +664,9 @@ class GiftDetailsActivity : AppCompatActivity() {
         binding.tvUsageRules.text = newData.description ?: ""
         binding.tvPrecautions.text = newData.usageRules ?: ""
 
-        val imgUrl = if (!newData.galleryImages.isNullOrEmpty()) newData.galleryImages[0] else newData.coverImage
-        Glide.with(this).load(imgUrl).into(binding.merchandise)
-        couponCode = newData.couponCode
+        Glide.with(this)
+            .load(newData.galleryImages?.firstOrNull() ?: newData.coverImage)
+            .into(binding.merchandise)
     }
 
     private fun showSuccessDialog() {

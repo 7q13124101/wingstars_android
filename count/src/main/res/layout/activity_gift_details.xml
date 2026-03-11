@@ -86,6 +86,7 @@
                        android:layout_height="wrap_content"
                        android:orientation="horizontal">
                        <FrameLayout
+                           android:id="@+id/fl_user_guide_image"
                            android:layout_width="@dimen/pt_120"
                            android:layout_height="@dimen/pt_120">
                            <com.youth.banner.Banner

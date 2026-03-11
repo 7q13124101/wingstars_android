@@ -57,20 +57,20 @@ class CountFragment : BaseFragment() {
 
     private var countItemDialog: Dialog? = null
 
-    private data class CheckInDay(
-        val reward: String,
-        val dayLabel: String
-    )
+//    private data class CheckInDay(
+//        val reward: String,
+//        val dayLabel: String
+//    )
 
-    private val daysData = listOf(
-        CheckInDay("+1", "1天"),
-        CheckInDay("+2", "2天"),
-        CheckInDay("+3", "3天"),
-        CheckInDay("+4", "4天"),
-        CheckInDay("+5", "5天"),
-        CheckInDay("+6", "6天"),
-        CheckInDay("+10", "7天")
-    )
+//    private val daysData = listOf(
+//        CheckInDay("+1", "1天"),
+//        CheckInDay("+2", "2天"),
+//        CheckInDay("+3", "3天"),
+//        CheckInDay("+4", "4天"),
+//        CheckInDay("+5", "5天"),
+//        CheckInDay("+6", "6天"),
+//        CheckInDay("+10", "7天")
+//    )
 
     private val loginSuccessReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -310,32 +310,32 @@ class CountFragment : BaseFragment() {
         checkLoginStatus()
     }
 
-    private fun handleTaskAction(data: EvtTaskResponse) {
-        if (data.triggerTag != null) {
-            var url = ""
-            var bAlwaysOpenUrl = false
-            when (data.triggerTag) {
-                "fb" -> url = "https://www.facebook.com/tsgwingstars/"
-                "instagram" -> url = "https://www.instagram.com/wing_stars_official/"
-                "yt" -> url = "https://www.youtube.com/@WingStars-TSG/"
-                "survey" -> {
-                    bAlwaysOpenUrl = true
-                    url = ""
-                }
-            }
-            if (url.isNotEmpty()) {
-                if (bAlwaysOpenUrl || data.status == "pending") {
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data = Uri.parse(url)
-                    startActivity(intent)
-                }
-                if (!data.isSendApiF && data.status == "pending") {
-                    data.isSendApiF = true
-                    viewModel.grantMemberPoint(data)
-                }
-            }
-        }
-    }
+//    private fun handleTaskAction(data: EvtTaskResponse) {
+//        if (data.triggerTag != null) {
+//            var url = ""
+//            var bAlwaysOpenUrl = false
+//            when (data.triggerTag) {
+//                "fb" -> url = "https://www.facebook.com/tsgwingstars/"
+//                "instagram" -> url = "https://www.instagram.com/wing_stars_official/"
+//                "yt" -> url = "https://www.youtube.com/@WingStars-TSG/"
+//                "survey" -> {
+//                    bAlwaysOpenUrl = true
+//                    url = ""
+//                }
+//            }
+//            if (url.isNotEmpty()) {
+//                if (bAlwaysOpenUrl || data.status == "pending") {
+//                    val intent = Intent(Intent.ACTION_VIEW)
+//                    intent.data = Uri.parse(url)
+//                    startActivity(intent)
+//                }
+//                if (!data.isSendApiF && data.status == "pending") {
+//                    data.isSendApiF = true
+//                    viewModel.grantMemberPoint(data)
+//                }
+//            }
+//        }
+//    }
 
     private fun setupObservers() {
         viewModel.taskList.observe(viewLifecycleOwner) { list ->
@@ -471,26 +471,26 @@ class CountFragment : BaseFragment() {
 //        }
 //    }
 
-    private fun showCheckInSuccessDialog() {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        val dialogBinding = DialogPublicPopupBoxBinding.inflate(LayoutInflater.from(context))
-        dialog.setContentView(dialogBinding.root)
-        dialog.window?.apply {
-            setGravity(Gravity.BOTTOM)
-            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
-        val fullText = "你獲得 1 星幣！"
-        val spannableString = SpannableString(fullText)
-        val startIndex = fullText.indexOf("1")
-        if (startIndex >= 0) {
-            spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#FFC0CB")), startIndex, startIndex + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-        dialogBinding.tvDialogContent.text = spannableString
-        dialogBinding.tvDialogConfirm.setOnClickListener { dialog.dismiss() }
-        dialog.show()
-    }
+//    private fun showCheckInSuccessDialog() {
+//        val dialog = Dialog(requireContext())
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+//        val dialogBinding = DialogPublicPopupBoxBinding.inflate(LayoutInflater.from(context))
+//        dialog.setContentView(dialogBinding.root)
+//        dialog.window?.apply {
+//            setGravity(Gravity.BOTTOM)
+//            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//        }
+//        val fullText = "你獲得 1 星幣！"
+//        val spannableString = SpannableString(fullText)
+//        val startIndex = fullText.indexOf("1")
+//        if (startIndex >= 0) {
+//            spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#FFC0CB")), startIndex, startIndex + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//        }
+//        dialogBinding.tvDialogContent.text = spannableString
+//        dialogBinding.tvDialogConfirm.setOnClickListener { dialog.dismiss() }
+//        dialog.show()
+//    }
 
     private fun showSortDialog() {
         val dialog = Dialog(requireContext())

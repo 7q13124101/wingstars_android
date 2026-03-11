@@ -87,13 +87,9 @@ class NotUsedFragment : Fragment() {
         }
 
         val intent = if (couponType == 1) {
-            Intent(requireActivity(), GiftDetailsActivity::class.java).apply {
-                putExtra("title",getString(R.string.gift_details))
-            }
+            Intent(requireActivity(), GiftDetailsActivity::class.java)
         } else {
-            Intent(requireActivity(), ExchangeDetailsActivity::class.java).apply {
-                putExtra("title",getString(R.string.exchange_details))
-            }
+            Intent(requireActivity(), ExchangeDetailsActivity::class.java)
         }
         intent.putExtra("data", listToSend[position])
         intent.putExtra("status", ActivityStatusEnum.UNUSED_REDEMPTION.name)
