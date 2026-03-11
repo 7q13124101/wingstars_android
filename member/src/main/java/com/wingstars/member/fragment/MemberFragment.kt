@@ -86,6 +86,7 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
     }
 
     private fun initView() {
+
         /*binding.image.post {
             maxHight = binding.image.height
             currentHeight = maxHight
@@ -247,6 +248,7 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
 
 
     override fun onClick(v: View?) {
+
         val id = v?.id
         when (id) {
             binding.popularityRanking.id -> startActivity(

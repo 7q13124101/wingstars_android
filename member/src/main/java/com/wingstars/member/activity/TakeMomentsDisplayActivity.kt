@@ -47,6 +47,26 @@ class TakeMomentsDisplayActivity : BaseActivity(),OnClickListener {
             fitsSystemWindows(true)
         }*/
 
+        binding.downLoad.setOnClickListener {
+
+            val view = layoutInflater.inflate(R.layout.dialog_success, null)
+
+            val dialog = android.app.Dialog(this)
+            dialog.setContentView(view)
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            val params = dialog.window?.attributes
+            params?.gravity = android.view.Gravity.TOP
+            params?.y = 120
+            dialog.window?.attributes = params
+
+            dialog.show()
+
+            android.os.Handler(mainLooper).postDelayed({
+                dialog.dismiss()
+            }, 3000)
+        }
+
         binding.downLoad2.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.dialog_confirm_exit, null)
 
@@ -151,6 +171,23 @@ class TakeMomentsDisplayActivity : BaseActivity(),OnClickListener {
                     }
 
                 }).start()
+
+                val view = layoutInflater.inflate(R.layout.dialog_success, null)
+
+                val dialog = android.app.Dialog(this)
+                dialog.setContentView(view)
+                dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                val params = dialog.window?.attributes
+                params?.gravity = android.view.Gravity.TOP
+                params?.y = 120
+                dialog.window?.attributes = params
+
+                dialog.show()
+
+                android.os.Handler(mainLooper).postDelayed({
+                    dialog.dismiss()
+                }, 3000)
             }
             binding.imgBack.id->{
                 finish()
