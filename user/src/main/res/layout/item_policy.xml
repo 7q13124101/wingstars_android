@@ -3,12 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginTop="@dimen/dp_5">
+    android:layout_marginTop="@dimen/dp_4">
     <TextView
         android:id="@+id/tv_policy_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/noto_sans_tc_family"
         android:gravity="center_vertical"
         android:text=""
         android:textStyle="bold"
@@ -22,7 +21,6 @@
         android:id="@+id/tv_policy_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/noto_sans_tc_family"
         android:textStyle="normal"
         android:text=""
         android:textSize="@dimen/sp_14"

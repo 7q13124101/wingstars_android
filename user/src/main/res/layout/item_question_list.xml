@@ -33,8 +33,7 @@
                     android:text=""
                     android:textColor="@color/color_101828"
                     android:textSize="@dimen/sp_14"
-                    android:fontFamily="@font/noto_sans_tc_family"
-                    android:textFontWeight="500" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_item_question_title"
@@ -45,9 +44,8 @@
                     android:layout_weight="1"
                     android:text=""
                     android:textColor="@color/color_101828"
-                    android:textSize="@dimen/sp_14"
-                    android:fontFamily="@font/noto_sans_tc_family"
-                    android:textFontWeight="500" />
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="normal" />
 
                 <ImageView
                     android:id="@+id/iv_item_question_image"

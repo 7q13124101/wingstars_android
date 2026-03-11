@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.wingstars.user.R
 import com.wingstars.user.databinding.ActivityUserTermsBinding
@@ -33,14 +32,6 @@ class PolicyTermActivity : AppCompatActivity() {
 
     private fun initView() {
         binding.ivBack.setOnClickListener { finish() }
-        
-        // Config Noto Sans TC font for static titles
-        val notoBold = ResourcesCompat.getFont(this, R.font.notosans_tc_bold)
-        val notoRegular = ResourcesCompat.getFont(this, R.font.notosans_tc_regular)
-        
-        binding.txtTitle.typeface = notoBold
-        binding.txtTitleTop.typeface = notoBold
-        binding.txtContentTop.typeface = notoRegular
         
         // Increase line spacing for txtContentTop
         binding.txtContentTop.setLineSpacing(0f, 1.2f)
@@ -66,10 +57,6 @@ class PolicyTermActivity : AppCompatActivity() {
                             val tvPolicyTitle: TextView? = inflate.findViewById(R.id.tv_policy_title)
                             val tvPolicyContent: TextView? = inflate.findViewById(R.id.tv_policy_content)
                             
-                            // Apply font and color requirements
-                            tvPolicyTitle?.typeface = notoBold
-                            tvPolicyContent?.typeface = notoRegular
-
                             tvPolicyContent?.layoutParams?.let { lp ->
                                 if (lp is LinearLayout.LayoutParams) {
                                     lp.rightMargin = dp2px(5F)?.toInt() ?: 0
@@ -114,10 +101,6 @@ class PolicyTermActivity : AppCompatActivity() {
                             val tvPolicyTitle: TextView? = inflate.findViewById(R.id.tv_policy_title)
                             val tvPolicyContent: TextView? = inflate.findViewById(R.id.tv_policy_content)
                             
-                            // Apply font and color requirements
-                            tvPolicyTitle?.typeface = notoBold
-                            tvPolicyContent?.typeface = notoRegular
-
                             tvPolicyContent?.layoutParams?.let { lp ->
                                 if (lp is LinearLayout.LayoutParams) {
                                     lp.rightMargin = dp2px(5F)?.toInt() ?: 0
