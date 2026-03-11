@@ -59,13 +59,10 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
     }
 
     override fun initView() {
-        // --- Nút Back ---
         binding.ivClose.setOnClickListener { handleBackPress() }
-
-        // --- Setup giao diện nhập SĐT ---
         binding.edtPhone.setOnFocusChangeListener { _, hasFocus ->
             binding.rlPhone.isActivated = hasFocus
-            updateSendButtonUI()
+
         }
 
         binding.edtPhone.addTextChangedListener(object : SimpleTW() {
@@ -203,6 +200,8 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
         showTimerUI()
         startCountDown()
         Toast.makeText(this, "驗證碼已發送。", Toast.LENGTH_SHORT).show()
+        binding.edtPhoneCode.requestFocus()
+        updateConfirmButtonState()
     }
 
     override fun resetPsdSuccess() {
@@ -312,13 +311,16 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
     }
 
     private fun updateSendButtonUI() {
-        val ok = phoneRegex.matches(binding.edtPhone.text?.toString().orEmpty())
+        val phone = binding.edtPhone.text?.toString().orEmpty()
+        val ok = phoneRegex.matches(phone)
         binding.btnSendCode.isEnabled = ok
-        val hasFocus = binding.edtPhone.hasFocus()
-        val colorRes = if (hasFocus && ok) R.color.white else R.color.text_tittle
-        val colorBg = if (hasFocus && ok) R.drawable.bg_send_code_able else R.drawable.bg_sends_code
-        binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
-        binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
+        if (ok) {
+            binding.btnSendCode.setTextColor(ContextCompat.getColor(this, R.color.white))
+            binding.btnSendCode.background = ContextCompat.getDrawable(this, R.drawable.bg_send_code_able)
+        } else {
+            binding.btnSendCode.setTextColor(ContextCompat.getColor(this, R.color.text_tittle))
+            binding.btnSendCode.background = ContextCompat.getDrawable(this, R.drawable.bg_sends_code)
+        }
     }
 
     private fun showTimerUI() {
@@ -340,7 +342,6 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
         binding.edtPhone.layoutParams = lp
     }
 
-    // --- Validation Logic ---
 
     private fun validatePasswordConfirm() {
         val pwd = binding.edtPsd.text?.toString().orEmpty()
@@ -395,17 +396,13 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
             val confirm = binding.edtPsdConfirm.text?.toString().orEmpty()
             isPasswordStrong(pwd) && pwd == confirm
         }
-
         binding.btnConfirm.isEnabled = enabled
         if (enabled) {
             binding.btnConfirm.background = ContextCompat.getDrawable(this, R.drawable.bg_button_login_able)
             binding.btnConfirm.setTextColor(ContextCompat.getColor(this, R.color.white))
-            updateNavigationBarColor(R.color.color_EE97BB)
         } else {
             binding.btnConfirm.background = ContextCompat.getDrawable(this, R.drawable.bg_button_login_disable)
             binding.btnConfirm.setTextColor(ContextCompat.getColor(this, R.color.gray_500))
-
-            updateNavigationBarColor(R.color.gray_200)
         }
     }
 

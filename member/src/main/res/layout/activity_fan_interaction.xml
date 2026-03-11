@@ -105,11 +105,10 @@
                         android:layout_centerVertical="true">
 
                         <ImageView
-                            android:visibility="gone"
                             android:id="@+id/flash"
                             android:layout_width="@dimen/dp_50"
                             android:layout_height="@dimen/dp_50"
-                            android:layout_gravity="center_vertical"
+                            android:layout_gravity="left|center_vertical"
                             android:scaleType="fitXY"
                             android:src="@mipmap/fans_bottom4" />
 

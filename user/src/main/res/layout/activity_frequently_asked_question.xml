@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/color_F3F4F6"
-    tools:context=".user.frequentlyaskedquestions.FrequentlyAskedQuestionsActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="@color/color_F3F4F6"
+        android:orientation="vertical"
+        tools:context="com.wingstars.user.activity.FrequentlyAskedQuestionsActivity"
+        tools:theme="@style/AppTheme">
 
         <RelativeLayout
             android:id="@+id/rl_top"
@@ -20,6 +21,7 @@
                 android:id="@+id/include_top"
                 layout="@layout/item_top_ask_question" />
         </RelativeLayout>
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
@@ -31,7 +33,8 @@
             app:tabRippleColor="@android:color/transparent"
             app:tabSelectedTextColor="@color/color_101828"
             app:tabTextAppearance="@style/TabTextStyle"
-            app:tabTextColor="@color/color_101828" />
+            app:tabTextColor="@color/color_101828"
+            tools:ignore="SpeakableTextPresentCheck"/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"

@@ -68,11 +68,6 @@
                     android:layout_height="wrap_content"/>
             </FrameLayout>
 
-
-
-
-
-
             <RelativeLayout
                 android:id="@+id/take2"
                 android:layout_width="match_parent"
@@ -107,6 +102,32 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/home_28"/>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/down_load2"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dp_40"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="@dimen/dp_42"
+                    android:layout_height="@dimen/dp_42">
+                    <ImageView
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/home_26"/>
+
+                    <ImageView
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/outline_next"/>
+
                 </FrameLayout>
 
 

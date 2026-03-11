@@ -5,6 +5,10 @@
         app:fontStyle="normal"
         app:fontWeight="400" />
     <font
+        app:font="@font/notosans_tc_medium"
+        app:fontStyle="normal"
+        app:fontWeight="500" />
+    <font
         app:font="@font/notosans_tc_bold"
         app:fontStyle="normal"
         app:fontWeight="700" />
