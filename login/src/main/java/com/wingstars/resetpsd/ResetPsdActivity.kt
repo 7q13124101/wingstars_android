@@ -73,6 +73,7 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
                 if (isCodeSent) {
                     isCodeSent = false
                     showSendButtonUI()
+                    timer?.cancel()
                 }
                 updateSendButtonState()
                 updateConfirmButtonState()
@@ -233,73 +234,60 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
         }
         dialog.show()
     }
-    private fun showRegisterDialog(){
-        if(isFinishing) return
+    private fun showRegisterDialog() {
+        if (isFinishing) return
         val builder = androidx.appcompat.app.AlertDialog.Builder(this)
         val dialogView = layoutInflater.inflate(R.layout.dialog_reset_success, null)
         builder.setView(dialogView)
         builder.setCancelable(false)
         val dialog = builder.create()
+
         val tvTitle = dialogView.findViewById<android.widget.TextView>(R.id.tvTitle)
         val tvSubtitle = dialogView.findViewById<android.widget.TextView>(R.id.tvSubtitle)
+
         tvSubtitle?.visibility = View.GONE
         tvTitle?.text = "您尚未註冊，請先註冊會員"
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         val btnConfirm = dialogView.findViewById<android.view.View>(R.id.btnConfirm)
         btnConfirm.setOnClickListener {
             dialog.dismiss()
-            val phoneStr = binding.edtPhone.text.toString().trim()
-            val intent = Intent(this, com.wingstars.register.RegisterActivity::class.java)
-            intent.putExtra("PHONE_NUMBER", phoneStr)
-            startActivity(intent)
         }
         dialog.show()
     }
 
     private fun startCountDown(totalMs: Long = 60_000) {
         timer?.cancel()
+        binding.btnSendCode.visibility = View.GONE
+        binding.rlCodeTimer.visibility = View.VISIBLE
         binding.tvCodeTimer.visibility = View.VISIBLE
         binding.tvResend?.visibility = View.GONE
 
         timer = object : CountDownTimer(totalMs, 1000) {
             override fun onTick(ms: Long) {
-
-                val min = (ms / 1000) / 60
                 val sec = (ms / 1000) % 60
                 val pinkText = "${sec}s "
                 val grayText = "重新發送"
                 val fullText = pinkText + grayText
                 val spannable = SpannableString(fullText)
-//                binding.tvCodeTimer.text = String.format("%02d 重新發送", sec)
+
+
                 spannable.setSpan(
-                    ForegroundColorSpan(
-                        ContextCompat.getColor(
-                            this@ResetPsdActivity,
-                            R.color.color_E2518D
-                        )
-                    ),
-                    0,
-                    pinkText.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    ForegroundColorSpan(ContextCompat.getColor(this@ResetPsdActivity, R.color.color_E2518D)),
+                    0, pinkText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
+
 
                 spannable.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(this@ResetPsdActivity, R.color.text_subtitle)),
-                    pinkText.length,
-                    fullText.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    pinkText.length, fullText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 binding.tvCodeTimer.text = spannable
             }
-            override fun onFinish() {
-                if (binding.tvResend != null) {
-                    binding.tvCodeTimer.visibility = View.GONE
-                    binding.tvResend.visibility = View.VISIBLE
-                    binding.tvResend.setTextColor(ContextCompat.getColor(this@ResetPsdActivity, R.color.white))
-                    binding.tvResend.background = ContextCompat.getDrawable(this@ResetPsdActivity, R.drawable.bg_send_code_able)
-                } else {
-                    showSendButtonUI()
-                }
+
+                override fun onFinish() {
+                showSendButtonUI()
+                isCodeSent = false
+                updateConfirmButtonState()
             }
         }.start()
     }
@@ -332,6 +320,7 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
     private fun showSendButtonUI() {
         binding.btnSendCode.visibility = View.VISIBLE
         binding.rlCodeTimer.visibility = View.GONE
+        binding.tvResend?.visibility = View.GONE
         setEditTextRightAnchor(R.id.btn_send_code)
         updateSendButtonState()
     }

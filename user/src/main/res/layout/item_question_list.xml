@@ -32,7 +32,7 @@
                     android:layout_gravity="center_vertical"
                     android:text=""
                     android:textColor="@color/color_101828"
-                    android:textSize="@dimen/sp_16"
+                    android:textSize="@dimen/sp_14"
                     android:fontFamily="@font/noto_sans_tc_family"
                     android:textFontWeight="500" />
 
@@ -45,7 +45,7 @@
                     android:layout_weight="1"
                     android:text=""
                     android:textColor="@color/color_101828"
-                    android:textSize="@dimen/sp_16"
+                    android:textSize="@dimen/sp_14"
                     android:fontFamily="@font/noto_sans_tc_family"
                     android:textFontWeight="500" />
 

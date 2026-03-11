@@ -58,48 +58,35 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
 
     private fun startCountDown(totalMs: Long = 60_000) {
         timer?.cancel()
+        binding.btnSendCode.visibility = View.GONE
+        binding.rlCodeTimer.visibility = View.VISIBLE
         binding.tvCodeTimer.visibility = View.VISIBLE
         binding.tvResend?.visibility = View.GONE
 
         timer = object : CountDownTimer(totalMs, 1000) {
             override fun onTick(ms: Long) {
-
-                val min = (ms / 1000) / 60
                 val sec = (ms / 1000) % 60
                 val pinkText = "${sec}s "
                 val grayText = "重新發送"
                 val fullText = pinkText + grayText
                 val spannable = SpannableString(fullText)
-//                binding.tvCodeTimer.text = String.format("%02d 重新發送", sec)
+
                 spannable.setSpan(
-                    ForegroundColorSpan(
-                        ContextCompat.getColor(
-                            this@RegisterActivity,
-                            R.color.color_E2518D
-                        )
-                    ),
-                    0,
-                    pinkText.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    ForegroundColorSpan(ContextCompat.getColor(this@RegisterActivity, R.color.color_E2518D)),
+                    0, pinkText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
 
                 spannable.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(this@RegisterActivity, R.color.text_subtitle)),
-                    pinkText.length,
-                    fullText.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    pinkText.length, fullText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 binding.tvCodeTimer.text = spannable
             }
+
             override fun onFinish() {
-                if (binding.tvResend != null) {
-                    binding.tvCodeTimer.visibility = View.GONE
-                    binding.tvResend.visibility = View.VISIBLE
-                    binding.tvResend.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.white))
-                    binding.tvResend.background = ContextCompat.getDrawable(this@RegisterActivity, R.drawable.bg_send_code_able)
-                } else {
-                    showSendButtonUI()
-                }
+                showSendButtonUI()
+                isOtpSent = false
+                updateConfirmButtonState()
             }
         }.start()
     }
@@ -127,6 +114,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
     private fun showSendButtonUI() {
         binding.btnSendCode.visibility = View.VISIBLE
         binding.rlCodeTimer.visibility = View.GONE
+        binding.tvResend?.visibility = View.GONE
         setEditTextRightAnchor(R.id.btn_send_code)
         updateSendButtonState()
         updateConfirmButtonState()
