@@ -113,6 +113,15 @@
                             android:src="@mipmap/fans_bottom4" />
 
                         <ImageView
+                            android:id="@+id/flash_off"
+                            android:layout_width="@dimen/dp_50"
+                            android:layout_height="@dimen/dp_50"
+                            android:layout_gravity="left|center_vertical"
+                            android:scaleType="fitXY"
+                            android:visibility="gone"
+                            android:src="@mipmap/img" />
+
+                        <ImageView
                             android:id="@+id/take_picture"
                             android:layout_width="@dimen/dp_75"
                             android:layout_height="@dimen/dp_75"

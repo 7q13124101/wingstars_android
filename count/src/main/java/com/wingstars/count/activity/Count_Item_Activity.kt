@@ -283,7 +283,7 @@ class Count_Item_Activity : AppCompatActivity() {
         binding.btnConfirm.visibility = View.VISIBLE
         binding.btnConfirm.text = "已完成"
         binding.btnConfirm.isEnabled = false
-        binding.btnConfirm.backgroundTintList = ColorStateList.valueOf(Color.GRAY)
+        binding.btnConfirm.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#E5E7EB"))
     }
 
     fun String?.formatDate(): String {

@@ -21,6 +21,7 @@ open class BaseBottomDialog(
 
     override fun onStart() {
         super.onStart()
+        dialog?.window?.setDimAmount(0.1f)
         val bottomSheet = dialog?.findViewById<View>(
             com.google.android.material.R.id.design_bottom_sheet
         ) ?: return

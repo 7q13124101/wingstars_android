@@ -32,9 +32,8 @@
                     android:layout_gravity="center_vertical"
                     android:text=""
                     android:textColor="@color/color_101828"
-                    android:textSize="@dimen/sp_16"
-                    android:fontFamily="@font/noto_sans_tc_family"
-                    android:textFontWeight="500" />
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_item_question_title"
@@ -46,8 +45,7 @@
                     android:text=""
                     android:textColor="@color/color_101828"
                     android:textSize="@dimen/sp_16"
-                    android:fontFamily="@font/noto_sans_tc_family"
-                    android:textFontWeight="500" />
+                    android:textStyle="normal" />
 
                 <ImageView
                     android:id="@+id/iv_item_question_image"

@@ -6,13 +6,15 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Window
 import android.view.WindowManager
+import com.wingstars.user.R
 import com.wingstars.user.databinding.DialogDeleteAccountBinding
 
-class DeleteAccountDialog (
+class DeleteAccountDialog(
     context: Context,
-    private val onConfirm:()-> Unit
-){
-    private val dialog = Dialog(context)
+    private val onConfirm: () -> Unit
+) {
+    //    private val dialog = Dialog(context)
+    private val dialog = Dialog(context, R.style.BottomDialogStyle)
     private val binding: DialogDeleteAccountBinding
 
     init {
@@ -38,7 +40,8 @@ class DeleteAccountDialog (
         }
         dialog.setCancelable(true)
     }
-    fun show(){
+
+    fun show() {
         dialog.show()
     }
 

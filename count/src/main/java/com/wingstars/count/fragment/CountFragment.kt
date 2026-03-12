@@ -55,6 +55,8 @@ class CountFragment : BaseFragment() {
     private var exclusive_more_show = true
     private var fullDataList: List<EvtTaskResponse> = ArrayList()
 
+    private var currentSortMethod = SortMethod.SORT_DATE_NEW_TO_OLD
+
     private var countItemDialog: Dialog? = null
 
 //    private data class CheckInDay(
@@ -127,7 +129,7 @@ class CountFragment : BaseFragment() {
         checkLoginStatus()
         if (MMKV.defaultMMKV().decodeBool("isLogin")) {
             viewModel.getMemberPointFromDetailsData(false)
-            viewModel.getEvtTasks()
+//            viewModel.getEvtTasks()
         } else {
             binding.tvCountWinstar.text = "0"
             fullDataList = ArrayList()
@@ -352,7 +354,7 @@ class CountFragment : BaseFragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) { }
     }
 
-    private fun updateListDisplay() {
+        private fun updateListDisplay() {
         if (!MMKV.defaultMMKV().decodeBool("isLogin")) {
             return
         }
@@ -505,19 +507,34 @@ class CountFragment : BaseFragment() {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             setGravity(Gravity.BOTTOM)
         }
+
+        val checkedId = when (currentSortMethod) {
+            SortMethod.SORT_DATE_NEW_TO_OLD -> R.id.rb_sort_date_new_to_old
+            SortMethod.SORT_DATE_OLD_TO_NEW -> R.id.rb_sort_date_old_to_new
+            SortMethod.SORT_POINTS_HIGH_TO_LOW -> R.id.rb_sort_points_high_to_low
+            SortMethod.SORT_POINTS_LOW_TO_HIGH -> R.id.rb_sort_points_low_to_high
+            else -> R.id.rb_sort_date_new_to_old
+        }
+        dialogBinding.rgSort.check(checkedId)
         dialogBinding.ivCloseDialog.setOnClickListener { dialog.dismiss() }
         dialogBinding.rgSort.setOnCheckedChangeListener { group, checkedId ->
-            val selectedRadioButton = group.findViewById<RadioButton>(checkedId)
-            if (selectedRadioButton != null) {
+
+                val selectedRadioButton = group.findViewById<RadioButton>(checkedId)
                 binding.tvList.text = selectedRadioButton.text.toString()
-            }
-            when (checkedId) {
-                R.id.rb_sort_date_new_to_old -> viewModel.sortTaskListData(SortMethod.SORT_DATE_NEW_TO_OLD)
-                R.id.rb_sort_date_old_to_new -> viewModel.sortTaskListData(SortMethod.SORT_DATE_OLD_TO_NEW)
-                R.id.rb_sort_points_high_to_low -> viewModel.sortTaskListData(SortMethod.SORT_POINTS_HIGH_TO_LOW)
-                R.id.rb_sort_points_low_to_high -> viewModel.sortTaskListData(SortMethod.SORT_POINTS_LOW_TO_HIGH)
-            }
-            dialogBinding.root.postDelayed({ if (dialog.isShowing) dialog.dismiss() }, 500)
+
+                currentSortMethod = when (checkedId) {
+                    R.id.rb_sort_date_new_to_old -> SortMethod.SORT_DATE_NEW_TO_OLD
+                    R.id.rb_sort_date_old_to_new -> SortMethod.SORT_DATE_OLD_TO_NEW
+                    R.id.rb_sort_points_high_to_low -> SortMethod.SORT_POINTS_HIGH_TO_LOW
+                    R.id.rb_sort_points_low_to_high -> SortMethod.SORT_POINTS_LOW_TO_HIGH
+                    else -> currentSortMethod
+                }
+
+                viewModel.sortTaskListData(currentSortMethod)
+
+                dialogBinding.root.postDelayed({
+                    if (dialog.isShowing) dialog.dismiss()
+                }, 300)
         }
         dialog.show()
     }

@@ -196,14 +196,16 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
 
     private fun initCalendar() {
         binding.ivPrev.setOnClickListener {
+            currentDisplayDay = 1
             binding.calendarView.scrollToPre(true)
-            binding.tvDateItinerary.text = "${currentDisplayMonth}/1 ${getString(R.string.calendar_itinerary)}"
+            binding.tvDateItinerary.text = "${currentDisplayMonth}/${currentDisplayDay} ${getString(R.string.calendar_itinerary)}"
 
             binding.calendarView.isSelected = true
         }
         binding.ivNext.setOnClickListener {
+            currentDisplayDay = 1
             binding.calendarView.scrollToNext(true)
-            binding.tvDateItinerary.text = "${currentDisplayMonth}/1 ${getString(R.string.calendar_itinerary)}"
+            binding.tvDateItinerary.text = "${currentDisplayMonth}/${currentDisplayDay} ${getString(R.string.calendar_itinerary)}"
 
             binding.calendarView.isSelected = true
         }
@@ -238,9 +240,11 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
                     refreshCalendarScheme(false)
                 }
             }
-            binding.tvDateItinerary.text = "${month}/1 ${getString(R.string.calendar_itinerary)}"
             // 月份滑动切换时重置选中状态
             resetSelectionOnViewChange()
+
+            currentDisplayDay = 1
+            binding.tvDateItinerary.text = "${month}/${currentDisplayDay} ${getString(R.string.calendar_itinerary)}"
         }
 
         // 初始化时设置标题
