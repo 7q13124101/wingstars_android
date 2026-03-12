@@ -11,6 +11,9 @@ import android.graphics.Rect
 import android.graphics.SurfaceTexture
 import android.hardware.Camera
 import android.hardware.Camera.AutoFocusCallback
+import android.hardware.camera2.CameraAccessException
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -18,6 +21,7 @@ import android.util.Log
 import android.view.Surface
 import android.view.TextureView
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -63,10 +67,57 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
     private var photoBitmap: Bitmap?=null
     private var photoUrl=""
     private lateinit var binding: ActivityFanInteractionBinding
+    private var isShow = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFanInteractionBinding.inflate(layoutInflater)
 
+        var flash_on = binding.flash
+        var flash_off = binding.flashOff
+
+        flash_off.setOnClickListener {
+            mCamera?.let {
+
+                val params = it.parameters
+
+                if (isShow) {
+                    params.flashMode = Camera.Parameters.FLASH_MODE_OFF
+                    isShow = false
+
+                    flash_on.visibility = View.VISIBLE
+                    flash_off.visibility = View.GONE
+                } else {
+                    params.flashMode = Camera.Parameters.FLASH_MODE_TORCH
+                    isShow = true
+                    flash_on.visibility = View.GONE
+                    flash_off.visibility = View.VISIBLE
+                }
+
+                it.parameters = params
+            }
+        }
+        flash_on.setOnClickListener {
+            mCamera?.let {
+
+                val params = it.parameters
+
+                if (isShow) {
+                    params.flashMode = Camera.Parameters.FLASH_MODE_OFF
+                    isShow = false
+
+                    flash_on.visibility = View.VISIBLE
+                    flash_off.visibility = View.GONE
+                } else {
+                    params.flashMode = Camera.Parameters.FLASH_MODE_TORCH
+                    isShow = true
+                    flash_on.visibility = View.GONE
+                    flash_off.visibility = View.VISIBLE
+                }
+
+                it.parameters = params
+            }
+        }
         setTitleFoot(binding.root, navigationBarColor = R.color.color_F8EBF1)
         initView()
     }
@@ -246,11 +297,11 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
             runOnUiThread {
                 //  binding.images.setImageBitmap(rotate)
                 closeLoadingDialog()
-                  val intent = Intent(this, TakeMomentsDisplayActivity::class.java)
-                    intent.putExtra("file",fusionFile.path)
-                    intent.putExtra("state",1)
-                    intent.putExtra("hide",true)
-                    startActivity(intent)
+                val intent = Intent(this, TakeMomentsDisplayActivity::class.java)
+                intent.putExtra("file",fusionFile.path)
+                intent.putExtra("state",1)
+                intent.putExtra("hide",true)
+                startActivity(intent)
                 if (types == 2) {
                     binding.surfaceView.visibility = View.VISIBLE
                     binding.selectImage.visibility = View.GONE

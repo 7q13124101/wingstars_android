@@ -6,13 +6,15 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Window
 import android.view.WindowManager
+import com.wingstars.user.R
 import com.wingstars.user.databinding.DialogLogoutAccountBinding
 
 class LogoutDialog(
     context: Context,
     private val onConfirm: () -> Unit
 ) {
-    private val dialog = Dialog(context)
+//    private val dialog = Dialog(context)
+    private val dialog = Dialog(context, R.style.BottomDialogStyle)
     private val binding: DialogLogoutAccountBinding
     init {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -28,6 +30,7 @@ class LogoutDialog(
             )
             setGravity(Gravity.BOTTOM)
             attributes.windowAnimations = android.R.style.Animation_Dialog
+            setDimAmount(0.1f)
         }
         dialog.setCancelable(true)
         binding.edtMobile.setOnClickListener {

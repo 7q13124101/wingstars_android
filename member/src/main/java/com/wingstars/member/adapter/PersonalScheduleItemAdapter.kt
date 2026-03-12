@@ -1,5 +1,6 @@
 package com.wingstars.member.adapter
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -7,6 +8,7 @@ import com.wingstars.base.net.beans.WSScheduleResponse
 import com.wingstars.member.R
 import com.wingstars.member.databinding.ItemMonthPersonalScheduleBinding
 import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class PersonalScheduleItemAdapter
@@ -77,11 +79,13 @@ class PersonalScheduleItemAdapter
                 binding.llTeamName.setBackgroundColor(context.getColor(R.color.white))
             }
 
-            var dateFormatWeek = SimpleDateFormat("M/d(E)")
+            var dateFormatWeek = SimpleDateFormat("M/d(E)", Locale.TAIWAN)
             var dateFormat = SimpleDateFormat("yyyy-MM-dd")
             val dateUtil = dateFormat.parse(data.work_date)
             binding.tvMonthWeekly.text = dateFormatWeek.format(dateUtil)
             binding.tvTeamName.text = data.location
+//            Log.d("data ngay thang nam: ", data.work_date)
+//            binding.tvTeamName.text = "Halo"
         }
 
         fun onBind(position: Int) {
