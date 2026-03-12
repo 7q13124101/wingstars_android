@@ -77,6 +77,14 @@ class CountAdapter(
 //                .placeholder(R.drawable.ic_default_image)
 //                .into(binding.ivIcon)
 
+            binding.tvTitle.text = item.topic
+            val iconRes = when {
+                item.topic.contains("生") -> R.drawable.ic_birthday
+                item.triggerTag == "card" -> R.drawable.ic_card
+                item.triggerTag in listOf("instagram", "yt", "fb", "thanks") -> R.drawable.ic_social
+                else -> R.drawable.ic_default
+            }
+            binding.ivArrowLeft.setImageResource(iconRes)
             binding.root.setOnClickListener {
                 if (listener != null) {
                     listener.onItemClick(item, position)

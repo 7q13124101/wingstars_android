@@ -3,11 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/pt_16"
@@ -33,7 +28,6 @@
             android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_marginBottom="@dimen/pt_4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
@@ -43,7 +37,8 @@
                 android:textColor="@color/color_101828"
                 android:text="打擊爆發"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_5"/>
 
 <!--            <ImageView-->
 <!--                android:layout_centerVertical="true"-->
@@ -58,8 +53,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginBottom="@dimen/pt_4"
             android:maxLines="2"
+            android:layout_marginBottom="@dimen/dp_5"
             android:text="當日賽事台鋼獵鷹安打總數達 15 支以上"
             android:textColor="@color/color_4A5565"
             android:textSize="@dimen/sp_14" />
@@ -69,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginBottom="@dimen/pt_4"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:maxLines="2"
                 android:text="2025年4月2日 ～ 2025年12月31日"
                 android:textColor="@color/color_4A5565"
@@ -101,8 +96,7 @@
                 android:layout_weight="1"
                 android:text="3 點"
                 android:textColor="@color/color_4A5565"
-                android:textSize="@dimen/sp_18"
-                android:textStyle="bold" />
+                android:textSize="@dimen/sp_18" />
 
             <TextView
                 android:id="@+id/tv_count_status"
@@ -117,5 +111,4 @@
         </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
 </layout>
