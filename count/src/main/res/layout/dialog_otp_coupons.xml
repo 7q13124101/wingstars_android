@@ -29,7 +29,11 @@
             android:textStyle="bold|italic"
             android:fontFamily="monospace"
             android:layout_marginTop="8dp"
-            android:layout_marginLeft="@dimen/pt_16"/>
+            android:layout_marginLeft="@dimen/pt_16"
+            android:singleLine="true"
+            android:ellipsize="none"
+            android:scrollHorizontally="false"
+            android:gravity="center"/>
 
         <TextView
             android:id="@+id/title"
