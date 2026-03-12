@@ -4,20 +4,22 @@
     <style name="Theme.WingStars" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <!-- Áp dụng font cho toàn bộ app -->
+        <item name="android:fontFamily">@font/noto_sans_tc</item>
     </style>
 
     <style name="FullScreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="android:fontFamily">@font/noto_sans_tc</item>
     </style>
+
     <style name="Theme.WingStars.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/color_pink_20</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
         <item name="postSplashScreenTheme">@style/Theme.WingStars</item>
     </style>
-    <style
-        name="Theme.Wingstars"
-        parent="Theme.AppCompat.Light.NoActionBar">
-    </style>
+
+    <style name="Theme.Wingstars" parent="Theme.WingStars" />
 </resources>

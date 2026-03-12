@@ -1,20 +1,19 @@
 package com.wingstars.home.activity
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.viewModels
+import androidx.core.graphics.toColorInt
+import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.base.base.BaseActivity
+import com.wingstars.base.net.beans.CRMInAppMessageResponse
 import com.wingstars.home.R
 import com.wingstars.home.adapter.NotificationAdapter
-import com.wingstars.home.adapter.NotificationData
 import com.wingstars.home.databinding.ActivityNotificationBinding
 import com.wingstars.home.viewmodel.NotificationViewModel
-import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.wingstars.base.net.beans.CRMInAppMessageResponse
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -28,9 +27,11 @@ class NotificationActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityNotificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setTitleFoot(view1 = binding.root,
-        navigationBarColor = R.color.color_F3F4F6,
-        statusBarColor = R.color.color_F3F4F6,)
+        setTitleFoot(
+            view1 = binding.root,
+            navigationBarColor = R.color.color_F3F4F6,
+            statusBarColor = R.color.color_F3F4F6,
+        )
 
         initView()
         loadData()
@@ -42,21 +43,25 @@ class NotificationActivity : BaseActivity() {
         binding.tvMarkAllRead.setOnClickListener {
             viewModel.doNotifyAllRead()
 
-            // 1. Cập nhật UI tạm thời: Xóa chấm đỏ của tất cả item đang hiển thị
             val currentItems = adapter.snapshot().items
-            currentItems.forEach { it?.status = 1 }
-            adapter.notifyDataSetChanged()
+            currentItems.forEachIndexed { index, item ->
+                if (item.status == 0) {
+                    item.status = 1
+                    adapter.notifyItemChanged(index)
+                }
+            }
 
-            // 2. Đổi màu nút thành màu xám
-            binding.tvMarkAllRead.setTextColor(android.graphics.Color.parseColor("#999999"))
+            binding.tvMarkAllRead.setTextColor("#999999".toColorInt())
             Toast.makeText(this, "已全部標示為已讀", Toast.LENGTH_SHORT).show()
         }
 
         adapter = NotificationAdapter { data ->
-            // Khi click vào 1 item chưa đọc
             if (data.status == 0) {
                 data.status = 1
-                adapter.notifyDataSetChanged()
+                val position = adapter.snapshot().items.indexOf(data)
+                if (position != -1) {
+                    adapter.notifyItemChanged(position)
+                }
                 viewModel.doSingleRead(data.id)
             }
             switchView(data)
@@ -67,49 +72,38 @@ class NotificationActivity : BaseActivity() {
 
         adapter.addOnPagesUpdatedListener {
             val allItems = adapter.snapshot().items
-            val hasUnread = allItems.any { it?.status == 0 }
-            val totalItems = adapter.itemCount
+            val hasUnread = allItems.any { it.status == 0 }
 
-            // 1. Chỉ cập nhật màu chữ của nút "Đọc tất cả"
             if (hasUnread) {
-                binding.tvMarkAllRead.setTextColor(android.graphics.Color.parseColor("#E2518D"))
+                binding.tvMarkAllRead.setTextColor("#E2518D".toColorInt())
             } else {
-                binding.tvMarkAllRead.setTextColor(android.graphics.Color.parseColor("#999999"))
+                binding.tvMarkAllRead.setTextColor("#999999".toColorInt())
             }
-
         }
     }
+
     private fun loadData() {
-        // 1. Load data vào adapter
         lifecycleScope.launch {
             viewModel.getNotificationList().collectLatest { pagingData ->
                 adapter.submitData(pagingData)
             }
         }
 
-        // 2. Lắng nghe trạng thái tải để xử lý nhấp nháy
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
-                // Kiểm tra các trạng thái của lần tải đầu tiên (refresh)
                 val isLoading = loadStates.refresh is androidx.paging.LoadState.Loading
                 val isNotLoading = loadStates.refresh is androidx.paging.LoadState.NotLoading
-
-                // Danh sách trống khi đã tải XONG và số lượng = 0
                 val isListEmpty = isNotLoading && adapter.itemCount == 0
 
                 when {
                     isLoading -> {
-                        // 1. ĐANG TẢI: Giấu ngay màn hình trống đi để khỏi nhấp nháy
                         binding.layoutEmpty.visibility = android.view.View.GONE
-                        // (Tùy chọn: Bạn có thể bật 1 cái ProgressBar xoay xoay ở đây)
                     }
                     isListEmpty -> {
-                        // 2. TẢI XONG VÀ TRỐNG: Giờ mới chắc chắn là không có thông báo nào
                         binding.rvNotification.visibility = android.view.View.GONE
                         binding.layoutEmpty.visibility = android.view.View.VISIBLE
                     }
                     isNotLoading -> {
-                        // 3. TẢI XONG VÀ CÓ DỮ LIỆU: Hiện danh sách bình thường
                         binding.rvNotification.visibility = android.view.View.VISIBLE
                         binding.layoutEmpty.visibility = android.view.View.GONE
                     }
@@ -117,58 +111,34 @@ class NotificationActivity : BaseActivity() {
             }
         }
     }
-    private fun switchView(data: CRMInAppMessageResponse) {
-        val route = data.targetUrl ?: ""
 
-        // Regex patterns (Giữ nguyên từ dự án cũ)
-        val taskPattern     = "^task\\.([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$".toRegex()
-        val couponPattern   = "^coupon\\.([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$".toRegex()
-        val activityPattern = "^activity\\.([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$".toRegex()
+    private fun switchView(data: CRMInAppMessageResponse) {
+        val route = data.targetUrl
+        val taskPattern = "^task\\.([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$".toRegex()
 
         when {
-            route.isEmpty() -> {
-                // Không có link -> Mở màn hình chi tiết tin nhắn (nếu có)
-                // Hoặc chỉ show nội dung
-            }
+            route.isEmpty() -> { }
             route == "home" -> {
-                // Về trang chủ (Dùng EventBus hoặc Intent về MainActivity clear top)
-                navigateToMain(0)
+                navigateToMain()
             }
             route == "point" || route == "task" -> {
-                // Mở tab Điểm/Nhiệm vụ
-                navigateToMain(2) // Giả sử tab 2 là Point
+                navigateToMain()
             }
             route == "ticket" -> {
-                navigateToMain(3) // Giả sử tab 3 là Ticket
+                navigateToMain()
             }
-            // ... Copy các case khác tương tự ...
-
-            // Ví dụ mở link ngoài (Product URL như HomeFragment)
             route.startsWith("http") -> {
                 try {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(route))
+                    val intent = Intent(Intent.ACTION_VIEW, route.toUri())
                     startActivity(intent)
-                } catch (e: Exception) { e.printStackTrace() }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
-
-            // Xử lý Task/Coupon specific UUID
-            route.matches(taskPattern) -> {
-                val uuid = taskPattern.find(route)?.groupValues?.get(1)
-                // Gọi API lấy chi tiết task rồi hiện Dialog (như trong EventNotifyFragment cũ)
-                // viewModel.getTaskInfo(uuid)
-            }
-
-            else -> {
-                // Mặc định
-            }
+            route.matches(taskPattern) -> { }
+            else -> { }
         }
     }
 
-    private fun navigateToMain(tabIndex: Int) {
-        // Code chuyển tab MainActivity (thay cho EventBus nếu muốn đơn giản)
-        // val intent = Intent(this, MainActivity::class.java)
-        // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        // intent.putExtra("TAB_INDEX", tabIndex)
-        // startActivity(intent)
-    }
+    private fun navigateToMain() { }
 }

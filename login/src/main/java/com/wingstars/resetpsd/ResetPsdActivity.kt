@@ -198,6 +198,7 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
 
     override fun getPhoneCodeSuccess() {
         isCodeSent = true
+        binding.edtPhone.isEnabled = false
         showTimerUI()
         startCountDown()
         Toast.makeText(this, "驗證碼已發送。", Toast.LENGTH_SHORT).show()
@@ -287,6 +288,7 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
                 override fun onFinish() {
                 showSendButtonUI()
                 isCodeSent = false
+                    binding.edtPhone.isEnabled = true
                 updateConfirmButtonState()
             }
         }.start()
@@ -314,6 +316,7 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
     private fun showTimerUI() {
         binding.btnSendCode.visibility = View.GONE
         binding.rlCodeTimer.visibility = View.VISIBLE
+        binding.edtPhone.alpha = 0.6f
         setEditTextRightAnchor(R.id.rl_code_timer)
     }
 
@@ -321,6 +324,7 @@ class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
         binding.btnSendCode.visibility = View.VISIBLE
         binding.rlCodeTimer.visibility = View.GONE
         binding.tvResend?.visibility = View.GONE
+        binding.edtPhone.alpha = 1.0f
         setEditTextRightAnchor(R.id.btn_send_code)
         updateSendButtonState()
     }

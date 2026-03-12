@@ -4,6 +4,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@color/color_e5e7eb</item>
         <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:fontFamily">@font/noto_sans_tc</item>
 
         <item name="bottomSheetDialogTheme">@style/MyBottomSheetDialogTheme</item>
     </style>
@@ -18,6 +19,7 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="android:fontFamily">@font/noto_sans_tc</item>
     </style>
 
 </resources>

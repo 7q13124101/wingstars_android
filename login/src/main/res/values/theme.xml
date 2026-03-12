@@ -5,6 +5,7 @@
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:fontFamily">@font/noto_sans_tc</item>
 
         <!-- Các màu cần thiết cho MaterialAlertDialog -->
         <item name="colorPrimary">@color/color_101828</item>
@@ -22,5 +23,6 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="android:fontFamily">@font/noto_sans_tc</item>
     </style>
 </resources>
