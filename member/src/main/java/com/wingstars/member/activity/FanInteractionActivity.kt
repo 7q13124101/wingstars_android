@@ -1,8 +1,10 @@
 package com.wingstars.member.activity
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -26,6 +28,8 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
@@ -76,51 +80,74 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         var flash_on = binding.flash
         var flash_off = binding.flashOff
 
-        flash_off.setOnClickListener {
-            mCamera?.let {
+        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val cameraId = cameraManager.cameraIdList.first { id ->
+            cameraManager.getCameraCharacteristics(id).get(
+                CameraCharacteristics.FLASH_INFO_AVAILABLE
+            ) == true
+        }
 
-                val params = it.parameters
-
-                if (isShow) {
-                    params.flashMode = Camera.Parameters.FLASH_MODE_OFF
-                    isShow = false
-
-                    flash_on.visibility = View.VISIBLE
-                    flash_off.visibility = View.GONE
-                } else {
-                    params.flashMode = Camera.Parameters.FLASH_MODE_TORCH
-                    isShow = true
-                    flash_on.visibility = View.GONE
-                    flash_off.visibility = View.VISIBLE
-                }
-
-                it.parameters = params
+        fun toggleFlashCamera2() {
+            try {
+                cameraManager.setTorchMode(cameraId, !isShow)
+                isShow = !isShow
+                flash_on.visibility = if (isShow) View.GONE else View.VISIBLE
+                flash_off.visibility = if (isShow) View.VISIBLE else View.GONE
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(this, "No flash", Toast.LENGTH_SHORT).show()
             }
         }
-        flash_on.setOnClickListener {
-            mCamera?.let {
 
-                val params = it.parameters
+        flash_off.setOnClickListener { toggleFlashCamera2() }
+        flash_on.setOnClickListener { toggleFlashCamera2() }
 
-                if (isShow) {
-                    params.flashMode = Camera.Parameters.FLASH_MODE_OFF
-                    isShow = false
-
-                    flash_on.visibility = View.VISIBLE
-                    flash_off.visibility = View.GONE
-                } else {
-                    params.flashMode = Camera.Parameters.FLASH_MODE_TORCH
-                    isShow = true
-                    flash_on.visibility = View.GONE
-                    flash_off.visibility = View.VISIBLE
-                }
-
-                it.parameters = params
-            }
-        }
+//        flash_off.setOnClickListener {
+//            mCamera?.let {
+//
+//                val params = it.parameters
+//
+//                if (isShow) {
+//                    params.flashMode = Camera.Parameters.FLASH_MODE_OFF
+//                    isShow = false
+//
+//                    flash_on.visibility = View.VISIBLE
+//                    flash_off.visibility = View.GONE
+//                } else {
+//                    params.flashMode = Camera.Parameters.FLASH_MODE_TORCH
+//                    isShow = true
+//                    flash_on.visibility = View.GONE
+//                    flash_off.visibility = View.VISIBLE
+//                }
+//
+//                it.parameters = params
+//            }
+//        }
+//        flash_on.setOnClickListener {
+//            mCamera?.let {
+//                val params = it.parameters
+//
+//                if (isShow) {
+//                    params.flashMode = Camera.Parameters.FLASH_MODE_OFF
+//                    isShow = false
+//
+//                    flash_on.visibility = View.VISIBLE
+//                    flash_off.visibility = View.GONE
+//                } else {
+//                    params.flashMode = Camera.Parameters.FLASH_MODE_TORCH
+//                    isShow = true
+//                    flash_on.visibility = View.GONE
+//                    flash_off.visibility = View.VISIBLE
+//                }
+//
+//                it.parameters = params
+//            }
+//        }
         setTitleFoot(binding.root, navigationBarColor = R.color.color_F8EBF1)
+
         initView()
     }
+
 
 
     override fun initView() {
