@@ -96,13 +96,13 @@ class CountNewDetailAdapter(
                 binding.ivGoodsImage.setImageResource(R.drawable.gift_details_image_background)
             }
 
-//            val eligibleMembersStr = item.eligibleMembersStr
-//            if (!eligibleMembersStr.isNullOrEmpty() && eligibleMembersStr != context.getString(R.string.all_members)) {
-//                binding.label.visibility = View.VISIBLE
-//                binding.labelTv.text = eligibleMembersStr
-//            } else {
-//                binding.label.visibility = View.GONE
-//            }
+            val eligibleMembersStr = item.eligibleMembersStr
+            if (!eligibleMembersStr.isNullOrEmpty() && eligibleMembersStr != context.getString(R.string.all_members)) {
+                binding.tvLimitedUser.visibility = View.VISIBLE
+                binding.tvLimitedUser.text = eligibleMembersStr
+            } else {
+                binding.tvLimitedUser.visibility = View.GONE
+            }
             // --------------------------------
 
             // 4. Click Listener

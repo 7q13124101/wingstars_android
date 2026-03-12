@@ -28,8 +28,8 @@
 
             <RelativeLayout
                 android:id="@+id/rl_icon"
-                android:layout_width="@dimen/pt_50"
-                android:layout_height="@dimen/pt_60">
+                android:layout_width="@dimen/pt_40"
+                android:layout_height="@dimen/pt_50">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_goods_image"
@@ -62,7 +62,7 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="@dimen/pt_56"
+                android:layout_height="@dimen/pt_45"
                 android:layout_weight="1"
                 android:orientation="vertical">
 

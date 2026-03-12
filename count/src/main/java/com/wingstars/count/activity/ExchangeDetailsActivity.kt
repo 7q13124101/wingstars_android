@@ -18,14 +18,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.zxing.client.android.Intents
 import com.wingstars.base.net.beans.CRMCouponsAvailableResponse
 import com.wingstars.base.net.beans.CRMCouponsResponse
 import com.wingstars.count.R
@@ -59,6 +62,7 @@ class ExchangeDetailsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityExchangeDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -214,7 +218,11 @@ class ExchangeDetailsActivity : AppCompatActivity() {
             if (!criteria.isNullOrEmpty() && eligibleMembers.isNotEmpty()) {
                 if (memberCards.isNullOrEmpty()) {
                     setLimitedButtonText(eligibleMembers, data.eligibleMembersStr.orEmpty())
-                    disableButton()
+                    binding.btnExchange.apply {
+                        text = getString(R.string.member_to_gain_redemption_eligibility)
+                        enableButton()
+                    }
+//                    disableButton()
                     return
                 }
                 val hasOverlap = eligibleMembers.any { it in memberCards!! }
@@ -289,6 +297,16 @@ class ExchangeDetailsActivity : AppCompatActivity() {
         binding.rlPrecautions.setOnClickListener { toggleSection(binding.tvPrecautions, binding.ivArrow3) }
 
         binding.btnExchange.setOnClickListener {
+            if (memberCards.isNullOrEmpty()) {
+                try {
+                    val clazz = Class.forName("com.wingstars.user.activity.MemberLevelActivity")
+                    val intent = Intent(this, clazz)
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                return@setOnClickListener
+            }
             handleExchangeButtonClick()
         }
     }

@@ -60,17 +60,17 @@
             android:paddingHorizontal="@dimen/pt_5"
             android:paddingVertical="@dimen/pt_2"
             android:textColor="@color/white"
+            android:text="星會員"
             android:textSize="@dimen/sp_12"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="@id/iv_goods_image"
-            app:layout_constraintEnd_toEndOf="@id/iv_goods_image"
-            tools:text="100" />
+            app:layout_constraintEnd_toEndOf="@id/iv_goods_image" />
 
         <TextView
             android:id="@+id/tv_goods_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pt_10"
+            android:layout_marginTop="@dimen/dp_10"
             android:ellipsize="end"
             android:maxLines="2"
             android:minLines="2"
@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/pt_10"
-            android:layout_marginTop="@dimen/pt_5"
+            android:layout_marginTop="@dimen/dp_5"
             android:layout_marginBottom="@dimen/pt_4"
             android:src="@drawable/bg_count_deep"
             app:layout_constraintTop_toBottomOf="@id/tv_goods_name"

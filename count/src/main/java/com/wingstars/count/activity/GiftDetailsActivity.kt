@@ -1,6 +1,7 @@
 package com.wingstars.count.activity
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -258,7 +259,11 @@ class GiftDetailsActivity : AppCompatActivity() {
             if (!criteria.isNullOrEmpty() && eligibleMembers.isNotEmpty()) {
                 if (memberCards.isNullOrEmpty()) {
                     setLimitedButtonText(eligibleMembers, data.eligibleMembersStr.orEmpty())
-                    disableButton()
+                    binding.btnExchange.apply {
+                        text = getString(R.string.member_to_gain_redemption_eligibility)
+                        enableButton()
+                    }
+//                    disableButton()
                     return
                 }
                 val hasOverlap = eligibleMembers.any { it in memberCards!! }
@@ -400,7 +405,21 @@ class GiftDetailsActivity : AppCompatActivity() {
         binding.imgBack.setOnClickListener { finish() }
         binding.rlRuleHeader.setOnClickListener { toggleSection(binding.tvUsageRules, binding.ivArrow) }
         binding.rlPrecautions.setOnClickListener { toggleSection(binding.tvPrecautions, binding.ivArrow1) }
-        binding.btnExchange.setOnClickListener { handleExchangeClick() }
+        binding.btnExchange.setOnClickListener {
+            if (memberCards.isNullOrEmpty()) {
+
+                try {
+                    val clazz = Class.forName("com.wingstars.user.activity.MemberLevelActivity")
+                    val intent = Intent(this, clazz)
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                return@setOnClickListener
+            }
+            handleExchangeClick()
+        }
     }
 
     private fun handleExchangeClick() {

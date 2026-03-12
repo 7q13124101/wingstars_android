@@ -250,7 +250,7 @@ class Count_Item_Activity : AppCompatActivity() {
             bottomSheetDialog.dismiss()
             updateButtonToCompleted()
             setResult(RESULT_OK)
-            finish()
+//            finish()
         }
 
         bottomSheetDialog.show()

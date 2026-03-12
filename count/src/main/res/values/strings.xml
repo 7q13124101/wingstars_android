@@ -72,6 +72,7 @@
     <string name="et_otp">輸入手機驗證碼</string>
     <string name="NoLimit">不限</string>
     <string name="not_yet_open">尚未開放</string>
+    <string name="member_to_gain_redemption_eligibility">加入會員獲得兌換資格</string>
     <string name="finished">已結束</string>
     <string name="redeemed">已兌換</string>
     <string name="insufficient_points">點數不足</string>

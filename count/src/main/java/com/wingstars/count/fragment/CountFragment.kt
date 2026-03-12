@@ -19,6 +19,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.WindowInsets
+import android.view.WindowInsetsController
+import android.view.WindowManager
 import android.widget.RadioButton
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
@@ -129,13 +132,21 @@ class CountFragment : BaseFragment() {
         checkLoginStatus()
         if (MMKV.defaultMMKV().decodeBool("isLogin")) {
             viewModel.getMemberPointFromDetailsData(false)
-//            viewModel.getEvtTasks()
+            var lastPoint = binding.tvCountWinstar.text.toString()
+            viewModel.points.observe(viewLifecycleOwner) { pointStr ->
+                binding.tvCountWinstar.text = pointStr
+                if (pointStr != lastPoint) {
+                    viewModel.getEvtTasks()
+                    binding.scrollView.smoothScrollTo(0, 0)
+                    lastPoint = pointStr
+                }
+            }
+
         } else {
             binding.tvCountWinstar.text = "0"
             fullDataList = ArrayList()
             updateListDisplay()
         }
-
     }
 
     override fun onDestroy() {
@@ -351,7 +362,15 @@ class CountFragment : BaseFragment() {
             //Log.e("CountFragment", "Observer received points: $pointStr")
             binding.tvCountWinstar.text = pointStr
         }
-        viewModel.isLoading.observe(viewLifecycleOwner) { }
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                binding.srlCountsRecord.autoRefresh()
+                binding.llEmpty.visibility = View.GONE
+            } else {
+                binding.srlCountsRecord.finishRefresh()
+                updateListDisplay()
+            }
+        }
     }
 
         private fun updateListDisplay() {
@@ -506,6 +525,18 @@ class CountFragment : BaseFragment() {
             setLayout(ViewGroup.LayoutParams.MATCH_PARENT, halfScreenHeight)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             setGravity(Gravity.BOTTOM)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                insetsController?.apply {
+                    hide(WindowInsets.Type.navigationBars())
+                    systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                decorView.systemUiVisibility = (
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        )
+            }
         }
 
         val checkedId = when (currentSortMethod) {
