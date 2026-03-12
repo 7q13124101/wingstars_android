@@ -84,7 +84,9 @@ class PopularityAdapter     // -------------------------------------------
                         .transform(RoundedCorners(DPUtils.dpToPx(20f, context).toInt()))
                 )
                 .into(binding.image)
-            binding.item.setOnClickListener { listeners.onPopularityRankingClickItem(bean.title) }
+            binding.item.setOnClickListener {
+                listeners.onPopularityRankingClickItem(bean.title)
+            }
         }
 
 

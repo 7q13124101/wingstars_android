@@ -1,6 +1,7 @@
 package com.wingstars.member.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tencent.mmkv.MMKV
 import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R

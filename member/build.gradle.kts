@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(project(":own"))
+    implementation("com.tencent:mmkv:1.3.9")
     implementation("com.github.bumptech.glide:glide:4.15.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.0")
     implementation ("com.github.lihangleo2:ShadowLayout:3.3.3")

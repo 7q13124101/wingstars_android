@@ -8,6 +8,8 @@ import com.wingstars.base.net.beans.WSScheduleResponse
 import com.wingstars.member.R
 import com.wingstars.member.databinding.ItemMonthPersonalScheduleBinding
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 
@@ -79,10 +81,11 @@ class PersonalScheduleItemAdapter
                 binding.llTeamName.setBackgroundColor(context.getColor(R.color.white))
             }
 
-            var dateFormatWeek = SimpleDateFormat("M/d(E)", Locale.TAIWAN)
+//            val dateFormatWeek = SimpleDateFormat("MM/dd", Locale.TAIWAN)
+//            var dateFormatWeek = SimpleDateFormat("M/d(E)", Locale.TAIWAN)
             var dateFormat = SimpleDateFormat("yyyy-MM-dd")
             val dateUtil = dateFormat.parse(data.work_date)
-            binding.tvMonthWeekly.text = dateFormatWeek.format(dateUtil)
+            binding.tvMonthWeekly.text = formatTaiwanDate(dateUtil)
             binding.tvTeamName.text = data.location
 //            Log.d("data ngay thang nam: ", data.work_date)
 //            binding.tvTeamName.text = "Halo"
@@ -90,5 +93,25 @@ class PersonalScheduleItemAdapter
 
         fun onBind(position: Int) {
         }
+    }
+
+    fun formatTaiwanDate(date: Date): String {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+
+        val dateFormat = SimpleDateFormat("MM/dd", Locale.TAIWAN)
+
+        val weekNumber = when (calendar.get(Calendar.DAY_OF_WEEK)) {
+            Calendar.MONDAY -> "一"
+            Calendar.TUESDAY -> "二"
+            Calendar.WEDNESDAY -> "三"
+            Calendar.THURSDAY -> "四"
+            Calendar.FRIDAY -> "五"
+            Calendar.SATURDAY -> "六"
+            Calendar.SUNDAY -> "日"
+            else -> ""
+        }
+
+        return "${dateFormat.format(date)}($weekNumber)"
     }
 }

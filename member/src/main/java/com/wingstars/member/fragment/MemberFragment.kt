@@ -17,6 +17,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
+import com.tencent.mmkv.MMKV
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.base.utils.ScreenUtils
@@ -35,17 +36,22 @@ import com.wingstars.member.viewmodel.MemberViewModel
 import com.wingstars.base.inter.IPermissionsCallback
 import com.wingstars.base.net.NetBase
 import com.wingstars.base.net.beans.WSMemberResponse
+import com.wingstars.base.utils.MMKVManagement
 import com.wingstars.member.R
 import com.wingstars.member.activity.MemberDetailsActivity
+import kotlin.jvm.java
 
 
 class MemberFragment : BaseFragment(), View.OnClickListener,
-    PopularityAdapter.onPopularityRankingListener, SupportFashionAdapter.onSupportFashionListener {
+    PopularityAdapter.onPopularityRankingListener,
+    SupportFashionAdapter.onSupportFashionListener,
+    GirlIntroductionAdapter.onItemListener{
     private lateinit var viewModel: MemberViewModel
     private lateinit var binding: FragmentMemberBinding
     private var maxHight = 0
     private var currentHeight = 0
     private var minHight = 0
+    private var isChangedImage = false
     private lateinit var permissionsCallback: IPermissionsCallback
 
     private lateinit var girlIntroductionAdapter: GirlIntroductionAdapter
@@ -123,6 +129,8 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
                 val isScrollingUp = scrollY < oldScrollY
                 // Log.e("scrollY","scrollY=$scrollY oldScrollY=$oldScrollY")
                 if (isScrollingDown) {
+                    // đổi ảnh khi bắt đầu kéo xuống
+
                     val i = Math.abs(scrollY - oldScrollY)
                     if (currentHeight > minHight) {
                         currentHeight =
@@ -131,6 +139,10 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
                         params.width = ViewGroup.LayoutParams.MATCH_PARENT
                         params.height = currentHeight
                         binding.image!!.setLayoutParams(params)
+                        if (!isChangedImage) {
+                            binding.image.setBackgroundResource(R.mipmap.bgw)
+                            isChangedImage = true
+                        }
                     }
                 }
                 if (isScrollingUp) {
@@ -143,6 +155,10 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
                             params.width = ViewGroup.LayoutParams.MATCH_PARENT
                             params.height = currentHeight
                             binding.image!!.setLayoutParams(params)
+                            if (scrollY == 0 && isChangedImage) {
+                                binding.image.setBackgroundResource(R.mipmap.ic_member_page_background)
+                                isChangedImage = false
+                            }
                         }
                     }
 
@@ -181,9 +197,11 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
             GirlIntroductionAdapter(requireActivity(), mutableListOf(), object :
                 GirlIntroductionAdapter.onItemListener {
                 override fun onItemClick(data: WSMemberResponse, position: Int) {
-                    val intent = Intent(requireActivity(), MemberDetailsActivity::class.java)
-                    intent.putExtra("WSMemberResponse", data)
-                    startActivity(intent)
+                    checkLoginAndAction {
+                        val intent = Intent(requireActivity(), MemberDetailsActivity::class.java)
+                        intent.putExtra("WSMemberResponse", data)
+                        startActivity(intent)
+                    }
                 }
             })
         binding.girlsList.layoutManager = LinearLayoutManager(
@@ -199,7 +217,13 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
 
        // viewModel.getPopularitylist()
         binding.popularityRanking.setOnClickListener(this)
-        binding.take.setOnClickListener(this)
+//        binding.take.setOnClickListener(this)
+        binding.take.setOnClickListener{
+            checkLoginAndAction {
+                applyPermission()
+            }
+//            applyPermission()
+        }
         binding.llEventHighlights.setOnClickListener(this)
         binding.llExclusiveSongs.setOnClickListener(this)
 
@@ -246,52 +270,80 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
         view.setLayoutParams(layoutParams);
     }
 
+    private fun checkLoginAndAction(action: () -> Unit) {
+        if (MMKV.defaultMMKV().decodeBool("isLogin")) {
+            action()
+        } else {
+            openLoginActivity()
+        }
+    }
 
+    private fun openLoginActivity() {
+        try {
+            val loginClass = Class.forName("com.wingstars.login.LoginActivity")
+            val intent = Intent(requireActivity(), loginClass)
+            intent.putExtra("tag", "countWS")
+            startActivity(intent)
+        } catch (e: ClassNotFoundException) {
+            e.printStackTrace()
+        }
+    }
+//    private fun checkLoginAndAction(action: () -> Unit) {
+//        val isLogin = MMKVManagement.isLogin()
+//        if (isLogin) {
+//            action()
+//        } else {
+//            val intent = Intent(requireActivity(), LoginActivity::class.java)
+//            startActivity(intent)
+//        }
+//    }
     override fun onClick(v: View?) {
 
         val id = v?.id
         when (id) {
-            binding.popularityRanking.id -> startActivity(
-                Intent(
-                    requireActivity(),
-                    PopularityRankingActivity::class.java
-                )
-            )
 
-            binding.take.id -> applyPermission()/*startActivity(
+
+            binding.popularityRanking.id -> {
+                checkLoginAndAction {
+                    val intent = Intent(requireActivity(), PopularityRankingActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
+            /*binding.take.id -> applyPermission() startActivity(
                 Intent(
                     requireActivity(),
                     FanInteractionActivity::class.java
                 )
             )*/
 
-            binding.llEventHighlights.id -> startActivity(
-                Intent(
-                    requireActivity(),
-                    EventHighlightsActivity::class.java
-                )
-            )
+            binding.llEventHighlights.id -> {
+                checkLoginAndAction {
+                    val intent = Intent(requireActivity(), EventHighlightsActivity::class.java)
+                    startActivity(intent)
+                }
+            }
 
-            binding.llExclusiveSongs.id -> startActivity(
-                Intent(
-                    requireActivity(),
-                    ExclusiveSongsListActivity::class.java
-                )
-            )
+            binding.llExclusiveSongs.id -> {
+                checkLoginAndAction {
+                    val intent = Intent(requireActivity(), ExclusiveSongsListActivity::class.java)
+                    startActivity(intent)
+                }
+            }
 
-            binding.rlMemberIntroduction.id -> startActivity(
-                Intent(
-                    requireActivity(),
-                    MemberIntroductionActivity::class.java
-                )
-            )
+            binding.rlMemberIntroduction.id -> {
+                checkLoginAndAction {
+                    val intent = Intent(requireActivity(), MemberIntroductionActivity::class.java)
+                    startActivity(intent)
+                }
+            }
 
-            binding.atmosphere.id -> startActivity(
-                Intent(
-                    requireActivity(),
-                    FashionableAtmosphereActivity::class.java
-                )
-            )
+            binding.atmosphere.id -> {
+                checkLoginAndAction {
+                    val intent = Intent(requireActivity(), FashionableAtmosphereActivity::class.java)
+                    startActivity(intent)
+                }
+            }
         }
     }
 
@@ -344,21 +396,35 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
     }
 
     override fun onPopularityRankingClickItem(type: String) {
-        val intent = Intent(
-            requireActivity(),
-            PopularityRankingActivity::class.java
-        )
-        intent.putExtra("type",type)
-        startActivity(intent)
+        checkLoginAndAction {
+            val intent = Intent(
+                requireActivity(),
+                PopularityRankingActivity::class.java
+            )
+            intent.putExtra("type",type)
+            startActivity(intent)
+        }
     }
 
     override fun onSupportFashionClickItem(memberId: Int,fashionType: Int) {
-        val intent = Intent(
-            requireActivity(),
-            AtmosphereFashionDetailsActivity::class.java
-        )
-        intent.putExtra("memberId", memberId)
-        intent.putExtra("fashionType", fashionType)
-        startActivity(intent)
+        checkLoginAndAction {
+            val intent = Intent(
+                requireActivity(),
+                AtmosphereFashionDetailsActivity::class.java
+            )
+            intent.putExtra("memberId", memberId)
+            intent.putExtra("fashionType", fashionType)
+            startActivity(intent)
+        }
+    }
+
+    override fun onItemClick(
+        data: WSMemberResponse,
+        position: Int
+    ) {
+        checkLoginAndAction {
+            val intent = Intent(requireActivity(), PopularityRankingActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
