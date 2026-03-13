@@ -13,9 +13,10 @@ class LogoutDialog(
     context: Context,
     private val onConfirm: () -> Unit
 ) {
-//    private val dialog = Dialog(context)
+    // Sử dụng Style BottomDialogStyle đã được cấu hình Animation trượt
     private val dialog = Dialog(context, R.style.BottomDialogStyle)
     private val binding: DialogLogoutAccountBinding
+    
     init {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         val inflater = LayoutInflater.from(context)
@@ -29,7 +30,7 @@ class LogoutDialog(
                 WindowManager.LayoutParams.WRAP_CONTENT
             )
             setGravity(Gravity.BOTTOM)
-            attributes.windowAnimations = android.R.style.Animation_Dialog
+            // Xóa bỏ dòng gán Animation_Dialog cũ để sử dụng Animation từ Style
             setDimAmount(0.1f)
         }
         dialog.setCancelable(true)

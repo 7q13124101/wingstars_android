@@ -204,11 +204,10 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         val phoneOk = isTaiwanPhone(phone)
         val codeOk = isOtpSent && phone == lastSentPhone && code.isNotEmpty()
         val pwdOk = isPasswordStrong(pwd)
-        val confirmOk = confirm.isNotEmpty() && pwd == confirm // THÊM DÒNG NÀY
         val nameOk = name.isNotEmpty()
         val emailOk = isEmailValid(email)
 
-        return nameOk && phoneOk && codeOk && pwdOk && confirmOk && emailOk && agreed
+        return nameOk && phoneOk && codeOk && pwdOk && emailOk && agreed
     }
 
     private fun updateConfirmButtonState() {
@@ -398,9 +397,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         binding.edtPsd.addTextChangedListener(object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val pwd = s?.toString().orEmpty()
-                val confirmPwd = binding.edtPsdConfirm.text.toString()
 
-                // Validate độ mạnh mật khẩu (giữ nguyên logic cũ của bạn)
                 if (pwd.isEmpty()) {
                     showPsdNormal()
                     binding.tvPsdInputError.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.gray_400))
@@ -409,16 +406,6 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
                 } else {
                     showPsdNormal()
                 }
-
-                // Check khớp với ô Confirm
-                if (confirmPwd.isNotEmpty()) {
-                    if (pwd != confirmPwd) {
-                        showPsdConfirmError(getString(R.string.error_psd_not_match))
-                    } else {
-                        showPsdConfirmNormal()
-                    }
-                }
-
                 updateConfirmButtonState()
             }
         })
@@ -429,11 +416,8 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
                 val pwd = binding.edtPsd.text.toString()
                 val confirmPwd = s?.toString().orEmpty()
 
-                if (confirmPwd.isEmpty()) {
-                    showPsdConfirmNormal()
-                } else if (pwd != confirmPwd) {
-                    // Hiển thị lỗi nếu không khớp
-                    showPsdConfirmError(getString(R.string.error_psd_not_match))
+                if (confirmPwd.isNotEmpty() && pwd != confirmPwd) {
+//                    showPsdConfirmError(getString(R.string.error_password_not_match))
                 } else {
                     showPsdConfirmNormal()
                 }

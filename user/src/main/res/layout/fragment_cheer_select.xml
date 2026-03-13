@@ -7,45 +7,43 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_cheer_layout"
+        android:background="@drawable/bg_dialog_bottom"
         android:orientation="vertical"
-        android:paddingStart="@dimen/pt_20"
-        android:paddingTop="@dimen/pt_15"
-        android:paddingEnd="@dimen/pt_20"
-        android:paddingBottom="@dimen/pt_15">
+        android:paddingStart="@dimen/dp_20"
+        android:paddingTop="@dimen/dp_15"
+        android:paddingEnd="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_32">
 
         <ImageView
             android:id="@+id/iv_close"
-            android:layout_width="@dimen/pt_15"
-            android:layout_height="@dimen/pt_15"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:src="@drawable/ic_cancel"
             android:layout_gravity="end"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/title_cheer"
-                android:textColor="@color/color_101828"
-                android:textStyle="bold"
-                android:textSize="@dimen/sp_16" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_cheer"
+            android:textColor="@color/color_101828"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_16" />
 
         <RelativeLayout
             android:id="@+id/rl_hurrays_phrases"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pt_12"
+            android:layout_marginTop="@dimen/dp_20"
             android:background="@drawable/bg_list_search_background"
-            android:addStatesFromChildren="true"
-            android:paddingStart="@dimen/pt_8"
-            android:paddingTop="@dimen/pt_6"
-            android:paddingEnd="@dimen/pt_4"
-            android:paddingBottom="@dimen/pt_6">
+            android:paddingStart="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_16">
 
             <EditText
                 android:id="@+id/edt_hurrays_phrases"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="0dp"
                 android:background="@null"
                 android:drawableEnd="@drawable/ic_clear"
                 android:hint="@string/hint_type_text"
@@ -61,11 +59,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_outline_rounded"
-            android:layout_marginTop="@dimen/pt_12"
-            android:paddingStart="@dimen/pt_8"
-            android:paddingEnd="@dimen/pt_4"
-            android:paddingTop="@dimen/pt_6"
-            android:paddingBottom="@dimen/pt_6">
+            android:layout_marginTop="@dimen/dp_20"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_4"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16">
 
             <AutoCompleteTextView
                 android:id="@+id/edt_team_member"
@@ -86,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="@dimen/pt_5">
+            android:paddingTop="@dimen/dp_5">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -95,13 +93,13 @@
                 android:textColor="@color/color_101828"
                 android:textStyle="bold"
                 android:textSize="@dimen/sp_14"
-                android:layout_marginBottom="@dimen/pt_10"/>
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_16"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_font_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="3"
                 tools:listitem="@layout/item_select_phrase"
@@ -111,18 +109,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/pt_10"
+                android:layout_marginTop="@dimen/dp_20"
                 android:text="@string/cheer_play_speed"
                 android:textColor="@color/color_101828"
                 android:textStyle="bold"
                 android:textSize="@dimen/sp_14"
-                android:layout_marginBottom="@dimen/pt_10"/>
+                android:layout_marginBottom="@dimen/dp_16"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_play_speed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="3"
                 tools:listitem="@layout/item_select_phrase"
@@ -132,18 +129,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/pt_10"
+                android:layout_marginTop="@dimen/dp_20"
                 android:text="@string/color"
                 android:textColor="@color/color_101828"
                 android:textStyle="bold"
                 android:textSize="@dimen/sp_14"
-                android:layout_marginBottom="@dimen/pt_10"/>
+                android:layout_marginBottom="@dimen/dp_16"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/ll_font_color"
@@ -152,9 +148,9 @@
                     android:layout_weight="1"
                     android:orientation="horizontal"
                     android:gravity="center"
-                    android:paddingVertical="@dimen/pt_5"
+                    android:paddingVertical="@dimen/dp_15"
                     android:background="@drawable/bg_outline_rounded"
-                    android:layout_marginEnd="@dimen/pt_8">
+                    android:layout_marginEnd="@dimen/dp_8">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -166,9 +162,9 @@
 
                     <View
                         android:id="@+id/view_font_color_indicator"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_width="@dimen/dp_20"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_marginStart="@dimen/dp_8"
                         android:background="@drawable/shape_circle_black" />
                 </LinearLayout>
 
@@ -179,9 +175,9 @@
                     android:layout_weight="1"
                     android:orientation="horizontal"
                     android:gravity="center"
-                    android:paddingVertical="@dimen/pt_5"
+                    android:paddingVertical="@dimen/dp_15"
                     android:background="@drawable/bg_outline_rounded"
-                    android:layout_marginStart="@dimen/pt_8">
+                    android:layout_marginStart="@dimen/dp_8">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -193,9 +189,9 @@
 
                     <View
                         android:id="@+id/view_bg_color_indicator"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_width="@dimen/dp_20"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_marginStart="@dimen/dp_8"
                         android:background="@drawable/shape_circle_pink" />
                 </LinearLayout>
 

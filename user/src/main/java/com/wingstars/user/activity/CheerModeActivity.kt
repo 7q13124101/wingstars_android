@@ -275,9 +275,9 @@ class CheerModeActivity : AppCompatActivity() {
             cheerData.fontData.gradientStartColor = kv.decodeString("cheer_font_start_color_$userId", "#FF000000")!!
 
             // Background Color
-            cheerData.backgroundData.selectColor = kv.decodeString("cheer_background_color_$userId", "#FFF4ED54")!!
+            cheerData.backgroundData.selectColor = kv.decodeString("cheer_background_color_$userId", "#F3B9D1")!!
             cheerData.backgroundData.progress = kv.decodeFloat("cheer_background_progress_$userId", 0f)
-            cheerData.backgroundData.gradientStartColor = kv.decodeString("cheer_background_start_color_$userId", "#FFF4ED54")!!
+            cheerData.backgroundData.gradientStartColor = kv.decodeString("cheer_background_start_color_$userId", "#F3B9D1")!!
         }
     }
 

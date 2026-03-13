@@ -15,17 +15,28 @@ import java.io.InputStreamReader
 class DownloadAndInstallFragment : Fragment() {
     private var _binding: FragmentDownloadAndInstallBinding? = null
     private val binding get() = _binding!!
-    private var isDataLoaded = false
 
-    override fun onResume() {
-        super.onResume()
-        if (!isDataLoaded) {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentDownloadAndInstallBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        loadData()
+        
+        binding.srlRefreshLayout.setOnRefreshListener {
             loadData()
-            isDataLoaded = true
+            binding.srlRefreshLayout.finishRefresh()
         }
     }
 
     private fun loadData() {
+        if (!isAdded) return
+        
         if (NetworkMonitorNew.getInstance(requireActivity()).currentNetworkState.isConnected) {
             binding.nsvDownloadAndInstall.visibility = View.VISIBLE
             binding.llEmpty.visibility = View.GONE
@@ -60,14 +71,6 @@ class DownloadAndInstallFragment : Fragment() {
             e.printStackTrace()
             null
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentDownloadAndInstallBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     override fun onDestroyView() {

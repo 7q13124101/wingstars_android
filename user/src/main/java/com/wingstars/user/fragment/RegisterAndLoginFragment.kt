@@ -16,31 +16,39 @@ class RegisterAndLoginFragment {
     class RegisterAndLoginFragment : Fragment() {
         private var _binding: FragmentRegisterLoginBinding? = null
         private val binding get() = _binding!!
-        private var isDataLoaded = false
 
-        override fun onResume() {
-            super.onResume()
-            if (!isDataLoaded) {
+        override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View {
+            _binding = FragmentRegisterLoginBinding.inflate(inflater, container, false)
+            return binding.root
+        }
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            loadData()
+            
+            binding.srlRefreshLayout.setOnRefreshListener {
                 loadData()
-                isDataLoaded = true
+                binding.srlRefreshLayout.finishRefresh()
             }
         }
 
         private fun loadData() {
+            if (!isAdded) return
+            
             if (NetworkMonitorNew.getInstance(requireActivity()).currentNetworkState.isConnected) {
                 binding.nsvRegisterAndLogin.visibility = View.VISIBLE
                 binding.llEmpty.visibility = View.GONE
 
                 val faqData = readFaqJson()
                 faqData?.let { response ->
-                    // Lọc lấy dữ liệu cho phần "註冊登入"
                     val filteredData = response.data.find { it.partName == "註冊登入" }
                     filteredData?.let {
                         val adapter = FaqExpandableAdapter(requireContext(), it.outData)
-                        // Sửa đúng ID từ layout: rv_register_and_login_list
                         binding.rvRegisterAndLoginList.setAdapter(adapter)
                         
-                        // Mở sẵn các group
                         for (i in 0 until adapter.groupCount) {
                             binding.rvRegisterAndLoginList.expandGroup(i)
                         }
@@ -62,14 +70,6 @@ class RegisterAndLoginFragment {
                 e.printStackTrace()
                 null
             }
-        }
-
-        override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View {
-            _binding = FragmentRegisterLoginBinding.inflate(inflater, container, false)
-            return binding.root
         }
 
         override fun onDestroyView() {

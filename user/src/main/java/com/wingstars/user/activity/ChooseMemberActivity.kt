@@ -33,6 +33,7 @@ class ChooseMemberActivity : BaseActivity() {
     private val viewModel: CheerLeaderViewModel by viewModels()
     private var selectedNames = arrayOf<String?>(null, null, null)
     private var currentMemberList: List<MemberUI> = emptyList()
+
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,19 +46,21 @@ class ChooseMemberActivity : BaseActivity() {
         observeViewModel()
         viewModel.fetchCheerLeaderList()
     }
+
     private fun restoreSelectedMember() {
-        // Prefer MMKV (CRM-synced) so this screen matches the Member Info page.
-        val mmkvFav = MMKVManagement.getMemberFavMember().map { it.trim() }.filter { it.isNotBlank() }.take(3)
-        if (mmkvFav.isNotEmpty()) {
+        val mmkvFav = MMKVManagement
+            .getMemberFavMember()
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+
+        if (mmkvFav.size >= 3) {
             selectedNames[0] = mmkvFav.getOrNull(0)
             selectedNames[1] = mmkvFav.getOrNull(1)
             selectedNames[2] = mmkvFav.getOrNull(2)
         } else {
-            val names = MemberStorage.getSelectedMembers()
-            selectedNames[0] = names[0].takeIf { it.isNotBlank() }
-            selectedNames[1] = names[1].takeIf { it.isNotBlank() }
-            selectedNames[2] = names[2].takeIf { it.isNotBlank() }
+            selectedNames = arrayOf(null, null, null)
         }
+
         updateAllInputFields()
         checkEnableSaveButton()
     }
@@ -192,6 +195,7 @@ class ChooseMemberActivity : BaseActivity() {
             updateFavoriteMembers()
         }
     }
+
     private fun updateFavoriteMembers() {
         val memberId = MMKVManagement.getCrmMemberId()
         if (memberId.isEmpty() || memberId == "0") {
@@ -245,7 +249,8 @@ class ChooseMemberActivity : BaseActivity() {
                     },
                     { error ->
                         loadingDialog.dismiss()
-                        Toast.makeText(this, "網路錯誤: ${error.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "網路錯誤: ${error.message}", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 )
         } ?: run {
@@ -269,9 +274,10 @@ class ChooseMemberActivity : BaseActivity() {
             checkEnableSaveButton()
         }, allSelectedIds).show(supportFragmentManager, "choose")
     }
+
     private fun updateInputStyle(index: Int) {
         val color = getColor(R.color.color_4A5565)
-        when(index) {
+        when (index) {
             0 -> binding.edtTeamMember.setTextColor(color)
             1 -> binding.edtTeamMember1.setTextColor(color)
             2 -> binding.edtTeamMember2.setTextColor(color)
@@ -280,12 +286,13 @@ class ChooseMemberActivity : BaseActivity() {
 
     private fun resetInputStyle(index: Int) {
         val color = getColor(R.color.color_99A1AF)
-        when(index) {
+        when (index) {
             0 -> binding.edtTeamMember.setTextColor(color)
             1 -> binding.edtTeamMember1.setTextColor(color)
             2 -> binding.edtTeamMember2.setTextColor(color)
         }
     }
+
     private fun isMemberAlreadySelected(
         currentSelected: String?,
         vararg others: String?

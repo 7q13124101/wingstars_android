@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="@drawable/bg_dialog_round">
+    android:background="@drawable/bg_button_gray2">
 
     <ImageView
         android:id="@+id/img_icon"
@@ -19,7 +19,8 @@
         android:layout_height="wrap_content"
         android:text="您尚未儲存或分享這張照片，確定要放棄嗎？"
         android:textColor="#333333"
-        android:textSize="16sp"
+        android:textSize="60px"
+        android:textStyle="bold"
         android:gravity="center"
         android:layout_marginTop="16dp"/>
 

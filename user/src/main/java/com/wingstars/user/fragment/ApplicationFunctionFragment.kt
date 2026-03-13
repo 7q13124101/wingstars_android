@@ -15,31 +15,40 @@ import java.io.InputStreamReader
 class ApplicationFunctionFragment : Fragment() {
     private var _binding: FragmentApplicationFunctionBinding? = null
     private val binding get() = _binding!!
-    private var isDataLoaded = false
 
-    override fun onResume() {
-        super.onResume()
-        if (!isDataLoaded) {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentApplicationFunctionBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        loadData()
+        
+        // Setup Refresh Layout if needed
+        binding.srlRefreshLayout.setOnRefreshListener {
             loadData()
-            isDataLoaded = true
+            binding.srlRefreshLayout.finishRefresh()
         }
     }
 
     private fun loadData() {
+        if (!isAdded) return
+        
         if (NetworkMonitorNew.getInstance(requireActivity()).currentNetworkState.isConnected) {
             binding.nsvPointsTask.visibility = View.VISIBLE
             binding.llEmpty.visibility = View.GONE
             
-            // Đọc dữ liệu từ file JSON trong assets
             val faqData = readFaqJson()
             faqData?.let { response ->
-                // Lọc lấy dữ liệu cho phần "點數任務"
                 val filteredData = response.data.find { it.partName == "點數任務" }
                 filteredData?.let {
                     val adapter = FaqExpandableAdapter(requireContext(), it.outData)
                     binding.rvPointsTaskList.setAdapter(adapter)
                     
-                    // Mở sẵn các group nếu muốn
                     for (i in 0 until adapter.groupCount) {
                         binding.rvPointsTaskList.expandGroup(i)
                     }
@@ -61,14 +70,6 @@ class ApplicationFunctionFragment : Fragment() {
             e.printStackTrace()
             null
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentApplicationFunctionBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     override fun onDestroyView() {

@@ -86,4 +86,7 @@
     <dimen name="dp_190">190dp</dimen>
     <dimen name="dp_200">200dp</dimen>
     <dimen name="dp_255">255dp</dimen>
+    <dimen name="dp_32">32dp</dimen>
+    <dimen name="dp_5">5dp</dimen>
+    <dimen name="sp_16">16sp</dimen>
 </resources>
