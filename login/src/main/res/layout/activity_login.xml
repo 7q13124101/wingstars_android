@@ -158,7 +158,7 @@
                         android:layout_marginTop="8dp"
                         android:textColor="@color/color_FB2C36"
                         android:textSize="@dimen/sp_12"
-                        android:text="@string/error_format"
+                        android:text="@string/error_phone_pass"
                         android:ellipsize="end"
                         android:includeFontPadding="false"
                         android:visibility="invisible"
@@ -259,7 +259,7 @@
                         android:layout_marginTop="8dp"
                         android:textColor="@color/color_FB2C36"
                         android:textSize="@dimen/sp_12"
-                        android:text="@string/error_format"
+                        android:text="@string/error_phone_pass"
                         android:ellipsize="end"
                         android:includeFontPadding="false"
                         android:visibility="invisible"/>
@@ -338,16 +338,6 @@
                         android:textSize="@dimen/sp_14" />
 
                 </LinearLayout>
-                <!--                <TextView-->
-                <!--                    android:id="@+id/tv_close"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:paddingTop="@dimen/pt_30"-->
-                <!--                    android:paddingBottom="@dimen/pt_9"-->
-                <!--                    android:text="@string/login_close"-->
-                <!--                    android:textColor="@color/color_B81B30"-->
-                <!--                    android:layout_gravity="center"-->
-                <!--                    android:textSize="@dimen/sp_14" />-->
 
             </LinearLayout>
 

@@ -56,12 +56,38 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
 
     }
 
+    private fun resetOtpState() {
+        timer?.cancel()
+        isOtpSent = false
+        lastSentPhone = ""
+
+        binding.btnSendCode.visibility = View.VISIBLE
+        binding.rlCodeTimer.visibility = View.GONE
+        binding.tvResend?.visibility = View.GONE
+        binding.edtPhone.isEnabled = true
+        updateSendButtonState()
+    }
+
+    private fun showTimerUI() {
+        binding.btnSendCode.visibility = View.GONE
+        binding.rlCodeTimer.visibility = View.VISIBLE
+        updateConfirmButtonState()
+    }
+
+    private fun showSendButtonUI() {
+        binding.btnSendCode.visibility = View.VISIBLE
+        binding.rlCodeTimer.visibility = View.GONE
+        binding.tvResend?.visibility = View.GONE
+        binding.edtPhone.isEnabled = true
+        updateSendButtonState()
+    }
     private fun startCountDown(totalMs: Long = 60_000) {
         timer?.cancel()
         binding.btnSendCode.visibility = View.GONE
         binding.rlCodeTimer.visibility = View.VISIBLE
         binding.tvCodeTimer.visibility = View.VISIBLE
         binding.tvResend?.visibility = View.GONE
+        binding.edtPhone.isEnabled = false
 
         timer = object : CountDownTimer(totalMs, 1000) {
             override fun onTick(ms: Long) {
@@ -84,15 +110,8 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
             }
 
             override fun onFinish() {
-                showSendButtonUI()
-                binding.edtPhone.apply {
-                    isFocusable = true
-                    isFocusableInTouchMode = true
-                    isClickable = true
-                }
                 isOtpSent = false
-                updateSendButtonState()
-                updateConfirmButtonState()
+                showSendButtonUI() // DÙNG HÀM NÀY THAY VÌ tự set visibility
             }
         }.start()
     }
@@ -110,21 +129,6 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         binding.btnSendCode.background = ContextCompat.getDrawable(this, bgRes)
     }
 
-    private fun showTimerUI() {
-        binding.btnSendCode.visibility = View.GONE
-        binding.rlCodeTimer.visibility = View.VISIBLE
-        setEditTextRightAnchor(R.id.rl_code_timer)
-        updateConfirmButtonState()
-    }
-
-    private fun showSendButtonUI() {
-        binding.btnSendCode.visibility = View.VISIBLE
-        binding.rlCodeTimer.visibility = View.GONE
-        binding.tvResend?.visibility = View.GONE
-        setEditTextRightAnchor(R.id.btn_send_code)
-        updateSendButtonState()
-        updateConfirmButtonState()
-    }
 
     private fun setEditTextRightAnchor(targetId: Int) {
         val lp = binding.edtPhone.layoutParams as RelativeLayout.LayoutParams
@@ -135,34 +139,31 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
     private fun showPhoneError(msg: String) {
         binding.tvPhoneInputError.text = msg
         binding.tvPhoneInputError.visibility = View.VISIBLE
-//        binding.alertCircle.visibility = View.VISIBLE
+
     }
 
     private fun validatePasswordConfirm() {
-        showPsdConfirmNormal() // Luôn ẩn lỗi của ô nhập lại
+        showPsdConfirmNormal()
     }
 
     private fun showPhoneNormal() {
         binding.tvPhoneInputError.text = ""
         binding.tvPhoneInputError.visibility = View.INVISIBLE
-//        binding.alertCircle.visibility = View.INVISIBLE
     }
 
-    // Hàm này gọi khi mật khẩu ĐÃ ĐẠT chuẩn (Đổi sang màu hồng/nhấn)
     private fun showPsdNormal() {
         binding.tvPsdInputError.setTextColor(
-            ContextCompat.getColor(this, R.color.color_E2518D) // Màu khi đã OK
+            ContextCompat.getColor(this, R.color.gray_400) // Hoặc R.color.color_E2518D nếu muốn nó màu hồng khi đúng
         )
-        binding.tvPsdInputError.visibility = View.VISIBLE // Luôn hiện
+        binding.tvPsdInputError.visibility = View.VISIBLE
     }
 
-    // Hàm này gọi khi mật khẩu CHƯA ĐẠT chuẩn (Để màu xám mặc định)
     private fun showPsdError(msg: String) {
         binding.tvPsdInputError.text = msg
         binding.tvPsdInputError.setTextColor(
-            ContextCompat.getColor(this, R.color.gray_400) // Màu xám hướng dẫn
+            ContextCompat.getColor(this, R.color.color_FB2C36)
         )
-        binding.tvPsdInputError.visibility = View.VISIBLE // Luôn hiện
+        binding.tvPsdInputError.visibility = View.VISIBLE
     }
 
     private fun showPsdConfirmError(msg: String) {
@@ -282,6 +283,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         if (!autoPhone.isNullOrEmpty()) {
             binding.edtPhone.setText(autoPhone)
             binding.edtPhone.setSelection(autoPhone.length)
+            updateSendButtonState()
         }
 
         updateSendButtonState()
@@ -303,27 +305,28 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
             binding.rlPhone.isActivated = hasFocus
         }
 
-        // 3. Sửa TextWatcher của edtPhone: Nơi duy nhất quản lý độ sáng của nút gửi mã
-        binding.edtPhone.addTextChangedListener(object : TextWatcher {
+        binding.edtPhone.addTextChangedListener(object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val phone = s?.toString().orEmpty()
                 val ok = phoneRegex.matches(phone)
 
-                binding.tvPhoneInputError.visibility =
-                    if (phone.isEmpty() || ok) View.INVISIBLE else View.VISIBLE
+                if (phone.isEmpty()) {
+                    showPhoneError(getString(R.string.hint_phone))
+                } else if (!ok) {
+                    showPhoneError(getString(R.string.error_phone_format))
+                } else {
+                    showPhoneNormal()
+                }
 
-                if (phone != lastSentPhone) {
-                    isOtpSent = false
+                if (phone != lastSentPhone && isOtpSent) {
+                    resetOtpState()
                 }
 
                 updateSendButtonState()
                 updateConfirmButtonState()
             }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun afterTextChanged(s: Editable?) {}
         })
 
-        // --- Các phần dưới giữ nguyên ---
         viewModel.isLoading.observe(this) { showLoadingUI(it, this) }
         viewModel.message.observe(this) { showToast("$it") }
 
@@ -388,52 +391,40 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
     }
 
 
-
     private fun setupLiveValidation() {
-        binding.edtPhone.addTextChangedListener(object : SimpleTW() {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val phone = s?.toString()?.trim().orEmpty()
-                when {
-                    phone.isEmpty() -> showPhoneError(getString(R.string.hint_phone))
-                    !isTaiwanPhone(phone) -> showPhoneError(getString(R.string.error_phone_format))
-                    else -> showPhoneNormal()
-                }
-            }
-        })
-
         binding.edtPsd.addTextChangedListener(object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val pwd = s?.toString().orEmpty()
 
-                binding.tvPsdInputError.text = getString(R.string.note_register_psd)
-
                 if (pwd.isEmpty()) {
-                    binding.tvPsdInputError.setTextColor(
-                        ContextCompat.getColor(this@RegisterActivity, R.color.gray_400)
-                    )
+                    showPsdNormal()
+                    binding.tvPsdInputError.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.gray_400))
                 } else if (!isPasswordStrong(pwd)) {
-                    binding.tvPsdInputError.setTextColor(
-                        ContextCompat.getColor(this@RegisterActivity, R.color.color_FB2C36)
-                    )
+                    showPsdError(getString(R.string.note_register_psd))
                 } else {
-                    binding.tvPsdInputError.setTextColor(
-                        ContextCompat.getColor(this@RegisterActivity, R.color.gray_400)
-                    )
+                    showPsdNormal()
                 }
-
                 updateConfirmButtonState()
             }
         })
+
 
         binding.edtPsdConfirm.addTextChangedListener(object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                showPsdConfirmNormal()
+                val pwd = binding.edtPsd.text.toString()
+                val confirmPwd = s?.toString().orEmpty()
+
+                if (confirmPwd.isNotEmpty() && pwd != confirmPwd) {
+//                    showPsdConfirmError(getString(R.string.error_password_not_match))
+                } else {
+                    showPsdConfirmNormal()
+                }
                 updateConfirmButtonState()
             }
         })
 
-        binding.btnConfirm.setOnClickListener {
 
+        binding.btnConfirm.setOnClickListener {
             val password = binding.edtPsd.text.toString()
             val name = binding.edtName.text.toString()
             val phone = binding.edtPhone.text.toString()
@@ -451,6 +442,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
             )
         }
     }
+
 
     override fun onClick(v: View?) {
         var id = v?.id
@@ -487,7 +479,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
     }
 
     override fun onInitializationSuccessful() {
-        binding.btnSendCode.isEnabled = false
+
         val navigationBarHeight = getNavigationBarHeight()
         if (navigationBarHeight != 0) {
             var height = navigationBarHeight
@@ -496,6 +488,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
                 height
             )
         }
+
         initView()
     }
 
@@ -513,7 +506,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         showRegisterSuccessDialog()
     }
 
-    // TextWatcher rút gọn
+
     private open class SimpleTW : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}

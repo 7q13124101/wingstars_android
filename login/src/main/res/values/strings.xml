@@ -26,11 +26,14 @@
     <string name="login_error">登入失敗</string>
     <string name="login_error_phone">帳戶未註冊或密碼錯誤</string>
 
+
     <string name="user_register">註冊會員</string>
     <string name="why_identity_information">為何需要身分資料</string>
     <string name="why_birthday_information">為何需要生日資料</string>
-    <string name="error_phone_format">請輸入正確格式</string>
+    <string name="error_phone_format">請輸入手機號碼正確格式</string>
+    <string name="error_phone_pass">請輸入正確格式</string>
     <string name="error_format">請輸入正手機號碼確格式</string>
+    <string name="error_formats">請輸入正手機號碼確格式</string>
     <string name="error_empty">請輸入帳號與密碼</string>
     <string name="error_phone_login">您尚未註冊，請先註冊會員</string>
     <string name="error_psd_not_match">兩次輸入的密碼不相符，請重新確認</string>

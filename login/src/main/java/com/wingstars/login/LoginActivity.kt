@@ -181,14 +181,14 @@ class LoginActivity : BaseActivity(), LoginNavigator {
 
         // Phone UI logic
         if (phone.isNotEmpty() && !isTaiwanPhone(phone)) {
-            showPhoneError(getString(R.string.error_phone_format))
+            showPhoneError(getString(R.string.error_phone_pass))
         } else {
             showPhoneNormal()
         }
 
         // Password UI logic
         if (pwd.isNotEmpty() && !isPasswordStrong(pwd)) {
-            showPsdError(getString(R.string.note_register_psd))
+            showPsdError(getString(R.string.error_phone_pass))
         } else {
             showPsdNormal()
         }
