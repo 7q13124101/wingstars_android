@@ -198,8 +198,14 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
         v?.layoutParams = params
     }
 
-    override fun onItemClick(memberId: Int,fashionType: Int) {
-
+    override fun onItemClick(memberId: Int, fashionType: Int) {
+        val intent = Intent(
+            this@AtmosphereFashionDetailsActivity,
+            AtmosphereFashionDetailsActivity::class.java
+        )
+        intent.putExtra("memberId", memberId)
+        intent.putExtra("fashionType", fashionType)
+        startActivity(intent)
     }
 
 
