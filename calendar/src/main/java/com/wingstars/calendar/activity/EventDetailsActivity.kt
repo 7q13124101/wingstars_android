@@ -36,6 +36,7 @@ class EventDetailsActivity : BaseActivity() {
     }
 
     private fun initData() {
+        binding.llPage.visibility = View.GONE
         binding.tvTitleName.text = Html.fromHtml(selectedWSCalendar?.titleF ?: "")
         val stDate = selectedWSCalendar?.st_dateF ?: ""
         val edDate = selectedWSCalendar?.ed_dateF ?: ""
